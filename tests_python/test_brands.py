@@ -104,6 +104,51 @@ def test_matches_close_typo_and_explains_score() -> None:
     assert "edit distance 1" in " ".join(result.reasons)
 
 
+def test_matches_adjacent_transpositions_only_with_local_context() -> None:
+    registry = load_brand_registry()
+    for domain in ["swedbnak-auth.example", "swdebank-auth.example"]:
+        result = score_domain(domain, registry)
+        assert result is not None, domain
+        assert result.brand == "Swedbank"
+        assert "edit distance 1" in " ".join(result.reasons)
+
+    assert score_domain("swedbnak.example", registry) is None
+    assert score_domain("login.swedbnak.example", registry) is None
+    tele2 = score_domain("teel2-support.example", registry)
+    assert tele2 is not None
+    assert tele2.brand == "Tele2"
+    assert score_domain("tele3-support.example", registry) is None
+
+
+def test_matches_long_brand_split_inside_one_dns_label() -> None:
+    registry = load_brand_registry()
+    cases = {
+        "rev-olut-login.example": "Revolut",
+        "secure-pay-sera.example": "Paysera",
+        "s-w-e-d-b-a-n-k-auth.example": "Swedbank",
+    }
+    for domain, brand in cases.items():
+        result = score_domain(domain, registry)
+        assert result is not None, domain
+        assert result.brand == brand
+        assert "split across label" in " ".join(result.reasons)
+
+
+def test_split_matching_preserves_boundaries_exclusions_and_ambiguity() -> None:
+    registry = load_brand_registry()
+    false_positives = [
+        "rev-olut.example",
+        "login.rev-olut.example",
+        "revolution-login.example",
+        "s-b-e-r-b-a-n-k-login.example",
+        "s-e-b-login.example",
+        "secure-rev-olut-s-w-e-d-b-a-n-k-login.example",
+        "rev-olut-login.secure-swed-bank.example",
+    ]
+    for domain in false_positives:
+        assert score_domain(domain, registry) is None, domain
+
+
 def test_requires_context_for_fuzzy_match() -> None:
     registry = load_brand_registry()
     assert score_domain("swedbannk.example.com", registry) is None

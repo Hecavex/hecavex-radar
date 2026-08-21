@@ -293,21 +293,31 @@ def _canonical(value: str) -> str:
 
 
 def _edit_distance(left: str, right: str) -> int:
+    """Return restricted Damerau-Levenshtein distance for short DNS tokens."""
     if left == right:
         return 0
     if abs(len(left) - len(right)) > 2:
         return 3
+    previous_previous: list[int] | None = None
     previous = list(range(len(right) + 1))
     for left_index, left_character in enumerate(left, start=1):
         current = [left_index]
         for right_index, right_character in enumerate(right, start=1):
-            current.append(
-                min(
-                    current[right_index - 1] + 1,
-                    previous[right_index] + 1,
-                    previous[right_index - 1] + (left_character != right_character),
-                )
+            distance = min(
+                current[right_index - 1] + 1,
+                previous[right_index] + 1,
+                previous[right_index - 1] + (left_character != right_character),
             )
+            if (
+                previous_previous is not None
+                and left_index > 1
+                and right_index > 1
+                and left_character == right[right_index - 2]
+                and left[left_index - 2] == right_character
+            ):
+                distance = min(distance, previous_previous[right_index - 2] + 1)
+            current.append(distance)
+        previous_previous = previous
         previous = current
     return previous[-1]
 
@@ -502,8 +512,30 @@ def score_domain(value: str, registry: BrandRegistry) -> CandidateMatch | None:
                 attached_context = [context]
                 matched_punycode = punycode_labels[group_index]
 
-            # Fuzzy evidence is intentionally narrow: one edit in a single-word
-            # alias, plus a threat word in the same DNS label (or punycode).
+            # Attackers frequently split a brand across hyphen-delimited pieces.
+            # Fold only one DNS label and require the remaining prefix or suffix
+            # to be exactly one reviewed threat word. This is intentionally not
+            # a general substring or caller-supplied regular-expression match.
+            split_affix = next(
+                (
+                    (context, index)
+                    for index, group in enumerate(grouped_parts)
+                    if len(group) >= 2
+                    and (context := _suspicious_affix("".join(group), alias)) is not None
+                ),
+                None,
+            )
+            if len(alias) > 4 and split_affix is not None and base < 78:
+                context, group_index = split_affix
+                base = 78
+                match_reason = f"brand text split across label: {raw_alias}"
+                matched_alias_parts = alias_parts
+                attached_context = [context]
+                matched_punycode = punycode_labels[group_index]
+
+            # Fuzzy evidence is intentionally narrow: one edit (including one
+            # adjacent transposition) in a single-word alias, plus a threat word
+            # in the same DNS label (or punycode).
             if _canonical(raw_alias) not in fuzzy_aliases or len(alias_parts) != 1 or len(alias) < 5:
                 continue
             for group_index, group in enumerate(grouped_parts):

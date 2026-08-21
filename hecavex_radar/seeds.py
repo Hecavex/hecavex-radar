@@ -139,7 +139,7 @@ def _hostname(value: str) -> str | None:
 
 
 def _one_edit_variants(value: str) -> set[str]:
-    """Return every valid ASCII DNS token one Levenshtein edit from *value*."""
+    """Return ASCII DNS tokens one restricted Damerau-Levenshtein edit away."""
     variants = {value[:index] + value[index + 1 :] for index in range(len(value))}
     for index in range(len(value)):
         variants.update(
@@ -152,6 +152,11 @@ def _one_edit_variants(value: str) -> set[str]:
             value[:index] + character + value[index:]
             for character in ASCII_DOMAIN_CHARACTERS
         )
+    variants.update(
+        value[:index] + value[index + 1] + value[index] + value[index + 2 :]
+        for index in range(len(value) - 1)
+        if value[index] != value[index + 1]
+    )
     return variants
 
 

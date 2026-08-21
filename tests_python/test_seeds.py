@@ -48,9 +48,14 @@ def test_prefilter_preserves_current_exact_fuzzy_and_punycode_matches() -> None:
     domains = [
         *alias_domains,
         "swedbannk-auth.example",
+        "swedbnak-auth.example",
+        "swdebank-auth.example",
         "swdbank-auth.example",
         "swedbonk-auth.example",
         "telr2-support.example",
+        "teel2-support.example",
+        "rev-olut-login.example",
+        "secure-pay-sera.example",
         "xn--wedbank-iog.example",
         "secure-revolut-swedbank-login.example",
         "sberbank-login.example",
@@ -76,9 +81,14 @@ def test_prefilter_preserves_current_exact_fuzzy_and_punycode_matches() -> None:
     assert {seed.domain for seed in actual}.issuperset(
         {
             "swedbannk-auth.example",
+            "swedbnak-auth.example",
+            "swdebank-auth.example",
             "swdbank-auth.example",
             "swedbonk-auth.example",
             "telr2-support.example",
+            "teel2-support.example",
+            "rev-olut-login.example",
+            "secure-pay-sera.example",
             "xn--wedbank-iog.example",
         }
     )
