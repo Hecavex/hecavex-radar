@@ -1,0 +1,87 @@
+name: Deploy radar
+
+on:
+  workflow_run:
+    workflows: ["CI", "Sync radar snapshot"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      ((github.event.workflow_run.name == 'CI' && github.event.workflow_run.event == 'push') ||
+      (github.event.workflow_run.name == 'Sync radar snapshot' &&
+      (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch'))))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      should_deploy: ${{ steps.freshness.outputs.should_deploy }}
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - name: Ignore stale CI completions
+        id: freshness
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
+        shell: bash
+        run: |
+          should_deploy=true
+          if [[ "${TRIGGER_WORKFLOW}" == "CI" && "$(git rev-parse HEAD)" != "${EXPECTED_SHA}" ]]; then
+            echo "A newer main commit superseded this CI run; its own successful run will deploy."
+            should_deploy=false
+          fi
+          echo "should_deploy=${should_deploy}" >> "${GITHUB_OUTPUT}"
+      - name: Set up Node.js
+        if: steps.freshness.outputs.should_deploy == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+      - name: Enable pnpm
+        if: steps.freshness.outputs.should_deploy == 'true'
+        run: corepack enable && corepack prepare pnpm@10.34.5 --activate
+      - name: Install dependencies
+        if: steps.freshness.outputs.should_deploy == 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Verify and build static site
+        if: steps.freshness.outputs.should_deploy == 'true'
+        run: pnpm lint:frontend && pnpm typecheck:frontend && pnpm test:frontend && pnpm build
+      - name: Configure GitHub Pages
+        if: steps.freshness.outputs.should_deploy == 'true'
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Upload site artifact
+        if: steps.freshness.outputs.should_deploy == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: dist
+
+  deploy:
+    if: needs.build.outputs.should_deploy == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

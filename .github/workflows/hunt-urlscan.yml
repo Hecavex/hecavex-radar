@@ -1,0 +1,76 @@
+name: Hunt URLScan observations
+
+on:
+  schedule:
+    - cron: "37 3,15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-archive-writer
+  cancel-in-progress: false
+
+jobs:
+  hunt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check .
+      - name: Hunt existing public URLScan results
+        env:
+          URLSCAN_API_KEY: ${{ secrets.URLSCAN_API_KEY }}
+          URLSCAN_ARCHIVE_ROOT: data/urlscan
+          URLSCAN_LOOKBACK_DAYS: ${{ vars.URLSCAN_LOOKBACK_DAYS || '7' }}
+          URLSCAN_MIN_CONFIDENCE: ${{ vars.URLSCAN_MIN_CONFIDENCE || '80' }}
+          URLSCAN_SEARCH_LIMIT: ${{ vars.URLSCAN_SEARCH_LIMIT || '100' }}
+          URLSCAN_DETAIL_LIMIT: ${{ vars.URLSCAN_DETAIL_LIMIT || '30' }}
+          URLSCAN_TITLE_DETAIL_LIMIT: ${{ vars.URLSCAN_TITLE_DETAIL_LIMIT || '10' }}
+          URLSCAN_HASH_PIVOT_LIMIT: ${{ vars.URLSCAN_HASH_PIVOT_LIMIT || '3' }}
+          URLSCAN_HASH_RESULT_LIMIT: ${{ vars.URLSCAN_HASH_RESULT_LIMIT || '10' }}
+          URLSCAN_HASH_DETAIL_LIMIT: ${{ vars.URLSCAN_HASH_DETAIL_LIMIT || '30' }}
+          URLSCAN_CT_SEEDS_ENABLED: ${{ vars.URLSCAN_CT_SEEDS_ENABLED || 'true' }}
+          URLSCAN_CT_ARCHIVE_ROOT: data/certstream
+          URLSCAN_CT_LOOKBACK_DAYS: ${{ vars.URLSCAN_CT_LOOKBACK_DAYS || '7' }}
+          URLSCAN_CT_SEED_LIMIT: ${{ vars.URLSCAN_CT_SEED_LIMIT || '100' }}
+          URLSCAN_CT_SEED_MIN_CONFIDENCE: ${{ vars.URLSCAN_CT_SEED_MIN_CONFIDENCE || '80' }}
+          URLSCAN_INTELLIGENCE_SEEDS_ENABLED: ${{ vars.URLSCAN_INTELLIGENCE_SEEDS_ENABLED || 'true' }}
+          PHISHDESTROY_SEED_ENABLED: ${{ vars.PHISHDESTROY_SEED_ENABLED || 'true' }}
+          CERTPL_SEED_ENABLED: ${{ vars.CERTPL_SEED_ENABLED || 'true' }}
+          URLSCAN_EXACT_SEED_LIMIT: ${{ vars.URLSCAN_EXACT_SEED_LIMIT || '250' }}
+          URLSCAN_SEED_BATCH_SIZE: ${{ vars.URLSCAN_SEED_BATCH_SIZE || '20' }}
+          URLSCAN_SEED_SEARCH_LIMIT: ${{ vars.URLSCAN_SEED_SEARCH_LIMIT || '50' }}
+          URLSCAN_SEED_DETAIL_LIMIT: ${{ vars.URLSCAN_SEED_DETAIL_LIMIT || '30' }}
+          INTELLIGENCE_SEED_MIN_CONFIDENCE: ${{ vars.INTELLIGENCE_SEED_MIN_CONFIDENCE || '80' }}
+          INTELLIGENCE_SEED_LIMIT: ${{ vars.INTELLIGENCE_SEED_LIMIT || '250' }}
+          URLSCAN_MAX_SIGNALS: ${{ vars.URLSCAN_MAX_SIGNALS || '500' }}
+        run: python -m hecavex_radar.urlscan
+      - name: Commit validated public archive updates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git add -- data/urlscan
+          if git diff --cached --quiet; then
+            echo "No URLScan archive changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: update URLScan observations"
+          gh auth setup-git
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

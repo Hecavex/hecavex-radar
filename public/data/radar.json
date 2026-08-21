@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "dataset": "live",
+  "generatedAt": "2026-08-21T14:22:32.628Z",
+  "signals": [
+    {
+      "id": "be2c387faff6ef6e44dc",
+      "url": "hxxp://cards-revolut[.]com",
+      "domain": "cards-revolut[.]com",
+      "firstSeen": "2026-05-22T15:16:18.332Z",
+      "lastSeen": "2026-08-21T02:05:24.084Z",
+      "sources": [
+        "URLScan"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": "AS13335 · CLOUDFLARENET - Cloudflare, Inc., US · 2606[:]4700[:]3034[:][:]6815[:]2755",
+      "screenshotUrl": "https://urlscan.io/screenshots/01a02210-4d04-720d-95e0-92cd7f77aaf8.png",
+      "referenceUrl": "https://urlscan.io/result/01a02210-4d04-720d-95e0-92cd7f77aaf8/",
+      "hashes": [],
+      "confidence": 95
+    }
+  ],
+  "sources": [
+    {
+      "name": "CertStream",
+      "homepage": "https://certstream.dev/",
+      "fetchedAt": "2026-08-21T14:22:32.628Z",
+      "records": 0,
+      "state": "healthy",
+      "note": "Open heuristic candidates from the last 7 days"
+    },
+    {
+      "name": "URLScan",
+      "homepage": "https://urlscan.io/",
+      "fetchedAt": "2026-08-21T14:22:32.628Z",
+      "records": 1,
+      "state": "healthy",
+      "note": "Passive results passing public validation from the last 30 days"
+    },
+    {
+      "name": "HECAVEX",
+      "homepage": "https://hecavex.com/",
+      "fetchedAt": null,
+      "records": 0,
+      "state": "skipped",
+      "note": "Not configured"
+    }
+  ]
+}

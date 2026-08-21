@@ -1,0 +1,74 @@
+name: Sync radar snapshot
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      allow_small_snapshot:
+        description: "Allow this run to bypass the snapshot-size guard"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-archive-writer
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check .
+      - name: Build the persistent public snapshot
+        env:
+          CERTSTREAM_ARCHIVE_ENABLED: "true"
+          CERTSTREAM_ARCHIVE_ROOT: data/certstream
+          RADAR_CT_LOOKBACK_DAYS: ${{ vars.RADAR_CT_LOOKBACK_DAYS || '7' }}
+          URLSCAN_ARCHIVE_ENABLED: "true"
+          URLSCAN_ARCHIVE_ROOT: data/urlscan
+          RADAR_URLSCAN_LOOKBACK_DAYS: ${{ vars.RADAR_URLSCAN_LOOKBACK_DAYS || '30' }}
+          HECAVEX_ENABLED: ${{ vars.HECAVEX_ENABLED || 'false' }}
+          HECAVEX_FEED_URL: ${{ secrets.HECAVEX_FEED_URL }}
+          HECAVEX_FEED_TOKEN: ${{ secrets.HECAVEX_FEED_TOKEN }}
+          RADAR_MAX_SIGNALS: ${{ vars.RADAR_MAX_SIGNALS || '2500' }}
+          RADAR_MIN_SIGNALS: ${{ vars.RADAR_MIN_SIGNALS || '0' }}
+          RADAR_MIN_RETAINED_PERCENT: ${{ vars.RADAR_MIN_RETAINED_PERCENT || '25' }}
+          RADAR_SNAPSHOT_GUARD_DAYS: ${{ vars.RADAR_SNAPSHOT_GUARD_DAYS || '30' }}
+          RADAR_RETAIN_EXISTING_SIGNALS: ${{ vars.RADAR_RETAIN_EXISTING_SIGNALS || 'true' }}
+          RADAR_RETAIN_DAYS: ${{ vars.RADAR_RETAIN_DAYS || '7' }}
+          RADAR_ALLOW_SMALL_SNAPSHOT: ${{ inputs.allow_small_snapshot || 'false' }}
+        run: python -m hecavex_radar.sync
+      - name: Commit a changed snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git add -- public/data/radar.json
+          if git diff --cached --quiet; then
+            echo "Snapshot is unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: refresh public radar snapshot"
+          gh auth setup-git
+          git pull --rebase origin main
+          git push origin HEAD:main
