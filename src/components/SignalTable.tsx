@@ -16,7 +16,7 @@ function Confidence({ value }: { value: number }) {
   );
 }
 
-export function SignalTable({ signals }: { signals: RadarSignal[] }) {
+export function SignalTable({ signals, now = Date.now() }: { signals: RadarSignal[]; now?: number }) {
   const [page, setPage] = useState(1);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [capture, setCapture] = useState<RadarSignal | null>(null);
@@ -83,8 +83,8 @@ export function SignalTable({ signals }: { signals: RadarSignal[] }) {
                   <span className="country">{signal.country ?? "Unknown country"}</span>
                 </td>
                 <td>
-                  <time dateTime={signal.lastSeen} title={formatDateTime(signal.lastSeen)}>{formatRelativeTime(signal.lastSeen)}</time>
-                  <span className="first-seen">First {formatRelativeTime(signal.firstSeen)}</span>
+                  <time dateTime={signal.lastSeen} title={formatDateTime(signal.lastSeen)}>{formatRelativeTime(signal.lastSeen, now)}</time>
+                  <span className="first-seen">First {formatRelativeTime(signal.firstSeen, now)}</span>
                 </td>
                 <td className="capture-cell">
                   {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length ? (

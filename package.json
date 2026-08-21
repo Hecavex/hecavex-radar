@@ -25,7 +25,9 @@
     "test:frontend": "vitest run",
     "test:python": "python -m pytest",
     "test": "pnpm test:python && pnpm test:frontend",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "verify:site": "node scripts/verify-site.mjs",
+    "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm test:frontend && pnpm build && pnpm verify:site",
+    "check": "pnpm lint:python && pnpm typecheck:python && pnpm test:python && pnpm check:frontend"
   },
   "dependencies": {
     "lucide-react": "1.33.0",
@@ -40,8 +42,10 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "6.1.0",
+    "axe-core": "4.13.0",
     "eslint": "9.39.5",
     "jsdom": "30.0.1",
+    "playwright-core": "1.62.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.67.0",
     "vite": "8.2.2",

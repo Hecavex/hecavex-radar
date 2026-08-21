@@ -13,6 +13,8 @@ CertStream emits Certificate Transparency log updates over a websocket. The coll
 
 Without `CERTSTREAM_URL`, the local CLI uses the compatibility endpoint at `wss://certstream.calidog.io/`. The scheduled workflow instead starts a digest-pinned `certstream-server-rust` container and connects to its runner-local domains-only stream. Long-running collectors should set `CERTSTREAM_URL` to a monitored WSS endpoint. Certificate issuance is not proof of phishing, so CT records remain `suspected`.
 
+Each scheduled attempt replaces [`public/data/collection-health.json`](../public/data/collection-health.json) with its actual start, end, websocket listening seconds, messages, DNS names, matches, newly archived records, outcome, scheduling delay, and last successful window. The file retains only the latest attempt and aggregate counters. It is not a candidate archive, does not expose certificate names, and cannot establish coverage between sampled windows.
+
 The public registry is [`data/brands-lt.json`](../data/brands-lt.json). Official domains, subdomains, and reviewed `excludedDomains` are suppressed before scoring. See [Detection rules](DETECTION.md) for matching and archive revalidation.
 
 ## URLScan

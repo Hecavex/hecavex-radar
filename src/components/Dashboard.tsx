@@ -5,6 +5,7 @@ import { dashboardMetrics, filterSignals, topGroups } from "../lib/dashboard";
 import { formatNumber, formatRelativeTime } from "../lib/format";
 import type { Filters, RadarSnapshot } from "../types";
 import { DEFAULT_FILTERS } from "../lib/dashboard";
+import { CollectionDisclosure } from "./CollectionDisclosure";
 import { DistributionPanel } from "./DistributionPanel";
 import { FilterBar } from "./FilterBar";
 import { SignalTable } from "./SignalTable";
@@ -18,13 +19,13 @@ const metrics = [
   { key: "countries", label: "Countries seen", icon: Globe2 },
 ] as const;
 
-export function Dashboard({ snapshot }: { snapshot: RadarSnapshot }) {
+export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnapshot; now?: number }) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const summary = useMemo(() => dashboardMetrics(snapshot), [snapshot]);
   const filteredSignals = useMemo(() => filterSignals(snapshot.signals, filters), [snapshot.signals, filters]);
   const topBrands = useMemo(() => topGroups(snapshot.signals, "brand"), [snapshot.signals]);
   const topCountries = useMemo(() => topGroups(snapshot.signals, "country"), [snapshot.signals]);
-  const ageMs = Date.now() - new Date(snapshot.generatedAt).getTime();
+  const ageMs = now - new Date(snapshot.generatedAt).getTime();
   const isStale = ageMs > 2 * 60 * 60 * 1000;
 
   return (
@@ -43,11 +44,13 @@ export function Dashboard({ snapshot }: { snapshot: RadarSnapshot }) {
           <span className="live-dot" aria-hidden="true" />
           <div>
             <small>{isStale ? "Snapshot delayed" : "Snapshot current"}</small>
-            <strong>{formatRelativeTime(snapshot.generatedAt)}</strong>
+            <strong>{formatRelativeTime(snapshot.generatedAt, now)}</strong>
             <span>Generated {new Date(snapshot.generatedAt).toLocaleString("en-GB", { timeZone: "UTC" })} UTC</span>
           </div>
         </div>
       </section>
+
+      <CollectionDisclosure />
 
       <section className="metric-grid" aria-label="Radar summary">
         {metrics.map(({ key, label, icon: Icon }) => (
@@ -60,7 +63,7 @@ export function Dashboard({ snapshot }: { snapshot: RadarSnapshot }) {
       </section>
 
       <section className="overview-grid" aria-label="Source overview">
-        <SourcePanel sources={snapshot.sources} />
+        <SourcePanel sources={snapshot.sources} now={now} />
         <DistributionPanel title="Top targeted brands" data={topBrands} emptyLabel="No brand data" />
         <DistributionPanel title="Observed geography" data={topCountries} emptyLabel="No country data" />
       </section>
@@ -74,7 +77,7 @@ export function Dashboard({ snapshot }: { snapshot: RadarSnapshot }) {
           <p><strong>{formatNumber(filteredSignals.length)}</strong> matching {formatNumber(snapshot.signals.length)} total</p>
         </div>
         <FilterBar signals={snapshot.signals} filters={filters} onChange={setFilters} />
-        <SignalTable signals={filteredSignals} />
+        <SignalTable signals={filteredSignals} now={now} />
       </section>
     </main>
   );

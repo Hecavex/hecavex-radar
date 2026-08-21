@@ -96,8 +96,9 @@ export function Methodology() {
               Each DNS name is scored independently and qualifying matches are stored in Europe/Vilnius daily archives.
             </p>
             <p>
-              This is live sampling, not a complete daily certificate dump. Events outside the listening windows are not
-              replayed or backfilled by the current collector.
+              That schedule provides at most 192 listening minutes per day, or 13.3% of wall-clock time. It is live
+              sampling, not a daily certificate dump: events outside successful listening windows are not replayed or
+              backfilled by the current collector. Actions can start late or fail, so actual observation can be lower.
             </p>
           </article>
           <article>
@@ -217,6 +218,23 @@ export function Methodology() {
             <p>
               Archived observations are checked against the current registry during synchronization, so corrected brand
               mappings and official-domain additions remove stale false positives from later snapshots.
+            </p>
+          </article>
+          <article>
+            <p className="eyebrow">Service boundary</p>
+            <h3>Best effort, no SLA</h3>
+            <p>
+              Radar is maintained public research. It is not continuous brand monitoring, victim notification, incident
+              response, takedown, or an availability or response commitment.
+            </p>
+          </article>
+          <article>
+            <p className="eyebrow">Operational evidence</p>
+            <h3>Snapshot state has limits</h3>
+            <p>
+              Source timestamps show archive reads performed by the publisher. The separate public collection-health
+              document reports actual timing, aggregate counts, late starts, outcome, last success, and freshness for only
+              the latest CertStream attempt; it is not evidence of continuous or replayable coverage.
             </p>
           </article>
         </div>

@@ -43,3 +43,15 @@ def test_root_json_ld_hash_matches_the_content_security_policy() -> None:
     digest = base64.b64encode(hashlib.sha256(match.group(1).encode()).digest()).decode()
     assert f"'sha256-{digest}'" in root
     assert '"license":"https://radar.hecavex.com/docs/#data-terms"' in match.group(1)
+
+
+def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
+    workflow = Path(".github/workflows/collect-certstream.yml").read_text(encoding="utf-8")
+
+    assert "python -m hecavex_radar.collection_health begin" in workflow
+    assert "python -m hecavex_radar.collection_health finalize" in workflow
+    assert "git add -- data/certstream public/data/collection-health.json" in workflow
+    assert "if: always() && steps.health.outcome == 'success'" in workflow
+    assert "CERTSTREAM_INSTALL_OUTCOME: ${{ steps.dependencies.outcome }}" in workflow
+    assert "CERTSTREAM_PREPARE_OUTCOME: ${{ steps.source.outcome }}" in workflow
+    assert "CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}" in workflow

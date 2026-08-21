@@ -9,16 +9,22 @@ import type { RadarSnapshot } from "./types";
 
 type LoadState =
   | { status: "loading" }
-  | { status: "ready"; snapshot: RadarSnapshot }
+  | { status: "ready"; snapshot: RadarSnapshot; renderedAt: number }
   | { status: "error"; message: string };
 
-export function App() {
-  const [state, setState] = useState<LoadState>({ status: "loading" });
+export function App(
+  { initialSnapshot, initialNow }: { initialSnapshot?: RadarSnapshot; initialNow?: number } = {},
+) {
+  const [state, setState] = useState<LoadState>(
+    initialSnapshot
+      ? { status: "ready", snapshot: initialSnapshot, renderedAt: initialNow ?? Date.now() }
+      : { status: "loading" },
+  );
 
   useEffect(() => {
     const controller = new AbortController();
     void loadSnapshot(controller.signal)
-      .then((snapshot) => setState({ status: "ready", snapshot }))
+      .then((snapshot) => setState({ status: "ready", snapshot, renderedAt: Date.now() }))
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
           setState({ status: "error", message: error instanceof Error ? error.message : "Unknown data error." });
@@ -51,7 +57,7 @@ export function App() {
         </main>
       )}
 
-      {state.status === "ready" && <Dashboard snapshot={state.snapshot} />}
+      {state.status === "ready" && <Dashboard snapshot={state.snapshot} now={state.renderedAt} />}
 
       <SiteFooter />
     </div>

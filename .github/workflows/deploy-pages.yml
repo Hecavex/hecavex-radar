@@ -67,7 +67,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Verify and build static site
         if: steps.freshness.outputs.should_deploy == 'true'
-        run: pnpm lint:frontend && pnpm typecheck:frontend && pnpm test:frontend && pnpm build
+        run: pnpm check:frontend
       - name: Verify public deployment metadata
         if: steps.freshness.outputs.should_deploy == 'true'
         shell: bash
@@ -77,12 +77,15 @@ jobs:
           cmp --silent dist/security.txt dist/.well-known/security.txt
           grep -Fqx "Canonical: https://radar.hecavex.com/.well-known/security.txt" dist/.well-known/security.txt
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/"' dist/index.html
-          grep -Fq 'Potential phishing signals relevant to Lithuania' dist/index.html
+          grep -Fq 'Sampled discovery, not continuous monitoring' dist/index.html
           grep -Fq '"@type":"Dataset"' dist/index.html
           test -f dist/methodology/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/methodology/"' dist/methodology/index.html
+          grep -Fq 'How a signal reaches Radar' dist/methodology/index.html
           test -f dist/docs/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
+          grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
+          grep -Fq 'Allow: /data/radar.json' dist/robots.txt
           grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
       - name: Configure GitHub Pages

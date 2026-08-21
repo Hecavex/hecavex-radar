@@ -3,7 +3,7 @@ import { CheckCircle2, CircleDashed, RadioTower } from "lucide-react";
 import { formatRelativeTime } from "../lib/format";
 import type { RadarSource } from "../types";
 
-export function SourcePanel({ sources }: { sources: RadarSource[] }) {
+export function SourcePanel({ sources, now = Date.now() }: { sources: RadarSource[]; now?: number }) {
   const healthy = sources.filter((source) => source.state === "healthy").length;
   const partial = sources.filter((source) => source.state === "partial").length;
   const skipped = sources.filter((source) => source.state === "skipped").length;
@@ -12,6 +12,25 @@ export function SourcePanel({ sources }: { sources: RadarSource[] }) {
     partial ? `${partial} partial` : null,
     skipped ? `${skipped} optional off` : null,
   ].filter(Boolean).join(" · ");
+
+  const sourceDetail = (source: RadarSource) => {
+    if (source.state === "skipped") {
+      return "Optional source not configured for this deployment.";
+    }
+    if (source.state === "partial") {
+      return source.fetchedAt
+        ? `Latest refresh was incomplete; last successful archive read ${formatRelativeTime(source.fetchedAt, now)}.`
+        : "Latest refresh was incomplete; no successful archive-read time is available.";
+    }
+    if (source.records === 0) {
+      return source.fetchedAt
+        ? `Archive read succeeded ${formatRelativeTime(source.fetchedAt, now)}; no qualifying recent rows were loaded.`
+        : "Archive read succeeded; no qualifying recent rows were loaded.";
+    }
+    return source.fetchedAt
+      ? `Archive read succeeded ${formatRelativeTime(source.fetchedAt, now)}.`
+      : "Archive read succeeded; its timestamp is unavailable.";
+  };
 
   return (
     <article className="panel source-panel">
@@ -27,13 +46,21 @@ export function SourcePanel({ sources }: { sources: RadarSource[] }) {
               <Icon className={source.state} aria-hidden="true" />
               <div>
                 <a href={source.homepage} target="_blank" rel="noreferrer">{source.name}</a>
-                <span>{source.note ?? (source.fetchedAt ? `Checked ${formatRelativeTime(source.fetchedAt)}` : "Not configured")}</span>
+                <span>{source.note}</span>
+                <small>{sourceDetail(source)}</small>
               </div>
-              <strong>{source.records}</strong>
+              <strong aria-label={`${source.records} qualifying ${source.records === 1 ? "row" : "rows"}`}>
+                {source.records}
+              </strong>
             </li>
           );
         })}
       </ul>
+      <p className="source-panel-note">
+        Source timestamps describe the most recent snapshot archive read, not a collector connection or provider-wide
+        freshness guarantee. Zero rows can be a healthy empty result; it does not mean that no certificates or phishing
+        sites existed.
+      </p>
     </article>
   );
 }

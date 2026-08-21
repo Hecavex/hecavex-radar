@@ -1,11 +1,16 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { hydrateRoot } from "react-dom/client";
 
 import { DocumentationPage } from "./DocumentationPage";
 import "./styles.css";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("Missing documentation application root.");
+
+hydrateRoot(
+  root,
   <StrictMode>
     <DocumentationPage />
   </StrictMode>,
 );
+root.dataset.hydrated = "true";

@@ -16,6 +16,13 @@ from websockets.asyncio.client import ClientConnection, connect
 from .brands import load_brand_registry, score_domain
 from .certstream import domains_from_message
 from .certstream_archive import CandidateArchiveWriter, candidate_from_match
+from .collection_health import (
+    CollectionMetrics,
+    CollectionOutcome,
+    begin_attempt,
+    complete_attempt,
+    read_collection_health,
+)
 from .models import CertStreamCandidate
 
 MAXIMUM_MESSAGE_BYTES = 1024 * 1024
@@ -66,7 +73,8 @@ async def _receive_or_stop(websocket: ClientConnection, stop: asyncio.Event, tim
     return receive_task.result()
 
 
-async def collect() -> int:
+async def collect(metrics: CollectionMetrics | None = None) -> int:
+    metrics = metrics or CollectionMetrics()
     registry = load_brand_registry()
     url = _websocket_url(os.environ.get("CERTSTREAM_URL"), _enabled(os.environ.get("CERTSTREAM_ALLOW_INSECURE_WS")))
     duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 240, 0, 86_400)
@@ -89,22 +97,19 @@ async def collect() -> int:
         except NotImplementedError:
             signal.signal(interrupt, request_stop)
 
-    messages = 0
-    domains_checked = 0
-    matched = 0
-    saved = 0
     retry_seconds = 1.0
     started = time.monotonic()
+    metrics.collector_started_at = datetime.now(UTC)
     deadline = started + duration_seconds if duration_seconds else float("inf")
     last_flush = started
     last_stats = started
 
     def flush() -> None:
-        nonlocal saved, last_flush
+        nonlocal last_flush
         batch = list(pending.values())
         pending.clear()
         try:
-            saved += writer.append(batch)
+            metrics.new_records += writer.append(batch)
             last_flush = time.monotonic()
         except Exception:
             pending.update((candidate["id"], candidate) for candidate in batch)
@@ -114,6 +119,7 @@ async def collect() -> int:
     print(f"CertStream collector started with {len(registry.entries)} public brand entries ({mode} mode).", flush=True)
 
     while not stop.is_set() and time.monotonic() < deadline:
+        metrics.connection_attempts += 1
         try:
             async with connect(
                 url,
@@ -123,52 +129,58 @@ async def collect() -> int:
                 ping_timeout=20,
                 close_timeout=10,
             ) as websocket:
+                connected_at = time.monotonic()
+                metrics.connections += 1
                 retry_seconds = 1.0
                 print("CertStream connection established.", flush=True)
-                while not stop.is_set() and time.monotonic() < deadline:
-                    remaining = deadline - time.monotonic()
-                    timeout = min(float(idle_seconds), remaining)
-                    try:
-                        raw = await _receive_or_stop(websocket, stop, timeout)
-                    except TimeoutError:
-                        if time.monotonic() >= deadline:
+                try:
+                    while not stop.is_set() and time.monotonic() < deadline:
+                        remaining = deadline - time.monotonic()
+                        timeout = min(float(idle_seconds), remaining)
+                        try:
+                            raw = await _receive_or_stop(websocket, stop, timeout)
+                        except TimeoutError:
+                            if time.monotonic() >= deadline:
+                                break
+                            print(
+                                f"CertStream connection was idle for {idle_seconds}s; reconnecting.",
+                                file=sys.stderr,
+                                flush=True,
+                            )
                             break
-                        print(
-                            f"CertStream connection was idle for {idle_seconds}s; reconnecting.",
-                            file=sys.stderr,
-                            flush=True,
-                        )
-                        break
-                    if raw is None:
-                        break
-                    body = raw.decode("utf-8", errors="strict") if isinstance(raw, bytes) else raw
-                    if len(body.encode("utf-8")) > MAXIMUM_MESSAGE_BYTES:
-                        continue
-                    try:
-                        payload: Any = json.loads(body)
-                    except json.JSONDecodeError:
-                        continue
-                    messages += 1
-                    observed_at = datetime.now(UTC)
-                    for candidate_domain in domains_from_message(payload):
-                        domains_checked += 1
-                        match = score_domain(candidate_domain, registry)
-                        if not match or match.confidence < minimum_confidence:
+                        if raw is None:
+                            break
+                        body = raw.decode("utf-8", errors="strict") if isinstance(raw, bytes) else raw
+                        if len(body.encode("utf-8")) > MAXIMUM_MESSAGE_BYTES:
                             continue
-                        matched += 1
-                        candidate = candidate_from_match(match, observed_at)
-                        pending.setdefault(candidate["id"], candidate)
-                    current = time.monotonic()
-                    if len(pending) >= 5_000 or current - last_flush >= flush_seconds:
-                        flush()
-                    if current - last_stats >= 60:
-                        print(
-                            f"CertStream: {messages} messages, {domains_checked} domains checked, "
-                            f"{matched} candidates matched, {saved} new records saved.",
-                            flush=True,
-                        )
-                        last_stats = current
+                        try:
+                            payload: Any = json.loads(body)
+                        except json.JSONDecodeError:
+                            continue
+                        metrics.messages += 1
+                        observed_at = datetime.now(UTC)
+                        for candidate_domain in domains_from_message(payload):
+                            metrics.dns_names += 1
+                            match = score_domain(candidate_domain, registry)
+                            if not match or match.confidence < minimum_confidence:
+                                continue
+                            metrics.matches += 1
+                            candidate = candidate_from_match(match, observed_at)
+                            pending.setdefault(candidate["id"], candidate)
+                        current = time.monotonic()
+                        if len(pending) >= 5_000 or current - last_flush >= flush_seconds:
+                            flush()
+                        if current - last_stats >= 60:
+                            print(
+                                f"CertStream: {metrics.messages} messages, {metrics.dns_names} domains checked, "
+                                f"{metrics.matches} candidates matched, {metrics.new_records} new records saved.",
+                                flush=True,
+                            )
+                            last_stats = current
+                finally:
+                    metrics.listening_seconds += max(0.0, min(time.monotonic(), deadline) - connected_at)
         except Exception as error:
+            metrics.connection_errors += 1
             message = str(error).splitlines()[0] if str(error) else type(error).__name__
             print(f"CertStream connection unavailable: {message}", file=sys.stderr, flush=True)
 
@@ -179,24 +191,69 @@ async def collect() -> int:
             await asyncio.wait_for(stop.wait(), timeout=wait_seconds)
         retry_seconds = min(30.0, retry_seconds * 2)
 
+    metrics.interrupted = stop.is_set()
+    metrics.completed_window = duration_seconds > 0 and time.monotonic() >= deadline
     flush()
     print(
-        f"CertStream collector stopped: {messages} messages, {domains_checked} domains checked, "
-        f"{matched} candidates matched, {saved} new records saved.",
+        f"CertStream collector stopped: {metrics.messages} messages, {metrics.dns_names} domains checked, "
+        f"{metrics.matches} candidates matched, {metrics.new_records} new records saved, "
+        f"{metrics.listening_seconds:.3f}s listening.",
         flush=True,
     )
-    if require_messages and domains_checked == 0:
+    if require_messages and metrics.dns_names == 0:
         raise RuntimeError("The CertStream endpoint produced no certificate domains during the collection window.")
-    return saved
+    return metrics.new_records
+
+
+def _collection_outcome(metrics: CollectionMetrics, duration_seconds: int, failed: bool = False) -> CollectionOutcome:
+    if metrics.connections == 0:
+        return "failed"
+    if metrics.dns_names == 0:
+        return "no-input"
+    minimum_healthy_listening = duration_seconds * 0.9 if duration_seconds else float("inf")
+    if (
+        failed
+        or metrics.interrupted
+        or not metrics.completed_window
+        or metrics.listening_seconds < minimum_healthy_listening
+    ):
+        return "partial"
+    return "healthy-matches" if metrics.matches else "healthy-empty"
 
 
 def main() -> int:
+    metrics = CollectionMetrics()
+    health_path = os.environ.get("CERTSTREAM_HEALTH_PATH", "").strip() or None
+    duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 240, 0, 86_400)
+    if health_path:
+        try:
+            current = read_collection_health(health_path, allow_running=True)
+            if current is None or current["latestAttempt"] is None or current["latestAttempt"]["outcome"] is not None:
+                begin_attempt(health_path)
+        except Exception as error:
+            print(f"CertStream collector failed to initialize public health metadata: {error}", file=sys.stderr)
+            return 1
     try:
-        asyncio.run(collect())
+        asyncio.run(collect(metrics))
+        outcome = _collection_outcome(metrics, duration_seconds)
+        if health_path:
+            complete_attempt(metrics, outcome, health_path)
+        if outcome in {"partial", "failed"}:
+            print(f"CertStream collector ended with a {outcome} outcome.", file=sys.stderr)
+            return 1
         return 0
     except KeyboardInterrupt:
+        metrics.interrupted = True
+        if health_path:
+            with suppress(Exception):
+                complete_attempt(metrics, _collection_outcome(metrics, duration_seconds, failed=True), health_path)
         return 130
     except Exception as error:
+        if health_path:
+            try:
+                complete_attempt(metrics, _collection_outcome(metrics, duration_seconds, failed=True), health_path)
+            except Exception as health_error:
+                print(f"CertStream health finalization failed: {health_error}", file=sys.stderr)
         print(f"CertStream collector failed: {error}", file=sys.stderr)
         return 1
 

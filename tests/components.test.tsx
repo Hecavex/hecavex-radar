@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { Documentation } from "../src/components/Documentation";
+import { CollectionDisclosure } from "../src/components/CollectionDisclosure";
 import { FilterBar } from "../src/components/FilterBar";
 import { Methodology } from "../src/components/Methodology";
 import { SignalTable } from "../src/components/SignalTable";
@@ -96,6 +97,38 @@ describe("dashboard controls", () => {
     render(<SourcePanel sources={sources} />);
     expect(screen.getByText("1 loaded · 1 optional off")).toBeInTheDocument();
     expect(screen.queryByText("1/2 active")).not.toBeInTheDocument();
+    expect(screen.getByText(/archive read succeeded/i)).toBeInTheDocument();
+    expect(screen.getByText(/optional source not configured/i)).toBeInTheDocument();
+    expect(screen.getByText(/zero rows can be a healthy empty result/i)).toBeInTheDocument();
+  });
+
+  it("distinguishes a failed refresh from the previous successful archive read", () => {
+    render(
+      <SourcePanel
+        sources={[
+          {
+            name: "CertStream",
+            homepage: "https://certstream.dev/",
+            fetchedAt: "2026-08-21T09:00:00.000Z",
+            records: 2,
+            state: "partial",
+            note: "Unavailable during this sync; 2 recent records retained",
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText(/latest refresh was incomplete; last successful archive read/i)).toBeInTheDocument();
+  });
+});
+
+describe("collection disclosure", () => {
+  it("states scheduled coverage, measured latest-attempt runtime, URLScan absence, and the service boundary", () => {
+    render(<CollectionDisclosure />);
+    expect(screen.getByRole("heading", { name: /sampled discovery, not continuous monitoring/i })).toBeInTheDocument();
+    expect(screen.getByText(/192 scheduled minutes per day/i)).toBeInTheDocument();
+    expect(screen.getByText(/latest measured attempt is shown below/i)).toBeInTheDocument();
+    expect(screen.getByText(/no result is not a benign verdict/i)).toBeInTheDocument();
+    expect(screen.getByText(/neither proof nor probability/i)).toBeInTheDocument();
   });
 });
 
@@ -121,16 +154,35 @@ describe("on-site documentation", () => {
     expect(screen.getByRole("heading", { name: "Three public observation labels" })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Signal field reference" })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Workflow schedule" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Deliberately published datasets" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Maintained on a best-effort basis" })).toBeInTheDocument();
+    expect(screen.getByText(/at most 13\.3% of wall-clock time/i)).toBeInTheDocument();
+    expect(screen.getByText(/83,875 messages containing 146,591 DNS names/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Software licensing does not relicense data" })).toBeInTheDocument();
   });
 
   it("routes core navigation and data terms to local pages", () => {
-    const { unmount } = render(<SiteHeader currentPage="radar" />);
-    expect(screen.getByRole("link", { name: "Methodology" })).toHaveAttribute("href", "/methodology/");
-    expect(screen.getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs/");
+    const { container, unmount } = render(<SiteHeader currentPage="radar" />);
+    const desktopNavigation = container.querySelector<HTMLElement>(".desktop-navigation")!;
+    expect(within(desktopNavigation).getByRole("link", { name: "Research" })).toHaveAttribute(
+      "href",
+      "https://hecavex.com/en/research/",
+    );
+    expect(within(desktopNavigation).getByRole("link", { name: "Radar" })).toHaveAttribute("aria-current", "page");
+    expect(within(desktopNavigation).getByRole("link", { name: "Data" })).toHaveAttribute(
+      "href",
+      "https://labs.hecavex.com/data/",
+    );
+    expect(within(desktopNavigation).getByRole("link", { name: "Methodology" })).toHaveAttribute("href", "/methodology/");
+    expect(within(desktopNavigation).getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs/");
+    expect(screen.getByText("Menu").closest("summary")).toBeInTheDocument();
     unmount();
 
     render(<SiteFooter />);
     expect(screen.getByRole("link", { name: "Data terms & attribution" })).toHaveAttribute("href", "/docs/#data-terms");
+    expect(screen.getByRole("link", { name: "Security contact" })).toHaveAttribute(
+      "href",
+      "/.well-known/security.txt",
+    );
   });
 });

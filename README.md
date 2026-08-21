@@ -2,7 +2,7 @@
 
 HECAVEX Radar is a public, read-only dashboard for recently observed potential phishing domains and URLs targeting Lithuanian brands. The dashboard requires no account and is intended for [radar.hecavex.com](https://radar.hecavex.com).
 
-The Python pipeline collects Certificate Transparency candidates, hunts existing URLScan reports, accepts an optional configured HECAVEX public export, and builds a static JSON snapshot. Every input passes automated schema, safety, and Lithuanian-brand validation before publication. The React application renders that snapshot without an application server or database.
+The Python pipeline samples Certificate Transparency candidates, hunts existing URLScan reports, accepts an optional configured HECAVEX public export, and builds a static JSON snapshot. Every input passes automated schema, safety, and Lithuanian-brand validation before publication. The React application renders that snapshot without an application server or database; the primary dashboard explanation, methodology, and documentation are also prerendered for no-JavaScript access and indexing.
 
 ## Scope
 
@@ -12,6 +12,8 @@ The Python pipeline collects Certificate Transparency candidates, hunts existing
 - URLScan hunting is optional enrichment and passive corroboration: it searches existing public reports and never submits or opens a candidate URL. Missing, unlisted, or private scan visibility rejects that URLScan observation, not an independently qualifying CertStream candidate.
 - Screenshots and evidence links are URLScan-only. Opening evidence may contact `urlscan.io`, but never the observed host.
 - The public brand registry and matching rules are independent of HECAVEX's private collectors, detection logic, and history.
+- The scheduled CertStream collector listens for four minutes twice per hour: at most 192 minutes, or 13.3% of a day, if every run starts and completes. It is sampled live coverage, not a daily snapshot or replay. A bounded public health artifact reports the latest attempt's actual timing, input counts, result, schedule delay, last success, and freshness without retaining raw certificate names.
+- HECAVEX Radar is maintained as best-effort public research and provides no monitoring, response, notification, takedown, availability, or coverage SLA.
 
 The dashboard provides search, filtering, pagination, first/last-seen timestamps, target brand, hosting metadata, confidence scores on a 0-100 scale, URLScan references and screenshots, and primary HTML SHA-256 evidence when available. A confidence score is a ranking aid, not a probability.
 
@@ -25,6 +27,7 @@ The dashboard provides search, filtering, pagination, first/last-seen timestamps
 | `data/certstream/` | Date-partitioned, defanged CT candidates |
 | `data/urlscan/` | Date-partitioned, automatically validated URLScan observations |
 | `public/data/radar.json` | Checked-in dashboard snapshot |
+| `public/data/collection-health.json` | Latest bounded CertStream attempt health; no raw candidates |
 
 ## Local development
 
@@ -61,7 +64,7 @@ Matching behavior is documented in [Detection rules](docs/DETECTION.md).
 pnpm check
 ```
 
-This runs Python and frontend linting, type checks, tests, and the production build.
+This runs Python and frontend linting, type checks, unit tests, the production build, built-link and fragment validation, HTML and metadata checks, CSP-enforced hydration and delayed-refresh checks, serious accessibility checks, no-JavaScript checks, and real-browser overflow and keyboard-navigation checks at 320, 360, 390, 768, 1024, and 1280 pixels. Chrome, Chromium, or Microsoft Edge is required for the browser verification.
 
 ## Documentation
 
@@ -71,6 +74,7 @@ This runs Python and frontend linting, type checks, tests, and the production bu
 - [Public data contract](docs/DATA-CONTRACT.md)
 - [Data sources](docs/DATA-SOURCES.md)
 - [Deployment](docs/DEPLOYMENT.md)
+- [CT coverage decision](docs/decisions/0001-ct-coverage.md)
 - [Data licensing and attribution](DATA-LICENSE.md)
 - [Third-party production notices](public/THIRD-PARTY-NOTICES.txt)
 - [Security policy](SECURITY.md)

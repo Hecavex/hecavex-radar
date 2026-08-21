@@ -15,12 +15,14 @@ The publisher compares new output with rows seen during the previous 30 days and
 | Workflow | Schedule or trigger | Output | Required access |
 | --- | --- | --- | --- |
 | `ci.yml` | Pull requests and relevant pushes to `main` | Lint, type checks, tests, production build | Repository read |
-| `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | `data/certstream/<date>/domains.ndjson` | Repository contents write |
+| `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | Atomic commit of `data/certstream/<date>/domains.ndjson` and bounded `public/data/collection-health.json` | Repository contents write |
 | `hunt-urlscan.yml` | `37 3,15 * * *` and manual dispatch | `data/urlscan/<date>/signals.ndjson` | `URLSCAN_API_KEY`; repository contents write |
 | `sync-radar.yml` | `17 * * * *` and manual dispatch | Persistent `public/data/radar.json` | Optional HECAVEX secrets; repository contents write |
 | `deploy-pages.yml` | Successful CI on `main`, successful snapshot sync, and manual dispatch | GitHub Pages artifact | `pages: write` and `id-token: write` |
 
 Cron schedules use UTC. Each CertStream run samples a four-minute window; it is not continuous collection. The two archive writers and snapshot writer share one concurrency group so their pull/rebase/push sequences cannot run at the same time. They commit changes directly to `main`, so repository rules must allow normal GitHub Actions bot pushes while still blocking force-pushes and branch deletion.
+
+The CertStream job initializes health before installing collector dependencies, lets setup and collection failures reach a finalizer, and stages the daily candidate archive and health document in one commit. A failed or no-input attempt is therefore published before the job reports failure. Hard runner cancellation, platform outage before checkout, or a rejected push cannot be recorded by a workflow that no longer has execution or write access. The health document replaces one fixed path and is capped at 32 KiB; it does not create per-attempt files or expose raw candidates.
 
 ## Required configuration
 

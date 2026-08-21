@@ -17,7 +17,7 @@ const signalFields = [
 
 const workflows = [
   ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, tests, and production build"],
-  ["CertStream collection", "02 and 32 minutes past each UTC hour", "Vilnius-date CertStream candidate archive"],
+  ["CertStream collection", "02 and 32 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
   ["URLScan hunt", "03:37 and 15:37 UTC", "Vilnius-date validated URLScan archive"],
   ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated public radar.json snapshot"],
   ["Pages deployment", "After verified main changes or manual dispatch", "Static GitHub Pages artifact"],
@@ -29,6 +29,12 @@ const settings = [
   ["HECAVEX_ENABLED", "Variable", "Enables the optional configured public HECAVEX export."],
   ["HECAVEX_FEED_URL", "Secret", "Required with HECAVEX enabled; production endpoints must use HTTPS."],
   ["HECAVEX_FEED_TOKEN", "Secret", "Optional read-only bearer credential for the configured export."],
+] as const;
+
+const sourceStates = [
+  ["healthy", "The snapshot publisher read that source archive successfully. Zero records is a valid empty result."],
+  ["partial", "The latest archive refresh was incomplete. A shown timestamp can identify the previous successful read, and recent rows may be retained."],
+  ["skipped", "An optional deployment input was not configured or attempted."],
 ] as const;
 
 export function Documentation() {
@@ -51,8 +57,10 @@ export function Documentation() {
         <div>
           <a href="#architecture">Architecture</a>
           <a href="#sources">Sources</a>
+          <a href="#public-data">Public data</a>
           <a href="#data-contract">Data contract</a>
           <a href="#operations">Operations</a>
+          <a href="#security">Security</a>
           <a href="#data-terms">Data terms</a>
         </div>
       </nav>
@@ -98,7 +106,10 @@ export function Documentation() {
         <div className="docs-section-heading">
           <p className="eyebrow">Sources and provenance</p>
           <h2 id="sources-title">Three public observation labels</h2>
-          <p>Discovery inputs can trigger investigation, but they cannot create or label a dashboard row by themselves.</p>
+          <p>
+            Only normalized observations that pass the publication boundary become dashboard rows. Transient search hints
+            can trigger investigation, but cannot create or label a row by themselves.
+          </p>
         </div>
         <div className="docs-card-grid">
           <article>
@@ -137,6 +148,62 @@ export function Documentation() {
             </p>
             <a href="#data-terms">Attribution and terms</a>
           </article>
+        </div>
+        <div className="docs-callout">
+          <strong>Coverage is intentionally incomplete</strong>
+          <p>
+            CertStream observation is sampled. URLScan is queried only for existing public reports; no result is unknown,
+            not benign, and does not suppress an independently qualifying CertStream candidate. HECAVEX is optional.
+            None of these inputs provides a continuous-monitoring guarantee.
+          </p>
+        </div>
+      </section>
+
+      <section className="docs-section" id="public-data" aria-labelledby="public-data-title">
+        <div className="docs-section-heading">
+          <p className="eyebrow">Public data catalogue</p>
+          <h2 id="public-data-title">Deliberately published datasets</h2>
+          <p>
+            These resources are intended for defensive use and public retrieval. Candidate links remain defanged; raw
+            provider inputs, credentials, private observations, and quarantined material are not part of this catalogue.
+          </p>
+        </div>
+        <div className="docs-card-grid">
+          <article>
+            <span>Current snapshot · JSON</span>
+            <h3>Radar signal snapshot</h3>
+            <p>
+              The generated dashboard input contains the current schema version, generation time, bounded recent signals,
+              and per-source archive-read state. It is crawlable because it is advertised as the Dataset distribution.
+            </p>
+            <a href="/data/radar.json">Download radar.json</a>
+          </article>
+          <article>
+            <span>Reviewed registry · JSON</span>
+            <h3>Lithuanian brand registry</h3>
+            <p>
+              Reviewed aliases, opt-in fuzzy aliases, official domains, collision exclusions, and supporting references
+              used by the public matcher. Repository history records changes and review context.
+            </p>
+            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/data/brands-lt.json">Open the registry</a>
+          </article>
+          <article>
+            <span>Latest attempt · JSON</span>
+            <h3>CertStream collection health</h3>
+            <p>
+              Actual start, end, websocket listening seconds, aggregate input and match counts, outcome, schedule delay,
+              last success, and freshness. It contains no certificate names or unpublished candidates.
+            </p>
+            <a href="/data/collection-health.json">Download collection-health.json</a>
+          </article>
+        </div>
+        <div className="docs-callout">
+          <strong>Freshness</strong>
+          <p>
+            Consumers must read <code>generatedAt</code> and each source&apos;s <code>fetchedAt</code> and <code>state</code>.
+            A source timestamp is an archive-read time. CertStream connection evidence is reported separately in the
+            bounded collection-health document and still does not prove continuous coverage.
+          </p>
         </div>
       </section>
 
@@ -220,6 +287,33 @@ export function Documentation() {
             </tbody>
           </table>
         </div>
+        <div className="docs-callout docs-warning-callout">
+          <strong>Scheduled does not mean observed</strong>
+          <p>
+            CertStream is scheduled for 48 four-minute windows per day: 192 minutes, or at most 13.3% of wall-clock time.
+            Actions can start late or fail. The dashboard reads actual timing, aggregate counts, outcome, schedule delay,
+            last success, and freshness from <a href="/data/collection-health.json">collection-health.json</a>; those fields
+            remain separate from archive-read state in <code>radar.json</code>.
+          </p>
+        </div>
+        <h3 className="docs-subheading">Source-state semantics</h3>
+        <div className="docs-table-wrap" role="region" aria-label="Source state semantics" tabIndex={0}>
+          <table className="docs-table">
+            <thead><tr><th scope="col">State</th><th scope="col">What it establishes</th></tr></thead>
+            <tbody>
+              {sourceStates.map(([state, meaning]) => (
+                <tr key={state}><th scope="row"><code>{state}</code></th><td>{meaning}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="docs-copy">
+          Healthy-empty example: the successful run reviewed on 21 August 2026 listened for 240 seconds and processed
+          83,875 messages containing 146,591 DNS names, with zero qualifying matches. That is evidence of one healthy
+          empty run—not continuous coverage. The dashboard now presents the latest bounded attempt directly; repository
+          operators can still inspect complete execution logs in{" "}
+          <a href="https://github.com/Hecavex/hecavex-radar/actions/workflows/collect-certstream.yml">GitHub Actions</a>.
+        </p>
         <h3 className="docs-subheading">Repository configuration</h3>
         <div className="docs-table-wrap" role="region" aria-label="Repository configuration" tabIndex={0}>
           <table className="docs-table">
@@ -256,6 +350,66 @@ pnpm check`}</code></pre>
               Credentials stay in Actions secrets, workflow permissions are minimal, external Actions are commit-pinned,
               output paths are repository-bounded, and source/archive sizes and record counts are capped.
             </p>
+          </article>
+        </div>
+        <div className="docs-callout">
+          <strong>Durable CT coverage decision</strong>
+          <p>
+            Stage 02 will use checkpointed CT-log/API polling and backfill as the durable coverage source, while retaining
+            CertStream for low-latency discovery. The current sampled workflow remains in place until that implementation
+            is tested. Read the{" "}
+            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/decisions/0001-ct-coverage.md">
+              architecture decision record
+            </a>.
+          </p>
+        </div>
+      </section>
+
+      <section className="docs-section" id="security" aria-labelledby="security-title">
+        <div className="docs-section-heading">
+          <p className="eyebrow">Security and maintenance</p>
+          <h2 id="security-title">Maintained on a best-effort basis</h2>
+          <p>
+            Radar is an open research project, not a 24/7 SOC, incident-response service, brand-monitoring contract,
+            notification service, takedown provider, or availability SLA.
+          </p>
+        </div>
+        <div className="docs-card-grid">
+          <article>
+            <span>Maintenance state</span>
+            <h3>Active · best effort</h3>
+            <p>
+              Automated workflows publish when their validation gates pass. Source-panel state and snapshot timestamps
+              expose what the current data can establish; workflow history remains the operational source of truth.
+            </p>
+            <a href="https://github.com/Hecavex/hecavex-radar/actions">Review workflow history</a>
+          </article>
+          <article>
+            <span>Responsible reporting</span>
+            <h3>Security and sensitive data</h3>
+            <p>
+              Do not open a public issue for vulnerabilities, credentials, victim data, or sensitive indicators. Use the
+              published security contact and avoid contacting a suspected phishing host while reproducing a problem.
+            </p>
+            <a href="/.well-known/security.txt">Open security.txt</a>
+          </article>
+          <article>
+            <span>Data quality</span>
+            <h3>False positives and corrections</h3>
+            <p>
+              Report a mistaken listing, brand mapping, unsafe value, attribution issue, or removal request by email. A
+              listing is always a research lead rather than a public accusation.
+            </p>
+            <a href="mailto:info@hecavex.com?subject=HECAVEX%20Radar%20false%20positive">Report a false positive</a>
+          </article>
+          <article>
+            <span>Project source</span>
+            <h3>Review and contribution</h3>
+            <p>
+              Source, tests, workflows, registry references, and issue history are public. Contributions must preserve
+              defanging, passive collection boundaries, evidence provenance, and conservative publication rules.
+            </p>
+            <a href="https://github.com/Hecavex/hecavex-radar">Open the repository</a>
           </article>
         </div>
       </section>

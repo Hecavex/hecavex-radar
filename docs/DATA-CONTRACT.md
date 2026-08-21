@@ -57,6 +57,63 @@ The top-level `sources` array reports the state of each supported public source.
 `partial` means an attempted source was unavailable or only retained recent rows remain. `skipped` means the source was not configured for that publication.
 For archive-backed inputs, `healthy` confirms that the publisher loaded and validated the available archive; it is not an upstream collector-uptime or freshness guarantee.
 
+## CertStream collection health
+
+The dashboard separately reads `public/data/collection-health.json`. This is operational evidence for the latest sampled CertStream attempt, not a signal source and not a candidate archive:
+
+```json
+{
+  "schemaVersion": 1,
+  "dataset": "certstream-collection-health",
+  "generatedAt": "2026-08-21T19:17:53.656Z",
+  "expectedIntervalSeconds": 1800,
+  "staleAfterSeconds": 5400,
+  "lastSuccessAt": "2026-08-21T19:17:53.656Z",
+  "freshness": {
+    "status": "current",
+    "referenceAt": "2026-08-21T19:17:53.656Z",
+    "ageSeconds": 0
+  },
+  "latestAttempt": {
+    "startedAt": "2026-08-21T19:13:30.000Z",
+    "collectorStartedAt": "2026-08-21T19:13:43.649Z",
+    "endedAt": "2026-08-21T19:17:53.656Z",
+    "trigger": "schedule",
+    "scheduledFor": "2026-08-21T19:02:00.000Z",
+    "scheduleStatus": "delayed",
+    "delaySeconds": 690,
+    "expectedListeningSeconds": 240,
+    "listeningSeconds": 240.0,
+    "messages": 89532,
+    "dnsNames": 160340,
+    "matches": 0,
+    "newRecords": 0,
+    "connectionAttempts": 1,
+    "connections": 1,
+    "outcome": "healthy-empty",
+    "summary": "Input was processed successfully; no candidate matched the publication heuristic."
+  }
+}
+```
+
+`startedAt` and `endedAt` bound the actual workflow attempt. `collectorStartedAt` is null when collector setup fails. `listeningSeconds` is the accumulated time with an open websocket, excluding setup, retry waits, and connection closing. `messages` counts valid JSON stream messages, `dnsNames` counts extracted certificate DNS names, `matches` counts qualifying heuristic matches before archive deduplication, and `newRecords` counts unique rows appended to the daily archive. None of these fields contains a domain, URL, certificate, candidate ID, or detector payload.
+
+Collection outcomes are independent of scheduling timeliness:
+
+| `outcome` | Meaning |
+| --- | --- |
+| `healthy-empty` | A bounded window completed with usable DNS-name input and at least 90% of its expected listening time, but no candidate matched. |
+| `healthy-matches` | The same healthy-window conditions passed and one or more candidates matched. |
+| `no-input` | A connection opened, but no certificate DNS names were received. |
+| `partial` | Some usable input was processed, but the window was interrupted, failed, or accumulated less than 90% of expected listening time. |
+| `failed` | The workflow could not establish or complete a usable collector connection. |
+
+`scheduleStatus` is `scheduled`, `delayed`, `manual`, or `unknown`. A scheduled attempt becomes `delayed` when its actual start is more than `CERTSTREAM_DELAY_THRESHOLD_SECONDS` after the most recent configured slot; the default threshold is 300 seconds. Delay does not replace the collection outcome, so a delayed run can still be accurately described as healthy-empty, no-input, partial, or failed.
+
+`lastSuccessAt` advances only for `healthy-empty` or `healthy-matches`. The producer records freshness relative to that timestamp at write time; the viewer recalculates it against its current clock using `staleAfterSeconds`. The scheduled workflow atomically replaces this one file on every finalizable attempt. Its schema has an exact fixed field set, its writer caps it at 32 KiB, and it retains no attempt history, preventing per-run file growth. A hard runner cancellation or platform failure before the finalizer and git push cannot be made observable by the stopped workflow.
+
+Before the first instrumented workflow completes, the checked-in bootstrap document uses `latestAttempt: null`, `lastSuccessAt: null`, and unavailable freshness. This is intentionally different from synthesizing metrics from an older configured duration or incomplete logs. Normal workflow output always replaces `latestAttempt` with the complete fixed-field object above.
+
 ## Archive formats
 
 Archive files are newline-delimited JSON and use the Europe/Vilnius calendar date.
@@ -140,7 +197,7 @@ The handoff is limited to 2,500 signals and 20 MiB. It includes only defanged pu
 ## Deliberately excluded
 
 - Userinfo, query parameters, fragments, cookies, page content, and credentials.
-- Private observation IDs, analyst identities, internal endpoints, and collection telemetry.
+- Private observation IDs, analyst identities, internal endpoints, and unbounded or event-level collection telemetry. The aggregate latest-attempt health fields documented above are deliberately public.
 - Detector features, model versions, proprietary rules, evidence graphs, and case data.
 - Discovery-seed provider names and raw seed records.
 - Private HECAVEX history.
