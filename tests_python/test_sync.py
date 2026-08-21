@@ -6,7 +6,7 @@ import pytest
 from pytest import MonkeyPatch
 
 from hecavex_radar.brands import load_brand_registry
-from hecavex_radar.models import RadarSignal, RawSignal
+from hecavex_radar.models import RadarSignal, RawSignal, SourceResult
 from hecavex_radar.safety import stable_id
 from hecavex_radar.sync import (
     _load_existing_snapshot,
@@ -289,3 +289,73 @@ def test_scope_rejects_a_declared_brand_that_conflicts_with_the_domain() -> None
 
     assert _scope_raw_signal(conflicting, registry) is None
     assert _scope_raw_signal(matching, registry) == matching
+
+
+def test_sync_publishes_certstream_candidate_without_urlscan_evidence(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    registry = load_brand_registry()
+    certstream = SourceResult(
+        source={
+            "name": "CertStream",
+            "homepage": "https://certstream.dev/",
+            "fetchedAt": "2026-08-21T10:00:00.000Z",
+            "records": 1,
+            "state": "healthy",
+            "note": "Test CertStream archive",
+        },
+        signals=[
+            RawSignal(
+                url="secure-swedbank-login.example",
+                first_seen="2026-08-21T09:55:00.000Z",
+                last_seen="2026-08-21T09:55:00.000Z",
+                source="CertStream",
+                status="suspected",
+                brand="Swedbank",
+                confidence=100,
+            )
+        ],
+    )
+    empty_urlscan = SourceResult(
+        source={
+            "name": "URLScan",
+            "homepage": "https://urlscan.io/",
+            "fetchedAt": "2026-08-21T10:00:00.000Z",
+            "records": 0,
+            "state": "healthy",
+            "note": "No matching public reports",
+        },
+        signals=[],
+    )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("RADAR_OUTPUT", "public/data/radar.json")
+    monkeypatch.setenv("RADAR_ALLOW_SMALL_SNAPSHOT", "true")
+    monkeypatch.setenv("RADAR_RETAIN_EXISTING_SIGNALS", "false")
+    monkeypatch.setenv("HECAVEX_ENABLED", "false")
+    monkeypatch.setattr("hecavex_radar.sync.load_brand_registry", lambda: registry)
+    monkeypatch.setattr("hecavex_radar.sync.load_certstream", lambda *_args: certstream)
+    monkeypatch.setattr("hecavex_radar.sync.load_urlscan", lambda *_args: empty_urlscan)
+
+    target = synchronize()
+    snapshot = json.loads(target.read_text(encoding="utf-8"))
+
+    assert len(snapshot["signals"]) == 1
+    assert snapshot["signals"][0] == {
+        "id": stable_id("secure-swedbank-login[.]example"),
+        "url": "hxxps://secure-swedbank-login[.]example",
+        "domain": "secure-swedbank-login[.]example",
+        "firstSeen": "2026-08-21T09:55:00.000Z",
+        "lastSeen": "2026-08-21T09:55:00.000Z",
+        "sources": ["CertStream"],
+        "status": "suspected",
+        "brand": "Swedbank",
+        "country": None,
+        "host": None,
+        "screenshotUrl": None,
+        "referenceUrl": None,
+        "hashes": [],
+        "confidence": 100,
+    }
+    assert snapshot["sources"][0]["records"] == 1
+    assert snapshot["sources"][1]["records"] == 0

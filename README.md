@@ -8,8 +8,8 @@ The Python pipeline collects Certificate Transparency candidates, hunts existing
 
 - Public source labels are limited to CertStream, URLScan, and configured HECAVEX exports.
 - Indicators are defanged before publication. Query strings, fragments, credentials, and sensitive-looking path data are excluded.
-- CertStream matches are leads, not confirmation of phishing. The collector reads certificate names and never visits candidate hosts.
-- URLScan hunting is passive: it searches existing public reports and never submits or opens a candidate URL. Missing, unlisted, or private scan visibility is rejected.
+- CertStream matches are leads, not confirmation of phishing. Every match that passes the public brand rules and configured confidence threshold is published as `suspected`; URLScan evidence is not required. The collector reads certificate names and never visits candidate hosts.
+- URLScan hunting is optional enrichment and passive corroboration: it searches existing public reports and never submits or opens a candidate URL. Missing, unlisted, or private scan visibility rejects that URLScan observation, not an independently qualifying CertStream candidate.
 - Screenshots and evidence links are URLScan-only. Opening evidence may contact `urlscan.io`, but never the observed host.
 - The public brand registry and matching rules are independent of HECAVEX's private collectors, detection logic, and history.
 

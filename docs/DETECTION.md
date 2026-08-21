@@ -13,7 +13,7 @@ The same registry and hostname checks are used for CertStream collection, URLSca
 
 A different top-level domain or repeated hyphens can increase a score only after valid brand evidence exists. The default minimum for CertStream collection and URLScan domain hunts is 80. Confidence is a ranking score from the public rules, not a probability.
 
-CertStream and URLScan observations remain `suspected`. A URLScan phishing verdict can raise confidence but cannot establish current liveness or replace same-brand evidence. Only a configured HECAVEX export can publish lifecycle states such as `active`, `offline`, or `mitigated`.
+CertStream and URLScan observations remain `suspected`. A CertStream candidate does not need a corresponding URLScan report: after it passes the current brand rules and CertStream confidence threshold, it is eligible for the public candidate list with evidence fields left empty. A later URLScan observation can enrich and merge with that row. A URLScan phishing verdict can raise confidence but cannot establish current liveness or replace same-brand evidence. Only a configured HECAVEX export can publish lifecycle states such as `active`, `offline`, or `mitigated`.
 
 ## Archive revalidation
 
