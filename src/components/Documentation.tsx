@@ -213,7 +213,7 @@ export function Documentation() {
           <h2 id="contract-title">Snapshot schema version 1</h2>
           <p>The Python publisher is normative; browser validation is an additional structural check.</p>
         </div>
-        <pre className="docs-code" aria-label="Public snapshot example"><code>{`{
+        <pre className="docs-code" aria-label="Public snapshot example" tabIndex={0}><code>{`{
   "schemaVersion": 1,
   "dataset": "live",
   "generatedAt": "2026-08-21T09:15:00.000Z",
@@ -329,7 +329,7 @@ export function Documentation() {
           <article>
             <span>Local development</span>
             <h3>Python 3.12 · Node 22.12 · pnpm 10</h3>
-            <pre className="docs-code"><code>{`python -m pip install -e ".[dev]"
+            <pre className="docs-code" aria-label="Local development commands" tabIndex={0}><code>{`python -m pip install -e ".[dev]"
 corepack enable
 pnpm install
 pnpm dev
