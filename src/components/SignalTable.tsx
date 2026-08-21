@@ -43,7 +43,7 @@ export function SignalTable({ signals }: { signals: RadarSignal[] }) {
 
   return (
     <div className="table-panel">
-      <div className="table-scroll">
+      <div className="table-scroll" role="region" aria-label="Potential phishing signals" tabIndex={0}>
         <table>
           <thead>
             <tr>

@@ -43,6 +43,7 @@ describe("signal table", () => {
   it("presents confidence as a score rather than a percentage", () => {
     const { container } = render(<SignalTable signals={[makeSignal(1)]} />);
     expect(within(container).getByLabelText("70 confidence score out of 100")).toHaveTextContent("70/100");
+    expect(within(container).getByRole("region", { name: "Potential phishing signals" })).toHaveAttribute("tabindex", "0");
   });
 
   it("shows passive URLScan evidence without linking to the suspicious site", () => {

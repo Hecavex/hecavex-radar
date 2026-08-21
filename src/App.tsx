@@ -36,6 +36,9 @@ export function App() {
           </span>
         </a>
         <nav aria-label="Primary navigation">
+          <a href="https://hecavex.com/">HECAVEX</a>
+          <a href="https://apt.hecavex.com/">APT Notes</a>
+          <a href="https://labs.hecavex.com/">Labs</a>
           <a href="#signals">Signals</a>
           <a href="#methodology">Methodology</a>
           <a
@@ -51,7 +54,7 @@ export function App() {
       </header>
 
       {state.status === "loading" && (
-        <main className="state-page" aria-live="polite">
+        <main className="state-page" id="main-content" aria-live="polite">
           <RadioTower className="state-icon pulse" aria-hidden="true" />
           <p className="eyebrow">Receiving snapshot</p>
           <h1>Loading recent signals</h1>
@@ -59,7 +62,7 @@ export function App() {
       )}
 
       {state.status === "error" && (
-        <main className="state-page" aria-live="assertive">
+        <main className="state-page" id="main-content" aria-live="assertive">
           <AlertTriangle className="state-icon danger" aria-hidden="true" />
           <p className="eyebrow">Data unavailable</p>
           <h1>The radar snapshot could not be loaded</h1>
@@ -80,12 +83,19 @@ export function App() {
             of malicious intent. Viewing evidence may contact URLScan; the suspicious site is never contacted.
           </p>
         </div>
-        <p>
-          Software: Apache-2.0 ·{" "}
-          <a href="https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md">Data terms &amp; attribution</a>
-          {" "}· <a href="/THIRD-PARTY-NOTICES.txt">Third-party notices</a> · No first-party analytics · No accounts ·{" "}
-          <a href="mailto:info@hecavex.com?subject=HECAVEX%20Radar%20false%20positive">Report a false positive</a>
-        </p>
+        <div className="footer-meta">
+          <nav aria-label="HECAVEX sites">
+            <a href="https://hecavex.com/">HECAVEX</a>
+            <a href="https://apt.hecavex.com/">APT Notes</a>
+            <a href="https://labs.hecavex.com/">Labs</a>
+          </nav>
+          <p>
+            Software: Apache-2.0 ·{" "}
+            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md">Data terms &amp; attribution</a>
+            {" "}· <a href="/THIRD-PARTY-NOTICES.txt">Third-party notices</a> · No first-party analytics · No accounts ·{" "}
+            <a href="mailto:info@hecavex.com?subject=HECAVEX%20Radar%20false%20positive">Report a false positive</a>
+          </p>
+        </div>
       </footer>
     </div>
   );
