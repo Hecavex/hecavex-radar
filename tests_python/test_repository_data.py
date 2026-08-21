@@ -55,3 +55,5 @@ def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     assert "CERTSTREAM_INSTALL_OUTCOME: ${{ steps.dependencies.outcome }}" in workflow
     assert "CERTSTREAM_PREPARE_OUTCOME: ${{ steps.source.outcome }}" in workflow
     assert "CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}" in workflow
+    assert "actions: write" in workflow
+    assert 'gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"' in workflow
