@@ -34,7 +34,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
-      - name: Ignore stale CI completions
+          fetch-depth: 0
+      - name: Ignore stale or unchanged completions
         id: freshness
         env:
           EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -45,6 +46,12 @@ jobs:
           if [[ "${TRIGGER_WORKFLOW}" == "CI" && "$(git rev-parse HEAD)" != "${EXPECTED_SHA}" ]]; then
             echo "A newer main commit superseded this CI run; its own successful run will deploy."
             should_deploy=false
+          elif [[ "${TRIGGER_WORKFLOW}" == "Sync radar snapshot" ]]; then
+            if [[ "$(git rev-parse HEAD)" == "${EXPECTED_SHA}" ]] ||
+              git diff --quiet "${EXPECTED_SHA}..HEAD" -- public/data/radar.json; then
+              echo "The sync completed without changing the public snapshot; deployment is unnecessary."
+              should_deploy=false
+            fi
           fi
           echo "should_deploy=${should_deploy}" >> "${GITHUB_OUTPUT}"
       - name: Set up Node.js
