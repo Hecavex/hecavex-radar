@@ -1,14 +1,32 @@
 {
   "schemaVersion": 1,
   "dataset": "certstream-collection-health",
-  "generatedAt": "2026-08-21T20:20:05.431Z",
+  "generatedAt": "2026-08-21T20:41:23.497Z",
   "expectedIntervalSeconds": 1800,
   "staleAfterSeconds": 5400,
-  "lastSuccessAt": null,
+  "lastSuccessAt": "2026-08-21T20:41:23.497Z",
   "freshness": {
-    "status": "unavailable",
-    "referenceAt": null,
-    "ageSeconds": null
+    "status": "current",
+    "referenceAt": "2026-08-21T20:41:23.497Z",
+    "ageSeconds": 0
   },
-  "latestAttempt": null
+  "latestAttempt": {
+    "startedAt": "2026-08-21T20:37:02.499Z",
+    "collectorStartedAt": "2026-08-21T20:37:13.487Z",
+    "endedAt": "2026-08-21T20:41:23.497Z",
+    "trigger": "manual",
+    "scheduledFor": null,
+    "scheduleStatus": "manual",
+    "delaySeconds": null,
+    "expectedListeningSeconds": 240,
+    "listeningSeconds": 239.999,
+    "messages": 81448,
+    "dnsNames": 144103,
+    "matches": 0,
+    "newRecords": 0,
+    "connectionAttempts": 1,
+    "connections": 1,
+    "outcome": "healthy-empty",
+    "summary": "Input was processed successfully; no candidate matched the publication heuristic."
+  }
 }
