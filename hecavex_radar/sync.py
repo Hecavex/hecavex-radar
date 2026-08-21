@@ -64,6 +64,31 @@ def _output_path() -> Path:
     return target
 
 
+def _stable_snapshot_view(payload: object) -> object:
+    if not isinstance(payload, dict):
+        return payload
+    stable = {key: value for key, value in payload.items() if key != "generatedAt"}
+    raw_sources = stable.get("sources")
+    if isinstance(raw_sources, list):
+        stable["sources"] = [
+            {key: value for key, value in source.items() if key != "fetchedAt"}
+            if isinstance(source, dict)
+            else source
+            for source in raw_sources
+        ]
+    return stable
+
+
+def _snapshot_content_unchanged(target: Path, candidate: object) -> bool:
+    try:
+        if target.stat().st_size > MAXIMUM_SNAPSHOT_BYTES:
+            return False
+        existing = json.loads(target.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        return False
+    return _stable_snapshot_view(existing) == _stable_snapshot_view(candidate)
+
+
 def _existing_signal_count(target: Path, recent_since: datetime | None = None) -> int | None:
     try:
         if target.stat().st_size > MAXIMUM_SNAPSHOT_BYTES:
@@ -463,6 +488,9 @@ def synchronize() -> Path:
         "signals": merged,
         "sources": sources,
     }
+    if _snapshot_content_unchanged(target, snapshot):
+        print("Snapshot content unchanged; preserving existing publication timestamps.", flush=True)
+        return target
     temporary = target.with_name(f"{target.name}.tmp")
     target.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"

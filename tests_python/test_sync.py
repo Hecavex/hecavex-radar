@@ -13,6 +13,7 @@ from hecavex_radar.sync import (
     _represented_records,
     _retain_only_unrefreshed_sources,
     _scope_raw_signal,
+    _snapshot_content_unchanged,
     _validate_snapshot_size,
     synchronize,
 )
@@ -65,6 +66,38 @@ def test_allows_an_empty_snapshot_after_previous_rows_age_out(
     monkeypatch.setenv("RADAR_SNAPSHOT_GUARD_DAYS", "30")
 
     _validate_snapshot_size(0, target, datetime(2026, 8, 21, tzinfo=UTC))
+
+
+def test_unchanged_snapshot_ignores_only_publication_timestamps(tmp_path: Path) -> None:
+    target = tmp_path / "radar.json"
+    source: dict[str, object] = {
+        "name": "URLScan",
+        "homepage": "https://urlscan.io/",
+        "fetchedAt": "2026-08-21T09:00:00.000Z",
+        "records": 0,
+        "state": "healthy",
+        "note": "Passive results",
+    }
+    original: dict[str, object] = {
+        "schemaVersion": 1,
+        "dataset": "live",
+        "generatedAt": "2026-08-21T09:00:00.000Z",
+        "signals": [],
+        "sources": [source],
+    }
+    target.write_text(json.dumps(original), encoding="utf-8")
+    timestamp_source = {**source, "fetchedAt": "2026-08-21T10:00:00.000Z"}
+    timestamp_only: dict[str, object] = {
+        **original,
+        "generatedAt": "2026-08-21T10:00:00.000Z",
+        "sources": [timestamp_source],
+    }
+
+    assert _snapshot_content_unchanged(target, timestamp_only)
+    assert not _snapshot_content_unchanged(
+        target,
+        {**timestamp_only, "sources": [{**timestamp_source, "state": "partial"}]},
+    )
 
 
 def test_requires_a_hecavex_url_when_integration_is_enabled(monkeypatch: MonkeyPatch) -> None:
