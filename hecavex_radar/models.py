@@ -1,0 +1,80 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Literal, TypedDict
+
+SignalStatus = Literal["active", "suspected", "offline", "mitigated", "unknown"]
+FeedState = Literal["healthy", "partial", "skipped"]
+
+
+@dataclass(slots=True)
+class RawSignal:
+    url: str
+    source: str
+    first_seen: str | None = None
+    last_seen: str | None = None
+    status: str | None = None
+    brand: str | None = None
+    country: str | None = None
+    host: str | None = None
+    screenshot_url: str | None = None
+    confidence: float | None = None
+
+
+class RadarSource(TypedDict):
+    name: str
+    homepage: str
+    fetchedAt: str | None
+    records: int
+    state: FeedState
+    note: str | None
+
+
+class RadarSignal(TypedDict):
+    id: str
+    url: str
+    domain: str
+    firstSeen: str
+    lastSeen: str
+    sources: list[str]
+    status: SignalStatus
+    brand: str | None
+    country: str | None
+    host: str | None
+    screenshotUrl: str | None
+    confidence: int
+
+
+@dataclass(slots=True)
+class FeedResult:
+    source: RadarSource
+    signals: list[RawSignal]
+
+
+@dataclass(frozen=True, slots=True)
+class SafeUrl:
+    key: str
+    display_url: str
+    display_domain: str
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateMatch:
+    domain: str
+    registrable_domain: str
+    brand: str
+    confidence: int
+    reasons: list[str]
+
+
+class CertStreamCandidate(TypedDict):
+    schemaVersion: Literal[1]
+    id: str
+    observedAt: str
+    indicatorType: Literal["domain"]
+    domain: str
+    registrableDomain: str
+    source: Literal["CertStream"]
+    brand: str
+    confidence: int
+    reasons: list[str]

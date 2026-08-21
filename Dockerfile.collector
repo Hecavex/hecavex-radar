@@ -1,0 +1,26 @@
+FROM python:3.12-slim@sha256:2c941e860699f878900b0edc2403613c234d4b32eda3cc9fa7036991a2a63c4a
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY hecavex_radar ./hecavex_radar
+RUN python -m pip install --no-cache-dir .
+
+COPY data/brands-lt.json ./data/brands-lt.json
+RUN mkdir -p /app/data/candidates \
+    && addgroup --system radar \
+    && adduser --system --ingroup radar radar \
+    && chown -R radar:radar /app
+
+USER radar
+
+ENV CERTSTREAM_ARCHIVE_ROOT=data/candidates \
+    CERTSTREAM_DURATION_SECONDS=0 \
+    CERTSTREAM_FLUSH_SECONDS=15 \
+    CERTSTREAM_MIN_CONFIDENCE=65
+
+CMD ["python", "-m", "hecavex_radar.collect_certstream"]

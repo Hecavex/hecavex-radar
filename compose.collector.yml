@@ -1,0 +1,31 @@
+services:
+  certstream-server:
+    image: ghcr.io/reloading01/certstream-server-rust:1.5.3@sha256:e7422e0b41aa89358ed4f07a0c78a5e80208c3ae0bff1c367bd0929ba2fa0e0b
+    restart: unless-stopped
+    init: true
+    volumes:
+      - ./data/certstream-state:/data
+    environment:
+      CERTSTREAM_CT_LOG_STATE_FILE: /data/state.json
+      CERTSTREAM_STREAM_FULL_ENABLED: "false"
+  certstream:
+    build:
+      context: .
+      dockerfile: Dockerfile.collector
+    restart: unless-stopped
+    init: true
+    depends_on:
+      - certstream-server
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./data/candidates:/app/data/candidates
+    environment:
+      CERTSTREAM_URL: ${CERTSTREAM_URL:-ws://certstream-server:8080/domains-only}
+      CERTSTREAM_ALLOW_INSECURE_WS: "true"
+      CERTSTREAM_DURATION_SECONDS: "0"
+      CERTSTREAM_FLUSH_SECONDS: ${CERTSTREAM_FLUSH_SECONDS:-15}
+      CERTSTREAM_MIN_CONFIDENCE: ${CERTSTREAM_MIN_CONFIDENCE:-65}
