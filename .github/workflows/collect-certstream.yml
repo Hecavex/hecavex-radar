@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -93,6 +94,7 @@ jobs:
           CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}
         run: python -m hecavex_radar.collection_health finalize
       - name: Commit the attempt atomically
+        id: publish
         if: always() && steps.health.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -101,6 +103,7 @@ jobs:
           git add -- data/certstream public/data/collection-health.json
           if git diff --cached --quiet; then
             echo "No collection changes to commit."
+            echo "pushed=false" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -109,6 +112,13 @@ jobs:
           gh auth setup-git
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "pushed=true" >> "${GITHUB_OUTPUT}"
+      - name: Deploy the published collection health
+        if: always() && steps.publish.outcome == 'success' && steps.publish.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"
       - name: Fail an unsuccessful collection attempt
         if: always()
         env:

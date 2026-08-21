@@ -195,6 +195,28 @@ def test_rejects_unbounded_or_outside_artifacts(tmp_path: Path, monkeypatch: Mon
 def test_checked_in_collection_health_matches_the_public_contract() -> None:
     value = json.loads(Path("public/data/collection-health.json").read_text(encoding="utf-8"))
     assert is_collection_health(value)
-    assert value["latestAttempt"] is None
-    assert value["lastSuccessAt"] is None
+    attempt = value["latestAttempt"]
+    if attempt is None:
+        assert value["lastSuccessAt"] is None
+    else:
+        assert attempt["outcome"] in {"healthy-empty", "healthy-matches", "no-input", "partial", "failed"}
+        assert set(attempt) == {
+            "startedAt",
+            "collectorStartedAt",
+            "endedAt",
+            "trigger",
+            "scheduledFor",
+            "scheduleStatus",
+            "delaySeconds",
+            "expectedListeningSeconds",
+            "listeningSeconds",
+            "messages",
+            "dnsNames",
+            "matches",
+            "newRecords",
+            "connectionAttempts",
+            "connections",
+            "outcome",
+            "summary",
+        }
     assert Path("public/data/collection-health.json").stat().st_size < 32 * 1024
