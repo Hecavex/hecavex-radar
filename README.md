@@ -65,6 +65,8 @@ This runs Python and frontend linting, type checks, tests, and the production bu
 
 ## Documentation
 
+- [Public methodology](https://radar.hecavex.com/methodology/)
+- [Public core documentation](https://radar.hecavex.com/docs/)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Public data contract](docs/DATA-CONTRACT.md)
 - [Data sources](docs/DATA-SOURCES.md)

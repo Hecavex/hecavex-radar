@@ -4,7 +4,7 @@ HECAVEX Radar is a static GitHub Pages site. Scheduled workflows maintain the ch
 
 ## Pages
 
-The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds `dist/`, and deploys it after successful CI on `main`, after a successful snapshot sync, or by manual dispatch.
+The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds the dashboard, `/methodology/`, and `/docs/` into `dist/`, and deploys them after successful CI on `main`, after a successful snapshot sync, or by manual dispatch.
 
 [`sync-radar.yml`](../.github/workflows/sync-radar.yml) validates the configured inputs each hour and commits a changed `public/data/radar.json`. Persisting the snapshot means retention and sharp-drop protection compare against the actual previous publication rather than an artifact-only copy. The Pages job has no collector credentials and never changes data.
 

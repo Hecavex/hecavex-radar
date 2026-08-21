@@ -1,8 +1,12 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { Documentation } from "../src/components/Documentation";
 import { FilterBar } from "../src/components/FilterBar";
+import { Methodology } from "../src/components/Methodology";
 import { SignalTable } from "../src/components/SignalTable";
+import { SiteFooter } from "../src/components/SiteFooter";
+import { SiteHeader } from "../src/components/SiteHeader";
 import { SourcePanel } from "../src/components/SourcePanel";
 import { DEFAULT_FILTERS } from "../src/lib/dashboard";
 import type { RadarSignal, RadarSource } from "../src/types";
@@ -92,5 +96,41 @@ describe("dashboard controls", () => {
     render(<SourcePanel sources={sources} />);
     expect(screen.getByText("1 loaded · 1 optional off")).toBeInTheDocument();
     expect(screen.queryByText("1/2 active")).not.toBeInTheDocument();
+  });
+});
+
+describe("methodology", () => {
+  it("provides a self-contained explanation with internal section navigation", () => {
+    render(<Methodology />);
+
+    const section = screen.getByRole("region", { name: "How a signal reaches Radar" });
+    expect(section).toHaveAttribute("id", "methodology");
+    expect(within(section).getByRole("list", { name: "Publication stages" }).children).toHaveLength(4);
+    expect(within(section).getByText(/urlscan can enrich certstream/i)).toBeInTheDocument();
+    expect(within(section).getByRole("link", { name: "Brand matching" })).toHaveAttribute("href", "#matching");
+    expect(section.querySelector('a[href*="github.com"]')).toBeNull();
+  });
+});
+
+describe("on-site documentation", () => {
+  it("contains core architecture, source, contract, deployment, and licensing material", () => {
+    render(<Documentation />);
+
+    expect(screen.getByRole("heading", { name: "HECAVEX Radar technical reference" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Python pipeline, static viewer" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Three public observation labels" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Signal field reference" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Workflow schedule" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Software licensing does not relicense data" })).toBeInTheDocument();
+  });
+
+  it("routes core navigation and data terms to local pages", () => {
+    const { unmount } = render(<SiteHeader currentPage="radar" />);
+    expect(screen.getByRole("link", { name: "Methodology" })).toHaveAttribute("href", "/methodology/");
+    expect(screen.getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs/");
+    unmount();
+
+    render(<SiteFooter />);
+    expect(screen.getByRole("link", { name: "Data terms & attribution" })).toHaveAttribute("href", "/docs/#data-terms");
   });
 });

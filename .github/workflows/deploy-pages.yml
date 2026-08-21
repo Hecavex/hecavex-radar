@@ -79,6 +79,12 @@ jobs:
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/"' dist/index.html
           grep -Fq 'Potential phishing signals relevant to Lithuania' dist/index.html
           grep -Fq '"@type":"Dataset"' dist/index.html
+          test -f dist/methodology/index.html
+          grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/methodology/"' dist/methodology/index.html
+          test -f dist/docs/index.html
+          grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
+          grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
       - name: Configure GitHub Pages
         if: steps.freshness.outputs.should_deploy == 'true'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6

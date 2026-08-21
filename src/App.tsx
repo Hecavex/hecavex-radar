@@ -1,7 +1,9 @@
-import { AlertTriangle, Code2, RadioTower, ShieldCheck } from "lucide-react";
+import { AlertTriangle, RadioTower } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Dashboard } from "./components/Dashboard";
+import { SiteFooter } from "./components/SiteFooter";
+import { SiteHeader } from "./components/SiteHeader";
 import { loadSnapshot } from "./lib/data";
 import type { RadarSnapshot } from "./types";
 
@@ -27,31 +29,7 @@ export function App() {
 
   return (
     <div className="site-shell">
-      <header className="site-header">
-        <a className="brand" href="/" aria-label="HECAVEX Radar home">
-          <img src="/hecavex-mark.svg" alt="" width="42" height="42" />
-          <span>
-            <strong>HECAVEX</strong>
-            <small>Public threat radar</small>
-          </span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="https://hecavex.com/">HECAVEX</a>
-          <a href="https://apt.hecavex.com/">APT Notes</a>
-          <a href="https://labs.hecavex.com/">Labs</a>
-          <a href="#signals">Signals</a>
-          <a href="#methodology">Methodology</a>
-          <a
-            className="source-link"
-            href="https://github.com/hecavex/hecavex-radar"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Code2 aria-hidden="true" />
-            Source
-          </a>
-        </nav>
-      </header>
+      <SiteHeader currentPage="radar" />
 
       {state.status === "loading" && (
         <main className="state-page" id="main-content" aria-live="polite">
@@ -75,28 +53,7 @@ export function App() {
 
       {state.status === "ready" && <Dashboard snapshot={state.snapshot} />}
 
-      <footer className="site-footer" id="methodology">
-        <div>
-          <ShieldCheck aria-hidden="true" />
-          <p>
-            Indicators are defanged and provided for defensive research. A listing is a signal, not attribution or proof
-            of malicious intent. Viewing evidence may contact URLScan; the suspicious site is never contacted.
-          </p>
-        </div>
-        <div className="footer-meta">
-          <nav aria-label="HECAVEX sites">
-            <a href="https://hecavex.com/">HECAVEX</a>
-            <a href="https://apt.hecavex.com/">APT Notes</a>
-            <a href="https://labs.hecavex.com/">Labs</a>
-          </nav>
-          <p>
-            Software: Apache-2.0 ·{" "}
-            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md">Data terms &amp; attribution</a>
-            {" "}· <a href="/THIRD-PARTY-NOTICES.txt">Third-party notices</a> · No first-party analytics · No accounts ·{" "}
-            <a href="mailto:info@hecavex.com?subject=HECAVEX%20Radar%20false%20positive">Report a false positive</a>
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
