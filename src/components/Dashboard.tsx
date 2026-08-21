@@ -1,4 +1,4 @@
-import { Activity, Database, Globe2, Radar, ShieldAlert, Target } from "lucide-react";
+import { Activity, ArrowDown, Database, Globe2, Radar, ShieldAlert, Target } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { dashboardMetrics, filterSignals, topGroups } from "../lib/dashboard";
@@ -39,18 +39,22 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
             A public, read-only view of potential phishing URLs and domains observed through CertStream, URLScan,
             and configured HECAVEX exports. Dangerous links are never clickable.
           </p>
+          <div className="hero-actions">
+            <a className="hero-action-primary" href="#signals">
+              <ArrowDown aria-hidden="true" /> Browse {formatNumber(summary.total)} recent signals
+            </a>
+            <a href="/methodology/">Read the methodology</a>
+          </div>
         </div>
         <div className={`freshness-card ${isStale ? "stale" : "fresh"}`}>
           <span className="live-dot" aria-hidden="true" />
           <div>
-            <small>{isStale ? "Snapshot delayed" : "Snapshot current"}</small>
+            <small>{isStale ? "Published snapshot delayed" : "Published snapshot current"}</small>
             <strong>{formatRelativeTime(snapshot.generatedAt, now)}</strong>
             <span>Generated {new Date(snapshot.generatedAt).toLocaleString("en-GB", { timeZone: "UTC" })} UTC</span>
           </div>
         </div>
       </section>
-
-      <CollectionDisclosure />
 
       <section className="metric-grid" aria-label="Radar summary">
         {metrics.map(({ key, label, icon: Icon }) => (
@@ -60,12 +64,6 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
             <strong>{formatNumber(summary[key])}</strong>
           </article>
         ))}
-      </section>
-
-      <section className="overview-grid" aria-label="Source overview">
-        <SourcePanel sources={snapshot.sources} now={now} />
-        <DistributionPanel title="Top targeted brands" data={topBrands} emptyLabel="No brand data" />
-        <DistributionPanel title="Observed geography" data={topCountries} emptyLabel="No country data" />
       </section>
 
       <section className="signal-section" id="signals" aria-labelledby="signals-title">
@@ -79,6 +77,23 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
         <FilterBar signals={snapshot.signals} filters={filters} onChange={setFilters} />
         <SignalTable signals={filteredSignals} now={now} />
       </section>
+
+      <section className="context-section" aria-labelledby="context-title">
+        <div className="section-heading context-heading">
+          <div>
+            <p className="eyebrow">Snapshot context</p>
+            <h2 id="context-title">Where these signals came from</h2>
+          </div>
+          <p>Publication inputs and the current distribution of reviewed rows.</p>
+        </div>
+        <div className="overview-grid">
+          <SourcePanel sources={snapshot.sources} now={now} />
+          <DistributionPanel title="Top targeted brands" data={topBrands} emptyLabel="No brand data" />
+          <DistributionPanel title="Observed geography" data={topCountries} emptyLabel="No country data" />
+        </div>
+      </section>
+
+      <CollectionDisclosure />
     </main>
   );
 }

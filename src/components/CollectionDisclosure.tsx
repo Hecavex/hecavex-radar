@@ -1,4 +1,4 @@
-import { Clock3, SearchX, ShieldCheck } from "lucide-react";
+import { ChevronDown, Clock3, SearchX, ShieldCheck } from "lucide-react";
 
 import { CollectionHealth } from "./CollectionHealth";
 
@@ -6,11 +6,13 @@ export function CollectionDisclosure() {
   return (
     <section className="collection-disclosure" aria-labelledby="collection-disclosure-title">
       <div className="collection-disclosure-heading">
-        <p className="eyebrow">Coverage disclosure</p>
-        <h2 id="collection-disclosure-title">Sampled discovery, not continuous monitoring</h2>
+        <div>
+          <p className="eyebrow">Coverage disclosure</p>
+          <h2 id="collection-disclosure-title">Sampled discovery, not continuous monitoring</h2>
+        </div>
         <p>
-          Radar is maintained as best-effort public research. It provides neither comprehensive coverage nor a monitoring,
-          notification, takedown, or response SLA.
+          Radar is best-effort public research—not comprehensive coverage, monitoring, notification, takedown, or an
+          incident-response service.
         </p>
       </div>
       <div className="collection-disclosure-grid">
@@ -45,7 +47,17 @@ export function CollectionDisclosure() {
           </div>
         </article>
       </div>
-      <CollectionHealth />
+      <details className="collection-health-disclosure">
+        <summary>
+          <span>
+            <strong>Latest CertStream attempt telemetry</strong>
+            <small>Actual timing, input counts, schedule state, and freshness</small>
+          </span>
+          <span className="collection-health-toggle-label">View details</span>
+          <ChevronDown aria-hidden="true" />
+        </summary>
+        <CollectionHealth />
+      </details>
       <p className="collection-disclosure-links">
         <a href="/methodology/#collection">Collection methodology</a>
         <a href="/docs/#operations">Schedules and source-state semantics</a>

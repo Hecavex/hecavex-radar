@@ -59,7 +59,7 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
           <tbody>
             {pageSignals.map((signal) => (
               <tr key={signal.id}>
-                <td className="indicator-cell">
+                <td className="indicator-cell" data-label="Indicator">
                   <div>
                     <code title={signal.url}>{signal.url}</code>
                     <button type="button" onClick={() => void copy(signal)} aria-label={`Copy defanged URL ${signal.url}`}>
@@ -68,25 +68,25 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
                   </div>
                   <span>{signal.domain}</span>
                 </td>
-                <td>{signal.brand ? <strong className="brand-target">{signal.brand}</strong> : <span className="unknown">Unclassified</span>}</td>
-                <td>
+                <td data-label="Target">{signal.brand ? <strong className="brand-target">{signal.brand}</strong> : <span className="unknown">Unclassified</span>}</td>
+                <td data-label="Source">
                   <div className="source-chips">
                     {signal.sources.map((source) => <span key={source}>{source}</span>)}
                   </div>
                 </td>
-                <td>
+                <td data-label="State">
                   <span className={`status-pill ${signal.status}`}><i aria-hidden="true" />{sentenceCase(signal.status)}</span>
                   <Confidence value={signal.confidence} />
                 </td>
-                <td>
+                <td data-label="Host">
                   <strong className="host-name">{signal.host ?? "Unknown host"}</strong>
                   <span className="country">{signal.country ?? "Unknown country"}</span>
                 </td>
-                <td>
+                <td data-label="Timeline">
                   <time dateTime={signal.lastSeen} title={formatDateTime(signal.lastSeen)}>{formatRelativeTime(signal.lastSeen, now)}</time>
                   <span className="first-seen">First {formatRelativeTime(signal.firstSeen, now)}</span>
                 </td>
-                <td className="capture-cell">
+                <td className="capture-cell" data-label="Evidence">
                   {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length ? (
                     <button type="button" onClick={() => setCapture(signal)} aria-label={`View evidence for ${signal.domain}`}>
                       {signal.screenshotUrl ? <Camera aria-hidden="true" /> : <FileSearch aria-hidden="true" />}
