@@ -2,6 +2,7 @@
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
+import { gzipSync } from "node:zlib";
 
 import axe from "axe-core";
 import { JSDOM } from "jsdom";
@@ -14,10 +15,20 @@ const publicOrigin = "https://radar.hecavex.com";
 const widths = [320, 360, 390, 768, 1024, 1280];
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
+  { path: "/history/", marker: "Candidate history" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
 ];
-const navigation = ["Research", "Radar", "APT Notes", "Labs", "Data", "Methodology", "Docs", "Source"];
+const navigation = ["Research", "Radar", "History", "APT Notes", "Labs", "Data", "Methodology", "Docs", "Source"];
+const publicArtifactRawBytes = 512 * 1024;
+const performanceBudgets = {
+  htmlGzip: 512 * 1024,
+  javascriptFileGzip: 225 * 1024,
+  stylesheetFileGzip: 48 * 1024,
+  scriptAndStyleGzip: 320 * 1024,
+  publicDataFileGzip: 1024 * 1024,
+  totalOutputBytes: 8 * 1024 * 1024,
+};
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
   "inter/inter-latin-ext-400-normal.woff2",
@@ -48,6 +59,10 @@ function verifyDeploymentTopology() {
   const ci = readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8");
   const collector = readFileSync(join(root, ".github", "workflows", "collect-certstream.yml"), "utf8");
   const hunter = readFileSync(join(root, ".github", "workflows", "hunt-urlscan.yml"), "utf8");
+  const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
+  const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
+  const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
+  const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
 
   assert(/workflows:\s*\["CI"\]/u.test(deploy), "Pages deployment must be gated only by the CI workflow.");
   assert(!deploy.includes("Sync radar snapshot"), "Pages deployment still listens directly to snapshot sync.");
@@ -60,6 +75,23 @@ function verifyDeploymentTopology() {
     "URLScan hunter stages files outside its archive boundary.",
   );
   assert(ci.includes('- "data/urlscan/**"'), "Archive-only URLScan commits still trigger redundant CI and Pages runs.");
+  assert(
+    sync.includes("git add -- public/data/radar.json public/data/history.json data/history"),
+    "Snapshot synchronization does not commit history and the live snapshot atomically.",
+  );
+  for (const setting of [
+    "RADAR_HISTORY_DETAIL_DAYS",
+    "RADAR_HISTORY_SUMMARY_DAYS",
+    "RADAR_HISTORY_MAX_SIGNALS",
+  ]) {
+    assert(sync.includes(`vars.${setting}`), `Snapshot synchronization ignores repository variable ${setting}.`);
+  }
+  assert(
+    snapshotPublisher.includes("MAXIMUM_SNAPSHOT_BYTES = 512 * 1024") &&
+      historyPublisher.includes("MAXIMUM_PUBLIC_BYTES = 512 * 1024"),
+    "Python public-artifact caps no longer match the deployment budget proof.",
+  );
+  assert(!viteConfig.includes("Date.now()"), "Vite prerendering still uses a nondeterministic wall-clock timestamp.");
 }
 
 function inputPins(path) {
@@ -160,14 +192,24 @@ function verifyBuiltHtml() {
     const root = document.getElementById("root");
     assert(root, `${route} has no application root.`);
     const bootstrap = root.getAttribute("data-radar-bootstrap");
+    const historyBootstrap = root.getAttribute("data-history-bootstrap");
     if (route === "/") {
       assert(bootstrap, `${route} has no embedded hydration snapshot.`);
       assert(!/[<>&"]/u.test(bootstrap), `${route} hydration snapshot is not safely attribute-encoded.`);
       const payload = JSON.parse(decodeURIComponent(bootstrap));
       assert(payload?.snapshot?.dataset === "live", `${route} hydration snapshot is not the live public dataset.`);
       assert(Number.isInteger(payload?.renderedAt), `${route} hydration snapshot has no stable render timestamp.`);
+      assert(!historyBootstrap, `${route} embeds history data in the live dashboard.`);
+    } else if (route === "/history/") {
+      assert(historyBootstrap, `${route} has no embedded history artifact.`);
+      assert(!/[<>&"]/u.test(historyBootstrap), `${route} history artifact is not safely attribute-encoded.`);
+      const payload = JSON.parse(decodeURIComponent(historyBootstrap));
+      assert(payload?.history?.dataset === "history", `${route} does not embed the public history dataset.`);
+      assert(Number.isInteger(payload?.renderedAt), `${route} history artifact has no stable render timestamp.`);
+      assert(!bootstrap, `${route} embeds the live dashboard snapshot.`);
     } else {
       assert(!bootstrap, `${route} embeds dashboard data outside the dashboard.`);
+      assert(!historyBootstrap, `${route} embeds history data outside the history page.`);
     }
 
     for (const image of document.querySelectorAll("img")) {
@@ -218,6 +260,83 @@ function verifyBuiltHtml() {
     !/#(?:080c11|0d131a|17212d|24303d|344455|6db18a|dda94f)|rgb\((?:8 12 17|13 19 26|23 33 45|36 48 61|52 68 85|109 177 138|221 169 79)/iu.test(css),
     "Built CSS still contains a retired pre-Cold-Signal palette value.",
   );
+}
+
+function verifyIdentityArtwork() {
+  for (const path of [join(root, "public", "hecavex-mark.svg"), join(output, "hecavex-mark.svg")]) {
+    const mark = readFileSync(path, "utf8").toLowerCase();
+    assert(mark.includes("#44c7dc"), `${relative(root, path)} is missing shared cyan #44c7dc.`);
+    assert(mark.includes("#f2f8fb"), `${relative(root, path)} is missing shared white #f2f8fb.`);
+    assert(!mark.includes("#ff6b6b"), `${relative(root, path)} still contains retired danger red #ff6b6b.`);
+  }
+}
+
+function verifyPerformanceBudgets() {
+  const files = walk(output);
+  const totalBytes = files.reduce((total, path) => total + statSync(path).size, 0);
+  assert(
+    totalBytes <= performanceBudgets.totalOutputBytes,
+    `Built output is ${totalBytes} bytes; budget is ${performanceBudgets.totalOutputBytes}.`,
+  );
+
+  const compressed = (path) => gzipSync(readFileSync(path), { level: 9 }).byteLength;
+  const compressedSizes = (paths) => paths.map((path) => ({ path: relative(output, path), size: compressed(path) }));
+  const largest = (entries) => entries.reduce((maximum, entry) => (entry.size > maximum.size ? entry : maximum));
+  const htmlSizes = compressedSizes(files.filter((candidate) => candidate.endsWith(".html")));
+  for (const { path, size } of htmlSizes) {
+    assert(size <= performanceBudgets.htmlGzip, `${path} is ${size} gzip bytes; HTML budget is ${performanceBudgets.htmlGzip}.`);
+  }
+  const scripts = files.filter((candidate) => candidate.endsWith(".js"));
+  const styles = files.filter((candidate) => candidate.endsWith(".css"));
+  const scriptSizes = compressedSizes(scripts);
+  const styleSizes = compressedSizes(styles);
+  for (const { path, size } of scriptSizes) {
+    assert(size <= performanceBudgets.javascriptFileGzip, `${path} is ${size} gzip bytes; JavaScript file budget is ${performanceBudgets.javascriptFileGzip}.`);
+  }
+  for (const { path, size } of styleSizes) {
+    assert(size <= performanceBudgets.stylesheetFileGzip, `${path} is ${size} gzip bytes; stylesheet budget is ${performanceBudgets.stylesheetFileGzip}.`);
+  }
+  const executableBytes = [...scriptSizes, ...styleSizes].reduce((total, entry) => total + entry.size, 0);
+  assert(
+    executableBytes <= performanceBudgets.scriptAndStyleGzip,
+    `Scripts and styles total ${executableBytes} gzip bytes; budget is ${performanceBudgets.scriptAndStyleGzip}.`,
+  );
+  const dataSizes = compressedSizes(
+    ["radar.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
+  );
+  for (const { path, size } of dataSizes) {
+    const name = path.replace(/^data\//u, "");
+    assert(size <= performanceBudgets.publicDataFileGzip, `data/${name} is ${size} gzip bytes; data budget is ${performanceBudgets.publicDataFileGzip}.`);
+  }
+  const replaceable = new Set([
+    join(output, "data", "radar.json"),
+    join(output, "data", "history.json"),
+    join(output, "index.html"),
+    join(output, "history", "index.html"),
+  ]);
+  const fixedBytes = files
+    .filter((path) => !replaceable.has(path))
+    .reduce((total, path) => total + statSync(path).size, 0);
+  const currentHydrationHtmlBytes =
+    statSync(join(output, "index.html")).size + statSync(join(output, "history", "index.html")).size;
+  const worstCaseOutputBytes =
+    fixedBytes +
+    2 * publicArtifactRawBytes +
+    currentHydrationHtmlBytes +
+    2 * (3 * publicArtifactRawBytes + 1024);
+  assert(
+    worstCaseOutputBytes <= performanceBudgets.totalOutputBytes,
+    `Maximum accepted public artifacts could produce ${worstCaseOutputBytes} output bytes; total budget is ${performanceBudgets.totalOutputBytes}.`,
+  );
+  return {
+    totalBytes,
+    html: largest(htmlSizes),
+    javascript: largest(scriptSizes),
+    stylesheet: largest(styleSizes),
+    executableBytes,
+    publicData: largest(dataSizes),
+    worstCaseOutputBytes,
+  };
 }
 
 async function focusWithTab(page, locator, limit = 12) {
@@ -426,5 +545,16 @@ async function verifyInBrowser() {
 verifyDeploymentTopology();
 verifyPythonAutomationLocks();
 verifyBuiltHtml();
+verifyIdentityArtwork();
+const performance = verifyPerformanceBudgets();
 await verifyInBrowser();
+process.stdout.write(
+  `Measured production sizes: ${performance.totalBytes} bytes total; ` +
+    `${performance.html.path} ${performance.html.size} bytes gzip (largest HTML); ` +
+    `${performance.javascript.path} ${performance.javascript.size} bytes gzip (largest JavaScript); ` +
+    `${performance.stylesheet.path} ${performance.stylesheet.size} bytes gzip (largest stylesheet); ` +
+    `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
+    `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
+    `${performance.worstCaseOutputBytes} bytes maximum proven output.\n`,
+);
 process.stdout.write(`Verified ${pages.length} hydratable static pages at ${widths.join(", ")}px with links, fragments, metadata, CSP, delayed-refresh retention, no-JS content, keyboard navigation, overflow, focus, and accessibility checks.\n`);

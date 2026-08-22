@@ -16,7 +16,7 @@ The dashboard reads `public/data/radar.json` with this top-level shape:
 }
 ```
 
-`generatedAt` is the UTC publication time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form. Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped.
+`generatedAt` is the UTC publication time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form. Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The complete public snapshot is capped at 512 KiB; the publisher fails instead of truncating when the cap is exceeded.
 
 ### Signal fields
 
@@ -37,6 +37,7 @@ Each signal represents one normalized host. Observations of different paths on t
 | `screenshotUrl` | string or null | Optional HTTPS URL on exactly `urlscan.io`, never a subdomain. Credentials and explicit ports are rejected; query and fragment are removed before publication. |
 | `referenceUrl` | string or null | Optional canonical `https://urlscan.io/result/<uuid>/` report URL. |
 | `hashes` | string[] | Up to eight unique, lowercase, non-empty SHA-256 hashes of primary HTML response bodies. |
+| `reasonCodes` | string[] (optional) | Up to 16 controlled public provenance labels. They explain automated acceptance inputs; they are not verdicts or private detector features. |
 | `confidence` | integer | Rounded and clamped to 0-100. The viewer displays it as a score out of 100, never as a percentage or probability. |
 
 When signals merge, the publisher unions sources and hashes, keeps the earliest `firstSeen` and latest `lastSeen`, selects the most specific safe path, and keeps the highest confidence. Conflicting non-null brands for one host invalidate the merged row. Status comes from the observation with the newest `lastSeen`; only observations at the same time use the tie-break order `active`, `suspected`, `unknown`, `offline`, then `mitigated`. The newest non-null country, host, screenshot, and reference metadata wins. The final list is newest-first and capped by `RADAR_MAX_SIGNALS`.
@@ -155,6 +156,29 @@ Each complete record remains defanged and uses the same host-based ID namespace 
 
 A current hostname match must agree with the declared brand. When the hostname no longer matches, only a row backed by title or verdict evidence may remain, and it must still resolve to a current registry brand and pass suppression and collision checks. Before a row can enter the archive, its URLScan search summary and result detail must both identify the scan as public; missing, unlisted, or private visibility is rejected. Version 1 rows and legacy version 2 rows without typed evidence are rejected. References use the canonical URLScan result path, screenshots use the fixed URLScan policy, and resource or empty-body hashes are rejected. A daily file is capped at 2,500 records and 20 MiB.
 
+### Candidate history
+
+`data/history/daily/YYYY-MM-DD/events.ndjson` uses UTC partitions and stores exact-schema, defanged events. An event has:
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `schemaVersion` | integer | Always `1`. |
+| `eventId` | string | First 32 hexadecimal characters of SHA-256 over the immutable event identity fields. |
+| `signalId` | string | Same host-based ID namespace as the public live snapshot. |
+| `eventType` | enum | `observation` or `status-transition`. |
+| `observedAt` | UTC timestamp | Source observation boundary or explicit transition time. |
+| `domain` | string | Canonical defanged hostname. |
+| `brand` | string | One current registry-resolved target. |
+| `sources` | string[] | One or more supported public sources. |
+| `status` | enum | Same values as the live snapshot. |
+| `previousStatus` | enum or null | Set only for a status transition; null for observation events and first publication. |
+| `confidence` | integer | Score recorded with the event; not part of event identity. |
+| `reasonCodes` | string[] | Controlled public provenance labels; not part of event identity. |
+
+Event identity includes schema version, signal ID, event type, observation time, sources, status, and previous status. It deliberately excludes confidence and reason wording so replaying one observation after a scoring change cannot create a second event. Daily files are capped at 10,000 events and 8 MiB; invalid, duplicate, oversized, or over-cap input fails closed instead of being skipped or truncated.
+
+After the detail window, events compact into `data/history/summary.json`. The public `public/data/history.json` projection exposes `id`, `domain`, `brand`, `firstSeen`, `lastSeen`, `observationCount`, `sources`, `latestStatus`, `reasonCodes`, and up to 16 typed `statusTransitions`. Private review suppressions and current brand rules are re-applied before every projection. The complete projection is capped at 512 KiB and fails closed rather than truncating. See [Candidate history](HISTORY.md) for retention limits.
+
 ## HECAVEX input and local handoff
 
 ### Configured source input
@@ -194,10 +218,19 @@ When `HECAVEX_CANDIDATE_OUTPUT` names a file below `data/hecavex/`, synchronizat
 
 The handoff is limited to 2,500 signals and 20 MiB. It includes only defanged public fields backed by CertStream or URLScan; HECAVEX-only observations and discovery-seed provenance are excluded. This is a local file export for private review. It performs no HTTP upload and uses no credentials.
 
+## Sanitized review decisions
+
+`data/review/public-decisions.json` is the only local-review artifact accepted by synchronization. It has `schemaVersion: 1`, dataset `radar-review-decisions`, a canonical UTC `generatedAt`, and two bounded arrays:
+
+- `suppressions` contain a deterministic decision ID, defanged domain, `exact` or `subdomains` scope, optional resolved brand, and one controlled correction reason.
+- `candidates` contain a deterministic decision ID, public signal ID, defanged URL and domain, observation time, current matcher-resolved brand, confidence no greater than the matcher score, and controlled reason codes including `manual-review`.
+
+Both arrays are capped at 2,500 records and the file is capped at 2 MiB. Duplicate IDs, unsafe values, future timestamps, cross-brand candidates, unrecognized reasons, or candidates that no longer pass the current matcher make synchronization fail. A manual candidate is always attributed to `HECAVEX` and normalized to `suspected`. The private SQLite event ledger and its notes are outside this contract and must never be committed.
+
 ## Deliberately excluded
 
 - Userinfo, query parameters, fragments, cookies, page content, and credentials.
 - Private observation IDs, analyst identities, internal endpoints, and unbounded or event-level collection telemetry. The aggregate latest-attempt health fields documented above are deliberately public.
 - Detector features, model versions, proprietary rules, evidence graphs, and case data.
 - Discovery-seed provider names and raw seed records.
-- Private HECAVEX history.
+- Internal HECAVEX case history.

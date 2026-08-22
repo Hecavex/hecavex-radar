@@ -5,20 +5,26 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { parseSnapshot } from "../src/lib/data";
+import { parseHistory } from "../src/lib/historyData";
 import { decodeSnapshotBootstrap, encodeSnapshotBootstrap } from "../src/lib/snapshotBootstrap";
 import { renderPrerenderedPage, type PrerenderPage } from "../src/prerender";
 
 const snapshot = parseSnapshot(JSON.parse(readFileSync(resolve("public/data/radar.json"), "utf8")));
+const history = await parseHistory(JSON.parse(readFileSync(resolve("public/data/history.json"), "utf8")));
 
 const pages: Array<{ page: PrerenderPage; path: string; title: string; marker: string }> = [
   { page: "radar", path: "index.html", title: "HECAVEX Radar · Public phishing signals", marker: "Sampled discovery, not continuous monitoring" },
+  { page: "history", path: "history/index.html", title: "Candidate history | HECAVEX Radar", marker: "Candidate history" },
   { page: "methodology", path: "methodology/index.html", title: "Methodology · HECAVEX Radar", marker: "How a signal reaches Radar" },
   { page: "documentation", path: "docs/index.html", title: "Documentation · HECAVEX Radar", marker: "HECAVEX Radar technical reference" },
 ];
 
 describe("prerendered pages", () => {
   it.each(pages)("renders meaningful static HTML for $page", ({ page, marker }) => {
-    const document = new DOMParser().parseFromString(renderPrerenderedPage(page, snapshot), "text/html");
+    const document = new DOMParser().parseFromString(
+      renderPrerenderedPage(page, snapshot, Date.now(), history),
+      "text/html",
+    );
     expect(document.querySelector("header.site-header")).not.toBeNull();
     expect(document.querySelector("main#main-content")).not.toBeNull();
     expect(document.querySelector("footer.site-footer")).not.toBeNull();
@@ -27,7 +33,10 @@ describe("prerendered pages", () => {
   });
 
   it.each(pages)("keeps same-page fragments resolvable for $page", ({ page }) => {
-    const document = new DOMParser().parseFromString(renderPrerenderedPage(page, snapshot), "text/html");
+    const document = new DOMParser().parseFromString(
+      renderPrerenderedPage(page, snapshot, Date.now(), history),
+      "text/html",
+    );
     for (const anchor of document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')) {
       expect(document.getElementById(decodeURIComponent(anchor.hash.slice(1))), anchor.outerHTML).not.toBeNull();
     }
@@ -74,6 +83,7 @@ describe("entry metadata", () => {
   it("allows the advertised JSON distribution while excluding other data paths", () => {
     const robots = readFileSync(resolve("public/robots.txt"), "utf8");
     expect(robots).toContain("Allow: /data/radar.json");
+    expect(robots).toContain("Allow: /data/history.json");
     expect(robots).toContain("Disallow: /data/");
   });
 });

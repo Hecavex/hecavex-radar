@@ -435,12 +435,12 @@ def match_brand_text(value: str | None, registry: BrandRegistry) -> str | None:
     return matched_brands.pop()
 
 
-def score_domain(value: str, registry: BrandRegistry) -> CandidateMatch | None:
+def _score_domain_matches(value: str, registry: BrandRegistry) -> list[CandidateMatch]:
     domain = normalize_domain(value)
     if not domain:
-        return None
+        return []
     if is_suppressed_domain(domain, registry):
-        return None
+        return []
 
     registrable_domain = _registrable_domain(domain)
     label_groups = _label_groups(domain)
@@ -592,4 +592,14 @@ def score_domain(value: str, registry: BrandRegistry) -> CandidateMatch | None:
             reasons=reasons,
         )
         matches.append(result)
+    return matches
+
+
+def domain_match_brands(value: str, registry: BrandRegistry) -> frozenset[str]:
+    """Return every independently matching brand before ambiguity is rejected."""
+    return frozenset(match.brand for match in _score_domain_matches(value, registry))
+
+
+def score_domain(value: str, registry: BrandRegistry) -> CandidateMatch | None:
+    matches = _score_domain_matches(value, registry)
     return matches[0] if len(matches) == 1 else None

@@ -5,6 +5,7 @@ from pathlib import Path
 
 from hecavex_radar.brands import load_brand_registry
 from hecavex_radar.certstream_archive import read_candidate_file
+from hecavex_radar.history import read_public_history
 from hecavex_radar.urlscan import _reviewed_archive_signal, read_urlscan_file
 
 
@@ -25,13 +26,22 @@ def test_every_checked_in_urlscan_record_passes_current_contract_and_review() ->
         assert all(_reviewed_archive_signal(record, registry) for record in records), path
 
 
+def test_checked_in_public_history_passes_the_exact_contract() -> None:
+    history = read_public_history("public/data/history.json")
+
+    assert history is not None
+
+
 def test_reader_facing_documentation_routes_are_canonical_and_discoverable() -> None:
+    history = Path("history/index.html").read_text(encoding="utf-8")
     methodology = Path("methodology/index.html").read_text(encoding="utf-8")
     documentation = Path("docs/index.html").read_text(encoding="utf-8")
     sitemap = Path("public/sitemap.xml").read_text(encoding="utf-8")
 
+    assert '<link rel="canonical" href="https://radar.hecavex.com/history/"' in history
     assert '<link rel="canonical" href="https://radar.hecavex.com/methodology/"' in methodology
     assert '<link rel="canonical" href="https://radar.hecavex.com/docs/"' in documentation
+    assert "https://radar.hecavex.com/history/" in sitemap
     assert "https://radar.hecavex.com/methodology/" in sitemap
     assert "https://radar.hecavex.com/docs/" in sitemap
 
@@ -60,3 +70,11 @@ def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     assert "gh workflow run deploy-pages.yml" not in workflow
     assert 'workflows: ["CI"]' in deploy
     assert "Sync radar snapshot" not in deploy
+
+
+def test_shared_identity_mark_uses_the_cold_signal_palette() -> None:
+    mark = Path("public/hecavex-mark.svg").read_text(encoding="utf-8").lower()
+
+    assert "#44c7dc" in mark
+    assert "#f2f8fb" in mark
+    assert "#ff6b6b" not in mark

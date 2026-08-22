@@ -1,11 +1,30 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Literal, NotRequired, TypedDict
 
 SignalStatus = Literal["active", "suspected", "offline", "mitigated", "unknown"]
 SourceState = Literal["healthy", "partial", "skipped"]
 BrandEvidence = Literal["domain", "title", "verdict", "primary-html-sha256"]
+ReasonCode = Literal[
+    "brand-domain-match",
+    "brand-title-match",
+    "provider-verdict",
+    "primary-html-hash-pivot",
+    "brand-exact-token",
+    "brand-joined-affix",
+    "brand-split-token",
+    "brand-lookalike-edit",
+    "suspicious-context",
+    "punycode",
+    "different-tld",
+    "multiple-hyphens",
+    "hecavex-public-export",
+    "manual-review",
+    "first-publication",
+    "source-status-change",
+]
 
 
 @dataclass(slots=True)
@@ -22,6 +41,7 @@ class RawSignal:
     reference_url: str | None = None
     hashes: list[str] | None = None
     confidence: float | None = None
+    reason_codes: Sequence[str] | None = None
 
 
 class RadarSource(TypedDict):
@@ -48,6 +68,7 @@ class RadarSignal(TypedDict):
     referenceUrl: NotRequired[str | None]
     hashes: NotRequired[list[str]]
     brandEvidence: NotRequired[list[BrandEvidence]]
+    reasonCodes: NotRequired[list[ReasonCode]]
     confidence: int
 
 

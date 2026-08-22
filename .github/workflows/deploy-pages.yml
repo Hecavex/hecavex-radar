@@ -68,6 +68,9 @@ jobs:
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/"' dist/index.html
           grep -Fq 'Sampled discovery, not continuous monitoring' dist/index.html
           grep -Fq '"@type":"Dataset"' dist/index.html
+          test -f dist/history/index.html
+          grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/history/"' dist/history/index.html
+          grep -Fq 'Candidate history' dist/history/index.html
           test -f dist/methodology/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/methodology/"' dist/methodology/index.html
           grep -Fq 'How a signal reaches Radar' dist/methodology/index.html
@@ -75,6 +78,8 @@ jobs:
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
           grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
           grep -Fq 'Allow: /data/radar.json' dist/robots.txt
+          grep -Fq 'Allow: /data/history.json' dist/robots.txt
+          grep -Fq 'https://radar.hecavex.com/history/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
       - name: Configure GitHub Pages

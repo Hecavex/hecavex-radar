@@ -36,7 +36,7 @@ The published observation source is URLScan, while discovery-input attribution r
 
 ## HECAVEX public export
 
-HECAVEX is optional and must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. Production feed URLs require HTTPS; HTTP is accepted only on a loopback host for local development. The export must not expose a private dashboard, database, collector API, detector output, credentials, or private history.
+HECAVEX is optional and must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. Production feed URLs require HTTPS; HTTP is accepted only on a loopback host for local development. The export must not expose a private dashboard, database, collector API, detector output, credentials, or internal case history.
 
 ## Screenshots
 

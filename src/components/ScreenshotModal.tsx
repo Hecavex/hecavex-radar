@@ -148,6 +148,13 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
             <ul>{signal.hashes.map((digest) => <li key={digest}><code>{digest}</code></li>)}</ul>
           </section>
         ) : null}
+        {signal.reasonCodes?.length ? (
+          <section className="evidence-hashes" aria-labelledby="reasons-title">
+            <h3 id="reasons-title">Publication reason codes</h3>
+            <p>Controlled public provenance labels explain why this candidate passed validation; they are not verdicts.</p>
+            <ul>{signal.reasonCodes.map((reason) => <li key={reason}><code>{reason}</code></li>)}</ul>
+          </section>
+        ) : null}
         <div className="capture-footer">
           <p>Viewing a screenshot or report contacts urlscan.io. The suspicious website is not contacted.</p>
           <div className="capture-links">

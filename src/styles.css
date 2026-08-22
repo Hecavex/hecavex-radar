@@ -659,6 +659,50 @@ main {
   font: 500 clamp(1.35rem, 2.3vw, 2rem)/1 var(--mono);
 }
 
+.history-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.history-table {
+  min-width: 70rem;
+}
+
+.history-provenance {
+  max-width: 22rem;
+  color: var(--muted);
+  font: .62rem/1.55 var(--mono);
+}
+
+.history-provenance summary {
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.history-provenance ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin: .55rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-provenance li {
+  padding: .16rem .35rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.history-provenance p {
+  margin: .4rem 0 0;
+  color: var(--faint);
+}
+
+.history-provenance time {
+  display: inline;
+  font-size: inherit;
+}
+
 .overview-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr 1fr;
@@ -2457,6 +2501,10 @@ td time {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .history-metrics .metric-card:last-child {
+    grid-column: 1 / -1;
+  }
+
   .metric-card:last-child {
     grid-column: 1 / -1;
   }
@@ -2713,7 +2761,7 @@ td time {
     min-height: auto;
   }
 
-  .select-group label,
+  .select-group label:not(.sr-only),
   .select-group select,
   .reset-button {
     width: 100%;

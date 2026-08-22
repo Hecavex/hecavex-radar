@@ -14,6 +14,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from .brands import load_brand_registry, score_domain
 from .certstream_archive import read_recent_candidates
 from .models import RadarSource, RawSignal, SourceResult, SourceState
+from .provenance import reason_codes_from_evidence, reason_codes_from_match
 from .safety import refang, safe_feed_url
 from .urlscan import read_recent_urlscan
 
@@ -148,6 +149,7 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
                 status="suspected",
                 brand=match.brand,
                 confidence=match.confidence,
+                reason_codes=reason_codes_from_match(match.reasons),
             )
         )
     suffix = "" if lookback_days == 1 else "s"
@@ -186,6 +188,7 @@ def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResul
             reference_url=signal.get("referenceUrl"),
             hashes=signal.get("hashes"),
             confidence=signal["confidence"],
+            reason_codes=reason_codes_from_evidence(signal.get("brandEvidence", [])),
         )
         for signal in archived
     ]
@@ -249,6 +252,7 @@ def fetch_hecavex(now: str, source_url: str, token: str | None = None) -> Source
                 confidence=_first_number(
                     value.get("confidence"), value.get("confidenceScore"), value.get("confidence_score")
                 ),
+                reason_codes=["hecavex-public-export"],
             )
         )
     return SourceResult(

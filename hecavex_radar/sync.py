@@ -14,15 +14,18 @@ from urllib.parse import urlsplit
 
 from .brands import (
     BrandRegistry,
+    domain_match_brands,
     is_brand_collision,
     is_suppressed_domain,
     load_brand_registry,
     resolve_brand_name,
-    score_domain,
 )
 from .hecavex import write_hecavex_candidates
+from .history import build_history_events, previous_statuses, update_history
 from .models import RadarSignal, RadarSource, RawSignal, SignalStatus, SourceResult
 from .normalize import merge_signals, prepare_signal
+from .provenance import normalize_reason_codes
+from .review import load_public_review
 from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
 from .sources import (
     SOURCE_NAMES,
@@ -34,7 +37,7 @@ from .sources import (
 
 SIGNAL_STATUSES = {"active", "suspected", "offline", "mitigated", "unknown"}
 MAXIMUM_RETAINED_SIGNALS = 25_000
-MAXIMUM_SNAPSHOT_BYTES = 20 * 1024 * 1024
+MAXIMUM_SNAPSHOT_BYTES = 512 * 1024
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
 
@@ -217,6 +220,7 @@ def _load_existing_snapshot(
         if reference is not None and safe_reference_url(reference) != reference:
             continue
         hashes = raw.get("hashes", [])
+        reason_codes = raw.get("reasonCodes", [])
         if (
             not isinstance(hashes, list)
             or len(hashes) > 8
@@ -228,25 +232,34 @@ def _load_existing_snapshot(
             )
         ):
             continue
+        if (
+            not isinstance(reason_codes, list)
+            or len(reason_codes) > 16
+            or reason_codes != normalize_reason_codes(reason_codes)
+        ):
+            continue
+        retained_signal: RadarSignal = {
+            "id": stable_id(domain.lower()),
+            "url": url,
+            "domain": domain,
+            "firstSeen": cast(str, first_seen),
+            "lastSeen": cast(str, last_seen),
+            "sources": known_sources,
+            "status": cast(SignalStatus, status),
+            "brand": cast(str | None, raw.get("brand")),
+            "country": cast(str | None, raw.get("country")),
+            "host": cast(str | None, raw.get("host")),
+            "screenshotUrl": screenshot,
+            "referenceUrl": cast(str | None, reference),
+            # Snapshot v1 does not carry hash provenance. Never retain old
+            # untyped values across a source outage or schema migration.
+            "hashes": [],
+            "confidence": confidence,
+        }
+        if reason_codes:
+            retained_signal["reasonCodes"] = normalize_reason_codes(reason_codes)
         retained.append(
-            {
-                "id": stable_id(domain.lower()),
-                "url": url,
-                "domain": domain,
-                "firstSeen": cast(str, first_seen),
-                "lastSeen": cast(str, last_seen),
-                "sources": known_sources,
-                "status": cast(SignalStatus, status),
-                "brand": cast(str | None, raw.get("brand")),
-                "country": cast(str | None, raw.get("country")),
-                "host": cast(str | None, raw.get("host")),
-                "screenshotUrl": screenshot,
-                "referenceUrl": cast(str | None, reference),
-                # Snapshot v1 does not carry hash provenance. Never retain old
-                # untyped values across a source outage or schema migration.
-                "hashes": [],
-                "confidence": confidence,
-            }
+            retained_signal
         )
 
     source_fetches: dict[str, str | None] = {}
@@ -311,18 +324,15 @@ def _hostname_from_url(value: str) -> str | None:
     return hostname
 
 
-def _brand_from_url(value: str, registry: BrandRegistry) -> str | None:
-    hostname = _hostname_from_url(value)
-    match = score_domain(hostname, registry) if hostname else None
-    return match.brand if match else None
-
-
 def _scope_raw_signal(raw: RawSignal, registry: BrandRegistry) -> RawSignal | None:
     hostname = _hostname_from_url(raw.url)
     if not hostname or is_suppressed_domain(hostname, registry):
         return None
+    matched_brands = domain_match_brands(hostname, registry)
+    if len(matched_brands) > 1:
+        return None
     declared_brand = resolve_brand_name(raw.brand, registry)
-    domain_brand = _brand_from_url(raw.url, registry)
+    domain_brand = next(iter(matched_brands), None)
     if declared_brand and domain_brand and declared_brand != domain_brand:
         return None
     brand = declared_brand or domain_brand
@@ -335,8 +345,11 @@ def _scope_retained_signal(signal: RadarSignal, registry: BrandRegistry) -> Rada
     hostname = _hostname_from_url(signal["domain"])
     if not hostname or is_suppressed_domain(hostname, registry):
         return None
+    matched_brands = domain_match_brands(hostname, registry)
+    if len(matched_brands) > 1:
+        return None
     declared_brand = resolve_brand_name(signal["brand"], registry)
-    domain_brand = _brand_from_url(signal["domain"], registry)
+    domain_brand = next(iter(matched_brands), None)
     if declared_brand and domain_brand and declared_brand != domain_brand:
         return None
     brand = declared_brand or domain_brand
@@ -360,6 +373,12 @@ def synchronize() -> Path:
     now = datetime.now(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
     target = _output_path()
     registry = load_brand_registry()
+    review_path = os.environ.get("RADAR_REVIEW_DECISIONS_PATH", "").strip() or "data/review/public-decisions.json"
+    review_policy = load_public_review(
+        review_path,
+        registry=registry,
+        now=datetime.fromisoformat(now.replace("Z", "+00:00")),
+    )
     results: list[SourceResult] = []
     source_states = skipped_sources()
     attempted_sources: set[str] = set()
@@ -392,6 +411,28 @@ def synchronize() -> Path:
         if result:
             results.append(result)
 
+    manual_signals = review_policy.manual_signals()
+    if manual_signals:
+        existing_hecavex = next((result for result in results if result.source["name"] == "HECAVEX"), None)
+        if existing_hecavex:
+            existing_hecavex.signals.extend(manual_signals)
+            existing_hecavex.source["note"] = "Configured HECAVEX source and sanitized review export"
+        else:
+            attempted_sources.add("HECAVEX")
+            results.append(
+                SourceResult(
+                    source={
+                        "name": "HECAVEX",
+                        "homepage": "https://hecavex.com/",
+                        "fetchedAt": now,
+                        "records": len(manual_signals),
+                        "state": "healthy",
+                        "note": "Sanitized local review export",
+                    },
+                    signals=manual_signals,
+                )
+            )
+
     if not results:
         raise RuntimeError("No source completed. Configure at least one source before running the synchronizer.")
 
@@ -405,6 +446,9 @@ def synchronize() -> Path:
             retention_days,
         )
         retained = [scoped for signal in retained if (scoped := _scope_retained_signal(signal, registry))]
+        retained = [
+            signal for signal in retained if not review_policy.suppresses(signal["domain"], signal["brand"])
+        ]
         print(f"Existing snapshot: retained {len(retained)} recent signals", flush=True)
 
     prepared: list[RadarSignal] = []
@@ -417,7 +461,7 @@ def synchronize() -> Path:
                 continue
             raw_signal = scoped_signal
             signal = prepare_signal(raw_signal, now)
-            if signal:
+            if signal and not review_policy.suppresses(signal["domain"], signal["brand"]):
                 prepared.append(signal)
                 accepted_records += 1
         excluded = original_records - accepted_records
@@ -470,6 +514,24 @@ def synchronize() -> Path:
         target,
         datetime.fromisoformat(now.replace("Z", "+00:00")),
     )
+    history_root = os.environ.get("RADAR_HISTORY_ROOT", "").strip() or "data/history"
+    history_output = os.environ.get("RADAR_HISTORY_OUTPUT", "").strip() or "public/data/history.json"
+    history_detail_days = _bounded_integer(os.environ.get("RADAR_HISTORY_DETAIL_DAYS"), 30, 7, 90)
+    history_summary_days = _bounded_integer(os.environ.get("RADAR_HISTORY_SUMMARY_DAYS"), 730, 30, 3_650)
+    history_maximum = _bounded_integer(os.environ.get("RADAR_HISTORY_MAX_SIGNALS"), 5_000, 1, 25_000)
+    history_events = build_history_events(prepared, merged, previous_statuses(history_output))
+    history_path = update_history(
+        root=history_root,
+        output=history_output,
+        events=history_events,
+        now=datetime.fromisoformat(now.replace("Z", "+00:00")),
+        registry=registry,
+        is_suppressed=lambda domain, brand: review_policy.suppresses(domain, brand),
+        detail_days=history_detail_days,
+        summary_days=history_summary_days,
+        maximum_signals=history_maximum,
+    )
+    print(f"Updated bounded public history at {history_path.relative_to(Path.cwd())}.", flush=True)
     candidate_output = os.environ.get("HECAVEX_CANDIDATE_OUTPUT", "").strip()
     if candidate_output:
         candidate_path = write_hecavex_candidates(
@@ -495,7 +557,7 @@ def synchronize() -> Path:
     target.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
     if len(body.encode("utf-8")) > MAXIMUM_SNAPSHOT_BYTES:
-        raise RuntimeError("Refusing to publish a dashboard snapshot larger than 20 MiB.")
+        raise RuntimeError("Refusing to publish a dashboard snapshot larger than 512 KiB.")
     try:
         temporary.write_text(body, encoding="utf-8", newline="\n")
         temporary.chmod(0o600)

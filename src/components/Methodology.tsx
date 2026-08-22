@@ -60,6 +60,7 @@ export function Methodology() {
           <a href="#collection">Collection</a>
           <a href="#matching">Brand matching</a>
           <a href="#publication">Publication</a>
+          <a href="#history">History</a>
           <a href="#limitations">Limits and safety</a>
         </div>
       </nav>
@@ -178,6 +179,43 @@ export function Methodology() {
             union of sources and hashes, most specific safe path, and highest confidence. Conflicting non-null brands
             invalidate the merged row.
           </p>
+        </div>
+      </section>
+
+      <section className="methodology-detail" id="history" aria-labelledby="history-method-title">
+        <div className="methodology-section-heading">
+          <p className="eyebrow">History and review</p>
+          <h2 id="history-method-title">Append observations; infer nothing from absence</h2>
+          <p>
+            Each accepted source observation receives a deterministic event ID. Replaying the same archives therefore
+            produces the same event rather than inflating observation counts.
+          </p>
+        </div>
+        <div className="methodology-boundaries">
+          <article>
+            <p className="eyebrow">Detailed trail</p>
+            <h3>Thirty-day event window</h3>
+            <p>
+              Daily, defanged NDJSON partitions are append-only during the configured detail window. Older events compact
+              into a bounded signal summary, which is retained for two years by default.
+            </p>
+          </article>
+          <article>
+            <p className="eyebrow">Status provenance</p>
+            <h3>Only explicit transitions</h3>
+            <p>
+              CertStream and URLScan remain suspected. A transition to active, offline, or mitigated is recorded only when
+              a supported HECAVEX observation supplies it. Falling outside a lookback window creates no transition.
+            </p>
+          </article>
+          <article>
+            <p className="eyebrow">Corrections</p>
+            <h3>Private notes stay private</h3>
+            <p>
+              Local review uses an append-only database outside Git. Only explicitly exported, defanged suppressions and
+              candidates reach the public pipeline; analyst notes and identities are never included.
+            </p>
+          </article>
         </div>
       </section>
 

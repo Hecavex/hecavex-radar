@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 # These are the deliberately public data distributions. Other data paths stay excluded.
 Allow: /data/radar.json
+Allow: /data/history.json
 Allow: /data/collection-health.json
 Disallow: /data/
 

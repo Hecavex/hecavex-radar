@@ -1,6 +1,6 @@
 import { Code2, Menu, X } from "lucide-react";
 
-export type SitePage = "radar" | "methodology" | "documentation" | "data";
+export type SitePage = "radar" | "history" | "methodology" | "documentation" | "data";
 
 type NavigationProps = {
   currentPage: SitePage;
@@ -13,6 +13,7 @@ function Navigation({ currentPage, className, label }: NavigationProps) {
     <nav className={className} aria-label={label}>
       <a href="https://hecavex.com/en/research/">Research</a>
       <a href="/" aria-current={currentPage === "radar" ? "page" : undefined}>Radar</a>
+      <a href="/history/" aria-current={currentPage === "history" ? "page" : undefined}>History</a>
       <a href="https://apt.hecavex.com/">APT Notes</a>
       <a href="https://labs.hecavex.com/">Labs</a>
       <a href="https://labs.hecavex.com/data/">Data</a>

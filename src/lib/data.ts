@@ -1,4 +1,4 @@
-import { SIGNAL_STATUSES, type RadarSignal, type RadarSnapshot, type RadarSource } from "../types.ts";
+import { REASON_CODES, SIGNAL_STATUSES, type RadarSignal, type RadarSnapshot, type RadarSource } from "../types.ts";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -42,6 +42,13 @@ const isHashes = (value: unknown): value is string[] | undefined =>
         digest !== EMPTY_SHA256,
     ));
 
+const isReasonCodes = (value: unknown): boolean =>
+  value === undefined ||
+  (Array.isArray(value) &&
+    value.length <= 16 &&
+    new Set(value).size === value.length &&
+    value.every((reason) => typeof reason === "string" && REASON_CODES.includes(reason as typeof REASON_CODES[number])));
+
 function isSignal(value: unknown): value is RadarSignal {
   if (!isRecord(value)) return false;
   const firstSeen = timestampValue(value.firstSeen);
@@ -64,6 +71,7 @@ function isSignal(value: unknown): value is RadarSignal {
     isUrlscanScreenshot(value.screenshotUrl) &&
     isUrlscanReference(value.referenceUrl) &&
     isHashes(value.hashes) &&
+    isReasonCodes(value.reasonCodes) &&
     typeof value.confidence === "number" &&
     Number.isInteger(value.confidence) &&
     value.confidence >= 0 &&

@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from urllib.parse import urlsplit
 
 from .models import RadarSignal, RawSignal, SignalStatus
+from .provenance import normalize_reason_codes
 from .safety import (
     clean_text,
     defang_domains_in_text,
@@ -100,7 +101,7 @@ def prepare_signal(raw: RawSignal, now: str) -> RadarSignal | None:
     first_seen = _parse_date(raw.first_seen, last_seen)
     if _date_value(first_seen) > _date_value(last_seen):
         first_seen = last_seen
-    return {
+    signal: RadarSignal = {
         # One public row represents one observed host. This correlates CT names,
         # URLScan paths, and HECAVEX observations without duplicating schemes or paths.
         "id": stable_id(safe_url.display_domain.lower()),
@@ -118,6 +119,10 @@ def prepare_signal(raw: RawSignal, now: str) -> RadarSignal | None:
         "hashes": _safe_hashes(raw.hashes),
         "confidence": _confidence(raw.confidence),
     }
+    reason_codes = normalize_reason_codes(raw.reason_codes)
+    if reason_codes:
+        signal["reasonCodes"] = reason_codes
+    return signal
 
 
 STATUS_PRIORITY: dict[SignalStatus, int] = {
@@ -185,6 +190,9 @@ def merge_signals(signals: list[RadarSignal], maximum: int) -> list[RadarSignal]
         evidence = current.get("brandEvidence", []) + signal.get("brandEvidence", [])
         if evidence:
             current["brandEvidence"] = list(dict.fromkeys(evidence))
+        reason_codes = current.get("reasonCodes", []) + signal.get("reasonCodes", [])
+        if reason_codes:
+            current["reasonCodes"] = normalize_reason_codes(reason_codes)
         current["confidence"] = max(current["confidence"], signal["confidence"])
 
     ordered = sorted(

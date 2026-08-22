@@ -12,6 +12,7 @@ const signalFields = [
   ["screenshotUrl", "string | null", "Optional HTTPS screenshot on exactly urlscan.io."],
   ["referenceUrl", "string | null", "Optional canonical public URLScan result URL."],
   ["hashes", "string[]", "Up to eight lowercase SHA-256 hashes of primary HTML response bodies."],
+  ["reasonCodes", "string[]", "Controlled publication reasons; provenance labels, not proof or a verdict."],
   ["confidence", "integer", "Rounded and clamped score from 0 to 100; not a probability."],
 ] as const;
 
@@ -19,8 +20,8 @@ const workflows = [
   ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, tests, and production build"],
   ["CertStream collection", "02 and 32 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
   ["URLScan hunt", "03:37 and 15:37 UTC", "Vilnius-date validated URLScan archive"],
-  ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated public radar.json snapshot"],
-  ["Pages deployment", "After verified main changes or manual dispatch", "Static GitHub Pages artifact"],
+  ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated live snapshot and candidate history"],
+  ["Pages deployment", "Successful CI for the current main commit", "Static GitHub Pages artifact"],
 ] as const;
 
 const settings = [
@@ -29,6 +30,9 @@ const settings = [
   ["HECAVEX_ENABLED", "Variable", "Enables the optional configured public HECAVEX export."],
   ["HECAVEX_FEED_URL", "Secret", "Required with HECAVEX enabled; production endpoints must use HTTPS."],
   ["HECAVEX_FEED_TOKEN", "Secret", "Optional read-only bearer credential for the configured export."],
+  ["RADAR_HISTORY_DETAIL_DAYS", "Variable", "Detailed event retention; 30 days by default, bounded from 7 to 90."],
+  ["RADAR_HISTORY_SUMMARY_DAYS", "Variable", "Compacted history retention; 730 days by default, bounded from 30 to 3,650."],
+  ["RADAR_HISTORY_MAX_SIGNALS", "Variable", "Maximum public history rows; 5,000 by default, bounded from 1 to 25,000."],
 ] as const;
 
 const sourceStates = [
@@ -59,6 +63,7 @@ export function Documentation() {
           <a href="#sources">Sources</a>
           <a href="#public-data">Public data</a>
           <a href="#data-contract">Data contract</a>
+          <a href="#history-review">History and review</a>
           <a href="#operations">Operations</a>
           <a href="#security">Security</a>
           <a href="#data-terms">Data terms</a>
@@ -85,7 +90,7 @@ export function Documentation() {
           <li>
             <span>03</span>
             <h3>Synchronize</h3>
-            <p>The publisher revalidates, scopes, merges, limits, sorts, and atomically writes radar.json.</p>
+            <p>The publisher revalidates, scopes, merges, limits, sorts, and atomically writes the live and history datasets.</p>
           </li>
           <li>
             <span>04</span>
@@ -179,6 +184,15 @@ export function Documentation() {
             <a href="/data/radar.json">Download radar.json</a>
           </article>
           <article>
+            <span>Retained history · JSON</span>
+            <h3>Candidate history</h3>
+            <p>
+              A bounded projection of accepted observation boundaries and explicit source status transitions. A missing
+              row never means benign, and disappearance from a current archive does not create an offline event.
+            </p>
+            <a href="/data/history.json">Download history.json</a>
+          </article>
+          <article>
             <span>Reviewed registry · JSON</span>
             <h3>Lithuanian brand registry</h3>
             <p>
@@ -261,6 +275,14 @@ export function Documentation() {
               supplied source labels are ignored, and hashes require explicit primary-HTML SHA-256 typing.
             </p>
           </article>
+          <article>
+            <span>History schema 1</span>
+            <h3>Candidate event NDJSON</h3>
+            <p>
+              Stored under <code>data/history/daily/YYYY-MM-DD/events.ndjson</code>. Stable event IDs make replay
+              idempotent; older detail compacts into a bounded summary without inventing status changes.
+            </p>
+          </article>
         </div>
         <div className="docs-callout">
           <strong>Merge rules</strong>
@@ -271,11 +293,61 @@ export function Documentation() {
         </div>
       </section>
 
+      <section className="docs-section" id="history-review" aria-labelledby="history-review-title">
+        <div className="docs-section-heading">
+          <p className="eyebrow">History and corrections</p>
+          <h2 id="history-review-title">Reproducible public trail, private analyst notes</h2>
+          <p>
+            Radar separates the public candidate record from the operator&apos;s private review material. Neither side can
+            turn a matching score into a malicious verdict.
+          </p>
+        </div>
+        <div className="docs-card-grid">
+          <article>
+            <span>Stable identity</span>
+            <h3>Replay does not inflate counts</h3>
+            <p>
+              Signal IDs derive from normalized hosts. Event IDs derive from immutable observation and transition fields,
+              so rerunning unchanged archives cannot add another observation when scoring language changes.
+            </p>
+          </article>
+          <article>
+            <span>Bounded retention</span>
+            <h3>Detail compacts, boundaries remain</h3>
+            <p>
+              Daily event partitions retain 30 days by default. Older detail compacts into a two-year summary containing
+              first and last observation time, bounded counts, source and reason unions, and explicit transitions.
+            </p>
+          </article>
+          <article>
+            <span>Local trust boundary</span>
+            <h3>Private notes never enter Git</h3>
+            <p>
+              The local review CLI writes an append-only SQLite ledger outside this repository. Only an intentional,
+              sanitized export of active suppressions and independently matching manual candidates can reach sync.
+            </p>
+          </article>
+        </div>
+        <div className="docs-callout">
+          <strong>Unknown remains unknown</strong>
+          <p>
+            A CertStream candidate remains eligible when URLScan has no public result. Manual additions must still match
+            the current registry, cannot cross brands, cannot exceed the matcher score, and publish only as suspected.
+          </p>
+        </div>
+        <p className="docs-copy">
+          Browse the <a href="/history/">retained candidate trail</a>. Repository operators can review the complete
+          retention and local-export contracts in{" "}
+          <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/HISTORY.md">HISTORY.md</a> and{" "}
+          <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/REVIEW-WORKFLOW.md">REVIEW-WORKFLOW.md</a>.
+        </p>
+      </section>
+
       <section className="docs-section" id="operations" aria-labelledby="operations-title">
         <div className="docs-section-heading">
           <p className="eyebrow">Operations and deployment</p>
           <h2 id="operations-title">Scheduled GitHub Pages publication</h2>
-          <p>Schedules are UTC and can start late. Manual dispatch remains available for collection, sync, and deployment.</p>
+          <p>Schedules are UTC and can start late. Manual dispatch remains available for collection and synchronization.</p>
         </div>
         <div className="docs-table-wrap" role="region" aria-label="Workflow schedule" tabIndex={0}>
           <table className="docs-table">
@@ -445,7 +517,7 @@ pnpm check`}</code></pre>
           </article>
           <article>
             <h3>HECAVEX export</h3>
-            <p>The exporter remains responsible for excluding private history, proprietary evidence, credentials, personal data, and material it cannot publish.</p>
+            <p>The exporter remains responsible for excluding internal case history, proprietary evidence, credentials, personal data, and material it cannot publish.</p>
           </article>
           <article>
             <h3>Brand registry</h3>

@@ -23,6 +23,12 @@ URLScan archives record whether brand evidence came from the domain, page title,
 
 If the current hostname matcher selects a brand, it must select the row's declared brand. If it finds no brand, the row may remain only with typed title or verdict evidence. Every retained row must still resolve to a current registry brand and pass official-domain, exclusion, and collision checks. Older or untyped archive rows are rejected.
 
+## Review decisions
+
+The public review export can suppress an exact host or a deliberately approved domain subtree. A brand-scoped suppression applies only when the current row resolves to that same brand, which prevents a correction for one target from hiding another target on shared infrastructure. Subtree allowlists require an explicit CLI confirmation and should not be used for shared hosting platforms.
+
+A locally added candidate is not a verdict override. It must independently produce exactly one current domain match, is published as `HECAVEX` and `suspected`, and cannot receive a confidence score above the current matcher result. A local addition therefore cannot bypass the registry, establish a lifecycle state, or turn missing URLScan evidence into confirmation.
+
 ## Maintaining precision
 
 - Record every verified first-party domain in `data/brands-lt.json`, regardless of TLD, with an authoritative source.

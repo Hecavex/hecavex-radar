@@ -286,9 +286,15 @@ def test_scope_rejects_a_declared_brand_that_conflicts_with_the_domain() -> None
         source="HECAVEX",
         brand="Swedbank",
     )
+    ambiguous = RawSignal(
+        url="https://swedbank-revolut-login.com",
+        source="URLScan",
+        brand="Swedbank",
+    )
 
     assert _scope_raw_signal(conflicting, registry) is None
     assert _scope_raw_signal(matching, registry) == matching
+    assert _scope_raw_signal(ambiguous, registry) is None
 
 
 def test_sync_publishes_certstream_candidate_without_urlscan_evidence(

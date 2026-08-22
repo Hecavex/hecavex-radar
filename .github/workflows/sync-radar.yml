@@ -58,6 +58,9 @@ jobs:
           RADAR_SNAPSHOT_GUARD_DAYS: ${{ vars.RADAR_SNAPSHOT_GUARD_DAYS || '30' }}
           RADAR_RETAIN_EXISTING_SIGNALS: ${{ vars.RADAR_RETAIN_EXISTING_SIGNALS || 'true' }}
           RADAR_RETAIN_DAYS: ${{ vars.RADAR_RETAIN_DAYS || '7' }}
+          RADAR_HISTORY_DETAIL_DAYS: ${{ vars.RADAR_HISTORY_DETAIL_DAYS || '30' }}
+          RADAR_HISTORY_SUMMARY_DAYS: ${{ vars.RADAR_HISTORY_SUMMARY_DAYS || '730' }}
+          RADAR_HISTORY_MAX_SIGNALS: ${{ vars.RADAR_HISTORY_MAX_SIGNALS || '5000' }}
           RADAR_ALLOW_SMALL_SNAPSHOT: ${{ inputs.allow_small_snapshot || 'false' }}
         run: python -m hecavex_radar.sync
       - name: Commit a changed snapshot
@@ -65,7 +68,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          git add -- public/data/radar.json
+          git add -- public/data/radar.json public/data/history.json data/history
           if git diff --cached --quiet; then
             echo "Snapshot is unchanged."
             exit 0

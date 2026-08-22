@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 const snapshotPath = fileURLToPath(new URL("./public/data/radar.json", import.meta.url));
-type PrerenderPage = "radar" | "methodology" | "documentation";
+const historyPath = fileURLToPath(new URL("./public/data/history.json", import.meta.url));
+type PrerenderPage = "radar" | "history" | "methodology" | "documentation";
 
 function staticPagePlugin() {
   return {
@@ -16,6 +17,8 @@ function staticPagePlugin() {
         const pages: Record<string, PrerenderPage> = {
           "/index.html": "radar",
           "/": "radar",
+          "/history/index.html": "history",
+          "/history/": "history",
           "/methodology/index.html": "methodology",
           "/methodology/": "methodology",
           "/docs/index.html": "documentation",
@@ -24,17 +27,30 @@ function staticPagePlugin() {
         const page = pages[context.path];
         if (!page) return html;
 
-        const [{ parseSnapshot }, { encodeSnapshotBootstrap }, { renderPrerenderedPage }] = await Promise.all([
+        const [
+          { parseSnapshot },
+          { parseHistory },
+          { encodeSnapshotBootstrap },
+          { encodeHistoryBootstrap },
+          { renderPrerenderedPage },
+        ] = await Promise.all([
           import("./src/lib/data.ts"),
+          import("./src/lib/historyData.ts"),
           import("./src/lib/snapshotBootstrap.ts"),
+          import("./src/lib/historyBootstrap.ts"),
           import("./src/prerender.ts"),
         ]);
         const snapshot = parseSnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
-        const renderedAt = Date.now();
-        const staticMarkup = renderPrerenderedPage(page, snapshot, renderedAt);
+        const history = await parseHistory(JSON.parse(readFileSync(historyPath, "utf8")));
+        const renderedAt = Date.parse(page === "history" ? history.generatedAt : snapshot.generatedAt);
+        const staticMarkup = renderPrerenderedPage(page, snapshot, renderedAt, history);
         const root = '<div id="root"></div>';
         if (!html.includes(root)) throw new Error(`Missing static-render root in ${context.path}`);
-        const bootstrap = page === "radar" ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"` : "";
+        const bootstrap = page === "radar"
+          ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
+          : page === "history"
+            ? ` data-history-bootstrap="${encodeHistoryBootstrap(history, renderedAt)}"`
+            : "";
         return html.replace(root, `<div id="root"${bootstrap}>${staticMarkup}</div>`);
       },
     },
@@ -47,6 +63,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         radar: fileURLToPath(new URL("./index.html", import.meta.url)),
+        history: fileURLToPath(new URL("./history/index.html", import.meta.url)),
         methodology: fileURLToPath(new URL("./methodology/index.html", import.meta.url)),
         documentation: fileURLToPath(new URL("./docs/index.html", import.meta.url)),
       },

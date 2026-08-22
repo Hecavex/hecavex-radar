@@ -3,20 +3,31 @@ import { renderToString } from "react-dom/server";
 
 import { App } from "./App.tsx";
 import { DocumentationPage } from "./DocumentationPage.tsx";
+import { HistoryApp } from "./HistoryApp.tsx";
 import { MethodologyPage } from "./MethodologyPage.tsx";
-import type { RadarSnapshot } from "./types.ts";
+import type { RadarHistory, RadarSnapshot } from "./types.ts";
 
-export type PrerenderPage = "radar" | "methodology" | "documentation";
+export type PrerenderPage = "radar" | "history" | "methodology" | "documentation";
 
 export function renderPrerenderedPage(
   page: PrerenderPage,
   snapshot: RadarSnapshot,
   renderedAt = Date.now(),
+  history?: RadarHistory,
 ): string {
   if (page === "radar") {
     return renderToString(
       createElement<{ initialSnapshot?: RadarSnapshot; initialNow?: number }>(App, {
         initialSnapshot: snapshot,
+        initialNow: renderedAt,
+      }),
+    );
+  }
+  if (page === "history") {
+    if (!history) throw new Error("History data is required to prerender the history page.");
+    return renderToString(
+      createElement<{ initialHistory?: RadarHistory; initialNow?: number }>(HistoryApp, {
+        initialHistory: history,
         initialNow: renderedAt,
       }),
     );

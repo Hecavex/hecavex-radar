@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from hecavex_radar.brands import (
+    domain_match_brands,
     is_brand_collision,
     load_brand_registry,
     match_brand_text,
@@ -233,6 +234,9 @@ def test_rejects_social_noise_and_ambiguous_multi_brand_matches() -> None:
     for domain in ["sociacta.example", "sociacta-login.example", "socialacta.example"]:
         assert score_domain(domain, registry) is None
     assert score_domain("secure-revolut-swedbank-login.example", registry) is None
+    assert domain_match_brands("swedbank-revolut-login.com", registry) == frozenset(
+        {"Revolut", "Swedbank"}
+    )
     assert match_brand_text("Swedbank and Revolut secure login", registry) is None
 
 
