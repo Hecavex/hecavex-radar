@@ -480,6 +480,10 @@ async function verifyInBrowser() {
           const metricGrid = document.querySelector(".metric-grid")?.getBoundingClientRect();
           const contentToc = document.querySelector(".methodology-toc, .docs-toc");
           const contentTocStyle = contentToc ? getComputedStyle(contentToc) : null;
+          const methodologyFieldList = document.querySelector(".methodology-field-list");
+          const methodologyFields = methodologyFieldList ? [...methodologyFieldList.children] : [];
+          const methodologyFieldListRect = methodologyFieldList?.getBoundingClientRect();
+          const finalMethodologyFieldRect = methodologyFields.at(-1)?.getBoundingClientRect();
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
@@ -493,6 +497,11 @@ async function verifyInBrowser() {
             metricTop: metricGrid?.top ?? 0,
             contentTocBorderTop: contentTocStyle?.borderTop ?? "",
             contentTocBorderBottom: contentTocStyle?.borderBottom ?? "",
+            methodologyFieldCount: methodologyFields.length,
+            methodologyFieldListLeft: methodologyFieldListRect?.left ?? 0,
+            methodologyFieldListRight: methodologyFieldListRect?.right ?? 0,
+            finalMethodologyFieldLeft: finalMethodologyFieldRect?.left ?? 0,
+            finalMethodologyFieldRight: finalMethodologyFieldRect?.right ?? 0,
           };
         });
         assert(
@@ -518,6 +527,14 @@ async function verifyInBrowser() {
             layout.contentTocBorderTop === layout.contentTocBorderBottom && layout.contentTocBorderTop.startsWith("1px solid "),
             `${entry.path} content navigation dividers are not a matching 1px pair at ${width}px ` +
               `(${layout.contentTocBorderTop || "none"}/${layout.contentTocBorderBottom || "none"}).`,
+          );
+        }
+        if (entry.path === "/methodology/") {
+          assert(layout.methodologyFieldCount === 7, `Methodology field reference has ${layout.methodologyFieldCount} entries instead of 7.`);
+          assert(
+            Math.abs(layout.finalMethodologyFieldLeft - (layout.methodologyFieldListLeft + 1)) <= 1 &&
+              Math.abs(layout.finalMethodologyFieldRight - (layout.methodologyFieldListRight - 1)) <= 1,
+            `Methodology field grid exposes an empty final cell at ${width}px.`,
           );
         }
 

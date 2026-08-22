@@ -1634,6 +1634,10 @@ main {
   background: var(--bg-elevated);
 }
 
+.methodology-field-list > div:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .methodology-field-list dt {
   color: var(--text);
   font: 650 .68rem var(--mono);
