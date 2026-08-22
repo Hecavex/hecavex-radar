@@ -66,7 +66,7 @@ hecavex-review export
 
 Only `export` writes a file in the repository, and that file contains sanitized active decisions rather than notes or analyst identity. See [Private review workflow](docs/REVIEW-WORKFLOW.md) before using subtree allowlists.
 
-The URLScan hunter requires `URLSCAN_API_KEY` in the process environment. The CertStream collector uses a four-minute window by default and can use a monitored endpoint through `CERTSTREAM_URL`. Collector and publisher settings are listed in [`.env.example`](.env.example); the application reads environment variables directly and does not load that file automatically.
+The URLScan hunter uses `URLSCAN_API_KEY` when it is present in the process environment. Without a key it reports a successful optional-source skip; independently qualifying CertStream candidates remain eligible and synchronization continues. The CertStream collector uses a four-minute window by default and can use a monitored endpoint through `CERTSTREAM_URL`. Collector and publisher settings are listed in [`.env.example`](.env.example); the application reads environment variables directly and does not load that file automatically.
 
 ## Brand registry
 

@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlsplit
 from urllib.request import Request
 
-from pytest import MonkeyPatch, raises
+from pytest import CaptureFixture, MonkeyPatch, raises
 
 from hecavex_radar import urlscan
 from hecavex_radar.brands import load_brand_registry
@@ -60,6 +60,24 @@ def _signal(
 def _disable_seed_inputs(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setenv("URLSCAN_CT_SEEDS_ENABLED", "false")
     monkeypatch.setenv("URLSCAN_INTELLIGENCE_SEEDS_ENABLED", "false")
+
+
+def test_main_skips_cleanly_without_optional_api_key(
+    monkeypatch: MonkeyPatch,
+    capsys: CaptureFixture[str],
+) -> None:
+    monkeypatch.delenv("URLSCAN_API_KEY", raising=False)
+
+    def forbidden(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("missing-key skip must not hunt or mutate the archive")
+
+    monkeypatch.setattr(urlscan, "hunt_urlscan", forbidden)
+    monkeypatch.setattr(urlscan, "write_urlscan_archive", forbidden)
+
+    assert urlscan.main() == 0
+    output = capsys.readouterr().out
+    assert "hunt skipped" in output
+    assert "CertStream candidates remain eligible" in output
 
 
 def _summary(uuid: str, url: str, title: str = "") -> dict[str, object]:

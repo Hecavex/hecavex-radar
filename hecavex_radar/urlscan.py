@@ -1101,8 +1101,11 @@ def read_recent_urlscan(
 def main() -> int:
     api_key = os.environ.get("URLSCAN_API_KEY", "").strip()
     if not api_key:
-        print("URLScan hunt failed: URLSCAN_API_KEY is required.")
-        return 1
+        print(
+            "URLScan hunt skipped: URLSCAN_API_KEY is not configured; "
+            "independently qualifying CertStream candidates remain eligible."
+        )
+        return 0
     try:
         now = datetime.now(UTC)
         signals = hunt_urlscan(api_key, now)

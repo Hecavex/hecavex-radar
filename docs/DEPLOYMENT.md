@@ -16,7 +16,7 @@ The publisher compares new output with rows seen during the previous 30 days and
 | --- | --- | --- | --- |
 | `ci.yml` | Pull requests and relevant pushes to `main` | Lint, type checks, tests, production build | Repository read |
 | `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | Atomic commit of `data/certstream/<date>/domains.ndjson` and bounded `public/data/collection-health.json` | Repository contents write |
-| `hunt-urlscan.yml` | `37 3,15 * * *` and manual dispatch | `data/urlscan/<date>/signals.ndjson` | `URLSCAN_API_KEY`; repository contents write |
+| `hunt-urlscan.yml` | `37 3,15 * * *` and manual dispatch | `data/urlscan/<date>/signals.ndjson` | Optional `URLSCAN_API_KEY`; repository contents write |
 | `sync-radar.yml` | `17 * * * *` and manual dispatch | Persistent live snapshot, candidate history, and compacted history summary | Optional HECAVEX secrets; repository contents write |
 | `deploy-pages.yml` | Successful CI for the current `main` commit | GitHub Pages artifact | `pages: write` and `id-token: write` |
 
@@ -34,7 +34,7 @@ Store credentials as repository secrets and feature switches as repository varia
 
 | Setting | Kind | Required when | Purpose |
 | --- | --- | --- | --- |
-| `URLSCAN_API_KEY` | Secret | URLScan workflow enabled | Authenticates passive URLScan search and result retrieval. Confirm that the account and plan permit the intended automated and public use. |
+| `URLSCAN_API_KEY` | Secret | Optional | Authenticates passive URLScan search and result retrieval. Without it, the URLScan job exits successfully without network access or archive changes; CertStream publication and synchronization continue. Confirm that the account and plan permit the intended automated and public use. |
 | `CERTSTREAM_URL` | Secret or variable | Optional | Uses an externally managed WSS endpoint instead of the workflow's temporary local CertStream server; the secret takes precedence. |
 | `HECAVEX_ENABLED` | Variable | Optional | Set to `true` to include the configured HECAVEX export in snapshot synchronization. |
 | `HECAVEX_FEED_URL` | Secret | `HECAVEX_ENABLED=true` | Production HTTPS endpoint implementing the [public data contract](DATA-CONTRACT.md). The HTTP loopback exception is for local development only. |
