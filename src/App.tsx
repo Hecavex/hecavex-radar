@@ -1,11 +1,11 @@
 import { AlertTriangle, RadioTower } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Dashboard } from "./components/Dashboard";
-import { SiteFooter } from "./components/SiteFooter";
-import { SiteHeader } from "./components/SiteHeader";
-import { loadSnapshot } from "./lib/data";
-import type { RadarSnapshot } from "./types";
+import { Dashboard } from "./components/Dashboard.tsx";
+import { SiteFooter } from "./components/SiteFooter.tsx";
+import { SiteHeader } from "./components/SiteHeader.tsx";
+import { loadSnapshot } from "./lib/data.ts";
+import type { RadarSnapshot } from "./types.ts";
 
 type LoadState =
   | { status: "loading" }

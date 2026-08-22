@@ -1,26 +1,192 @@
+/* Self-hosted OFL fonts. Latin Extended covers Lithuanian diacritics; Latin
+   covers the shared English/interface glyph set. */
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/inter/inter-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/inter/inter-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/inter/inter-latin-ext-400-italic.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/inter/inter-latin-400-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/inter/inter-latin-ext-500-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/inter/inter-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("/fonts/inter/inter-latin-ext-600-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("/fonts/inter/inter-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/inter/inter-latin-ext-700-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/inter/inter-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-ext-500-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-ext-600-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-ext-700-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/ibm-plex-mono/ibm-plex-mono-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: dark;
-  --bg: #080c11;
-  --bg-elevated: #0d131a;
-  --surface: #111923;
-  --surface-strong: #17212d;
-  --line: #24303d;
-  --line-strong: #344455;
-  --text: #f5f7fa;
-  --text-soft: #d2d8e0;
-  --muted: #9aa7b5;
-  --faint: #7f8c9a;
-  --ember: #e15a4f;
-  --ember-bright: #f17065;
-  --ember-soft: rgb(225 90 79 / 12%);
-  --blue: #78a7d4;
-  --blue-soft: rgb(120 167 212 / 12%);
-  --green: #6db18a;
-  --green-soft: rgb(109 177 138 / 12%);
-  --amber: #dda94f;
-  --amber-soft: rgb(221 169 79 / 12%);
-  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  --sans: Inter, "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #05080b;
+  --bg-elevated: #0b1117;
+  --surface: #101923;
+  --surface-strong: #14212c;
+  --line: #1e3440;
+  --line-strong: #31505f;
+  --text: #f2f8fb;
+  --text-soft: #b6c6cf;
+  --muted: #8397a3;
+  --faint: #728894;
+  --ember: #44c7dc;
+  --ember-bright: #6bd9ea;
+  --ember-soft: rgb(68 199 220 / 13%);
+  --blue: #44c7dc;
+  --blue-soft: rgb(68 199 220 / 13%);
+  --green: #a2da68;
+  --green-soft: rgb(162 218 104 / 13%);
+  --amber: #ffc857;
+  --amber-soft: rgb(255 200 87 / 13%);
+  --danger: #ff6b6b;
+  --danger-soft: rgb(255 107 107 / 13%);
+  --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --content-width: 94rem;
 }
 
@@ -44,7 +210,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at 80% -10%, rgb(120 167 212 / 7%), transparent 30rem),
+    radial-gradient(circle at 80% -10%, rgb(68 199 220 / 8%), transparent 30rem),
     var(--bg);
   color: var(--text-soft);
   font: 15px/1.6 var(--sans);
@@ -129,8 +295,8 @@ main > section,
   justify-content: space-between;
   min-height: 4.6rem;
   padding: .7rem clamp(1rem, 4vw, 4rem);
-  border-bottom: 1px solid rgb(36 48 61 / 80%);
-  background: rgb(8 12 17 / 88%);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(18px);
 }
 
@@ -394,7 +560,7 @@ main {
   padding: 1.25rem;
   border: 1px solid var(--line);
   border-left: 2px solid var(--green);
-  background: rgb(13 19 26 / 84%);
+  background: color-mix(in srgb, var(--bg-elevated) 84%, transparent);
 }
 
 .freshness-card.stale {
@@ -407,7 +573,7 @@ main {
   margin-top: .3rem;
   border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 .3rem var(--green-soft), 0 0 1.4rem rgb(109 177 138 / 45%);
+  box-shadow: 0 0 0 .3rem var(--green-soft), 0 0 1.4rem color-mix(in srgb, var(--green) 45%, transparent);
 }
 
 .stale .live-dot {
@@ -496,6 +662,7 @@ main {
 .overview-grid {
   display: grid;
   grid-template-columns: 1.15fr 1fr 1fr;
+  align-items: start;
   gap: 1rem;
   margin: 1rem 0 0;
 }
@@ -507,7 +674,6 @@ main {
 }
 
 .panel {
-  min-height: 18rem;
   padding: 1.25rem;
 }
 
@@ -554,7 +720,7 @@ main {
   align-items: center;
   gap: .7rem;
   padding: .6rem .25rem;
-  border-bottom: 1px solid rgb(36 48 61 / 55%);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
 }
 
 .source-list svg {
@@ -665,7 +831,7 @@ main {
   min-width: 0;
   padding: 1.15rem 1.25rem;
   border-right: 1px solid var(--line);
-  background: rgb(8 12 17 / 52%);
+  background: color-mix(in srgb, var(--bg) 52%, transparent);
 }
 
 .collection-disclosure-grid article:last-child {
@@ -711,7 +877,7 @@ main {
 .collection-health-disclosure {
   margin-top: 1rem;
   border: 1px solid var(--line);
-  background: rgb(8 12 17 / 52%);
+  background: color-mix(in srgb, var(--bg) 52%, transparent);
 }
 
 .collection-health-disclosure > summary {
@@ -731,7 +897,7 @@ main {
 }
 
 .collection-health-disclosure > summary:hover {
-  background: rgb(23 33 45 / 48%);
+  background: color-mix(in srgb, var(--surface) 48%, transparent);
 }
 
 .collection-health-disclosure > summary strong,
@@ -822,7 +988,7 @@ main {
 .health-badge.outcome-healthy-empty,
 .health-badge.outcome-healthy-matches,
 .health-badge.freshness-current {
-  border-color: rgb(109 177 138 / 38%);
+  border-color: color-mix(in srgb, var(--green) 38%, transparent);
   color: var(--green);
   background: var(--green-soft);
 }
@@ -831,15 +997,15 @@ main {
 .health-badge.outcome-partial,
 .health-badge.schedule-delayed,
 .health-badge.freshness-stale {
-  border-color: rgb(221 169 79 / 38%);
+  border-color: color-mix(in srgb, var(--amber) 38%, transparent);
   color: var(--amber);
   background: var(--amber-soft);
 }
 
 .health-badge.outcome-failed {
-  border-color: rgb(225 90 79 / 38%);
-  color: var(--ember-bright);
-  background: var(--ember-soft);
+  border-color: rgb(255 107 107 / 38%);
+  color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .collection-health-summary,
@@ -1714,7 +1880,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgb(23 33 45 / 65%);
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
 }
 
 .indicator-cell {
@@ -2031,8 +2197,8 @@ td time {
   min-height: 24rem;
   padding: 1rem;
   background:
-    linear-gradient(45deg, rgb(36 48 61 / 35%) 25%, transparent 25%, transparent 75%, rgb(36 48 61 / 35%) 75%),
-    linear-gradient(45deg, rgb(36 48 61 / 35%) 25%, transparent 25%, transparent 75%, rgb(36 48 61 / 35%) 75%),
+    linear-gradient(45deg, color-mix(in srgb, var(--line) 35%, transparent) 25%, transparent 25%, transparent 75%, color-mix(in srgb, var(--line) 35%, transparent) 75%),
+    linear-gradient(45deg, color-mix(in srgb, var(--line) 35%, transparent) 25%, transparent 25%, transparent 75%, color-mix(in srgb, var(--line) 35%, transparent) 75%),
     var(--bg);
   background-position: 0 0, 12px 12px;
   background-size: 24px 24px;
@@ -2184,7 +2350,7 @@ td time {
 }
 
 .state-page .danger {
-  color: var(--ember);
+  color: var(--danger);
 }
 
 .state-page h1 {
@@ -2203,7 +2369,7 @@ td time {
   padding: .5rem 1rem;
   border: 1px solid var(--ember);
   background: var(--ember);
-  color: white;
+  color: var(--bg);
   font-weight: 680;
   cursor: pointer;
 }
@@ -2441,7 +2607,7 @@ td time {
     width: auto;
     max-width: none;
     padding: .65rem .8rem;
-    border-bottom: 1px solid rgb(36 48 61 / 70%);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
   }
 
   .table-scroll td::before {

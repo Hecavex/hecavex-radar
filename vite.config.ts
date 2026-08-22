@@ -25,9 +25,9 @@ function staticPagePlugin() {
         if (!page) return html;
 
         const [{ parseSnapshot }, { encodeSnapshotBootstrap }, { renderPrerenderedPage }] = await Promise.all([
-          import("./src/lib/data"),
-          import("./src/lib/snapshotBootstrap"),
-          import("./src/prerender"),
+          import("./src/lib/data.ts"),
+          import("./src/lib/snapshotBootstrap.ts"),
+          import("./src/prerender.ts"),
         ]);
         const snapshot = parseSnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
         const renderedAt = Date.now();

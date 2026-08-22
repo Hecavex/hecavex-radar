@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { formatRelativeTime } from "../lib/format";
+import { formatRelativeTime } from "../lib/format.ts";
 import {
   loadCollectionHealth,
   type CollectionAttempt,
   type CollectionHealth as CollectionHealthArtifact,
   type CollectionOutcome,
-} from "../lib/collectionHealth";
+} from "../lib/collectionHealth.ts";
 
 const outcomeLabels: Record<CollectionOutcome, string> = {
   "healthy-empty": "Healthy empty",

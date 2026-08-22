@@ -18,9 +18,99 @@ const pages = [
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
 ];
 const navigation = ["Research", "Radar", "APT Notes", "Labs", "Data", "Methodology", "Docs", "Source"];
+const fontFiles = [
+  "inter/inter-latin-400-normal.woff2",
+  "inter/inter-latin-ext-400-normal.woff2",
+  "inter/inter-latin-400-italic.woff2",
+  "inter/inter-latin-ext-400-italic.woff2",
+  "inter/inter-latin-500-normal.woff2",
+  "inter/inter-latin-ext-500-normal.woff2",
+  "inter/inter-latin-600-normal.woff2",
+  "inter/inter-latin-ext-600-normal.woff2",
+  "inter/inter-latin-700-normal.woff2",
+  "inter/inter-latin-ext-700-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-ext-400-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-500-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-ext-500-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-600-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-ext-600-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-700-normal.woff2",
+  "ibm-plex-mono/ibm-plex-mono-latin-ext-700-normal.woff2",
+];
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function verifyDeploymentTopology() {
+  const deploy = readFileSync(join(root, ".github", "workflows", "deploy-pages.yml"), "utf8");
+  const ci = readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8");
+  const collector = readFileSync(join(root, ".github", "workflows", "collect-certstream.yml"), "utf8");
+  const hunter = readFileSync(join(root, ".github", "workflows", "hunt-urlscan.yml"), "utf8");
+
+  assert(/workflows:\s*\["CI"\]/u.test(deploy), "Pages deployment must be gated only by the CI workflow.");
+  assert(!deploy.includes("Sync radar snapshot"), "Pages deployment still listens directly to snapshot sync.");
+  assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
+  assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
+  assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
+  const hunterGitAdds = hunter.match(/^\s+git add -- .*$/gmu) ?? [];
+  assert(
+    hunterGitAdds.length === 1 && hunterGitAdds[0].trim() === "git add -- data/urlscan",
+    "URLScan hunter stages files outside its archive boundary.",
+  );
+  assert(ci.includes('- "data/urlscan/**"'), "Archive-only URLScan commits still trigger redundant CI and Pages runs.");
+}
+
+function inputPins(path) {
+  return readFileSync(path, "utf8")
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => /^[a-z0-9][a-z0-9._-]*==[^\s]+$/iu.test(line));
+}
+
+function verifyLock(path, expectedPins) {
+  const lock = readFileSync(path, "utf8");
+  assert(lock.includes("CPython 3.12 on GitHub Actions Linux x86_64"), `${relative(root, path)} has no target provenance.`);
+  assert(!/^--(?:extra-)?index-url\b/mu.test(lock), `${relative(root, path)} must not embed a package index.`);
+  for (const pin of expectedPins) {
+    assert(lock.includes(`${pin} \\\n`), `${relative(root, path)} does not contain ${pin}.`);
+  }
+
+  const requirementStarts = [...lock.matchAll(/^([a-z0-9][a-z0-9._-]*==[^\s]+) \\\n((?:\s+--hash=sha256:[a-f0-9]{64}(?: \\)?\r?\n)+)/gimu)];
+  const declared = [...lock.matchAll(/^[a-z0-9][a-z0-9._-]*==[^\s]+/gimu)];
+  assert(requirementStarts.length === declared.length, `${relative(root, path)} contains a requirement without SHA-256 hashes.`);
+  assert(declared.length >= expectedPins.length, `${relative(root, path)} is missing resolved transitive dependencies.`);
+}
+
+function verifyPythonAutomationLocks() {
+  const requirements = join(root, "requirements");
+  const runtimeLock = "requirements/automation-runtime-py312.lock";
+  const ciLock = "requirements/automation-ci-py312.lock";
+  const runtimePins = inputPins(join(requirements, "automation-runtime.in"));
+  const ciPins = [...runtimePins, ...inputPins(join(requirements, "automation-ci.in"))];
+  const project = readFileSync(join(root, "pyproject.toml"), "utf8");
+  const projectPins = [...project.matchAll(/"([a-z0-9][a-z0-9._-]*==[^"\s]+)"/giu)].map((match) => match[1]);
+  assert(
+    new Set(projectPins).size === new Set(ciPins).size && projectPins.every((pin) => ciPins.includes(pin)),
+    "Python automation inputs have drifted from the exact dependencies declared in pyproject.toml.",
+  );
+  verifyLock(join(root, runtimeLock), runtimePins);
+  verifyLock(join(root, ciLock), ciPins);
+
+  const workflowLocks = new Map([
+    ["ci.yml", ciLock],
+    ["collect-certstream.yml", runtimeLock],
+    ["hunt-urlscan.yml", runtimeLock],
+    ["sync-radar.yml", runtimeLock],
+  ]);
+  for (const [name, lock] of workflowLocks) {
+    const workflow = readFileSync(join(root, ".github", "workflows", name), "utf8");
+    assert(workflow.includes('python-version: "3.12"'), `${name} must run the Python 3.12 lock target.`);
+    assert(workflow.includes(`--require-hashes -r ${lock}`), `${name} does not install its reviewed hash lock.`);
+    assert(workflow.includes("--no-deps --no-build-isolation"), `${name} can still resolve dependencies outside its lock.`);
+    assert(workflow.split(lock).length >= 3, `${name} does not include its lock in both installation and the pip cache key.`);
+  }
 }
 
 function walk(directory) {
@@ -112,6 +202,22 @@ function verifyBuiltHtml() {
     assert(html.includes(page.marker), `${page.path} is missing its meaningful prerendered content.`);
     assert(!html.includes("Enable JavaScript"), `${page.path} still uses an enable-JavaScript placeholder.`);
   }
+
+  for (const fontFile of fontFiles) {
+    const path = join(output, "fonts", fontFile);
+    assert(existsSync(path), `Production output is missing self-hosted font ${fontFile}.`);
+    assert(statSync(path).size > 5_000, `Self-hosted font ${fontFile} is unexpectedly small.`);
+  }
+  const css = walk(output)
+    .filter((path) => path.endsWith(".css"))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+  assert(css.includes("IBM Plex Mono") && css.includes("inter-latin-ext-400-normal.woff2"), "Built CSS does not advertise the Cold Signal fonts.");
+  assert(!/fonts\.(googleapis|gstatic)\.com/u.test(css), "Built CSS must not depend on remote font services.");
+  assert(
+    !/#(?:080c11|0d131a|17212d|24303d|344455|6db18a|dda94f)|rgb\((?:8 12 17|13 19 26|23 33 45|36 48 61|52 68 85|109 177 138|221 169 79)/iu.test(css),
+    "Built CSS still contains a retired pre-Cold-Signal palette value.",
+  );
 }
 
 async function focusWithTab(page, locator, limit = 12) {
@@ -317,6 +423,8 @@ async function verifyInBrowser() {
   }
 }
 
+verifyDeploymentTopology();
+verifyPythonAutomationLocks();
 verifyBuiltHtml();
 await verifyInBrowser();
 process.stdout.write(`Verified ${pages.length} hydratable static pages at ${widths.join(", ")}px with links, fragments, metadata, CSP, delayed-refresh retention, no-JS content, keyboard navigation, overflow, focus, and accessibility checks.\n`);

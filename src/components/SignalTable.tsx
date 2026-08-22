@@ -1,11 +1,16 @@
 import { Camera, Check, ChevronLeft, ChevronRight, Copy, FileSearch, SearchX } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { formatDateTime, formatRelativeTime, sentenceCase } from "../lib/format";
-import type { RadarSignal } from "../types";
-import { ScreenshotModal } from "./ScreenshotModal";
+import { formatDateTime, formatRelativeTime, sentenceCase } from "../lib/format.ts";
+import type { RadarSignal } from "../types.ts";
+import { ScreenshotModal } from "./ScreenshotModal.tsx";
 
 const PAGE_SIZE = 25;
+
+interface CaptureState {
+  signal: RadarSignal;
+  trigger: HTMLButtonElement;
+}
 
 function Confidence({ value }: { value: number }) {
   const level = value >= 80 ? "high" : value >= 50 ? "medium" : "low";
@@ -19,7 +24,7 @@ function Confidence({ value }: { value: number }) {
 export function SignalTable({ signals, now = Date.now() }: { signals: RadarSignal[]; now?: number }) {
   const [page, setPage] = useState(1);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [capture, setCapture] = useState<RadarSignal | null>(null);
+  const [capture, setCapture] = useState<CaptureState | null>(null);
   const pages = Math.max(1, Math.ceil(signals.length / PAGE_SIZE));
 
   useEffect(() => setPage(1), [signals]);
@@ -30,6 +35,7 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
     setCopiedId(signal.id);
     window.setTimeout(() => setCopiedId(null), 1400);
   };
+  const closeCapture = useCallback(() => setCapture(null), []);
 
   if (signals.length === 0) {
     return (
@@ -88,7 +94,12 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
                 </td>
                 <td className="capture-cell" data-label="Evidence">
                   {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length ? (
-                    <button type="button" onClick={() => setCapture(signal)} aria-label={`View evidence for ${signal.domain}`}>
+                    <button
+                      type="button"
+                      aria-haspopup="dialog"
+                      onClick={(event) => setCapture({ signal, trigger: event.currentTarget })}
+                      aria-label={`View evidence for ${signal.domain}`}
+                    >
                       {signal.screenshotUrl ? <Camera aria-hidden="true" /> : <FileSearch aria-hidden="true" />}
                     </button>
                   ) : <span aria-label="No evidence available">—</span>}
@@ -112,7 +123,9 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
           </button>
         </div>
       </div>
-      {capture && <ScreenshotModal signal={capture} onClose={() => setCapture(null)} />}
+      {capture && (
+        <ScreenshotModal signal={capture.signal} returnFocus={capture.trigger} onClose={closeCapture} />
+      )}
     </div>
   );
 }

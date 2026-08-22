@@ -47,6 +47,7 @@ def test_root_json_ld_hash_matches_the_content_security_policy() -> None:
 
 def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     workflow = Path(".github/workflows/collect-certstream.yml").read_text(encoding="utf-8")
+    deploy = Path(".github/workflows/deploy-pages.yml").read_text(encoding="utf-8")
 
     assert "python -m hecavex_radar.collection_health begin" in workflow
     assert "python -m hecavex_radar.collection_health finalize" in workflow
@@ -55,5 +56,7 @@ def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     assert "CERTSTREAM_INSTALL_OUTCOME: ${{ steps.dependencies.outcome }}" in workflow
     assert "CERTSTREAM_PREPARE_OUTCOME: ${{ steps.source.outcome }}" in workflow
     assert "CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}" in workflow
-    assert "actions: write" in workflow
-    assert 'gh workflow run deploy-pages.yml --ref "${GITHUB_REF_NAME}"' in workflow
+    assert "actions: write" not in workflow
+    assert "gh workflow run deploy-pages.yml" not in workflow
+    assert 'workflows: ["CI"]' in deploy
+    assert "Sync radar snapshot" not in deploy

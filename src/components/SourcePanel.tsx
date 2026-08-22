@@ -1,7 +1,7 @@
 import { CheckCircle2, CircleDashed, RadioTower } from "lucide-react";
 
-import { formatRelativeTime } from "../lib/format";
-import type { RadarSource } from "../types";
+import { formatRelativeTime } from "../lib/format.ts";
+import type { RadarSource } from "../types.ts";
 
 export function SourcePanel({ sources, now = Date.now() }: { sources: RadarSource[]; now?: number }) {
   const healthy = sources.filter((source) => source.state === "healthy").length;

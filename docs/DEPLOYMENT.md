@@ -4,7 +4,7 @@ HECAVEX Radar is a static GitHub Pages site. Scheduled workflows maintain the ch
 
 ## Pages
 
-The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds the dashboard, `/methodology/`, and `/docs/` into `dist/`, and deploys them after successful CI on `main`, after a successful snapshot sync, or by manual dispatch.
+The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds the dashboard, `/methodology/`, and `/docs/` into `dist/`, and deploys only after successful CI for the current `main` commit. This single CI gate covers source changes, collection-health publications, and changed public snapshots; superseded CI completions do not deploy stale content. URLScan archive-only commits wait for the hourly snapshot sync instead of deploying an unchanged dashboard.
 
 [`sync-radar.yml`](../.github/workflows/sync-radar.yml) validates the configured inputs each hour and commits a changed `public/data/radar.json`. Persisting the snapshot means retention and sharp-drop protection compare against the actual previous publication rather than an artifact-only copy. The Pages job has no collector credentials and never changes data.
 
@@ -18,9 +18,11 @@ The publisher compares new output with rows seen during the previous 30 days and
 | `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | Atomic commit of `data/certstream/<date>/domains.ndjson` and bounded `public/data/collection-health.json` | Repository contents write |
 | `hunt-urlscan.yml` | `37 3,15 * * *` and manual dispatch | `data/urlscan/<date>/signals.ndjson` | `URLSCAN_API_KEY`; repository contents write |
 | `sync-radar.yml` | `17 * * * *` and manual dispatch | Persistent `public/data/radar.json` | Optional HECAVEX secrets; repository contents write |
-| `deploy-pages.yml` | Successful CI on `main`, successful snapshot sync, and manual dispatch | GitHub Pages artifact | `pages: write` and `id-token: write` |
+| `deploy-pages.yml` | Successful CI for the current `main` commit | GitHub Pages artifact | `pages: write` and `id-token: write` |
 
 Cron schedules use UTC. Each CertStream run samples a four-minute window; it is not continuous collection. The two archive writers and snapshot writer share one concurrency group so their pull/rebase/push sequences cannot run at the same time. They commit changes directly to `main`, so repository rules must allow normal GitHub Actions bot pushes while still blocking force-pushes and branch deletion.
+
+Python 3.12 automation installs reviewed, SHA-256-locked dependency sets from [`requirements/`](../requirements/). Scheduled writers use the minimal runtime lock; CI uses the development-tool superset. The local package is then installed without resolving additional dependencies or creating an unconstrained build environment.
 
 The CertStream job initializes health before installing collector dependencies, lets setup and collection failures reach a finalizer, and stages the daily candidate archive and health document in one commit. A failed or no-input attempt is therefore published before the job reports failure. Hard runner cancellation, platform outage before checkout, or a rejected push cannot be recorded by a workflow that no longer has execution or write access. The health document replaces one fixed path and is capped at 32 KiB; it does not create per-attempt files or expose raw candidates.
 

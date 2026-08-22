@@ -1,15 +1,15 @@
 import { Activity, ArrowDown, Database, Globe2, Radar, ShieldAlert, Target } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { dashboardMetrics, filterSignals, topGroups } from "../lib/dashboard";
-import { formatNumber, formatRelativeTime } from "../lib/format";
-import type { Filters, RadarSnapshot } from "../types";
-import { DEFAULT_FILTERS } from "../lib/dashboard";
-import { CollectionDisclosure } from "./CollectionDisclosure";
-import { DistributionPanel } from "./DistributionPanel";
-import { FilterBar } from "./FilterBar";
-import { SignalTable } from "./SignalTable";
-import { SourcePanel } from "./SourcePanel";
+import { dashboardMetrics, filterSignals, topGroups } from "../lib/dashboard.ts";
+import { formatNumber, formatRelativeTime } from "../lib/format.ts";
+import type { Filters, RadarSnapshot } from "../types.ts";
+import { DEFAULT_FILTERS } from "../lib/dashboard.ts";
+import { CollectionDisclosure } from "./CollectionDisclosure.tsx";
+import { DistributionPanel } from "./DistributionPanel.tsx";
+import { FilterBar } from "./FilterBar.tsx";
+import { SignalTable } from "./SignalTable.tsx";
+import { SourcePanel } from "./SourcePanel.tsx";
 
 const metrics = [
   { key: "total", label: "Recent signals", icon: Database },

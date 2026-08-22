@@ -1,5 +1,5 @@
-import { parseSnapshot } from "./data";
-import type { RadarSnapshot } from "../types";
+import { parseSnapshot } from "./data.ts";
+import type { RadarSnapshot } from "../types.ts";
 
 export type SnapshotBootstrap = {
   snapshot: RadarSnapshot;

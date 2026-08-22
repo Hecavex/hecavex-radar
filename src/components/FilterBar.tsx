@@ -1,8 +1,8 @@
 import { RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-import { DEFAULT_FILTERS, sourceNames, uniqueValues } from "../lib/dashboard";
-import type { Filters, RadarSignal, SignalStatus } from "../types";
+import { DEFAULT_FILTERS, sourceNames, uniqueValues } from "../lib/dashboard.ts";
+import type { Filters, RadarSignal, SignalStatus } from "../types.ts";
 
 export function FilterBar({
   signals,

@@ -1,4 +1,4 @@
-import { SIGNAL_STATUSES, type RadarSignal, type RadarSnapshot, type RadarSource } from "../types";
+import { SIGNAL_STATUSES, type RadarSignal, type RadarSnapshot, type RadarSource } from "../types.ts";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);

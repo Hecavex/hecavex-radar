@@ -1,4 +1,4 @@
-import type { Filters, RadarSignal, RadarSnapshot } from "../types";
+import type { Filters, RadarSignal, RadarSnapshot } from "../types.ts";
 
 export const DEFAULT_FILTERS: Filters = {
   query: "",

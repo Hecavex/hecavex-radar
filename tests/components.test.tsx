@@ -65,6 +65,69 @@ describe("signal table", () => {
     expect(screen.getByText(/contacts urlscan\.io/i)).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: signal.url })).not.toBeInTheDocument();
   });
+
+  it("cycles focus through the evidence dialog in both directions", () => {
+    const signal = {
+      ...makeSignal(1),
+      screenshotUrl: "https://urlscan.io/screenshots/11111111-1111-1111-1111-111111111111.png",
+      referenceUrl: "https://urlscan.io/result/11111111-1111-1111-1111-111111111111/",
+    };
+    render(<SignalTable signals={[signal]} />);
+    fireEvent.click(screen.getByRole("button", { name: /view evidence/i }));
+
+    const close = screen.getByRole("button", { name: "Close capture" });
+    const last = screen.getByRole("link", { name: /open report/i });
+    expect(close).toHaveFocus();
+
+    last.focus();
+    fireEvent.keyDown(last, { key: "Tab" });
+    expect(close).toHaveFocus();
+
+    fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
+    expect(last).toHaveFocus();
+  });
+
+  it("restores focus to the exact evidence trigger after close and Escape", () => {
+    const signal = {
+      ...makeSignal(1),
+      referenceUrl: "https://urlscan.io/result/11111111-1111-1111-1111-111111111111/",
+    };
+    render(<SignalTable signals={[signal]} />);
+    const trigger = screen.getByRole("button", { name: /view evidence/i });
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("button", { name: "Close capture" }));
+    expect(trigger).toHaveFocus();
+
+    fireEvent.click(trigger);
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
+  it("isolates background controls while evidence is open and restores them on close", () => {
+    const signal = {
+      ...makeSignal(1),
+      referenceUrl: "https://urlscan.io/result/11111111-1111-1111-1111-111111111111/",
+    };
+    render(
+      <>
+        <button type="button">Background action</button>
+        <SignalTable signals={[signal]} />
+      </>,
+    );
+    const background = screen.getByRole("button", { name: "Background action" });
+    fireEvent.click(screen.getByRole("button", { name: /view evidence/i }));
+
+    expect(background).toHaveAttribute("inert");
+    expect(background).toHaveAttribute("aria-hidden", "true");
+    background.focus();
+    expect(screen.getByRole("button", { name: "Close capture" })).toHaveFocus();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close capture" }));
+    expect(background).not.toHaveAttribute("inert");
+    expect(background).not.toHaveAttribute("aria-hidden");
+  });
 });
 
 describe("dashboard controls", () => {

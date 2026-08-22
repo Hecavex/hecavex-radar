@@ -1,10 +1,10 @@
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 
-import { App } from "./App";
-import { DocumentationPage } from "./DocumentationPage";
-import { MethodologyPage } from "./MethodologyPage";
-import type { RadarSnapshot } from "./types";
+import { App } from "./App.tsx";
+import { DocumentationPage } from "./DocumentationPage.tsx";
+import { MethodologyPage } from "./MethodologyPage.tsx";
+import type { RadarSnapshot } from "./types.ts";
 
 export type PrerenderPage = "radar" | "methodology" | "documentation";
 

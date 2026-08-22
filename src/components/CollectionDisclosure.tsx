@@ -1,6 +1,6 @@
 import { ChevronDown, Clock3, SearchX, ShieldCheck } from "lucide-react";
 
-import { CollectionHealth } from "./CollectionHealth";
+import { CollectionHealth } from "./CollectionHealth.tsx";
 
 export function CollectionDisclosure() {
   return (

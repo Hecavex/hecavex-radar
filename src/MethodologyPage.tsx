@@ -1,6 +1,6 @@
-import { Methodology } from "./components/Methodology";
-import { SiteFooter } from "./components/SiteFooter";
-import { SiteHeader } from "./components/SiteHeader";
+import { Methodology } from "./components/Methodology.tsx";
+import { SiteFooter } from "./components/SiteFooter.tsx";
+import { SiteHeader } from "./components/SiteHeader.tsx";
 
 export function MethodologyPage() {
   return (
