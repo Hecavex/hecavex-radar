@@ -12,14 +12,16 @@ import { preview } from "vite";
 const root = resolve(import.meta.dirname, "..");
 const output = join(root, "dist");
 const publicOrigin = "https://radar.hecavex.com";
-const widths = [320, 360, 390, 768, 1024, 1280];
+const widths = [320, 360, 390, 768, 1024, 1280, 1440];
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
   { path: "/history/", marker: "Candidate history" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
 ];
-const navigation = ["Research", "Radar", "History", "APT Notes", "Labs", "Data", "Methodology", "Docs", "Source"];
+const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
+const productNavigation = ["Overview", "History", "Methodology", "Docs"];
+const mobileNavigation = [...productNavigation, "Source", ...portfolioNavigation];
 const publicArtifactRawBytes = 512 * 1024;
 const performanceBudgets = {
   htmlGzip: 512 * 1024,
@@ -181,6 +183,30 @@ function verifyBuiltHtml() {
     assert(document.querySelectorAll("main").length === 1, `${route} must contain exactly one main element.`);
     assert(document.querySelectorAll("h1").length === 1, `${route} must contain exactly one h1.`);
     assert(document.querySelector('.skip-link[href="#main-content"]'), `${route} has no usable skip link.`);
+    assert(document.querySelector('header.site-header[data-portfolio-shell="v1"]'), `${route} has no shared portfolio shell marker.`);
+    assert(document.querySelector('.brand[href="https://hecavex.com/en/"]'), `${route} does not link the HECAVEX brand to Research.`);
+    assert(document.querySelector('.product-identity[href="/"]'), `${route} does not link the Radar identity to its overview.`);
+    assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
+    assert(document.querySelectorAll(".product-navigation a").length === 4, `${route} does not expose four Radar links.`);
+    assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
+    const portfolioLabels = [...document.querySelectorAll(".portfolio-navigation a")].map((anchor) => anchor.textContent?.trim());
+    const productLabels = [...document.querySelectorAll(".product-navigation a")].map((anchor) => anchor.textContent?.trim());
+    assert(JSON.stringify(portfolioLabels) === JSON.stringify(portfolioNavigation), `${route} changes the portfolio navigation order.`);
+    assert(JSON.stringify(productLabels) === JSON.stringify(productNavigation), `${route} changes the Radar navigation order.`);
+    const expectedLocalPage = new Map([
+      ["/", "Overview"],
+      ["/history/", "History"],
+      ["/methodology/", "Methodology"],
+      ["/docs/", "Docs"],
+    ]).get(route);
+    assert(
+      document.querySelector('.portfolio-navigation a[aria-current="page"]')?.textContent?.trim() === "Radar",
+      `${route} does not identify Radar as the active portfolio product.`,
+    );
+    assert(
+      document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage,
+      `${route} does not identify ${expectedLocalPage} as the active Radar page.`,
+    );
     assert(document.querySelector('meta[name="description"]')?.content, `${route} has no description.`);
     assert(document.querySelector('link[rel="canonical"]')?.href, `${route} has no canonical URL.`);
     assert(document.querySelector('meta[property="og:image"]')?.content, `${route} has no Open Graph image.`);
@@ -362,7 +388,7 @@ async function verifyMobileKeyboardNavigation(page, entry, width) {
   await page.keyboard.press("Enter");
   assert(await page.locator(".mobile-navigation").evaluate((element) => element.hasAttribute("open")), `${entry.path} mobile menu does not open with Enter at ${width}px.`);
 
-  for (const label of navigation) {
+  for (const label of mobileNavigation) {
     await page.keyboard.press("Tab");
     const active = await page.evaluate(() => ({
       label: document.activeElement?.textContent?.replace(/\s+/gu, " ").trim(),
@@ -447,12 +473,22 @@ async function verifyInBrowser() {
         assert(await page.locator("#root").getAttribute("data-hydrated") === "true", `${entry.path} did not hydrate under its production CSP at ${width}px.`);
         const layout = await page.evaluate(() => {
           const heading = document.querySelector("main h1")?.getBoundingClientRect();
+          const headingStyle = document.querySelector("main h1") ? getComputedStyle(document.querySelector("main h1")) : null;
+          const networkBar = document.querySelector(".network-bar")?.getBoundingClientRect();
+          const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
+          const hero = document.querySelector(".hero")?.getBoundingClientRect();
+          const metricGrid = document.querySelector(".metric-grid")?.getBoundingClientRect();
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
             bodyWidth: document.body.scrollWidth,
             headingHeight: heading?.height ?? 0,
             headingRight: heading?.right ?? 0,
+            headingFontSize: headingStyle ? parseFloat(headingStyle.fontSize) : 0,
+            networkHeight: networkBar?.height ?? 0,
+            productHeight: productBar?.height ?? 0,
+            heroHeight: hero?.height ?? 0,
+            metricTop: metricGrid?.top ?? 0,
           };
         });
         assert(
@@ -460,7 +496,19 @@ async function verifyInBrowser() {
           `${entry.path} overflows horizontally at ${width}px (${layout.documentWidth}/${layout.bodyWidth} > ${layout.clientWidth}).`,
         );
         assert(layout.headingHeight > 0 && layout.headingHeight < 540, `${entry.path} has an oversized h1 at ${width}px.`);
+        assert(layout.headingFontSize <= 64.1, `${entry.path} exceeds the 64px display-heading ceiling at ${width}px.`);
         assert(layout.headingRight <= layout.clientWidth + 1, `${entry.path} h1 escapes the viewport at ${width}px.`);
+        assert(Math.abs(layout.networkHeight - 64) <= 1, `${entry.path} network row is ${layout.networkHeight}px at ${width}px, expected 64px.`);
+
+        if (width > 1160) {
+          assert(Math.abs(layout.productHeight - 52) <= 1, `${entry.path} product row is ${layout.productHeight}px at ${width}px, expected 52px.`);
+        } else {
+          assert(layout.productHeight === 0, `${entry.path} exposes the desktop product row at ${width}px.`);
+        }
+        if (width === 1440 && entry.path === "/") {
+          assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
+          assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
+        }
 
         await page.keyboard.press("Tab");
         const focus = await page.evaluate(() => {
@@ -480,25 +528,32 @@ async function verifyInBrowser() {
           `${entry.path} focused skip link has no visible outline.`,
         );
 
-        if (width <= 1050) {
+        if (width <= 1160) {
           const summary = page.locator(".mobile-navigation summary");
           assert(await summary.isVisible(), `${entry.path} mobile menu is not reachable at ${width}px.`);
           await verifyMobileKeyboardNavigation(page, entry, width);
           await summary.click();
-          for (const label of navigation) {
+          for (const label of mobileNavigation) {
             assert(
-              await page.locator(".mobile-navigation-links a", { hasText: label }).isVisible(),
+              await page.locator(".mobile-navigation-panel a", { hasText: label }).isVisible(),
               `${entry.path} mobile navigation hides ${label} at ${width}px.`,
             );
           }
           await summary.click();
         } else {
-          for (const label of navigation) {
+          for (const label of portfolioNavigation) {
             assert(
-              await page.locator(".desktop-navigation a", { hasText: label }).isVisible(),
-              `${entry.path} desktop navigation hides ${label} at ${width}px.`,
+              await page.locator(".portfolio-navigation a", { hasText: label }).isVisible(),
+              `${entry.path} desktop portfolio navigation hides ${label} at ${width}px.`,
             );
           }
+          for (const label of productNavigation) {
+            assert(
+              await page.locator(".product-navigation a", { hasText: label }).isVisible(),
+              `${entry.path} desktop product navigation hides ${label} at ${width}px.`,
+            );
+          }
+          assert(await page.locator(".header-utility .source-link").isVisible(), `${entry.path} desktop Source utility is hidden at ${width}px.`);
         }
 
         assert(browserErrors.length === 0, `${entry.path} failed its CSP-enforced browser smoke test at ${width}px: ${browserErrors.join(" | ")}`);
@@ -531,7 +586,7 @@ async function verifyInBrowser() {
       assert((await noScriptPage.locator("body").innerText()).includes(entry.marker), `${entry.path} loses core content without JavaScript.`);
       const summary = noScriptPage.locator(".mobile-navigation summary");
       await summary.click();
-      assert(await noScriptPage.locator(".mobile-navigation-links a", { hasText: "Methodology" }).isVisible(), `${entry.path} no-JS menu does not open.`);
+      assert(await noScriptPage.locator(".mobile-navigation-panel a", { hasText: "Methodology" }).isVisible(), `${entry.path} no-JS menu does not open.`);
     }
     await noScriptContext.close();
   } finally {

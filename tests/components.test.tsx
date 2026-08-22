@@ -226,26 +226,49 @@ describe("on-site documentation", () => {
 
   it("routes core navigation and data terms to local pages", () => {
     const { container, unmount } = render(<SiteHeader currentPage="radar" />);
-    const desktopNavigation = container.querySelector<HTMLElement>(".desktop-navigation")!;
-    expect(within(desktopNavigation).getByRole("link", { name: "Research" })).toHaveAttribute(
+    const header = container.querySelector<HTMLElement>('.site-header[data-portfolio-shell="v1"]')!;
+    const portfolioNavigation = header.querySelector<HTMLElement>(".portfolio-navigation")!;
+    const productNavigation = header.querySelector<HTMLElement>(".product-navigation")!;
+    expect(within(portfolioNavigation).getByRole("link", { name: "Research" })).toHaveAttribute(
       "href",
       "https://hecavex.com/en/research/",
     );
-    expect(within(desktopNavigation).getByRole("link", { name: "Radar" })).toHaveAttribute("aria-current", "page");
-    expect(within(desktopNavigation).getByRole("link", { name: "Data" })).toHaveAttribute(
+    expect(within(portfolioNavigation).getByRole("link", { name: "Radar" })).toHaveAttribute("aria-current", "page");
+    expect(within(portfolioNavigation).getByRole("link", { name: "Data" })).toHaveAttribute(
       "href",
       "https://labs.hecavex.com/data/",
     );
-    expect(within(desktopNavigation).getByRole("link", { name: "Methodology" })).toHaveAttribute("href", "/methodology/");
-    expect(within(desktopNavigation).getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs/");
+    expect(within(productNavigation).getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");
+    expect(within(productNavigation).getByRole("link", { name: "Methodology" })).toHaveAttribute("href", "/methodology/");
+    expect(within(productNavigation).getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs/");
+    expect(within(header).getByRole("link", { name: "HECAVEX Research" })).toHaveAttribute(
+      "href",
+      "https://hecavex.com/en/",
+    );
+    expect(container.querySelector(".product-identity")).toHaveAttribute("href", "/");
+    expect(container.querySelector(".header-utility .source-link")).toHaveAttribute(
+      "href",
+      "https://github.com/Hecavex/hecavex-radar",
+    );
     expect(screen.getByText("Menu").closest("summary")).toBeInTheDocument();
     unmount();
 
     render(<SiteFooter />);
-    expect(screen.getByRole("link", { name: "Data terms & attribution" })).toHaveAttribute("href", "/docs/#data-terms");
-    expect(screen.getByRole("link", { name: "Security contact" })).toHaveAttribute(
-      "href",
-      "/.well-known/security.txt",
-    );
+    expect(screen.getByRole("link", { name: "Research" })).toHaveAttribute("href", "https://hecavex.com/en/research/");
+    expect(screen.getByRole("link", { name: "Security" })).toHaveAttribute("href", "/.well-known/security.txt");
+  });
+
+  it("closes the mobile navigation with Escape and restores summary focus", () => {
+    const { container } = render(<SiteHeader currentPage="history" />);
+    const details = container.querySelector<HTMLDetailsElement>(".mobile-navigation")!;
+    const summary = within(details).getByText("Menu").closest("summary")!;
+    details.open = true;
+    fireEvent(details, new Event("toggle"));
+    expect(summary).toHaveAttribute("aria-label", "Close navigation menu");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(details.open).toBe(false);
+    expect(summary).toHaveFocus();
   });
 });

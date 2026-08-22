@@ -34,7 +34,7 @@ The dashboard provides search, filtering, pagination, first/last-seen timestamps
 
 ## Local development
 
-Requirements: Python 3.12 or newer, Node.js 22.12 or newer, and pnpm 10.
+Requirements: Python 3.12 or newer, Node.js 22.22.2+ on the Node 22 LTS line (or Node 24.15+), and pnpm 10.
 
 ```sh
 python -m pip install -e ".[dev]"

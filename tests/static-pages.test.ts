@@ -26,6 +26,11 @@ describe("prerendered pages", () => {
       "text/html",
     );
     expect(document.querySelector("header.site-header")).not.toBeNull();
+    expect(document.querySelector('header.site-header[data-portfolio-shell="v1"]')).not.toBeNull();
+    expect(document.querySelector('.brand[href="https://hecavex.com/en/"]')).not.toBeNull();
+    expect(document.querySelectorAll(".portfolio-navigation a")).toHaveLength(5);
+    expect(document.querySelectorAll(".product-navigation a")).toHaveLength(4);
+    expect(document.querySelector(".header-utility .source-link")).not.toBeNull();
     expect(document.querySelector("main#main-content")).not.toBeNull();
     expect(document.querySelector("footer.site-footer")).not.toBeNull();
     expect(document.body.textContent).toContain(marker);
