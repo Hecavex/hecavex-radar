@@ -478,6 +478,8 @@ async function verifyInBrowser() {
           const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
           const hero = document.querySelector(".hero")?.getBoundingClientRect();
           const metricGrid = document.querySelector(".metric-grid")?.getBoundingClientRect();
+          const contentToc = document.querySelector(".methodology-toc, .docs-toc");
+          const contentTocStyle = contentToc ? getComputedStyle(contentToc) : null;
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
@@ -489,6 +491,8 @@ async function verifyInBrowser() {
             productHeight: productBar?.height ?? 0,
             heroHeight: hero?.height ?? 0,
             metricTop: metricGrid?.top ?? 0,
+            contentTocBorderTop: contentTocStyle?.borderTop ?? "",
+            contentTocBorderBottom: contentTocStyle?.borderBottom ?? "",
           };
         });
         assert(
@@ -508,6 +512,13 @@ async function verifyInBrowser() {
         if (width === 1440 && entry.path === "/") {
           assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
           assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
+        }
+        if (entry.path === "/methodology/" || entry.path === "/docs/") {
+          assert(
+            layout.contentTocBorderTop === layout.contentTocBorderBottom && layout.contentTocBorderTop.startsWith("1px solid "),
+            `${entry.path} content navigation dividers are not a matching 1px pair at ${width}px ` +
+              `(${layout.contentTocBorderTop || "none"}/${layout.contentTocBorderBottom || "none"}).`,
+          );
         }
 
         await page.keyboard.press("Tab");
