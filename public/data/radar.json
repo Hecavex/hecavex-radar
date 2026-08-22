@@ -1,8 +1,54 @@
 {
   "schemaVersion": 1,
   "dataset": "live",
-  "generatedAt": "2026-08-22T12:30:01.195Z",
+  "generatedAt": "2026-08-22T17:00:07.579Z",
   "signals": [
+    {
+      "id": "f1909ad7540e264b7fb4",
+      "url": "hxxps://www[.]swedbank-bank[.]com[.]ph",
+      "domain": "www[.]swedbank-bank[.]com[.]ph",
+      "firstSeen": "2026-08-22T10:09:17.586Z",
+      "lastSeen": "2026-08-22T10:09:17.586Z",
+      "sources": [
+        "URLScan"
+      ],
+      "status": "suspected",
+      "brand": "Swedbank",
+      "country": "US",
+      "host": "AS63949 · AKAMAI-LINODE-AP - Akamai Connected Cloud, SG · 45[.]79[.]222[.]138",
+      "screenshotUrl": "https://urlscan.io/screenshots/01a028f2-2165-745f-b601-69a69f0ba047.png",
+      "referenceUrl": "https://urlscan.io/result/01a028f2-2165-745f-b601-69a69f0ba047/",
+      "hashes": [
+        "c29fa1c1a7bd72b609245b6fa7474d0b46db571275fc723815d66285c55fdb84"
+      ],
+      "confidence": 100,
+      "reasonCodes": [
+        "brand-domain-match"
+      ]
+    },
+    {
+      "id": "54b7622ec9c57480f3dc",
+      "url": "hxxps://maxima-bank[.]ru",
+      "domain": "maxima-bank[.]ru",
+      "firstSeen": "2026-08-22T07:21:16.259Z",
+      "lastSeen": "2026-08-22T07:21:16.259Z",
+      "sources": [
+        "URLScan"
+      ],
+      "status": "suspected",
+      "brand": "MAXIMA",
+      "country": null,
+      "host": "AS13335 · CLOUDFLARENET - Cloudflare, Inc., US · 172[.]67[.]167[.]116",
+      "screenshotUrl": "https://urlscan.io/screenshots/01a02858-492b-7569-ab47-ce5b4bcafdfd.png",
+      "referenceUrl": "https://urlscan.io/result/01a02858-492b-7569-ab47-ce5b4bcafdfd/",
+      "hashes": [
+        "aa2e5c777e1e2769731b726330f638ca085a8f4543300e86edd5b02175941081"
+      ],
+      "confidence": 100,
+      "reasonCodes": [
+        "brand-domain-match"
+      ]
+    },
     {
       "id": "d6aee63d133c297e817c",
       "url": "hxxp://revolut-casino-online[.]cz",
@@ -163,7 +209,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-22T12:30:01.195Z",
+      "fetchedAt": "2026-08-22T17:00:07.579Z",
       "records": 1,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
@@ -171,8 +217,8 @@
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-22T12:30:01.195Z",
-      "records": 6,
+      "fetchedAt": "2026-08-22T17:00:07.579Z",
+      "records": 8,
       "state": "healthy",
       "note": "Passive results passing public validation from the last 30 days"
     },

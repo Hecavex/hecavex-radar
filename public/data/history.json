@@ -1,10 +1,72 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-22T12:31:05.935Z",
+  "generatedAt": "2026-08-22T17:00:07.579Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "f1909ad7540e264b7fb4",
+      "domain": "www[.]swedbank-bank[.]com[.]ph",
+      "brand": "Swedbank",
+      "firstSeen": "2026-08-22T10:09:17.586Z",
+      "lastSeen": "2026-08-22T10:09:17.586Z",
+      "observationCount": 1,
+      "sources": [
+        "URLScan"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-domain-match",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e5a1c67d35bdb96e15e3af4100cc6207",
+          "observedAt": "2026-08-22T10:09:17.586Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "URLScan"
+          ],
+          "reasonCodes": [
+            "brand-domain-match",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "54b7622ec9c57480f3dc",
+      "domain": "maxima-bank[.]ru",
+      "brand": "MAXIMA",
+      "firstSeen": "2026-08-22T07:21:16.259Z",
+      "lastSeen": "2026-08-22T07:21:16.259Z",
+      "observationCount": 1,
+      "sources": [
+        "URLScan"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-domain-match",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "566e600292903ec42211564188987959",
+          "observedAt": "2026-08-22T07:21:16.259Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "URLScan"
+          ],
+          "reasonCodes": [
+            "brand-domain-match",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d6aee63d133c297e817c",
       "domain": "revolut-casino-online[.]cz",
