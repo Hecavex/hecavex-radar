@@ -1,10 +1,41 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-22T17:00:07.579Z",
+  "generatedAt": "2026-08-23T05:50:33.088Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "3d179a68c89e521dc72c",
+      "domain": "trackmaxima[.]com",
+      "brand": "MAXIMA",
+      "firstSeen": "2026-08-23T02:00:48.622Z",
+      "lastSeen": "2026-08-23T02:00:48.622Z",
+      "observationCount": 1,
+      "sources": [
+        "URLScan"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-domain-match",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d8ed239436d56fbdebce2d4b89f94599",
+          "observedAt": "2026-08-23T02:00:48.622Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "URLScan"
+          ],
+          "reasonCodes": [
+            "brand-domain-match",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "f1909ad7540e264b7fb4",
       "domain": "www[.]swedbank-bank[.]com[.]ph",
