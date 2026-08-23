@@ -62,6 +62,7 @@ export type RadarSnapshot = {
   schemaVersion: 1;
   dataset: "live";
   generatedAt: string;
+  lastSuccessfulSyncAt: string;
   signals: RadarSignal[];
   sources: RadarSource[];
 };

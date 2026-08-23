@@ -35,4 +35,4 @@ Configuration:
 | `RADAR_HISTORY_ROOT` | `data/history` | repository-relative |
 | `RADAR_HISTORY_OUTPUT` | `public/data/history.json` | repository-relative |
 
-Running synchronization twice over unchanged inputs must leave the live snapshot, daily events, compacted summary, and public history byte-for-byte unchanged.
+Running synchronization twice over unchanged inputs advances only the live snapshot's successful-sync heartbeat and source check times. Its `generatedAt` data-change timestamp, daily events, compacted summary, and public history remain unchanged.

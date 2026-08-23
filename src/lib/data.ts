@@ -95,11 +95,15 @@ function isSource(value: unknown): value is RadarSource {
 }
 
 export function parseSnapshot(value: unknown): RadarSnapshot {
+  const generatedAt = isRecord(value) ? timestampValue(value.generatedAt) : null;
+  const lastSuccessfulSyncAt = isRecord(value) ? timestampValue(value.lastSuccessfulSyncAt) : null;
   if (
     !isRecord(value) ||
     value.schemaVersion !== 1 ||
     value.dataset !== "live" ||
-    timestampValue(value.generatedAt) === null ||
+    generatedAt === null ||
+    lastSuccessfulSyncAt === null ||
+    generatedAt > lastSuccessfulSyncAt ||
     !Array.isArray(value.signals) ||
     !value.signals.every(isSignal) ||
     !Array.isArray(value.sources) ||

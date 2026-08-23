@@ -221,9 +221,10 @@ export function Documentation() {
         <div className="docs-callout">
           <strong>Freshness</strong>
           <p>
-            Consumers must read <code>generatedAt</code> and each source&apos;s <code>fetchedAt</code> and <code>state</code>.
-            A source timestamp is an archive-read time. CertStream connection evidence is reported separately in the
-            bounded collection-health document and still does not prove continuous coverage.
+            Consumers must read <code>lastSuccessfulSyncAt</code> for publisher health, <code>generatedAt</code> for the
+            latest material data change, and each source&apos;s <code>fetchedAt</code> and <code>state</code>. A source timestamp
+            is an archive-read time. CertStream connection evidence is reported separately in the bounded
+            collection-health document and still does not prove continuous coverage.
           </p>
         </div>
       </section>
@@ -238,6 +239,7 @@ export function Documentation() {
   "schemaVersion": 1,
   "dataset": "live",
   "generatedAt": "2026-08-21T09:15:00.000Z",
+  "lastSuccessfulSyncAt": "2026-08-21T10:17:00.000Z",
   "signals": [],
   "sources": []
 }`}</code></pre>

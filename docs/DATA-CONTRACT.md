@@ -11,12 +11,15 @@ The dashboard reads `public/data/radar.json` with this top-level shape:
   "schemaVersion": 1,
   "dataset": "live",
   "generatedAt": "2026-08-21T09:15:00.000Z",
+  "lastSuccessfulSyncAt": "2026-08-21T10:17:00.000Z",
   "signals": [],
   "sources": []
 }
 ```
 
-`generatedAt` is the UTC publication time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form. Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The complete public snapshot is capped at 512 KiB; the publisher fails instead of truncating when the cap is exceeded.
+`generatedAt` is the UTC time of the latest material snapshot change. `lastSuccessfulSyncAt` is the most recent successful publisher run, including a run that validated the same observations and made no material data change. It is never earlier than `generatedAt`. The dashboard uses `lastSuccessfulSyncAt` for publisher freshness and reports `generatedAt` separately as the data-change time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form.
+
+Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The complete public snapshot is capped at 512 KiB; the publisher fails instead of truncating when the cap is exceeded.
 
 ### Signal fields
 
@@ -28,7 +31,7 @@ Each signal represents one normalized host. Observations of different paths on t
 | `url` | string | Defanged HTTP(S) indicator; userinfo is rejected, query and fragment are removed, and nested URLs and sensitive path segments are redacted. |
 | `domain` | string | Defanged normalized hostname. |
 | `firstSeen` | UTC timestamp | Canonical millisecond form; invalid or missing input becomes the normalized `lastSeen`, and it is never later than `lastSeen`. |
-| `lastSeen` | UTC timestamp | Canonical millisecond form; invalid or missing input becomes the UTC publication time. |
+| `lastSeen` | UTC timestamp | Canonical millisecond form; invalid or missing input becomes the UTC synchronization time. |
 | `sources` | string[] | Deduplicated observation providers: `CertStream`, `URLScan`, or `HECAVEX`. Discovery-seed lineage is not included. |
 | `status` | enum | `active`, `suspected`, `offline`, `mitigated`, or `unknown`. |
 | `brand` | string or null | Registry-resolved claimed target, not attribution. |

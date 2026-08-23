@@ -2,7 +2,7 @@ import { Activity, ArrowDown, Database, Globe2, Radar, ShieldAlert, Target } fro
 import { useMemo, useState } from "react";
 
 import { dashboardMetrics, filterSignals, topGroups } from "../lib/dashboard.ts";
-import { formatNumber, formatRelativeTime } from "../lib/format.ts";
+import { formatDateTime, formatNumber, formatRelativeTime } from "../lib/format.ts";
 import type { Filters, RadarSnapshot } from "../types.ts";
 import { DEFAULT_FILTERS } from "../lib/dashboard.ts";
 import { CollectionDisclosure } from "./CollectionDisclosure.tsx";
@@ -25,8 +25,8 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
   const filteredSignals = useMemo(() => filterSignals(snapshot.signals, filters), [snapshot.signals, filters]);
   const topBrands = useMemo(() => topGroups(snapshot.signals, "brand"), [snapshot.signals]);
   const topCountries = useMemo(() => topGroups(snapshot.signals, "country"), [snapshot.signals]);
-  const ageMs = now - new Date(snapshot.generatedAt).getTime();
-  const isStale = ageMs > 2 * 60 * 60 * 1000;
+  const syncAgeMs = Math.max(0, now - new Date(snapshot.lastSuccessfulSyncAt).getTime());
+  const isStale = syncAgeMs > 2 * 60 * 60 * 1000;
 
   return (
     <main id="main-content">
@@ -49,9 +49,10 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
         <div className={`freshness-card ${isStale ? "stale" : "fresh"}`}>
           <span className="live-dot" aria-hidden="true" />
           <div>
-            <small>{isStale ? "Published snapshot delayed" : "Published snapshot current"}</small>
-            <strong>{formatRelativeTime(snapshot.generatedAt, now)}</strong>
-            <span>Generated {new Date(snapshot.generatedAt).toLocaleString("en-GB", { timeZone: "UTC" })} UTC</span>
+            <small>{isStale ? "Snapshot sync delayed" : "Snapshot sync current"}</small>
+            <strong>Checked {formatRelativeTime(snapshot.lastSuccessfulSyncAt, now)}</strong>
+            <span>Last successful sync {formatDateTime(snapshot.lastSuccessfulSyncAt)} UTC</span>
+            <span>Data last changed {formatRelativeTime(snapshot.generatedAt, now)} / {formatDateTime(snapshot.generatedAt)} UTC</span>
           </div>
         </div>
       </section>

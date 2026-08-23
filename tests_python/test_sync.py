@@ -10,6 +10,7 @@ from hecavex_radar.models import RadarSignal, RawSignal, SourceResult
 from hecavex_radar.safety import stable_id
 from hecavex_radar.sync import (
     _load_existing_snapshot,
+    _preserve_generated_at_if_unchanged,
     _represented_records,
     _retain_only_unrefreshed_sources,
     _scope_raw_signal,
@@ -82,6 +83,7 @@ def test_unchanged_snapshot_ignores_only_publication_timestamps(tmp_path: Path) 
         "schemaVersion": 1,
         "dataset": "live",
         "generatedAt": "2026-08-21T09:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T09:00:00.000Z",
         "signals": [],
         "sources": [source],
     }
@@ -90,6 +92,7 @@ def test_unchanged_snapshot_ignores_only_publication_timestamps(tmp_path: Path) 
     timestamp_only: dict[str, object] = {
         **original,
         "generatedAt": "2026-08-21T10:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T10:00:00.000Z",
         "sources": [timestamp_source],
     }
 
@@ -100,11 +103,80 @@ def test_unchanged_snapshot_ignores_only_publication_timestamps(tmp_path: Path) 
     )
 
 
+def test_unchanged_snapshot_advances_heartbeat_but_preserves_data_timestamp(tmp_path: Path) -> None:
+    target = tmp_path / "radar.json"
+    original: dict[str, object] = {
+        "schemaVersion": 1,
+        "dataset": "live",
+        "generatedAt": "2026-08-21T09:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T09:00:00.000Z",
+        "signals": [],
+        "sources": [],
+    }
+    target.write_text(json.dumps(original), encoding="utf-8")
+    candidate: dict[str, object] = {
+        **original,
+        "generatedAt": "2026-08-21T10:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T10:00:00.000Z",
+    }
+
+    assert _preserve_generated_at_if_unchanged(target, candidate)
+    assert candidate["generatedAt"] == "2026-08-21T09:00:00.000Z"
+    assert candidate["lastSuccessfulSyncAt"] == "2026-08-21T10:00:00.000Z"
+
+
+def test_changed_snapshot_advances_data_and_heartbeat_together(tmp_path: Path) -> None:
+    target = tmp_path / "radar.json"
+    original: dict[str, object] = {
+        "schemaVersion": 1,
+        "dataset": "live",
+        "generatedAt": "2026-08-21T09:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T09:00:00.000Z",
+        "signals": [],
+        "sources": [],
+    }
+    target.write_text(json.dumps(original), encoding="utf-8")
+    candidate: dict[str, object] = {
+        **original,
+        "generatedAt": "2026-08-21T10:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T10:00:00.000Z",
+        "sources": [{"name": "CertStream", "state": "partial"}],
+    }
+
+    assert not _preserve_generated_at_if_unchanged(target, candidate)
+    assert candidate["generatedAt"] == candidate["lastSuccessfulSyncAt"]
+
+
 def test_requires_a_hecavex_url_when_integration_is_enabled(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setenv("HECAVEX_ENABLED", "true")
     monkeypatch.delenv("HECAVEX_FEED_URL", raising=False)
     with pytest.raises(RuntimeError, match="HECAVEX_FEED_URL"):
         synchronize()
+
+
+def test_failed_sync_does_not_advance_the_existing_heartbeat(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    registry = load_brand_registry()
+    target = tmp_path / "public" / "data" / "radar.json"
+    target.parent.mkdir(parents=True)
+    original = {
+        "schemaVersion": 1,
+        "dataset": "live",
+        "generatedAt": "2026-08-21T09:00:00.000Z",
+        "lastSuccessfulSyncAt": "2026-08-21T10:00:00.000Z",
+        "signals": [],
+        "sources": [],
+    }
+    target.write_text(json.dumps(original), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CERTSTREAM_ARCHIVE_ENABLED", "false")
+    monkeypatch.setenv("URLSCAN_ARCHIVE_ENABLED", "false")
+    monkeypatch.setenv("HECAVEX_ENABLED", "false")
+    monkeypatch.setattr("hecavex_radar.sync.load_brand_registry", lambda: registry)
+
+    with pytest.raises(RuntimeError, match="No source completed"):
+        synchronize()
+
+    assert json.loads(target.read_text(encoding="utf-8")) == original
 
 
 def test_retains_only_recent_valid_defanged_signals(tmp_path: Path) -> None:

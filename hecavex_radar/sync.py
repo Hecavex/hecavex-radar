@@ -70,7 +70,11 @@ def _output_path() -> Path:
 def _stable_snapshot_view(payload: object) -> object:
     if not isinstance(payload, dict):
         return payload
-    stable = {key: value for key, value in payload.items() if key != "generatedAt"}
+    stable = {
+        key: value
+        for key, value in payload.items()
+        if key not in {"generatedAt", "lastSuccessfulSyncAt"}
+    }
     raw_sources = stable.get("sources")
     if isinstance(raw_sources, list):
         stable["sources"] = [
@@ -90,6 +94,21 @@ def _snapshot_content_unchanged(target: Path, candidate: object) -> bool:
     except (FileNotFoundError, OSError, json.JSONDecodeError):
         return False
     return _stable_snapshot_view(existing) == _stable_snapshot_view(candidate)
+
+
+def _preserve_generated_at_if_unchanged(target: Path, candidate: dict[str, object]) -> bool:
+    """Keep the material-data timestamp while allowing a successful heartbeat write."""
+    if not _snapshot_content_unchanged(target, candidate):
+        return False
+    try:
+        existing = json.loads(target.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        return False
+    generated_at = existing.get("generatedAt") if isinstance(existing, dict) else None
+    if _public_timestamp(generated_at) is None:
+        return False
+    candidate["generatedAt"] = generated_at
+    return True
 
 
 def _existing_signal_count(target: Path, recent_since: datetime | None = None) -> int | None:
@@ -547,12 +566,11 @@ def synchronize() -> Path:
         "schemaVersion": 1,
         "dataset": "live",
         "generatedAt": now,
+        "lastSuccessfulSyncAt": now,
         "signals": merged,
         "sources": sources,
     }
-    if _snapshot_content_unchanged(target, snapshot):
-        print("Snapshot content unchanged; preserving existing publication timestamps.", flush=True)
-        return target
+    content_unchanged = _preserve_generated_at_if_unchanged(target, snapshot)
     temporary = target.with_name(f"{target.name}.tmp")
     target.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
@@ -565,7 +583,13 @@ def synchronize() -> Path:
     except Exception:
         temporary.unlink(missing_ok=True)
         raise
-    print(f"Published {len(merged)} defanged signals to {target.relative_to(Path.cwd())}.", flush=True)
+    if content_unchanged:
+        print(
+            "Snapshot data unchanged; recorded the successful sync and refreshed source check times.",
+            flush=True,
+        )
+    else:
+        print(f"Published {len(merged)} defanged signals to {target.relative_to(Path.cwd())}.", flush=True)
     return target
 
 

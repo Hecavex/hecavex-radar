@@ -24,6 +24,7 @@ const snapshot = (overrides: Record<string, unknown> = {}) => ({
   schemaVersion: 1,
   dataset: "live",
   generatedAt: "2026-08-21T10:00:00.000Z",
+  lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
   signals: [],
   sources: [],
   ...overrides,
@@ -40,6 +41,7 @@ describe("snapshot schema", () => {
         schemaVersion: 1,
         dataset: "live",
         generatedAt: "2026-08-21T10:00:00.000Z",
+        lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
         signals: [],
         sources: [],
       }).signals,
@@ -61,6 +63,13 @@ describe("snapshot schema", () => {
   it("rejects malformed and non-canonical timestamps before rendering", () => {
     expect(() => parseSnapshot(snapshot({ generatedAt: "not-a-date" }))).toThrow(/schema version 1/);
     expect(() => parseSnapshot(snapshot({ generatedAt: "2026-02-30T10:00:00.000Z" }))).toThrow(/schema version 1/);
+    expect(() => parseSnapshot(snapshot({ lastSuccessfulSyncAt: "not-a-date" }))).toThrow(/schema version 1/);
+    expect(() =>
+      parseSnapshot(snapshot({
+        generatedAt: "2026-08-21T10:00:00.000Z",
+        lastSuccessfulSyncAt: "2026-08-21T09:59:59.999Z",
+      })),
+    ).toThrow(/schema version 1/);
     expect(() => parseSnapshot(snapshot({ signals: [{ ...validSignal, firstSeen: "invalid" }] }))).toThrow(
       /schema version 1/,
     );
@@ -124,6 +133,7 @@ describe("snapshot schema", () => {
       schemaVersion: 1,
       dataset: "live",
       generatedAt: "2026-08-21T10:00:00.000Z",
+      lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
       signals: [signal],
       sources: [],
     })).toThrow(/schema version 1/);
@@ -149,6 +159,7 @@ describe("snapshot schema", () => {
       schemaVersion: 1,
       dataset: "live",
       generatedAt: "2026-08-21T10:00:00.000Z",
+      lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
       signals: [signal],
       sources: [],
     })).toThrow(/schema version 1/);
@@ -175,6 +186,7 @@ describe("snapshot schema", () => {
       schemaVersion: 1,
       dataset: "live",
       generatedAt: "2026-08-21T10:00:00.000Z",
+      lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
       signals: [signal],
       sources: [],
     })).toThrow(/schema version 1/);

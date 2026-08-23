@@ -42,7 +42,7 @@ function staticPagePlugin() {
         ]);
         const snapshot = parseSnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
         const history = await parseHistory(JSON.parse(readFileSync(historyPath, "utf8")));
-        const renderedAt = Date.parse(page === "history" ? history.generatedAt : snapshot.generatedAt);
+        const renderedAt = Date.parse(page === "history" ? history.generatedAt : snapshot.lastSuccessfulSyncAt);
         const staticMarkup = renderPrerenderedPage(page, snapshot, renderedAt, history);
         const root = '<div id="root"></div>';
         if (!html.includes(root)) throw new Error(`Missing static-render root in ${context.path}`);

@@ -44,6 +44,7 @@ describe("dashboard data", () => {
       schemaVersion: 1,
       dataset: "live",
       generatedAt: "2026-08-21T10:00:00.000Z",
+      lastSuccessfulSyncAt: "2026-08-21T10:00:00.000Z",
       signals,
       sources: [],
     };
