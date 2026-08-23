@@ -169,6 +169,8 @@ A current hostname match must agree with the declared brand. When the hostname n
 
 The document is capped at 32 KiB, uses an exact fixed-field schema, and is replaced atomically when its non-timestamp state changes. It contains no API key, authentication material, candidate domain, or result payload. Missing credentials cause no API request and record `configured: false` with `skipped-not-configured`; repeated identical skips within one UTC day do not create timestamp-only commits. HTTP 429 or exhaustion of a conservative internal cap stops further requests and records an observable bounded outcome while preserving prior archive rows.
 
+A checked-in hunt state is operational evidence produced by GitHub Actions, not a hand-authored default or local-test fixture. Synchronization publishes `skipped` for `skipped-not-configured`, `partial` for failed or budget-limited refreshes, and `healthy` only for a completed configured hunt. Valid historical archive rows remain independently visible in every case.
+
 ### Candidate history
 
 `data/history/daily/YYYY-MM-DD/events.ndjson` uses UTC partitions and stores exact-schema, defanged events. An event has:

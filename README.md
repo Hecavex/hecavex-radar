@@ -39,6 +39,8 @@ The scheduled CertStream listener runs for four minutes twice per hour: at most 
 
 The URLScan workflow runs at minute 37 every two hours. Each run attempts exact passive lookups for the complete bounded set of at most 250 candidates observed during the rolling previous seven days, subject to conservative request budgets. A deterministic cursor preserves progress only when an operator lowers the per-run selection or a request budget interrupts the set. The hunter performs only searches of existing public reports and retrieval of public result documents: it does not submit scans or visit candidate hosts. A missing `URLSCAN_API_KEY` is a successful, explicit skip with no API request. The checked-in hunt-state ledger records configuration, UTC budget counters, cursor progress, and the latest outcome, but no credential or candidate domain.
 
+The hunt-state file is workflow evidence, not bootstrap configuration: its first checked-in value and later transitions must come from a scheduled or manually dispatched GitHub Actions run, never from local test output. Snapshot synchronization maps an unconfigured hunt to a public `skipped` source state while retaining previously validated URLScan observations; it does not recast absence of enrichment as benign evidence.
+
 ## Public service artifacts
 
 | Path | Role in `radar.hecavex.com` |
