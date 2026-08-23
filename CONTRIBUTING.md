@@ -1,11 +1,31 @@
-# Contributing
+# HECAVEX Radar change policy
 
-Thanks for helping improve HECAVEX Radar.
+This repository maintains the production service at [radar.hecavex.com](https://radar.hecavex.com). It is not a starter template or supported self-hosting product. HECAVEX reviews changes according to the live service's safety, provenance, privacy, accessibility, and operational requirements.
 
-1. Open an issue before large behavioral or data-contract changes.
-2. Keep the project read-only and static. Do not add accounts, submissions, or browser-side calls to observed indicators.
-3. Never commit live credentials, internal collector code, proprietary scoring logic, private HECAVEX history, or real victim data. Public defanged CertStream candidates may only use the documented archive schema.
-4. Add Python tests for pipeline changes and Vitest tests for dashboard changes.
-5. Create a Python 3.12 virtual environment, install `.[dev]`, install the pnpm dependencies, and run `pnpm check` before submitting a pull request.
+Corrections to published data, brand mappings, documentation, or accessibility can be reported through an issue when they contain no sensitive material. Large behavioral or data-contract proposals should be discussed before implementation. Vulnerabilities, credentials, victim data, and sensitive indicators must follow the private process in [SECURITY.md](SECURITY.md).
 
-Use reserved `.test`, `.example`, or documentation IP ranges in fixtures. Contributions are accepted under the Apache License 2.0.
+## Change requirements
+
+1. Keep the public service read-only and static. Do not add accounts, submissions, browser-side indicator requests, or an administration endpoint.
+2. Never commit live credentials, private collector code, proprietary scoring logic, internal HECAVEX history, analyst notes, or victim data. Public defanged observations may use only the documented archive schemas.
+3. Preserve passive collection boundaries: Radar reads certificate names and existing public URLScan reports; it does not visit candidate hosts or submit URLs for scanning.
+4. Add Python regression coverage for pipeline changes and Vitest coverage for interface changes.
+5. Use reserved `.test`, `.example`, and documentation IP ranges in fixtures.
+6. Run the complete gate before a change is approved: `pnpm check`.
+
+## Maintainer environment
+
+Local execution exists only to develop and verify changes destined for the HECAVEX-operated service. It does not reproduce production source access, schedules, private review state, DNS, or HECAVEX operation.
+
+The maintained toolchains are Python 3.12, Node.js 22.22.2 or newer on the supported lines in `package.json`, and pnpm 10. After creating an isolated Python environment:
+
+```sh
+python -m pip install -e ".[dev]"
+corepack enable
+pnpm install
+pnpm check
+```
+
+The application and Python tools read process environment variables directly; `.env.example` is an operator reference and is not loaded automatically. Never copy credentials into tracked files.
+
+Contributions to original repository code and documentation are accepted under the Apache License 2.0. HECAVEX branding and operation of the production service are separate from that software license.

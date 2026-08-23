@@ -1,6 +1,6 @@
 # Detection and brand matching
 
-The same registry and hostname checks are used for CertStream collection, URLScan hunting, and snapshot synchronization. They identify possible impersonation of reviewed Lithuanian brands; they do not prove that a site is phishing.
+These are the public matching rules used by the HECAVEX-operated [radar.hecavex.com](https://radar.hecavex.com) service. The same registry and hostname checks govern CertStream collection, URLScan hunting, and snapshot synchronization. They identify possible impersonation of reviewed Lithuanian brands; they do not prove that a site is phishing.
 
 ## Matching rules
 
@@ -27,7 +27,7 @@ If the current hostname matcher selects a brand, it must select the row's declar
 
 The public review export can suppress an exact host or a deliberately approved domain subtree. A brand-scoped suppression applies only when the current row resolves to that same brand, which prevents a correction for one target from hiding another target on shared infrastructure. Subtree allowlists require an explicit CLI confirmation and should not be used for shared hosting platforms.
 
-A locally added candidate is not a verdict override. It must independently produce exactly one current domain match, is published as `HECAVEX` and `suspected`, and cannot receive a confidence score above the current matcher result. A local addition therefore cannot bypass the registry, establish a lifecycle state, or turn missing URLScan evidence into confirmation.
+An operator-added candidate is not a verdict override. It must independently produce exactly one current domain match, is published as `HECAVEX` and `suspected`, and cannot receive a confidence score above the current matcher result. An operator addition therefore cannot bypass the registry, establish a lifecycle state, or turn missing URLScan evidence into confirmation.
 
 ## Maintaining precision
 

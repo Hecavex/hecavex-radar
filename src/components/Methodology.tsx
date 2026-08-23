@@ -212,7 +212,7 @@ export function Methodology() {
             <p className="eyebrow">Corrections</p>
             <h3>Private notes stay private</h3>
             <p>
-              Local review uses an append-only database outside Git. Only explicitly exported, defanged suppressions and
+              HECAVEX operator review uses an append-only database outside Git. Only explicitly exported, defanged suppressions and
               candidates reach the public pipeline; analyst notes and identities are never included.
             </p>
           </article>
@@ -262,8 +262,8 @@ export function Methodology() {
             <p className="eyebrow">Service boundary</p>
             <h3>Best effort, no SLA</h3>
             <p>
-              Radar is maintained public research. It is not continuous brand monitoring, victim notification, incident
-              response, takedown, or an availability or response commitment.
+              HECAVEX operates Radar as best-effort public research. It is not continuous brand monitoring, victim
+              notification, incident response, takedown, or an availability or response commitment.
             </p>
           </article>
           <article>

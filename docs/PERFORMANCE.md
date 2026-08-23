@@ -1,6 +1,6 @@
 # Performance budgets
 
-`pnpm check` builds the production site and measures its checked-in first-party output with deterministic level-9 gzip compression. These budgets catch asset and data growth without depending on a network, a Lighthouse service, or a variable test connection.
+These budgets protect the production experience at [radar.hecavex.com](https://radar.hecavex.com). The HECAVEX maintainer gate, `pnpm check`, builds the service and measures its checked-in first-party output with deterministic level-9 gzip compression, catching asset and data growth without depending on a network, Lighthouse, or a variable test connection.
 
 The Python publisher separately limits each public live/history JSON artifact to 512 KiB uncompressed. The build gate verifies that those two maximum artifacts, their worst-case percent-encoded hydration copies, and the current fixed site assets still fit the total-output budget.
 

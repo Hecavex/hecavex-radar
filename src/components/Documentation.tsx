@@ -50,8 +50,8 @@ export function Documentation() {
           <h1 id="documentation-title">HECAVEX Radar technical reference</h1>
         </div>
         <p>
-          Architecture, source behavior, public schemas, operating requirements, and data terms for the open-source
-          Radar deployment. Detection methodology is documented separately on the{" "}
+          Architecture, source behavior, public schemas, operating requirements, and data terms for the HECAVEX-operated
+          service at radar.hecavex.com. Detection methodology is documented separately on the{" "}
           <a href="/methodology/">Methodology page</a>.
         </p>
       </header>
@@ -136,7 +136,7 @@ export function Documentation() {
             <a href="https://urlscan.io/docs/api/">Provider documentation</a>
           </article>
           <article>
-            <span>Optional deployment input</span>
+            <span>Optional service input</span>
             <h3>HECAVEX</h3>
             <p>
               A deliberately limited public JSON export can be configured over HTTPS. Every record passes the same
@@ -181,7 +181,7 @@ export function Documentation() {
               The generated dashboard input contains the current schema version, generation time, bounded recent signals,
               and per-source archive-read state. It is crawlable because it is advertised as the Dataset distribution.
             </p>
-            <a href="/data/radar.json">Download radar.json</a>
+            <a href="/data/radar.json">Open public radar.json</a>
           </article>
           <article>
             <span>Retained history · JSON</span>
@@ -190,7 +190,7 @@ export function Documentation() {
               A bounded projection of accepted observation boundaries and explicit source status transitions. A missing
               row never means benign, and disappearance from a current archive does not create an offline event.
             </p>
-            <a href="/data/history.json">Download history.json</a>
+            <a href="/data/history.json">Open public history.json</a>
           </article>
           <article>
             <span>Reviewed registry · JSON</span>
@@ -208,7 +208,7 @@ export function Documentation() {
               Actual start, end, websocket listening seconds, aggregate input and match counts, outcome, schedule delay,
               last success, and freshness. It contains no certificate names or unpublished candidates.
             </p>
-            <a href="/data/collection-health.json">Download collection-health.json</a>
+            <a href="/data/collection-health.json">Open public collection-health.json</a>
           </article>
         </div>
         <div className="docs-callout">
@@ -320,10 +320,10 @@ export function Documentation() {
             </p>
           </article>
           <article>
-            <span>Local trust boundary</span>
+            <span>Operator trust boundary</span>
             <h3>Private notes never enter Git</h3>
             <p>
-              The local review CLI writes an append-only SQLite ledger outside this repository. Only an intentional,
+              The HECAVEX review CLI writes an append-only SQLite ledger outside this repository. Only an intentional,
               sanitized export of active suppressions and independently matching manual candidates can reach sync.
             </p>
           </article>
@@ -337,7 +337,7 @@ export function Documentation() {
         </div>
         <p className="docs-copy">
           Browse the <a href="/history/">retained candidate trail</a>. Repository operators can review the complete
-          retention and local-export contracts in{" "}
+          retention and operator-export contracts in{" "}
           <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/HISTORY.md">HISTORY.md</a> and{" "}
           <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/REVIEW-WORKFLOW.md">REVIEW-WORKFLOW.md</a>.
         </p>
@@ -399,13 +399,12 @@ export function Documentation() {
         </div>
         <div className="docs-operations-grid">
           <article>
-            <span>Local development</span>
-            <h3>Python 3.12 · Node 22.12 · pnpm 10</h3>
-            <pre className="docs-code" aria-label="Local development commands" tabIndex={0}><code>{`python -m pip install -e ".[dev]"
-corepack enable
-pnpm install
-pnpm dev
-pnpm check`}</code></pre>
+            <span>Maintainer gate</span>
+            <h3>Every production change is verified</h3>
+            <p>
+              HECAVEX maintains pinned Python, Node.js, pnpm, and browser-check toolchains. The complete gate covers linting,
+              types, tests, the production build, accessibility, CSP, no-JavaScript output, and responsive behavior.
+            </p>
           </article>
           <article>
             <span>Custom domain</span>
@@ -442,8 +441,8 @@ pnpm check`}</code></pre>
           <p className="eyebrow">Security and maintenance</p>
           <h2 id="security-title">Maintained on a best-effort basis</h2>
           <p>
-            Radar is an open research project, not a 24/7 SOC, incident-response service, brand-monitoring contract,
-            notification service, takedown provider, or availability SLA.
+            Radar is a HECAVEX-operated public research service, not a 24/7 SOC, incident-response service,
+            brand-monitoring contract, notification service, takedown provider, or availability SLA.
           </p>
         </div>
         <div className="docs-card-grid">
@@ -475,13 +474,13 @@ pnpm check`}</code></pre>
             <a href="mailto:info@hecavex.com?subject=HECAVEX%20Radar%20false%20positive">Report a false positive</a>
           </article>
           <article>
-            <span>Project source</span>
-            <h3>Review and contribution</h3>
+            <span>Service source</span>
+            <h3>Auditable public change record</h3>
             <p>
-              Source, tests, workflows, registry references, and issue history are public. Contributions must preserve
-              defanging, passive collection boundaries, evidence provenance, and conservative publication rules.
+              Source, tests, workflows, registry references, and issue history are public for transparency. Accepted
+              production changes must preserve defanging, passive collection boundaries, provenance, and publication rules.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar">Open the repository</a>
+            <a href="https://github.com/Hecavex/hecavex-radar">Review the service source</a>
           </article>
         </div>
       </section>

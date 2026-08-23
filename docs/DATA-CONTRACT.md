@@ -1,6 +1,6 @@
 # Public data contract
 
-The Python publisher is the normative producer of public data. It normalizes, scopes, and defangs every accepted observation before writing a snapshot. The browser checks the snapshot version and structure before rendering it; that structural check is not a substitute for producer-side validation.
+This contract governs the artifacts published by [radar.hecavex.com](https://radar.hecavex.com). The service's Python publisher is the normative producer of public data: it normalizes, scopes, and defangs every accepted observation before writing a snapshot. The browser checks the snapshot version and structure before rendering it; that structural check is not a substitute for producer-side validation.
 
 ## Public snapshot
 
@@ -179,7 +179,7 @@ Event identity includes schema version, signal ID, event type, observation time,
 
 After the detail window, events compact into `data/history/summary.json`. The public `public/data/history.json` projection exposes `id`, `domain`, `brand`, `firstSeen`, `lastSeen`, `observationCount`, `sources`, `latestStatus`, `reasonCodes`, and up to 16 typed `statusTransitions`. Private review suppressions and current brand rules are re-applied before every projection. The complete projection is capped at 512 KiB and fails closed rather than truncating. See [Candidate history](HISTORY.md) for retention limits.
 
-## HECAVEX input and local handoff
+## HECAVEX input and operator handoff
 
 ### Configured source input
 
@@ -210,17 +210,17 @@ A configured HECAVEX endpoint may return an array of signal objects or `{ "signa
 
 Missing or unrecognized status becomes `unknown`; missing or invalid confidence becomes `50`. Timestamp normalization follows the public rules above. A syntactically valid row may still be dropped by Lithuanian registry scoping.
 
-The feed URL must use HTTPS, omit credentials, and use the default port. HTTP is accepted only from `localhost`, `127.0.0.1`, or `::1` for local development; production and GitHub Actions deployments require HTTPS.
+The feed URL must use HTTPS, omit credentials, and use the default port. HTTP is accepted only from `localhost`, `127.0.0.1`, or `::1` for maintainer tests; production service workflows require HTTPS.
 
-### Local candidate handoff
+### Operator candidate handoff
 
 When `HECAVEX_CANDIDATE_OUTPUT` names a file below `data/hecavex/`, synchronization atomically writes a git-ignored document with `schemaVersion: 1`, `dataset: "hecavex-candidates"`, `generatedAt`, `disposition: "potential"`, and `signals`.
 
-The handoff is limited to 2,500 signals and 20 MiB. It includes only defanged public fields backed by CertStream or URLScan; HECAVEX-only observations and discovery-seed provenance are excluded. This is a local file export for private review. It performs no HTTP upload and uses no credentials.
+The handoff is limited to 2,500 signals and 20 MiB. It includes only defanged public fields backed by CertStream or URLScan; HECAVEX-only observations and discovery-seed provenance are excluded. This is an operator-workstation file export for private review. It performs no HTTP upload and uses no credentials.
 
 ## Sanitized review decisions
 
-`data/review/public-decisions.json` is the only local-review artifact accepted by synchronization. It has `schemaVersion: 1`, dataset `radar-review-decisions`, a canonical UTC `generatedAt`, and two bounded arrays:
+`data/review/public-decisions.json` is the only operator-review artifact accepted by synchronization. It has `schemaVersion: 1`, dataset `radar-review-decisions`, a canonical UTC `generatedAt`, and two bounded arrays:
 
 - `suppressions` contain a deterministic decision ID, defanged domain, `exact` or `subdomains` scope, optional resolved brand, and one controlled correction reason.
 - `candidates` contain a deterministic decision ID, public signal ID, defanged URL and domain, observation time, current matcher-resolved brand, confidence no greater than the matcher score, and controlled reason codes including `manual-review`.

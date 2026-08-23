@@ -5,10 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hecavex-radar"
 version = "0.1.0"
-description = "Python collectors and publisher for the HECAVEX Radar static dashboard."
+description = "Production collectors and publisher for the HECAVEX-operated radar.hecavex.com service."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
+classifiers = ["Private :: Do Not Upload"]
 dependencies = [
   "tldextract==5.3.2",
   "tzdata==2026.3",

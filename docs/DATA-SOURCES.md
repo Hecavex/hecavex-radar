@@ -1,6 +1,6 @@
 # Data sources and provenance
 
-Source operators define their own access, attribution, rate, and redistribution terms. Apache-2.0 licenses this software, not third-party data.
+These are the sources and provenance boundaries of the HECAVEX-operated [radar.hecavex.com](https://radar.hecavex.com) service. Source operators define their own access, attribution, rate, and redistribution terms. Apache-2.0 licenses original Radar software, not third-party data or HECAVEX operation.
 
 ## CertStream and Certificate Transparency
 
@@ -11,7 +11,7 @@ CertStream emits Certificate Transparency log updates over a websocket. The coll
 - [`reloading01/certstream-server-rust`](https://github.com/reloading01/certstream-server-rust), the server used by the scheduled workflow
 - [certstream-server-rust MIT license](https://github.com/reloading01/certstream-server-rust/blob/main/LICENSE)
 
-Without `CERTSTREAM_URL`, the local CLI uses the compatibility endpoint at `wss://certstream.calidog.io/`. The scheduled workflow instead starts a digest-pinned `certstream-server-rust` container and connects to its runner-local domains-only stream. Long-running collectors should set `CERTSTREAM_URL` to a monitored WSS endpoint. Certificate issuance is not proof of phishing, so CT records remain `suspected`.
+The production workflow starts a digest-pinned `certstream-server-rust` container and connects to its runner-local domains-only stream unless HECAVEX configures a monitored `CERTSTREAM_URL`. Maintainer diagnostic invocations without that setting use the compatibility endpoint at `wss://certstream.calidog.io/`; that behavior is not the service's durable collection design. Certificate issuance is not proof of phishing, so CT records remain `suspected`.
 
 Each scheduled attempt replaces [`public/data/collection-health.json`](../public/data/collection-health.json) with its actual start, end, websocket listening seconds, messages, DNS names, matches, newly archived records, outcome, scheduling delay, and last successful window. The file retains only the latest attempt and aggregate counters. It is not a candidate archive, does not expose certificate names, and cannot establish coverage between sampled windows.
 
@@ -36,7 +36,7 @@ The published observation source is URLScan, while discovery-input attribution r
 
 ## HECAVEX public export
 
-HECAVEX is optional and must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. Production feed URLs require HTTPS; HTTP is accepted only on a loopback host for local development. The export must not expose a private dashboard, database, collector API, detector output, credentials, or internal case history.
+The optional HECAVEX service input must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. The production feed requires HTTPS; the HTTP loopback exception exists only for maintainer tests. The export must not expose a private dashboard, database, collector API, detector output, credentials, or internal case history.
 
 ## Screenshots
 

@@ -1705,6 +1705,22 @@ main {
   color: var(--blue);
 }
 
+.methodology-heading > p,
+.methodology-section-heading > p,
+.methodology-rule-list p,
+.methodology-note p,
+.methodology-report,
+.docs-heading > p,
+.docs-section-heading > p,
+.docs-callout p,
+.docs-copy,
+.docs-contact {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
 .docs-toc {
   display: flex;
   align-items: center;

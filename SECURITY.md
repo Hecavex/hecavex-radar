@@ -1,6 +1,6 @@
 # Security policy
 
-Please do not open a public issue for vulnerabilities, leaked indicators containing personal data, or exposed credentials.
+This policy covers the HECAVEX-operated service at [radar.hecavex.com](https://radar.hecavex.com) and its production repository. Please do not open a public issue for vulnerabilities, leaked indicators containing personal data, or exposed credentials.
 
 Report them to [info@hecavex.com](mailto:info@hecavex.com) with:
 

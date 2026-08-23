@@ -1,6 +1,6 @@
 # Architecture
 
-HECAVEX Radar is a Python collection and validation pipeline with a static React/TypeScript viewer.
+This document describes the production architecture behind the HECAVEX-operated service at [radar.hecavex.com](https://radar.hecavex.com). Radar uses a Python collection and validation pipeline with a static React/TypeScript viewer; it is not a reusable application architecture or self-hosting guide.
 
 | Input | Gate before publication | Public label |
 | --- | --- | --- |
@@ -19,7 +19,7 @@ Synchronization also assigns deterministic event IDs to accepted observations an
 
 Private review is a separate trust boundary. `hecavex-review` keeps an append-only SQLite ledger outside the repository. An operator must explicitly export active decisions into `data/review/public-decisions.json`; only that strict, defanged schema is consumed by synchronization. Private notes, analyst identity, and raw evidence never cross the export boundary.
 
-Pages builds the committed dashboard together with reader-facing `/history/`, `/methodology/`, and `/docs/` pages. The browser has no backend API, login, or database. HECAVEX feed URLs require HTTPS in production and cannot contain credentials or an explicit port. For local development only, HTTP is accepted on `localhost`, `127.0.0.1`, or `::1` at the default port.
+Pages builds the committed dashboard together with reader-facing `/history/`, `/methodology/`, and `/docs/` pages. The browser has no backend API, login, or database. HECAVEX feed URLs require HTTPS in production and cannot contain credentials or an explicit port. HTTP is accepted on `localhost`, `127.0.0.1`, or `::1` at the default port only for maintainer tests.
 
 ## Certificate Transparency coverage
 
@@ -32,6 +32,6 @@ The current GitHub Actions listener samples CertStream for four minutes twice pe
 - Indicators remain defanged text. References are canonical URLScan result URLs; screenshots use HTTPS on exactly `urlscan.io`—never a subdomain—and contain no credentials, explicit port, query string, or fragment. Published hashes are SHA-256 values for the primary HTML document.
 - Only the sync stage writes the public snapshot. Publication is guarded against invalid or unexpectedly small output, and one unavailable optional source does not erase healthy-source data.
 - History event identity excludes mutable scoring explanations, so a registry wording or score change cannot turn one source observation into multiple events. Brand conflicts are rejected before history publication.
-- A local review addition must independently pass the current public domain matcher. Its confidence cannot exceed that matcher, its status is always `suspected`, and a suppression takes precedence over an addition.
+- An operator review addition must independently pass the current public domain matcher. Its confidence cannot exceed that matcher, its status is always `suspected`, and a suppression takes precedence over an addition.
 - Collection health uses a strict fixed-field schema, a 32 KiB limit, and atomic replacement of one file. It exposes aggregate counters and timing only, so attempts do not create an unbounded telemetry archive.
 - HECAVEX integration accepts a deliberately limited public export. Private detector features, evidence graphs, analyst notes, user data, credentials, and internal history stay outside this repository.

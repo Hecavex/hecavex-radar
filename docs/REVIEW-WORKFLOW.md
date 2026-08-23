@@ -1,12 +1,12 @@
 # Private review workflow
 
-False-positive review is intentionally local. The website remains read-only and contains no administration endpoint, authentication system, private notes, or direct write path.
+This is an operator-only HECAVEX maintenance workflow for corrections to [radar.hecavex.com](https://radar.hecavex.com). False-positive review is intentionally kept on an operator workstation; the public service remains read-only and contains no administration endpoint, authentication system, private notes, or direct write path.
 
 ## Storage boundary
 
 `hecavex-review` creates an append-only SQLite database outside the Git repository. On Windows the default is `%LOCALAPPDATA%\HECAVEX\Radar\review.sqlite3`; on Linux it follows `XDG_DATA_HOME` or `~/.local/share`. Set `RADAR_REVIEW_DB` or pass `--database` to use another path. Paths inside the repository are rejected against the installed project root, independent of the current working directory.
 
-The review CLI is a checkout-local operator tool. Install this repository in editable mode (`python -m pip install -e ".[dev]"`) so its canonical project root, registry, snapshot, and sanitized-export directory remain the checked-out files. A standalone wheel install is not supported for review operations because its module path would point into `site-packages` rather than an operator checkout.
+The review CLI is a checkout-local HECAVEX operator tool, not a public administration product. Maintainers install this repository in editable mode (`python -m pip install -e ".[dev]"`) so its canonical project root, registry, snapshot, and sanitized-export directory remain the checked-out files. A standalone wheel install is not supported for review operations because its module path would point into `site-packages` rather than an operator checkout.
 
 The event table has database triggers that reject updates and deletes. Restore, unallowlist, and remove operations append compensating events. Private notes are stored only in this database and are omitted from normal listings.
 

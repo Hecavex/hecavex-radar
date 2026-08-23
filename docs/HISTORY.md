@@ -1,6 +1,6 @@
 # Candidate history
 
-Radar history answers two narrow questions: when did the public pipeline accept an observation for this host, and when did a supported source explicitly change its status? It is not a reputation database and does not infer current liveness.
+The history published at [radar.hecavex.com/history/](https://radar.hecavex.com/history/) answers two narrow questions: when did the operated public pipeline accept an observation for this host, and when did a supported source explicitly change its status? It is not a reputation database and does not infer current liveness.
 
 ## Event identity
 

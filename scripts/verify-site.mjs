@@ -480,6 +480,10 @@ async function verifyInBrowser() {
           const metricGrid = document.querySelector(".metric-grid")?.getBoundingClientRect();
           const contentToc = document.querySelector(".methodology-toc, .docs-toc");
           const contentTocStyle = contentToc ? getComputedStyle(contentToc) : null;
+          const longFormCopy = document.querySelector(".methodology-heading > p, .docs-heading > p");
+          const longFormStyle = longFormCopy ? getComputedStyle(longFormCopy) : null;
+          const docsTableCell = document.querySelector(".docs-table td");
+          const docsTableCellStyle = docsTableCell ? getComputedStyle(docsTableCell) : null;
           const methodologyFieldList = document.querySelector(".methodology-field-list");
           const methodologyFields = methodologyFieldList ? [...methodologyFieldList.children] : [];
           const methodologyFieldListRect = methodologyFieldList?.getBoundingClientRect();
@@ -497,6 +501,10 @@ async function verifyInBrowser() {
             metricTop: metricGrid?.top ?? 0,
             contentTocBorderTop: contentTocStyle?.borderTop ?? "",
             contentTocBorderBottom: contentTocStyle?.borderBottom ?? "",
+            longFormAlign: longFormStyle?.textAlign ?? "",
+            longFormAlignLast: longFormStyle?.textAlignLast ?? "",
+            longFormHyphens: longFormStyle?.hyphens ?? "",
+            docsTableCellAlign: docsTableCellStyle?.textAlign ?? "",
             methodologyFieldCount: methodologyFields.length,
             methodologyFieldListLeft: methodologyFieldListRect?.left ?? 0,
             methodologyFieldListRight: methodologyFieldListRect?.right ?? 0,
@@ -528,6 +536,14 @@ async function verifyInBrowser() {
             `${entry.path} content navigation dividers are not a matching 1px pair at ${width}px ` +
               `(${layout.contentTocBorderTop || "none"}/${layout.contentTocBorderBottom || "none"}).`,
           );
+          assert(
+            layout.longFormAlign === "justify" && layout.longFormAlignLast === "left" && layout.longFormHyphens === "auto",
+            `${entry.path} long-form prose alignment drifted at ${width}px ` +
+              `(${layout.longFormAlign}/${layout.longFormAlignLast}/${layout.longFormHyphens}).`,
+          );
+          if (entry.path === "/docs/") {
+            assert(layout.docsTableCellAlign !== "justify", `Documentation table cells inherited prose justification at ${width}px.`);
+          }
         }
         if (entry.path === "/methodology/") {
           assert(layout.methodologyFieldCount === 7, `Methodology field reference has ${layout.methodologyFieldCount} entries instead of 7.`);

@@ -1,6 +1,6 @@
 # Deployment
 
-HECAVEX Radar is a static GitHub Pages site. Scheduled workflows maintain the checked-in archives and public snapshot; deployment only builds those reviewed repository files.
+This is the HECAVEX maintainer runbook for the production service at [radar.hecavex.com](https://radar.hecavex.com), not a general self-hosting guide. The service is published through GitHub Pages. Scheduled workflows maintain the checked-in archives and public snapshot; deployment builds only those reviewed repository files.
 
 ## Pages
 
@@ -22,7 +22,7 @@ The publisher compares new output with rows seen during the previous 30 days and
 
 Cron schedules use UTC. Each CertStream run samples a four-minute window; it is not continuous collection. The two archive writers and snapshot writer share one concurrency group so their pull/rebase/push sequences cannot run at the same time. They commit changes directly to `main`, so repository rules must allow normal GitHub Actions bot pushes while still blocking force-pushes and branch deletion.
 
-Python 3.12 automation installs reviewed, SHA-256-locked dependency sets from [`requirements/`](../requirements/). Scheduled writers use the minimal runtime lock; CI uses the development-tool superset. The local package is then installed without resolving additional dependencies or creating an unconstrained build environment.
+Python 3.12 automation installs reviewed, SHA-256-locked dependency sets from [`requirements/`](../requirements/). Scheduled writers use the minimal runtime lock; CI uses the development-tool superset. The checked-out package is then installed without resolving additional dependencies or creating an unconstrained build environment.
 
 Frontend verification also enforces deterministic first-party gzip and total-output budgets documented in [`PERFORMANCE.md`](PERFORMANCE.md). The check uses built files only and has no network-performance dependency.
 
@@ -37,7 +37,7 @@ Store credentials as repository secrets and feature switches as repository varia
 | `URLSCAN_API_KEY` | Secret | Optional | Authenticates passive URLScan search and result retrieval. Without it, the URLScan job exits successfully without network access or archive changes; CertStream publication and synchronization continue. Confirm that the account and plan permit the intended automated and public use. |
 | `CERTSTREAM_URL` | Secret or variable | Optional | Uses an externally managed WSS endpoint instead of the workflow's temporary local CertStream server; the secret takes precedence. |
 | `HECAVEX_ENABLED` | Variable | Optional | Set to `true` to include the configured HECAVEX export in snapshot synchronization. |
-| `HECAVEX_FEED_URL` | Secret | `HECAVEX_ENABLED=true` | Production HTTPS endpoint implementing the [public data contract](DATA-CONTRACT.md). The HTTP loopback exception is for local development only. |
+| `HECAVEX_FEED_URL` | Secret | `HECAVEX_ENABLED=true` | Production HTTPS endpoint implementing the [public data contract](DATA-CONTRACT.md). The HTTP loopback exception exists only for maintainer tests. |
 | `HECAVEX_FEED_TOKEN` | Secret | Optional with HECAVEX | Read-only bearer token for the HECAVEX endpoint. |
 | `PHISHDESTROY_SEED_ENABLED`, `CERTPL_SEED_ENABLED` | Variables | Optional | Set either to `false` to disable that transient URLScan seed adapter. Seeds never publish directly or appear as source labels. |
 | `RADAR_HISTORY_DETAIL_DAYS` | Variable | Optional | Detailed daily history retention, 30 days by default and bounded from 7 to 90. |
@@ -48,7 +48,7 @@ The private false-positive review ledger is not a deployment input and must rema
 
 Public screenshot URLs must be hosted on exactly `urlscan.io`, regardless of which source supplied the observation. Tuning limits, lookback windows, and other bounded defaults are documented in [`.env.example`](../.env.example) and the relevant [workflow files](../.github/workflows/).
 
-Before enabling URLScan collection for a public or commercial deployment, review the current [URLScan Terms of Service](https://urlscan.io/terms/) and obtain any permission required for the intended display or redistribution of report metadata and screenshots. An API key proves authentication, not redistribution permission.
+Before HECAVEX enables or changes URLScan collection on the live service, operators must review the current [URLScan Terms of Service](https://urlscan.io/terms/) and obtain any permission required for the intended display or redistribution of report metadata and screenshots. An API key proves authentication, not redistribution permission.
 
 ## Custom domain
 
