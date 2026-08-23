@@ -641,6 +641,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--database", help="Private SQLite path outside the Git repository.")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers.add_parser("init", help="Create or verify the empty private append-only review ledger.")
 
     def decision(name: str, help_text: str, *, reason: bool = True, brand: bool = True) -> argparse.ArgumentParser:
         command = subparsers.add_parser(name, help=help_text)
@@ -673,6 +674,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         database = _database_path(args.database)
         registry = load_brand_registry(PROJECT_ROOT / "data/brands-lt.json")
+        if args.command == "init":
+            with _connect(database):
+                pass
+            print(f"Private review database is ready: {database}")
+            return 0
         if args.command == "list":
             events = read_review_events(database)
             if args.events:

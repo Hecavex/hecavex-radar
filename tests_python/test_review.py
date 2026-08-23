@@ -83,6 +83,21 @@ def test_cli_loads_repository_configuration_outside_repository(
     assert review_state(read_review_events(database)).false_positives[DOMAIN].brand == "Swedbank"
 
 
+def test_cli_initializes_an_empty_append_only_database(tmp_path: Path) -> None:
+    database = tmp_path / "private/review.sqlite3"
+    assert main(["--database", str(database), "init"]) == 0
+    assert database.exists()
+    assert read_review_events(database) == []
+    with sqlite3.connect(database) as connection:
+        triggers = {
+            row[0]
+            for row in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'trigger' ORDER BY name"
+            )
+        }
+    assert triggers == {"review_events_no_delete", "review_events_no_update"}
+
+
 def test_private_review_ledger_is_append_only_and_restore_is_derived_state(tmp_path: Path) -> None:
     database = tmp_path / "private" / "review.sqlite3"
     first = record_review_event(

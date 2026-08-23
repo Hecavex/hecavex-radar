@@ -28,6 +28,7 @@ hecavex-sync = "hecavex_radar.sync:run"
 hecavex-certstream = "hecavex_radar.collect_certstream:run"
 hecavex-urlscan = "hecavex_radar.urlscan:run"
 hecavex-review = "hecavex_radar.review:run"
+hecavex-handoff = "hecavex_radar.hecavex:run"
 
 [tool.setuptools.packages.find]
 include = ["hecavex_radar*"]

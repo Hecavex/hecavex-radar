@@ -10,8 +10,10 @@ from hecavex_radar import certstream_archive
 from hecavex_radar.certstream_archive import (
     append_candidates,
     candidate_from_match,
+    read_attempt_file,
     read_candidate_file,
     read_recent_candidates,
+    record_successful_attempt,
     vilnius_date,
 )
 from hecavex_radar.models import CandidateMatch, CertStreamCandidate
@@ -42,6 +44,83 @@ def test_writes_defanged_ndjson_and_deduplicates(tmp_path: Path, monkeypatch: Mo
     assert "secure-swedbank.example" not in archive
     recent = read_recent_candidates(root, 1, datetime(2026, 8, 22, 10, tzinfo=UTC))
     assert len(recent) == 1
+
+
+def test_successful_empty_window_creates_an_explicit_daily_partition(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    root = Path("data/certstream")
+    started = datetime(2026, 8, 21, 20, 58, tzinfo=UTC)
+    ended = datetime(2026, 8, 21, 21, 2, tzinfo=UTC)
+
+    path = record_successful_attempt(
+        root,
+        collector_started_at=started,
+        ended_at=ended,
+        expected_listening_seconds=240,
+        listening_seconds=240.002,
+        messages=80_000,
+        dns_names=145_000,
+        matches=0,
+        new_records=0,
+        outcome="healthy-empty",
+    )
+    assert path == tmp_path / root / "2026-08-22" / "attempts.ndjson"
+    assert not path.with_name("domains.ndjson").exists()
+    assert read_attempt_file(path) == [json.loads(path.read_text(encoding="utf-8"))]
+
+    # Replaying the same successful attempt is deterministic and does not add a line.
+    record_successful_attempt(
+        root,
+        collector_started_at=started,
+        ended_at=ended,
+        expected_listening_seconds=240,
+        listening_seconds=240.002,
+        messages=80_000,
+        dns_names=145_000,
+        matches=0,
+        new_records=0,
+        outcome="healthy-empty",
+    )
+    assert len(path.read_text(encoding="utf-8").splitlines()) == 1
+
+
+def test_attempt_partition_rejects_partial_or_inconsistent_windows(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    started = datetime(2026, 8, 21, 10, tzinfo=UTC)
+    ended = datetime(2026, 8, 21, 10, 4, tzinfo=UTC)
+    with pytest.raises(ValueError, match="invalid CertStream attempt"):
+        record_successful_attempt(
+            "data/certstream",
+            collector_started_at=started,
+            ended_at=ended,
+            expected_listening_seconds=240,
+            listening_seconds=120,
+            messages=10,
+            dns_names=20,
+            matches=0,
+            new_records=0,
+            outcome="partial",
+        )
+    with pytest.raises(ValueError, match="invalid CertStream attempt"):
+        record_successful_attempt(
+            "data/certstream",
+            collector_started_at=started,
+            ended_at=ended,
+            expected_listening_seconds=240,
+            listening_seconds=120,
+            messages=10,
+            dns_names=20,
+            matches=1,
+            new_records=0,
+            outcome="healthy-empty",
+        )
+    assert not Path("data/certstream").exists()
 
 
 def test_stops_before_daily_record_and_byte_limits(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:

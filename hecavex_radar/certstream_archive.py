@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
+import tempfile
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from .brands import normalize_domain
@@ -21,6 +23,9 @@ MAXIMUM_CANDIDATE_LINE_BYTES = 16 * 1024
 MAXIMUM_BRAND_CHARACTERS = 120
 MAXIMUM_REASON_CHARACTERS = 240
 MAXIMUM_REASONS = 12
+MAXIMUM_DAILY_ATTEMPTS = 256
+MAXIMUM_ATTEMPT_ARCHIVE_BYTES = 256 * 1024
+MAXIMUM_ATTEMPT_LINE_BYTES = 4 * 1024
 CANDIDATE_FIELDS = frozenset(
     {
         "schemaVersion",
@@ -36,7 +41,23 @@ CANDIDATE_FIELDS = frozenset(
     }
 )
 CANDIDATE_ID = re.compile(r"^[a-f\d]{20}$")
+ATTEMPT_ID = re.compile(r"^[a-f\d]{24}$")
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
+ATTEMPT_FIELDS = frozenset(
+    {
+        "schemaVersion",
+        "id",
+        "collectorStartedAt",
+        "endedAt",
+        "expectedListeningSeconds",
+        "listeningSeconds",
+        "messages",
+        "dnsNames",
+        "matches",
+        "newRecords",
+        "outcome",
+    }
+)
 
 
 def _aware(value: datetime) -> datetime:
@@ -78,6 +99,12 @@ def _candidate_path(root: str | Path, day: str) -> Path:
     if not _valid_day(day):
         raise ValueError("Invalid candidate archive date.")
     return _bounded_root(root) / day / "domains.ndjson"
+
+
+def _attempt_path(root: str | Path, day: str) -> Path:
+    if not _valid_day(day):
+        raise ValueError("Invalid collection-attempt archive date.")
+    return _bounded_root(root) / day / "attempts.ndjson"
 
 
 def _timestamp(value: object) -> datetime | None:
@@ -137,6 +164,47 @@ def _is_candidate(value: Any, expected_day: str | None = None) -> bool:
     return expected_day is None or vilnius_date(observed_at) == expected_day
 
 
+def _attempt_identity(value: dict[str, object]) -> str:
+    payload = {key: value[key] for key in ATTEMPT_FIELDS if key != "id"}
+    canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:24]
+
+
+def _is_counter(value: object) -> bool:
+    return type(value) is int and 0 <= value <= 2_000_000_000
+
+
+def _is_seconds(value: object) -> bool:
+    if type(value) not in {int, float}:
+        return False
+    return 0 <= float(cast(int | float, value)) <= 86_400
+
+
+def _is_attempt(value: Any, expected_day: str | None = None) -> bool:
+    if not isinstance(value, dict) or set(value) != ATTEMPT_FIELDS:
+        return False
+    started_at = _timestamp(value["collectorStartedAt"])
+    ended_at = _timestamp(value["endedAt"])
+    if (
+        started_at is None
+        or ended_at is None
+        or ended_at < started_at
+        or value["outcome"] not in {"healthy-empty", "healthy-matches"}
+        or not _is_seconds(value["expectedListeningSeconds"])
+        or not _is_seconds(value["listeningSeconds"])
+        or not all(_is_counter(value[field]) for field in ("messages", "dnsNames", "matches", "newRecords"))
+        or value["dnsNames"] < value["matches"]
+        or value["matches"] < value["newRecords"]
+        or (value["outcome"] == "healthy-empty" and value["matches"] != 0)
+        or (value["outcome"] == "healthy-matches" and value["matches"] == 0)
+        or not isinstance(value["id"], str)
+        or not ATTEMPT_ID.fullmatch(value["id"])
+        or value["id"] != _attempt_identity(value)
+    ):
+        return False
+    return expected_day is None or vilnius_date(ended_at) == expected_day
+
+
 def _archive_bytes(path: Path) -> bytes:
     size = path.stat().st_size
     if size > MAXIMUM_ARCHIVE_BYTES:
@@ -179,6 +247,104 @@ def read_candidate_file(path: Path, maximum: int = MAXIMUM_ARCHIVE_RECORDS) -> l
         if len(records) >= limit:
             break
     return records
+
+
+def read_attempt_file(path: Path, maximum: int = MAXIMUM_DAILY_ATTEMPTS) -> list[dict[str, object]]:
+    try:
+        if path.stat().st_size > MAXIMUM_ATTEMPT_ARCHIVE_BYTES:
+            raise ValueError(f"Collection-attempt archive exceeds 256 KiB: {path}")
+        body = path.read_bytes()
+    except FileNotFoundError:
+        return []
+    if len(body) > MAXIMUM_ATTEMPT_ARCHIVE_BYTES:
+        raise ValueError(f"Collection-attempt archive exceeds 256 KiB: {path}")
+    limit = max(0, min(maximum, MAXIMUM_DAILY_ATTEMPTS))
+    if limit == 0:
+        return []
+    expected_day = path.parent.name if path.name == "attempts.ndjson" and _valid_day(path.parent.name) else None
+    records: list[dict[str, object]] = []
+    for raw_line in body.splitlines():
+        if len(raw_line) > MAXIMUM_ATTEMPT_LINE_BYTES:
+            continue
+        try:
+            value: Any = json.loads(raw_line.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if _is_attempt(value, expected_day):
+            records.append(value)
+        if len(records) >= limit:
+            break
+    return records
+
+
+def record_successful_attempt(
+    root: str | Path,
+    *,
+    collector_started_at: datetime,
+    ended_at: datetime,
+    expected_listening_seconds: int,
+    listening_seconds: float,
+    messages: int,
+    dns_names: int,
+    matches: int,
+    new_records: int,
+    outcome: str,
+) -> Path:
+    """Record one successful sampled window without implying full-day CT coverage."""
+
+    started = _aware(collector_started_at).astimezone(UTC)
+    ended = _aware(ended_at).astimezone(UTC)
+    payload: dict[str, object] = {
+        "schemaVersion": 1,
+        "collectorStartedAt": started.isoformat(timespec="milliseconds").replace("+00:00", "Z"),
+        "endedAt": ended.isoformat(timespec="milliseconds").replace("+00:00", "Z"),
+        "expectedListeningSeconds": expected_listening_seconds,
+        "listeningSeconds": round(max(0.0, listening_seconds), 3),
+        "messages": messages,
+        "dnsNames": dns_names,
+        "matches": matches,
+        "newRecords": new_records,
+        "outcome": outcome,
+    }
+    attempt = {"id": _attempt_identity(payload), **payload}
+    day = vilnius_date(ended)
+    if not _is_attempt(attempt, day):
+        raise ValueError("Refusing to archive invalid CertStream attempt metadata.")
+
+    path = _attempt_path(root, day)
+    existing = read_attempt_file(path)
+    if any(record["id"] == attempt["id"] for record in existing):
+        return path
+    if len(existing) >= MAXIMUM_DAILY_ATTEMPTS:
+        raise ValueError("Collection-attempt archive reached its daily record limit.")
+    records = sorted([*existing, attempt], key=lambda record: (str(record["endedAt"]), str(record["id"])))
+    body = "".join(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n" for record in records)
+    if len(body.encode("utf-8")) > MAXIMUM_ATTEMPT_ARCHIVE_BYTES:
+        raise ValueError("Collection-attempt archive exceeds 256 KiB.")
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary = Path(handle.name)
+            handle.write(body)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temporary.chmod(0o600)
+        os.replace(temporary, path)
+    except Exception:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+        raise
+    return path
 
 
 def _repair_final_line(path: Path, expected_day: str) -> None:

@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
+import sys
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, cast
 
 from .models import RadarSignal, RawSignal
 from .normalize import merge_signals, prepare_signal
 
 MAXIMUM_EXPORT_SIGNALS = 2_500
 MAXIMUM_EXPORT_BYTES = 20 * 1024 * 1024
+MAXIMUM_SNAPSHOT_BYTES = 512 * 1024
 BACKING_SOURCES = frozenset({"CertStream", "URLScan"})
 ALLOWED_INPUT_SOURCES = BACKING_SOURCES | {"HECAVEX"}
 
@@ -171,3 +174,74 @@ def write_hecavex_candidates(
             temporary.unlink(missing_ok=True)
         raise
     return target
+
+
+def _snapshot_path(value: str | Path) -> Path:
+    repository = Path.cwd().resolve()
+    allowed = (repository / "public" / "data").resolve()
+    requested = Path(value)
+    target = (requested if requested.is_absolute() else repository / requested).resolve()
+    if target == allowed or not target.is_relative_to(allowed):
+        raise ValueError("Radar snapshot input must stay below public/data/.")
+    return target
+
+
+def read_snapshot_signals(value: str | Path) -> list[RadarSignal]:
+    path = _snapshot_path(value)
+    try:
+        if path.stat().st_size > MAXIMUM_SNAPSHOT_BYTES:
+            raise ValueError("Radar snapshot exceeds 512 KiB.")
+        payload: object = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as error:
+        raise ValueError(f"Radar snapshot does not exist: {path}") from error
+    except json.JSONDecodeError as error:
+        raise ValueError("Radar snapshot is invalid JSON.") from error
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schemaVersion") != 1
+        or payload.get("dataset") != "live"
+        or not isinstance(payload.get("signals"), list)
+        or len(payload["signals"]) > 25_000
+        or not all(isinstance(signal, dict) for signal in payload["signals"])
+    ):
+        raise ValueError("Radar snapshot does not match the live snapshot boundary.")
+    return cast(list[RadarSignal], payload["signals"])
+
+
+def export_snapshot_handoff(
+    snapshot: str | Path = "public/data/radar.json",
+    output: str | Path = "data/hecavex/pivot-candidates.json",
+) -> Path:
+    """Create the private, git-ignored analyst handoff from a local public snapshot."""
+
+    return write_hecavex_candidates(output, read_snapshot_signals(snapshot))
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="hecavex-handoff",
+        description="Export passive Radar candidates to the private git-ignored analyst handoff.",
+    )
+    parser.add_argument("--input", default="public/data/radar.json", help="Live snapshot below public/data/.")
+    parser.add_argument(
+        "--output",
+        default="data/hecavex/pivot-candidates.json",
+        help="Private output below the git-ignored data/hecavex/ boundary.",
+    )
+    args = parser.parse_args(argv)
+    try:
+        target = export_snapshot_handoff(args.input, args.output)
+        payload = json.loads(target.read_text(encoding="utf-8"))
+        print(f"Prepared {len(payload['signals'])} defanged pivot candidates at {target}.")
+        return 0
+    except (OSError, ValueError) as error:
+        print(f"Candidate handoff failed: {error}", file=sys.stderr)
+        return 1
+
+
+def run() -> None:
+    raise SystemExit(main())
+
+
+if __name__ == "__main__":
+    run()

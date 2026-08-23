@@ -13,7 +13,7 @@ CertStream emits Certificate Transparency log updates over a websocket. The coll
 
 The production workflow starts a digest-pinned `certstream-server-rust` container and connects to its runner-local domains-only stream unless HECAVEX configures a monitored `CERTSTREAM_URL`. Maintainer diagnostic invocations without that setting use the compatibility endpoint at `wss://certstream.calidog.io/`; that behavior is not the service's durable collection design. Certificate issuance is not proof of phishing, so CT records remain `suspected`.
 
-Each scheduled attempt replaces [`public/data/collection-health.json`](../public/data/collection-health.json) with its actual start, end, websocket listening seconds, messages, DNS names, matches, newly archived records, outcome, scheduling delay, and last successful window. The file retains only the latest attempt and aggregate counters. It is not a candidate archive, does not expose certificate names, and cannot establish coverage between sampled windows.
+Each scheduled attempt replaces [`public/data/collection-health.json`](../public/data/collection-health.json) with its actual start, end, websocket listening seconds, messages, DNS names, matches, newly archived records, outcome, scheduling delay, and last successful window. The file retains only the latest attempt and aggregate counters. Every successful window is also recorded in the day's bounded `attempts.ndjson`, so a zero-match window has an explicit dated partition. Neither artifact exposes certificate names, and neither can establish coverage between sampled windows.
 
 The public registry is [`data/brands-lt.json`](../data/brands-lt.json). Official domains, subdomains, and reviewed `excludedDomains` are suppressed before scoring. See [Detection rules](DETECTION.md) for matching and archive revalidation.
 
@@ -37,6 +37,8 @@ The published observation source is URLScan, while discovery-input attribution r
 ## HECAVEX public export
 
 The optional HECAVEX service input must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. The production feed requires HTTPS; the HTTP loopback exception exists only for maintainer tests. The export must not expose a private dashboard, database, collector API, detector output, credentials, or internal case history.
+
+The repository default is explicitly disabled (`HECAVEX_ENABLED=false`). Radar does not ship or infer an endpoint or token. Until HECAVEX provisions a deliberately public, read-only export and configures the documented variable and secret, the dashboard reports this source as not configured and continues with the other sources.
 
 ## Screenshots
 

@@ -45,7 +45,7 @@ The scheduled CertStream listener runs for four minutes twice per hour: at most 
 | `public/data/history.json` | Bounded public candidate-history projection |
 | `public/data/collection-health.json` | Latest bounded CertStream attempt health; no raw candidates |
 | `data/brands-lt.json` | Reviewed Lithuanian brand and official-domain registry |
-| `data/certstream/` | Date-partitioned, defanged CT candidates |
+| `data/certstream/` | Date-partitioned successful sample metadata and defanged CT candidates |
 | `data/urlscan/` | Date-partitioned, automatically validated URLScan observations |
 | `data/history/` | Deterministic daily events and compacted history summary |
 | `data/review/public-decisions.json` | Explicitly exported, sanitized review decisions only |
@@ -55,6 +55,8 @@ Public snapshots and their schemas are documented in the [data contract](docs/DA
 ## HECAVEX maintenance
 
 Repository changes are evaluated against the live service's safety, provenance, accessibility, and publication guarantees. Collector credentials remain in GitHub Actions secrets. Private false-positive notes and analyst identity remain outside Git; only an intentional sanitized export can enter the public pipeline.
+
+The optional private pivot handoff is local-only. `hecavex-handoff` exports current passive CertStream/URLScan-backed rows to the git-ignored `data/hecavex/` boundary without making a network request. Analysts can review that file, record an accepted candidate with `hecavex-review add`, and intentionally export only sanitized decisions. See the [private review workflow](docs/REVIEW-WORKFLOW.md).
 
 Brand additions and corrections belong in [`data/brands-lt.json`](data/brands-lt.json) and must cite authoritative sources. Complete official-domain coverage is important because official domains and their subdomains are suppressed before scoring. Matching and correction rules are documented in [Detection and brand matching](docs/DETECTION.md) and the [Private review workflow](docs/REVIEW-WORKFLOW.md).
 

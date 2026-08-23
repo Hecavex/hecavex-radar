@@ -15,7 +15,7 @@ from websockets.asyncio.client import ClientConnection, connect
 
 from .brands import load_brand_registry, score_domain
 from .certstream import domains_from_message
-from .certstream_archive import CandidateArchiveWriter, candidate_from_match
+from .certstream_archive import CandidateArchiveWriter, candidate_from_match, record_successful_attempt
 from .collection_health import (
     CollectionMetrics,
     CollectionOutcome,
@@ -236,8 +236,25 @@ def main() -> int:
     try:
         asyncio.run(collect(metrics))
         outcome = _collection_outcome(metrics, duration_seconds)
+        ended_at = datetime.now(UTC)
+        if outcome in {"healthy-empty", "healthy-matches"}:
+            if metrics.collector_started_at is None:
+                raise RuntimeError("A successful CertStream attempt is missing its collector start time.")
+            archive_root = os.environ.get("CERTSTREAM_ARCHIVE_ROOT", "").strip() or "data/certstream"
+            record_successful_attempt(
+                archive_root,
+                collector_started_at=metrics.collector_started_at,
+                ended_at=ended_at,
+                expected_listening_seconds=duration_seconds,
+                listening_seconds=metrics.listening_seconds,
+                messages=metrics.messages,
+                dns_names=metrics.dns_names,
+                matches=metrics.matches,
+                new_records=metrics.new_records,
+                outcome=outcome,
+            )
         if health_path:
-            complete_attempt(metrics, outcome, health_path)
+            complete_attempt(metrics, outcome, health_path, now=ended_at)
         if outcome in {"partial", "failed"}:
             print(f"CertStream collector ended with a {outcome} outcome.", file=sys.stderr)
             return 1

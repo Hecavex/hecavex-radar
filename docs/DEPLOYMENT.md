@@ -26,7 +26,7 @@ Python 3.12 automation installs reviewed, SHA-256-locked dependency sets from [`
 
 Frontend verification also enforces deterministic first-party gzip and total-output budgets documented in [`PERFORMANCE.md`](PERFORMANCE.md). The check uses built files only and has no network-performance dependency.
 
-The CertStream job initializes health before installing collector dependencies, lets setup and collection failures reach a finalizer, and stages the daily candidate archive and health document in one commit. A failed or no-input attempt is therefore published before the job reports failure. Hard runner cancellation, platform outage before checkout, or a rejected push cannot be recorded by a workflow that no longer has execution or write access. The health document replaces one fixed path and is capped at 32 KiB; it does not create per-attempt files or expose raw candidates.
+The CertStream job initializes health before installing collector dependencies, lets setup and collection failures reach a finalizer, and stages the daily archive and health document in one commit. A failed or no-input attempt is therefore published before the job reports failure. Every successful window appends one bounded aggregate row to its Vilnius-day `attempts.ndjson`; zero matches still produce that dated partition, while `domains.ndjson` appears only when candidates exist. Hard runner cancellation, platform outage before checkout, or a rejected push cannot be recorded by a workflow that no longer has execution or write access. The latest-health document replaces one fixed path and is capped at 32 KiB; daily attempt rows contain no raw certificate names or candidates.
 
 ## Required configuration
 

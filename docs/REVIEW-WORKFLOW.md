@@ -12,7 +12,23 @@ The event table has database triggers that reject updates and deletes. Restore, 
 
 Back up this database as private working material. Do not put it in Git, a publicly shared folder, an issue, or a CI artifact.
 
+Initialize or verify the empty ledger before the first review:
+
+```sh
+hecavex-review init
+```
+
+This command creates only the schema and append-only triggers at the private path. It does not add a decision or modify a public artifact.
+
 ## Commands
+
+Create a private pivot queue from the current published snapshot without performing any network request:
+
+```sh
+hecavex-handoff
+```
+
+The command writes `data/hecavex/pivot-candidates.json`. That directory is git-ignored and the output contains only bounded, defanged rows backed by CertStream or public URLScan evidence. Review it locally; do not commit it. A candidate selected after analysis must still pass the current public matcher before `hecavex-review add` accepts it.
 
 Record an exact false positive and later restore it:
 

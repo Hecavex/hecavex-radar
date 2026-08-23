@@ -48,6 +48,14 @@ def test_suppresses_official_domains_and_subdomains() -> None:
     assert score_domain("www.telia.fi", registry) is None
 
 
+def test_every_reviewed_official_and_excluded_domain_is_suppressed() -> None:
+    registry = load_brand_registry()
+    for entry in registry.entries:
+        for domain in [*entry.official_domains, *entry.excluded_domains]:
+            assert score_domain(domain, registry) is None, f"{entry.brand}: {domain}"
+            assert score_domain(f"login.{domain}", registry) is None, f"{entry.brand}: login.{domain}"
+
+
 def test_suppresses_reviewed_legitimate_namesake_domains() -> None:
     registry = load_brand_registry()
     assert score_domain("elektrum.com.pl", registry) is None

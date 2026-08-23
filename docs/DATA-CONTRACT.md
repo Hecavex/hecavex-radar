@@ -121,6 +121,10 @@ Archive files are newline-delimited JSON and use the Europe/Vilnius calendar dat
 
 ### CertStream
 
+`data/certstream/YYYY-MM-DD/attempts.ndjson` stores one aggregate row for each successful sampled window, partitioned by the Europe/Vilnius date on which the window ended. The fixed row records an identifier, collector start and end, expected and actual listening seconds, message and DNS-name counts, matches, newly archived records, and either `healthy-empty` or `healthy-matches`. It is capped at 256 rows and 256 KiB per day and contains no certificate names or candidate identifiers.
+
+The attempt file makes a successful zero-match window explicit without claiming continuous coverage. An absent `domains.ndjson` alongside `attempts.ndjson` means no candidate was archived in those recorded windows only; it says nothing about unobserved portions of the day.
+
 `data/certstream/YYYY-MM-DD/domains.ndjson` stores one candidate per normalized domain per Vilnius day:
 
 ```json

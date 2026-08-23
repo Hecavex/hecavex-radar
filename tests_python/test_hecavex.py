@@ -121,3 +121,33 @@ def test_writer_stays_inside_repository_and_replaces_atomically(
         hecavex.write_hecavex_candidates(target, [_signal("other.example", ["CertStream"])], NOW)
     assert target.read_text(encoding="utf-8") == "previous"
     assert not list(target.parent.glob(".*.tmp"))
+
+
+def test_local_handoff_cli_reads_only_the_bounded_public_snapshot(
+    tmp_path: Path,
+    monkeypatch: MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    snapshot = tmp_path / "public/data/radar.json"
+    snapshot.parent.mkdir(parents=True)
+    snapshot.write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "dataset": "live",
+                "generatedAt": "2026-08-21T12:00:00.000Z",
+                "signals": [_signal("pivot.example", ["CertStream"])],
+                "sources": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert hecavex.main([]) == 0
+    handoff = json.loads((tmp_path / "data/hecavex/pivot-candidates.json").read_text(encoding="utf-8"))
+    assert handoff["disposition"] == "potential"
+    assert [signal["domain"] for signal in handoff["signals"]] == ["pivot[.]example"]
+
+    outside = tmp_path / "outside.json"
+    outside.write_text("{}", encoding="utf-8")
+    assert hecavex.main(["--input", str(outside)]) == 1

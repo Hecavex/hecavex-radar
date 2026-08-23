@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from pytest import MonkeyPatch
 
+import hecavex_radar.collect_certstream as collector_module
 from hecavex_radar.collect_certstream import _collection_outcome
 from hecavex_radar.collection_health import (
     CollectionMetrics,
@@ -178,6 +179,37 @@ def test_collection_outcomes_are_unambiguous(
     expected: str,
 ) -> None:
     assert _collection_outcome(metrics, duration, failed) == expected
+
+
+def test_successful_zero_match_collection_records_its_daily_partition(
+    monkeypatch: MonkeyPatch,
+) -> None:
+    observed: dict[str, object] = {}
+
+    async def successful_empty(metrics: CollectionMetrics | None = None) -> int:
+        assert metrics is not None
+        metrics.collector_started_at = _at(19, 2)
+        metrics.listening_seconds = 240
+        metrics.messages = 10
+        metrics.dns_names = 20
+        metrics.connection_attempts = 1
+        metrics.connections = 1
+        metrics.completed_window = True
+        return 0
+
+    def record(_root: object, **values: object) -> Path:
+        observed.update(values)
+        return Path("data/certstream/2026-08-21/attempts.ndjson")
+
+    monkeypatch.setattr(collector_module, "collect", successful_empty)
+    monkeypatch.setattr(collector_module, "record_successful_attempt", record)
+    monkeypatch.setenv("CERTSTREAM_DURATION_SECONDS", "240")
+    monkeypatch.delenv("CERTSTREAM_HEALTH_PATH", raising=False)
+
+    assert collector_module.main() == 0
+    assert observed["outcome"] == "healthy-empty"
+    assert observed["dns_names"] == 20
+    assert observed["matches"] == 0
 
 
 def test_rejects_unbounded_or_outside_artifacts(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
