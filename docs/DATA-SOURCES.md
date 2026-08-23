@@ -19,14 +19,22 @@ The public registry is [`data/brands-lt.json`](../data/brands-lt.json). Official
 
 ## URLScan
 
-The scheduled hunter uses URLScan's authenticated search and result APIs to inspect already-existing public reports. Every search includes `task.visibility:public`, and both the search summary and result detail must independently report public visibility; missing, unlisted, or private visibility is rejected. The hunter performs bounded brand-domain queries, exact-domain queries for recent CT and transient discovery seeds, stricter title checks, and a small number of exact primary HTML response SHA-256 pivots. Automated validation requires a result to independently support the same Lithuanian brand; an input seed alone is never published. Official brand domains and subdomains are suppressed. Arbitrary resource hashes and hostname-wide allow-listing are deliberately excluded because both create broad false positives.
+At minute 37 every two hours, the scheduled hunter uses URLScan's authenticated search and result APIs to inspect already-existing public reports from the rolling previous seven days. Every search includes `task.visibility:public`, and both the search summary and result detail must independently report public visibility; missing, unlisted, or private visibility is rejected. The hunter performs bounded brand-domain queries, exact-domain queries for at most 250 recent CT, recent Radar-snapshot, and transient discovery seeds, stricter title checks, and a small number of exact primary HTML response SHA-256 pivots. Each run attempts the complete bounded candidate set; a deterministic cursor preserves progress only when an operator lowers the per-run selection or a request budget interrupts it.
+
+Automated validation requires a result to independently support the same Lithuanian brand; an input seed alone is never published. Official brand domains and subdomains are suppressed. Arbitrary resource hashes and hostname-wide allow-listing are deliberately excluded because both create broad false positives.
 
 - [URLScan Search API](https://docs.urlscan.io/pages/search-api-reference)
 - [URLScan API overview](https://urlscan.io/docs/api/)
 - [URLScan result format](https://urlscan.io/docs/result/)
 - [URLScan quotas](https://docs.urlscan.io/apis/urlscan-openapi/generic)
 
-URLScan credentials belong only in a process environment or GitHub Actions secret. The hunter does not submit scans or contact candidate sites. API use and published metadata remain subject to URLScan's terms and quotas.
+URLScan credentials belong only in a process environment or the `URLSCAN_API_KEY` GitHub Actions secret. The hunter performs public search and result retrieval only: it does not submit scans, visit candidate sites, or store the credential in repository data. If the secret is absent, it makes no API request and records an explicit successful skip.
+
+The local UTC ledger defaults to no more than 25 search and 100 result requests per run, and 900 search and 8,000 result requests per day. These are intentionally below URLScan's published fixed-window quotas and are scheduling safeguards, not the provider's billing record. Only successful responses increment the local counters. A provider HTTP 429 stops further requests safely; the outcome remains visible for the next snapshot synchronization. API use and published metadata remain subject to URLScan's terms and quotas.
+
+The twelve scheduled runs can therefore issue at most 300 searches and 1,200 result retrievals per UTC day, with at most one scheduled run in an hour. Manual dispatches share the persisted daily counters, run under the same serialized writer group, and must not be used to burst provider windows.
+
+`data/urlscan/hunt-state.json` persists the numeric progress cursor, bounded candidate counts, UTC request counters, configuration state, timestamps, and latest outcome. It contains neither keys nor domains. The state distinguishes a completed attempt, local budget exhaustion, failure, and an unconfigured successful skip without rewriting historical observations.
 
 ## Transient discovery seeds
 

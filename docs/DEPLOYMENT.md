@@ -16,7 +16,7 @@ The publisher compares new output with rows seen during the previous 30 days and
 | --- | --- | --- | --- |
 | `ci.yml` | Pull requests and relevant pushes to `main` | Lint, type checks, tests, production build | Repository read |
 | `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | Atomic commit of `data/certstream/<date>/domains.ndjson` and bounded `public/data/collection-health.json` | Repository contents write |
-| `hunt-urlscan.yml` | `37 3,15 * * *` and manual dispatch | `data/urlscan/<date>/signals.ndjson` | Optional `URLSCAN_API_KEY`; repository contents write |
+| `hunt-urlscan.yml` | `37 */2 * * *` and manual dispatch | Bounded `data/urlscan/hunt-state.json` and validated `data/urlscan/<date>/signals.ndjson` | Optional `URLSCAN_API_KEY`; repository contents write |
 | `sync-radar.yml` | `17 * * * *` and manual dispatch | Persistent live snapshot, candidate history, and compacted history summary | Optional HECAVEX secrets; repository contents write |
 | `deploy-pages.yml` | Successful CI for the current `main` commit | GitHub Pages artifact | `pages: write` and `id-token: write` |
 
@@ -28,13 +28,19 @@ Frontend verification also enforces deterministic first-party gzip and total-out
 
 The CertStream job initializes health before installing collector dependencies, lets setup and collection failures reach a finalizer, and stages the daily archive and health document in one commit. A failed or no-input attempt is therefore published before the job reports failure. Every successful window appends one bounded aggregate row to its Vilnius-day `attempts.ndjson`; zero matches still produce that dated partition, while `domains.ndjson` appears only when candidates exist. Hard runner cancellation, platform outage before checkout, or a rejected push cannot be recorded by a workflow that no longer has execution or write access. The latest-health document replaces one fixed path and is capped at 32 KiB; daily attempt rows contain no raw certificate names or candidates.
 
+The URLScan job treats the hunter and state publication as separate steps. The commit step always stages `data/urlscan/`, including state written before a hunter failure, and a final step then propagates a hunt or publication failure to the workflow result. An absent secret is not a failure: the hunter performs no request, records `configured: false` and `skipped-not-configured`, and exits successfully. Repeated identical skips within one UTC day remain visible as successful workflow runs without rewriting the timestamp-only ledger. Runner cancellation, an outage before checkout, or a rejected push has the same unavoidable observability limit described above.
+
 ## Required configuration
 
 Store credentials as repository secrets and feature switches as repository variables.
 
 | Setting | Kind | Required when | Purpose |
 | --- | --- | --- | --- |
-| `URLSCAN_API_KEY` | Secret | Optional | Authenticates passive URLScan search and result retrieval. Without it, the URLScan job exits successfully without network access or archive changes; CertStream publication and synchronization continue. Confirm that the account and plan permit the intended automated and public use. |
+| `URLSCAN_API_KEY` | Secret | Optional | Authenticates passive URLScan search and result retrieval. Without it, the job makes no API request, records an explicit successful skip in `hunt-state.json`, and continues. Confirm that the account and plan permit the intended automated and public use. |
+| `URLSCAN_RADAR_SEEDS_ENABLED`, `URLSCAN_RADAR_SNAPSHOT`, `URLSCAN_RADAR_SEED_LIMIT` | Variables | Optional | Include at most 250 current Radar rows observed in the rolling previous seven days as bounded exact-search seeds; enabled by default with `public/data/radar.json`. |
+| `URLSCAN_SEED_ROTATION_SHARDS`, `URLSCAN_SEEDS_PER_RUN` | Variables | Optional | Attempt the complete bounded seed set in one slice, selecting at most 250 seeds per run by default. Operators can lower these values; the cursor then preserves progress. |
+| `URLSCAN_DAILY_SEARCH_CAP`, `URLSCAN_DAILY_RESULT_CAP` | Variables | Optional | Conservative UTC-day request guards: 900 successful searches and 8,000 successful result retrievals by default. |
+| `URLSCAN_RUN_SEARCH_CAP`, `URLSCAN_RUN_RESULT_CAP` | Variables | Optional | Conservative per-run guards: 25 successful searches and 100 successful result retrievals by default. |
 | `CERTSTREAM_URL` | Secret or variable | Optional | Uses an externally managed WSS endpoint instead of the workflow's temporary local CertStream server; the secret takes precedence. |
 | `HECAVEX_ENABLED` | Variable | Optional | Set to `true` to include the configured HECAVEX export in snapshot synchronization. |
 | `HECAVEX_FEED_URL` | Secret | `HECAVEX_ENABLED=true` | Production HTTPS endpoint implementing the [public data contract](DATA-CONTRACT.md). The HTTP loopback exception exists only for maintainer tests. |
@@ -47,6 +53,10 @@ Store credentials as repository secrets and feature switches as repository varia
 The private false-positive review ledger is not a deployment input and must remain outside the repository. An operator may deliberately export its sanitized active decisions to `data/review/public-decisions.json`; synchronization rejects malformed, oversized, future-dated, duplicate, or cross-brand decisions. See [`REVIEW-WORKFLOW.md`](REVIEW-WORKFLOW.md).
 
 Public screenshot URLs must be hosted on exactly `urlscan.io`, regardless of which source supplied the observation. Tuning limits, lookback windows, and other bounded defaults are documented in [`.env.example`](../.env.example) and the relevant [workflow files](../.github/workflows/).
+
+The URLScan guards remain below the provider's published fixed-window quotas. The checked-in counters measure only successful responses observed by the hunter and are not a substitute for URLScan account usage. HTTP 429 stops further requests safely. Search queries are limited to the rolling previous seven days; each two-hour run attempts all currently bounded candidates, with cursor resumption if a lowered cap or budget interrupts the set. Radar calls only the public search and result endpoints, never scan submission or a candidate site.
+
+Scheduled and manual URLScan dispatches share the same persisted UTC-day counters. A default scheduled run can issue at most 25 searches and 100 result retrievals, below the provider's 120-per-minute limits; the twelve scheduled runs total at most 300 and 1,200 respectively before lower practical query counts, below both the local daily guards and provider daily quotas. The two-hour schedule places no more than one scheduled run in an hour. Manual dispatches are serialized by the archive-writer concurrency group and consume the same daily budget; operators must not use manual dispatch as a way to burst provider windows.
 
 Before HECAVEX enables or changes URLScan collection on the live service, operators must review the current [URLScan Terms of Service](https://urlscan.io/terms/) and obtain any permission required for the intended display or redistribution of report metadata and screenshots. An API key proves authentication, not redistribution permission.
 

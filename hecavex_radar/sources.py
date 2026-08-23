@@ -16,7 +16,7 @@ from .certstream_archive import read_recent_candidates
 from .models import RadarSource, RawSignal, SourceResult, SourceState
 from .provenance import reason_codes_from_evidence, reason_codes_from_match
 from .safety import refang, safe_feed_url
-from .urlscan import read_recent_urlscan
+from .urlscan import read_recent_urlscan, read_urlscan_hunt_state
 
 MAXIMUM_SOURCE_BYTES = 20 * 1024 * 1024
 MAXIMUM_HECAVEX_RECORDS = 25_000
@@ -156,9 +156,7 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
     suppressed = len(candidates) - len(signals)
     note = f"Open heuristic candidates from the last {lookback_days} day{suffix}"
     if suppressed:
-        note += (
-            f"; {suppressed} candidate{'s' if suppressed != 1 else ''} no longer passed current registry rules"
-        )
+        note += f"; {suppressed} candidate{'s' if suppressed != 1 else ''} no longer passed current registry rules"
     return SourceResult(
         source=_source(
             SOURCE_DEFINITIONS["certstream"],
@@ -174,6 +172,7 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
 def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResult:
     observed_at = datetime.fromisoformat(now.replace("Z", "+00:00"))
     archived = read_recent_urlscan(archive_root, lookback_days, observed_at)
+    hunt_state = read_urlscan_hunt_state(archive_root)
     signals = [
         RawSignal(
             url=refang(signal["url"]),
@@ -193,13 +192,43 @@ def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResul
         for signal in archived
     ]
     suffix = "" if lookback_days == 1 else "s"
+    if hunt_state is None:
+        state: SourceState = "partial" if signals else "skipped"
+        note = f"Validated passive archive from the last {lookback_days} day{suffix}; hunt state is unavailable"
+        fetched_at = None
+    else:
+        outcome = hunt_state["lastOutcome"]
+        fetched_at = hunt_state["lastRunAt"]
+        if outcome == "skipped-not-configured":
+            state = "skipped"
+            note = (
+                f"Validated passive archive from the last {lookback_days} day{suffix}; "
+                "URLScan API key is not configured"
+            )
+        elif outcome == "failed":
+            state = "partial"
+            note = (
+                f"Validated passive archive from the last {lookback_days} day{suffix}; the latest passive hunt failed"
+            )
+        elif outcome == "budget-limited":
+            state = "partial"
+            note = (
+                f"Validated passive archive from the last {lookback_days} day{suffix}; "
+                "the latest hunt reached a configured request budget"
+            )
+        else:
+            state = "healthy"
+            note = (
+                f"Passive public results validated from the last {lookback_days} day{suffix}; "
+                "the latest scheduled hunt completed"
+            )
     return SourceResult(
         source=_source(
             SOURCE_DEFINITIONS["urlscan"],
-            fetched_at=now,
+            fetched_at=fetched_at,
             records=len(signals),
-            state="healthy",
-            note=f"Passive results passing public validation from the last {lookback_days} day{suffix}",
+            state=state,
+            note=note,
         ),
         signals=signals,
     )

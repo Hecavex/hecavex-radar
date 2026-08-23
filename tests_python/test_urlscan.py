@@ -58,26 +58,43 @@ def _signal(
 
 
 def _disable_seed_inputs(monkeypatch: MonkeyPatch) -> None:
+    monkeypatch.setenv("URLSCAN_RADAR_SEEDS_ENABLED", "false")
     monkeypatch.setenv("URLSCAN_CT_SEEDS_ENABLED", "false")
     monkeypatch.setenv("URLSCAN_INTELLIGENCE_SEEDS_ENABLED", "false")
 
 
 def test_main_skips_cleanly_without_optional_api_key(
+    tmp_path: Path,
     monkeypatch: MonkeyPatch,
     capsys: CaptureFixture[str],
 ) -> None:
+    monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("URLSCAN_API_KEY", raising=False)
+    monkeypatch.setenv("URLSCAN_ARCHIVE_ROOT", "data/urlscan")
 
     def forbidden(*_args: object, **_kwargs: object) -> None:
-        raise AssertionError("missing-key skip must not hunt or mutate the archive")
+        raise AssertionError("missing-key skip must not hunt or make an API request")
 
     monkeypatch.setattr(urlscan, "hunt_urlscan", forbidden)
     monkeypatch.setattr(urlscan, "write_urlscan_archive", forbidden)
+    monkeypatch.setattr(urlscan, "_request_json", forbidden)
 
     assert urlscan.main() == 0
     output = capsys.readouterr().out
     assert "hunt skipped" in output
     assert "CertStream candidates remain eligible" in output
+    state = urlscan.read_urlscan_hunt_state("data/urlscan")
+    assert state is not None
+    assert state["configured"] is False
+    assert state["lastOutcome"] == "skipped-not-configured"
+    assert state["lastRunSearchRequests"] == 0
+    assert state["lastRunResultRequests"] == 0
+    assert list((tmp_path / "data" / "urlscan").glob("????-??-??/signals.ndjson")) == []
+    state_path = tmp_path / "data" / "urlscan" / "hunt-state.json"
+    first_body = state_path.read_text(encoding="utf-8")
+
+    assert urlscan.main() == 0
+    assert state_path.read_text(encoding="utf-8") == first_body
 
 
 def _summary(uuid: str, url: str, title: str = "") -> dict[str, object]:
@@ -212,8 +229,7 @@ def test_hunts_domains_titles_and_exact_primary_hash_pivots(monkeypatch: MonkeyP
     assert all(signal["sources"] == ["URLScan"] for signal in signals)
     assert all((signal.get("referenceUrl") or "").startswith("https://urlscan.io/result/") for signal in signals)
     assert all(
-        signal["screenshotUrl"] is not None
-        and signal["screenshotUrl"].startswith("https://urlscan.io/screenshots/")
+        signal["screenshotUrl"] is not None and signal["screenshotUrl"].startswith("https://urlscan.io/screenshots/")
         for signal in signals
     )
     assert all("https://" not in signal["url"] for signal in signals)
@@ -304,8 +320,7 @@ def test_detail_rejects_non_public_and_missing_visibility(monkeypatch: MonkeyPat
         ("cccccccc-cccc-cccc-cccc-cccccccccccc", None),
     )
     urls = {
-        uuid: f"https://secure-swedbank-{index}.example/"
-        for index, (uuid, _visibility) in enumerate(cases, start=1)
+        uuid: f"https://secure-swedbank-{index}.example/" for index, (uuid, _visibility) in enumerate(cases, start=1)
     }
     detail_requests: list[str] = []
 
@@ -577,9 +592,7 @@ def test_exactly_enriches_current_certstream_seed(monkeypatch: MonkeyPatch) -> N
                 "Account",
                 PRIMARY_HASH,
             )
-            detail["verdicts"] = {
-                "urlscan": {"malicious": False, "score": 0, "categories": [], "brands": []}
-            }
+            detail["verdicts"] = {"urlscan": {"malicious": False, "score": 0, "categories": [], "brands": []}}
             return detail
         raise AssertionError(f"Unexpected URLScan request: {parsed.path}")
 
@@ -618,11 +631,7 @@ def test_transient_seed_is_attributed_only_to_urlscan(
         if parsed.path == "/api/v1/search/":
             query = parse_qs(parsed.query)["q"][0]
             if 'task.domain.keyword:"secure-swedbank-login.example"' in query:
-                return {
-                    "results": [
-                        _summary(UUID_DOMAIN, "https://secure-swedbank-login.example/")
-                    ]
-                }
+                return {"results": [_summary(UUID_DOMAIN, "https://secure-swedbank-login.example/")]}
             return {"results": []}
         if parsed.path == f"/api/v1/result/{UUID_DOMAIN}/":
             return _detail(
@@ -940,9 +949,7 @@ def test_future_timestamps_are_rejected_and_purged_on_rewrite(
     assert archive.read_text(encoding="utf-8") == ""
 
 
-def test_legacy_archive_is_not_republished_without_explicit_review(
-    tmp_path: Path, monkeypatch: MonkeyPatch
-) -> None:
+def test_legacy_archive_is_not_republished_without_explicit_review(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
     registry_path = Path(__file__).parents[1] / "data" / "brands-lt.json"
     registry = load_brand_registry(registry_path)
@@ -956,11 +963,7 @@ def test_legacy_archive_is_not_republished_without_explicit_review(
     archive = tmp_path / "data" / "urlscan" / "2026-08-21" / "signals.ndjson"
     archive.parent.mkdir(parents=True)
     archive.write_text(
-        "\n".join(
-            json.dumps({"schemaVersion": 1, **value})
-            for value in (signal, weak, unconfirmed)
-        )
-        + "\n",
+        "\n".join(json.dumps({"schemaVersion": 1, **value}) for value in (signal, weak, unconfirmed)) + "\n",
         encoding="utf-8",
     )
 

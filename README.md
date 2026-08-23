@@ -31,11 +31,13 @@ The service is published through reviewed GitHub Actions workflows. Cron schedul
 | Operation | Schedule or trigger | Service artifact |
 | --- | --- | --- |
 | CertStream sample | `2,32 * * * *` | Defanged candidate archive and latest bounded collection-health record |
-| URLScan hunt | `37 3,15 * * *` | Validated daily URLScan archive when the optional source is configured |
+| URLScan hunt | `37 */2 * * *` | Bounded hunt-state ledger and validated daily archive when the optional source is configured |
 | Snapshot synchronization | `17 * * * *` | Live snapshot, retained history, and compacted history summary |
 | Site deployment | Successful CI for the current `main` commit | Static production pages for `radar.hecavex.com` |
 
 The scheduled CertStream listener runs for four minutes twice per hour: at most 192 minutes, or 13.3% of a day, if every run starts and completes. It is sampled live coverage, not a continuous listener, daily replay, or durable CT source. The dashboard publishes the latest attempt's actual timing, aggregate counts, outcome, schedule delay, last success, and freshness without retaining raw certificate names. The accepted plan for durable checkpointed CT coverage is recorded in [ADR 0001](docs/decisions/0001-ct-coverage.md).
+
+The URLScan workflow runs at minute 37 every two hours. Each run attempts exact passive lookups for the complete bounded set of at most 250 candidates observed during the rolling previous seven days, subject to conservative request budgets. A deterministic cursor preserves progress only when an operator lowers the per-run selection or a request budget interrupts the set. The hunter performs only searches of existing public reports and retrieval of public result documents: it does not submit scans or visit candidate hosts. A missing `URLSCAN_API_KEY` is a successful, explicit skip with no API request. The checked-in hunt-state ledger records configuration, UTC budget counters, cursor progress, and the latest outcome, but no credential or candidate domain.
 
 ## Public service artifacts
 
@@ -46,7 +48,7 @@ The scheduled CertStream listener runs for four minutes twice per hour: at most 
 | `public/data/collection-health.json` | Latest bounded CertStream attempt health; no raw candidates |
 | `data/brands-lt.json` | Reviewed Lithuanian brand and official-domain registry |
 | `data/certstream/` | Date-partitioned successful sample metadata and defanged CT candidates |
-| `data/urlscan/` | Date-partitioned, automatically validated URLScan observations |
+| `data/urlscan/` | Date-partitioned validated URLScan observations and bounded credential-free hunt state |
 | `data/history/` | Deterministic daily events and compacted history summary |
 | `data/review/public-decisions.json` | Explicitly exported, sanitized review decisions only |
 

@@ -122,3 +122,46 @@ def test_certstream_revalidates_stale_archive_matches(monkeypatch: MonkeyPatch) 
     assert "1 candidate no longer passed current registry rules" in (result.source["note"] or "")
     assert len(result.signals) == 1
     assert result.signals[0].brand == "Swedbank"
+
+
+@pytest.mark.parametrize(
+    ("outcome", "expected_state", "note_fragment"),
+    [
+        ("completed", "healthy", "completed"),
+        ("budget-limited", "partial", "request budget"),
+        ("failed", "partial", "failed"),
+        ("skipped-not-configured", "skipped", "not configured"),
+    ],
+)
+def test_urlscan_source_state_reflects_the_latest_hunt(
+    monkeypatch: MonkeyPatch,
+    outcome: str,
+    expected_state: str,
+    note_fragment: str,
+) -> None:
+    monkeypatch.setattr(sources, "read_recent_urlscan", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        sources,
+        "read_urlscan_hunt_state",
+        lambda *_args: {
+            "lastOutcome": outcome,
+            "lastRunAt": "2026-08-21T09:00:00.000Z",
+        },
+    )
+
+    result = sources.load_urlscan("2026-08-21T10:00:00.000Z", "data/urlscan", 7)
+
+    assert result.source["state"] == expected_state
+    assert result.source["fetchedAt"] == "2026-08-21T09:00:00.000Z"
+    assert note_fragment in (result.source["note"] or "")
+
+
+def test_urlscan_source_without_hunt_state_does_not_claim_health(monkeypatch: MonkeyPatch) -> None:
+    monkeypatch.setattr(sources, "read_recent_urlscan", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(sources, "read_urlscan_hunt_state", lambda *_args: None)
+
+    result = sources.load_urlscan("2026-08-21T10:00:00.000Z", "data/urlscan", 7)
+
+    assert result.source["state"] == "skipped"
+    assert result.source["fetchedAt"] is None
+    assert "state is unavailable" in (result.source["note"] or "")

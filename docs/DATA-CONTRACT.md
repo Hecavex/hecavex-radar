@@ -160,6 +160,15 @@ Each complete record remains defanged and uses the same host-based ID namespace 
 
 A current hostname match must agree with the declared brand. When the hostname no longer matches, only a row backed by title or verdict evidence may remain, and it must still resolve to a current registry brand and pass suppression and collision checks. Before a row can enter the archive, its URLScan search summary and result detail must both identify the scan as public; missing, unlisted, or private visibility is rejected. Version 1 rows and legacy version 2 rows without typed evidence are rejected. References use the canonical URLScan result path, screenshots use the fixed URLScan policy, and resource or empty-body hashes are rejected. A daily file is capped at 2,500 records and 20 MiB.
 
+`data/urlscan/hunt-state.json` is the bounded operational state document for the two-hour hunter. It uses schema version 1 and dataset `urlscan-hunt-state`, and contains exactly the following state classes:
+
+- `generatedAt`, `lastRunAt`, and `budgetDay` identify the persisted state transition and UTC counter window. Individual no-change runs remain visible in Actions history.
+- `configured` and `lastOutcome` distinguish `completed`, `budget-limited`, `failed`, and the successful `skipped-not-configured` state.
+- `searchRequests`, `resultRequests`, `lastRunSearchRequests`, and `lastRunResultRequests` are local counts of successful API responses, not provider billing counters.
+- `candidateCursor`, `candidateCount`, and `selectedCandidates` are aggregate bounded-set progress values. They never contain a domain or URL.
+
+The document is capped at 32 KiB, uses an exact fixed-field schema, and is replaced atomically when its non-timestamp state changes. It contains no API key, authentication material, candidate domain, or result payload. Missing credentials cause no API request and record `configured: false` with `skipped-not-configured`; repeated identical skips within one UTC day do not create timestamp-only commits. HTTP 429 or exhaustion of a conservative internal cap stops further requests and records an observable bounded outcome while preserving prior archive rows.
+
 ### Candidate history
 
 `data/history/daily/YYYY-MM-DD/events.ndjson` uses UTC partitions and stores exact-schema, defanged events. An event has:

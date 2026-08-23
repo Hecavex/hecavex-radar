@@ -3,9 +3,31 @@
 The production Radar service's passive hunter writes reviewed, defanged observations to
 `YYYY-MM-DD/signals.ndjson` using the Europe/Vilnius calendar date.
 
-Only existing URLScan results are searched. The service does not submit or
-directly browse suspicious URLs. Each daily file is capped at 2,500 records and
-20 MiB; report links and screenshots are restricted to `https://urlscan.io`.
+At minute 37 every two hours, the hunter searches only existing public URLScan
+reports and retrieves public result documents. It does not submit scans, visit
+candidate hosts, or directly browse suspicious URLs. Searches are date-limited
+to the rolling previous seven days. Each run attempts the complete bounded set
+of at most 250 recent CertStream, Radar-snapshot, and transient discovery
+candidates. A deterministic cursor preserves progress if an operator lowers the
+per-run selection or a request budget interrupts that set.
+
+`hunt-state.json` is a bounded operational ledger for the UTC daily request
+budget and interrupted-set progress. It contains aggregate counters, a numeric cursor,
+candidate counts, configuration state, timestamps, and the latest outcome. It
+contains no API key or candidate domain. If `URLSCAN_API_KEY` is absent, the
+hunter makes no API call, records `configured: false` with a successful
+`skipped-not-configured` outcome, and leaves existing observations intact.
+Repeated identical skips during the same UTC day do not rewrite the ledger or
+create timestamp-only commits; each invocation remains visible in Actions history.
+
+Internal defaults cap search calls at 25 per run and 900 per UTC day, and result
+retrieval at 100 per run and 8,000 per UTC day. These are conservative guardrails
+below URLScan's published quotas, not provider billing counters. Only successful
+responses increment the local ledger; HTTP 429 stops further requests safely.
+
+Each daily file is capped at 2,500 records and 20 MiB; report links and screenshots
+are restricted to `https://urlscan.io`.
+
 Schema v2 requires typed `brandEvidence` and stores only primary-HTML SHA-256
 values. A hash may record pivot provenance but cannot bind a result to a brand
 by itself. Version 1 and untyped legacy records are ignored; resource hashes

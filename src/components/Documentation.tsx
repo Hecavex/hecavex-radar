@@ -19,13 +19,19 @@ const signalFields = [
 const workflows = [
   ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, tests, and production build"],
   ["CertStream collection", "02 and 32 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
-  ["URLScan hunt", "03:37 and 15:37 UTC", "Vilnius-date validated URLScan archive"],
+  ["URLScan hunt", "37 minutes past every second UTC hour", "Bounded hunt state and Vilnius-date validated archive"],
   ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated live snapshot and candidate history"],
   ["Pages deployment", "Successful CI for the current main commit", "Static GitHub Pages artifact"],
 ] as const;
 
 const settings = [
   ["URLSCAN_API_KEY", "Secret", "Required only for passive URLScan search and result retrieval."],
+  ["URLSCAN_RADAR_SEEDS_ENABLED", "Variable", "Includes bounded recent snapshot rows in the rolling seven-day candidate set."],
+  ["URLSCAN_SEED_ROTATION_SHARDS", "Variable", "Uses one complete bounded candidate slice by default; operators may lower the slice."],
+  ["URLSCAN_SEEDS_PER_RUN", "Variable", "Selects no more than 250 exact-domain seeds per run by default."],
+  ["URLSCAN_DAILY_SEARCH_CAP", "Variable", "Conservative local UTC-day search guard; 900 successful responses by default."],
+  ["URLSCAN_DAILY_RESULT_CAP", "Variable", "Conservative local UTC-day result guard; 8,000 successful responses by default."],
+  ["URLSCAN_RUN_SEARCH_CAP / URLSCAN_RUN_RESULT_CAP", "Variables", "Per-run guards of 25 searches and 100 result retrievals by default."],
   ["CERTSTREAM_URL", "Secret or variable", "Optional monitored WSS endpoint; otherwise the scheduled workflow starts its pinned temporary source."],
   ["HECAVEX_ENABLED", "Variable", "Enables the optional configured public HECAVEX export."],
   ["HECAVEX_FEED_URL", "Secret", "Required with HECAVEX enabled; production endpoints must use HTTPS."],
@@ -131,7 +137,8 @@ export function Documentation() {
             <h3>URLScan</h3>
             <p>
               Authenticated passive searches require public visibility in both the search summary and result detail.
-              Exact-domain, brand, title, and primary-document hash pivots remain bounded and independently validated.
+              Queries cover the rolling previous seven days. Exact-domain, brand, title, and primary-document hash pivots
+              remain bounded and independently validated; Radar never submits a scan or visits a candidate host.
             </p>
             <a href="https://urlscan.io/docs/api/">Provider documentation</a>
           </article>
@@ -268,6 +275,14 @@ export function Documentation() {
             </p>
           </article>
           <article>
+            <span>Operational state schema 1</span>
+            <h3>URLScan hunt state</h3>
+            <p>
+              <code>data/urlscan/hunt-state.json</code> records aggregate UTC counters, cursor progress, configuration,
+              timestamps, and outcome. It contains no key, domain, or result payload.
+            </p>
+          </article>
+          <article>
             <span>Optional input</span>
             <h3>HECAVEX JSON</h3>
             <p>
@@ -366,6 +381,16 @@ export function Documentation() {
             Actions can start late or fail. The dashboard reads actual timing, aggregate counts, outcome, schedule delay,
             last success, and freshness from <a href="/data/collection-health.json">collection-health.json</a>; those fields
             remain separate from archive-read state in <code>radar.json</code>.
+          </p>
+        </div>
+        <div className="docs-callout">
+          <strong>Bounded passive URLScan retrieval</strong>
+          <p>
+            At minute 37 every two hours, Radar attempts exact lookups for all bounded seven-day candidates (at most
+            250), while a deterministic cursor preserves progress after an operator-lowered selection or budget stop.
+            Defaults permit at most 25 searches and 100 result retrievals per run, and 900 and 8,000 respectively per
+            UTC day. Only successful responses enter the local ledger; HTTP 429 ends requests safely. A missing secret
+            makes no API call and records a successful <code>skipped-not-configured</code> state.
           </p>
         </div>
         <h3 className="docs-subheading">Source-state semantics</h3>

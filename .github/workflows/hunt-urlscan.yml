@@ -2,7 +2,7 @@ name: Hunt URLScan observations
 
 on:
   schedule:
-    - cron: "37 3,15 * * *"
+    - cron: "37 */2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -35,6 +35,8 @@ jobs:
           python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
           python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
       - name: Hunt existing public URLScan results
+        id: hunt
+        continue-on-error: true
         env:
           URLSCAN_API_KEY: ${{ secrets.URLSCAN_API_KEY }}
           URLSCAN_ARCHIVE_ROOT: data/urlscan
@@ -51,6 +53,9 @@ jobs:
           URLSCAN_CT_LOOKBACK_DAYS: ${{ vars.URLSCAN_CT_LOOKBACK_DAYS || '7' }}
           URLSCAN_CT_SEED_LIMIT: ${{ vars.URLSCAN_CT_SEED_LIMIT || '100' }}
           URLSCAN_CT_SEED_MIN_CONFIDENCE: ${{ vars.URLSCAN_CT_SEED_MIN_CONFIDENCE || '80' }}
+          URLSCAN_RADAR_SEEDS_ENABLED: ${{ vars.URLSCAN_RADAR_SEEDS_ENABLED || 'true' }}
+          URLSCAN_RADAR_SNAPSHOT: ${{ vars.URLSCAN_RADAR_SNAPSHOT || 'public/data/radar.json' }}
+          URLSCAN_RADAR_SEED_LIMIT: ${{ vars.URLSCAN_RADAR_SEED_LIMIT || '250' }}
           URLSCAN_INTELLIGENCE_SEEDS_ENABLED: ${{ vars.URLSCAN_INTELLIGENCE_SEEDS_ENABLED || 'true' }}
           PHISHDESTROY_SEED_ENABLED: ${{ vars.PHISHDESTROY_SEED_ENABLED || 'true' }}
           CERTPL_SEED_ENABLED: ${{ vars.CERTPL_SEED_ENABLED || 'true' }}
@@ -58,11 +63,20 @@ jobs:
           URLSCAN_SEED_BATCH_SIZE: ${{ vars.URLSCAN_SEED_BATCH_SIZE || '20' }}
           URLSCAN_SEED_SEARCH_LIMIT: ${{ vars.URLSCAN_SEED_SEARCH_LIMIT || '50' }}
           URLSCAN_SEED_DETAIL_LIMIT: ${{ vars.URLSCAN_SEED_DETAIL_LIMIT || '30' }}
+          URLSCAN_SEED_ROTATION_SHARDS: ${{ vars.URLSCAN_SEED_ROTATION_SHARDS || '1' }}
+          URLSCAN_SEEDS_PER_RUN: ${{ vars.URLSCAN_SEEDS_PER_RUN || '250' }}
+          URLSCAN_DAILY_SEARCH_CAP: ${{ vars.URLSCAN_DAILY_SEARCH_CAP || '900' }}
+          URLSCAN_DAILY_RESULT_CAP: ${{ vars.URLSCAN_DAILY_RESULT_CAP || '8000' }}
+          URLSCAN_RUN_SEARCH_CAP: ${{ vars.URLSCAN_RUN_SEARCH_CAP || '25' }}
+          URLSCAN_RUN_RESULT_CAP: ${{ vars.URLSCAN_RUN_RESULT_CAP || '100' }}
           INTELLIGENCE_SEED_MIN_CONFIDENCE: ${{ vars.INTELLIGENCE_SEED_MIN_CONFIDENCE || '80' }}
           INTELLIGENCE_SEED_LIMIT: ${{ vars.INTELLIGENCE_SEED_LIMIT || '250' }}
           URLSCAN_MAX_SIGNALS: ${{ vars.URLSCAN_MAX_SIGNALS || '500' }}
         run: python -m hecavex_radar.urlscan
       - name: Commit validated public archive updates
+        id: commit
+        if: always()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -78,3 +92,9 @@ jobs:
           gh auth setup-git
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Propagate hunt or publication failure
+        if: always() && (steps.hunt.outcome != 'success' || steps.commit.outcome != 'success')
+        shell: bash
+        run: |
+          echo "URLScan hunt or state publication failed."
+          exit 1

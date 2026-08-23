@@ -36,13 +36,9 @@ SEARCH_ENDPOINT = f"{API_ROOT}/api/v1/search/"
 RESULT_ENDPOINT = f"{API_ROOT}/api/v1/result"
 SHA256 = re.compile(r"^[a-f\d]{64}$", re.IGNORECASE)
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.IGNORECASE)
-UTC_MILLISECOND_TIMESTAMP = re.compile(
-    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$"
-)
+UTC_MILLISECOND_TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 EMPTY_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-BRAND_EVIDENCE_VALUES: frozenset[BrandEvidence] = frozenset(
-    {"domain", "title", "verdict", "primary-html-sha256"}
-)
+BRAND_EVIDENCE_VALUES: frozenset[BrandEvidence] = frozenset({"domain", "title", "verdict", "primary-html-sha256"})
 URLSCAN_ARCHIVE_FIELDS = frozenset(
     {
         "schemaVersion",
@@ -69,6 +65,30 @@ MAXIMUM_DAILY_RECORDS = 2_500
 MAXIMUM_ARCHIVE_BYTES = 20 * 1024 * 1024
 MAXIMUM_ARCHIVE_OBSERVATION_AGE = timedelta(days=91)
 MAXIMUM_TIMESTAMP_FUTURE_SKEW = timedelta(minutes=5)
+MAXIMUM_HUNT_STATE_BYTES = 32 * 1024
+MAXIMUM_RADAR_SNAPSHOT_BYTES = 512 * 1024
+PROVIDER_DAILY_SEARCH_LIMIT = 1_000
+PROVIDER_DAILY_RESULT_LIMIT = 10_000
+PROVIDER_MINUTE_LIMIT = 120
+HUNT_STATE_FIELDS = frozenset(
+    {
+        "schemaVersion",
+        "dataset",
+        "generatedAt",
+        "configured",
+        "budgetDay",
+        "searchRequests",
+        "resultRequests",
+        "candidateCursor",
+        "candidateCount",
+        "selectedCandidates",
+        "lastRunAt",
+        "lastOutcome",
+        "lastRunSearchRequests",
+        "lastRunResultRequests",
+    }
+)
+HUNT_OUTCOMES = frozenset({"skipped-not-configured", "completed", "budget-limited", "failed"})
 VILNIUS = ZoneInfo("Europe/Vilnius")
 
 JsonRequester = Callable[[str, str], Any]
@@ -79,6 +99,93 @@ class _HuntSeed:
     domain: str
     brand: str
     confidence: int
+
+
+@dataclass(slots=True)
+class _HuntProgress:
+    candidate_cursor: int = 0
+    candidate_count: int = 0
+    selected_candidates: int = 0
+
+
+class _BudgetedRequester:
+    """Keep one scheduled run inside conservative passive API request budgets."""
+
+    def __init__(
+        self,
+        requester: JsonRequester,
+        *,
+        search_used: int,
+        result_used: int,
+        daily_search_cap: int,
+        daily_result_cap: int,
+        run_search_cap: int,
+        run_result_cap: int,
+    ) -> None:
+        self._requester = requester
+        self.search_used = search_used
+        self.result_used = result_used
+        self.daily_search_cap = daily_search_cap
+        self.daily_result_cap = daily_result_cap
+        self.run_search_cap = run_search_cap
+        self.run_result_cap = run_result_cap
+        self.run_search_requests = 0
+        self.run_result_requests = 0
+        self.exhausted = False
+        self.provider_exhausted = False
+
+    @staticmethod
+    def _kind(url: str) -> str:
+        parsed = urlsplit(url)
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname != "urlscan.io"
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.port is not None
+            or parsed.fragment
+        ):
+            raise ValueError("URLScan requests must stay on https://urlscan.io.")
+        if parsed.path == "/api/v1/search/":
+            return "search"
+        if re.fullmatch(r"/api/v1/result/[0-9a-f-]{36}/", parsed.path, re.IGNORECASE):
+            identifier = parsed.path.split("/")[4]
+            if UUID.fullmatch(identifier) and not parsed.query:
+                return "result"
+        raise ValueError("Only passive URLScan search and result retrieval are allowed.")
+
+    def __call__(self, url: str, api_key: str) -> Any:
+        kind = self._kind(url)
+        if self.provider_exhausted:
+            return {"results": []} if kind == "search" else {}
+        if kind == "search":
+            if self.search_used >= self.daily_search_cap or self.run_search_requests >= self.run_search_cap:
+                self.exhausted = True
+                return {"results": []}
+        elif self.result_used >= self.daily_result_cap or self.run_result_requests >= self.run_result_cap:
+            self.exhausted = True
+            return {}
+
+        try:
+            payload = self._requester(url, api_key)
+        except _URLScanRateLimitError as error:
+            if error.successful_response:
+                self._count(kind)
+            self.exhausted = True
+            self.provider_exhausted = True
+            if error.successful_response and error.payload is not None:
+                return error.payload
+            return {"results": []} if kind == "search" else {}
+        self._count(kind)
+        return payload
+
+    def _count(self, kind: str) -> None:
+        if kind == "search":
+            self.search_used += 1
+            self.run_search_requests += 1
+        else:
+            self.result_used += 1
+            self.run_result_requests += 1
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,7 +223,16 @@ class _URLScanFatalError(RuntimeError):
 
 
 class _URLScanRateLimitError(_URLScanFatalError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        successful_response: bool = False,
+        payload: Any | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.successful_response = successful_response
+        self.payload = payload
 
 
 class _URLScanAccessError(_URLScanFatalError):
@@ -172,6 +288,17 @@ class _UrlscanRedirectHandler(HTTPRedirectHandler):
         )
 
 
+def _rate_limit_headers_exhausted(headers: HTTPMessage) -> bool:
+    """Recognize a zero remaining value without relying on one header layout."""
+    for name, value in headers.items():
+        lowered = name.lower()
+        if lowered.startswith("x-rate-limit") and "remaining" in lowered:
+            numbers = [int(number) for number in re.findall(r"(?<!\d)\d+(?!\d)", value)]
+            if numbers and 0 in numbers:
+                return True
+    return False
+
+
 def _request_json(url: str, api_key: str) -> Any:
     parsed = urlsplit(url)
     if (
@@ -193,6 +320,7 @@ def _request_json(url: str, api_key: str) -> Any:
             timeout=45,
         ) as response:
             body = response.read(MAXIMUM_RESPONSE_BYTES + 1)
+            rate_limit_exhausted = _rate_limit_headers_exhausted(response.headers)
     except HTTPError as error:
         if error.code == 429:
             raise _URLScanRateLimitError("URLScan rate limit reached (HTTP 429).") from error
@@ -206,9 +334,16 @@ def _request_json(url: str, api_key: str) -> Any:
     if len(body) > MAXIMUM_RESPONSE_BYTES:
         raise ValueError("URLScan response exceeds 20 MiB.")
     try:
-        return json.loads(body)
+        payload = json.loads(body)
     except json.JSONDecodeError as error:
         raise ValueError("URLScan returned invalid JSON.") from error
+    if rate_limit_exhausted:
+        raise _URLScanRateLimitError(
+            "URLScan response reported an exhausted request window.",
+            successful_response=True,
+            payload=payload,
+        )
+    return payload
 
 
 def _dictionary(value: object) -> dict[str, Any]:
@@ -252,9 +387,7 @@ def build_title_query(registry: BrandRegistry, lookback_days: int) -> str:
 
 
 def build_exact_domain_query(domains: list[str], lookback_days: int) -> str:
-    normalized = list(
-        dict.fromkeys(domain for value in domains if (domain := normalize_domain(value)) is not None)
-    )
+    normalized = list(dict.fromkeys(domain for value in domains if (domain := normalize_domain(value)) is not None))
     if not normalized:
         raise ValueError("An exact-domain URLScan query requires at least one valid domain.")
     alternatives = " OR ".join(
@@ -277,9 +410,7 @@ def _search(query: str, size: int, api_key: str, requester: JsonRequester) -> li
     if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
         raise ValueError("URLScan search returned an unexpected payload.")
     return [
-        cast(dict[str, Any], item)
-        for item in payload["results"]
-        if isinstance(item, dict) and _is_public_scan(item)
+        cast(dict[str, Any], item) for item in payload["results"] if isinstance(item, dict) and _is_public_scan(item)
     ]
 
 
@@ -304,9 +435,7 @@ def _result_urls(result: dict[str, Any]) -> list[str]:
 
 
 def _page_url(result: dict[str, Any]) -> str | None:
-    return _string(_dictionary(result.get("page")).get("url")) or _string(
-        _dictionary(result.get("task")).get("url")
-    )
+    return _string(_dictionary(result.get("page")).get("url")) or _string(_dictionary(result.get("task")).get("url"))
 
 
 def _hostname(value: str) -> str | None:
@@ -330,8 +459,7 @@ def _verdict(detail: dict[str, Any]) -> _ScanVerdict:
     score = score_value if isinstance(score_value, int) and not isinstance(score_value, bool) else 0
     categories_value = urlscan.get("categories")
     phishing = isinstance(categories_value, list) and any(
-        isinstance(value, str) and value.strip().lower() == "phishing"
-        for value in categories_value
+        isinstance(value, str) and value.strip().lower() == "phishing" for value in categories_value
     )
     malicious = urlscan.get("malicious") is True or score > 0 or phishing
     return _ScanVerdict(
@@ -376,18 +504,12 @@ def _primary_hashes(detail: dict[str, Any], registry: BrandRegistry) -> list[str
         digest = _string(response.get("hash"))
         mime = (_string(metadata.get("mimeType")) or "").lower()
         resource_type = (
-            _string(item.get("type"))
-            or _string(request_container.get("type"))
-            or _string(request.get("type"))
+            _string(item.get("type")) or _string(request_container.get("type")) or _string(request.get("type"))
         )
         status_value = metadata.get("status")
         if not isinstance(status_value, int) or isinstance(status_value, bool):
             status_value = response.get("status")
-        status = (
-            status_value
-            if isinstance(status_value, int) and not isinstance(status_value, bool)
-            else 0
-        )
+        status = status_value if isinstance(status_value, int) and not isinstance(status_value, bool) else 0
         size_value = metadata.get("encodedDataLength") or metadata.get("dataLength") or response.get("size")
         size = size_value if isinstance(size_value, int) and not isinstance(size_value, bool) else 0
         if (
@@ -478,18 +600,12 @@ def _summary_match(result: dict[str, Any], registry: BrandRegistry, minimum_conf
 
 def _matched_url(result: dict[str, Any], match: CandidateMatch) -> str:
     return next(
-        (
-            value
-            for value in _result_urls(result)
-            if (hostname := _hostname(value)) and hostname == match.domain
-        ),
+        (value for value in _result_urls(result) if (hostname := _hostname(value)) and hostname == match.domain),
         match.domain,
     )
 
 
-def _safe_detail(
-    result: dict[str, Any], api_key: str, requester: JsonRequester
-) -> tuple[str, dict[str, Any]] | None:
+def _safe_detail(result: dict[str, Any], api_key: str, requester: JsonRequester) -> tuple[str, dict[str, Any]] | None:
     uuid = _scan_uuid(result)
     if not uuid or not _is_public_scan(result):
         return None
@@ -517,8 +633,7 @@ def _brand_evidence(
     domain_brands = {
         match.brand
         for value in [*_result_urls(result), *_result_urls(detail)]
-        if (hostname := _hostname(value)) is not None
-        and (match := score_domain(hostname, registry)) is not None
+        if (hostname := _hostname(value)) is not None and (match := score_domain(hostname, registry)) is not None
     }
     title_brand = match_brand_text(_title(result, detail), registry)
     verdict_brand = _verdict_brand(detail, registry)
@@ -557,23 +672,100 @@ def _merge_hunt_seeds(seeds: list[_HuntSeed], maximum: int) -> list[_HuntSeed]:
             brand=seed.brand,
             confidence=max(current.confidence, seed.confidence),
         )
-    unambiguous = [
-        seed
-        for seed in combined.values()
-        if len(brands_by_domain.get(seed.domain, set())) == 1
-    ]
+    unambiguous = [seed for seed in combined.values() if len(brands_by_domain.get(seed.domain, set())) == 1]
     return sorted(unambiguous, key=lambda seed: (-seed.confidence, seed.domain, seed.brand))[:maximum]
+
+
+def _within_rolling_window(value: object, now: datetime, lookback_days: int) -> bool:
+    if not isinstance(value, str):
+        return False
+    try:
+        observed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if observed.tzinfo is None:
+        return False
+    reference = (now if now.tzinfo is not None else now.replace(tzinfo=UTC)).astimezone(UTC)
+    observed_utc = observed.astimezone(UTC)
+    return reference - timedelta(days=lookback_days) <= observed_utc <= (reference + MAXIMUM_TIMESTAMP_FUTURE_SKEW)
+
+
+def _repository_file(value: str | Path, variable: str) -> Path:
+    repository = Path.cwd().resolve()
+    target = (repository / value).resolve()
+    if target == repository or not target.is_relative_to(repository):
+        raise ValueError(f"{variable} must stay inside the repository.")
+    return target
+
+
+def _load_radar_snapshot_seeds(
+    registry: BrandRegistry,
+    now: datetime,
+    lookback_days: int,
+) -> list[_HuntSeed]:
+    if not _enabled("URLSCAN_RADAR_SEEDS_ENABLED", default=True):
+        return []
+    path_value = os.environ.get("URLSCAN_RADAR_SNAPSHOT", "").strip() or "public/data/radar.json"
+    path = _repository_file(path_value, "URLSCAN_RADAR_SNAPSHOT")
+    try:
+        if path.stat().st_size > MAXIMUM_RADAR_SNAPSHOT_BYTES:
+            raise ValueError("Radar snapshot exceeds 512 KiB.")
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError as error:
+        raise ValueError("Radar snapshot contains invalid JSON.") from error
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schemaVersion") != 1
+        or payload.get("dataset") != "live"
+        or not isinstance(payload.get("signals"), list)
+    ):
+        raise ValueError("Radar snapshot has an unexpected contract.")
+
+    minimum = _bounded(os.environ.get("URLSCAN_MIN_CONFIDENCE"), 80, 50, 100)
+    limit = _bounded(os.environ.get("URLSCAN_RADAR_SEED_LIMIT"), 250, 0, 1_000)
+    seeds: list[_HuntSeed] = []
+    for value in payload["signals"]:
+        if len(seeds) >= limit:
+            break
+        if not isinstance(value, dict) or not _within_rolling_window(value.get("lastSeen"), now, lookback_days):
+            continue
+        domain_value = value.get("domain")
+        brand_value = value.get("brand")
+        confidence = value.get("confidence")
+        domain = normalize_domain(refang(domain_value)) if isinstance(domain_value, str) else None
+        brand = resolve_brand_name(brand_value, registry) if isinstance(brand_value, str) else None
+        if (
+            not domain
+            or not brand
+            or isinstance(confidence, bool)
+            or not isinstance(confidence, int)
+            or confidence < minimum
+            or is_suppressed_domain(domain, registry)
+            or is_brand_collision(domain, brand, registry)
+        ):
+            continue
+        current_match = score_domain(domain, registry)
+        if current_match is not None and current_match.brand != brand:
+            continue
+        seeds.append(_HuntSeed(domain=domain, brand=brand, confidence=confidence))
+    return seeds
 
 
 def _load_hunt_seeds(registry: BrandRegistry, now: datetime) -> list[_HuntSeed]:
     seeds: list[_HuntSeed] = []
+    lookback = _bounded(os.environ.get("URLSCAN_LOOKBACK_DAYS"), 7, 1, 90)
+    seeds.extend(_load_radar_snapshot_seeds(registry, now, lookback))
     if _enabled("URLSCAN_CT_SEEDS_ENABLED", default=True):
-        lookback = _bounded(os.environ.get("URLSCAN_CT_LOOKBACK_DAYS"), 7, 1, 90)
+        ct_lookback = _bounded(os.environ.get("URLSCAN_CT_LOOKBACK_DAYS"), lookback, 1, 90)
         limit = _bounded(os.environ.get("URLSCAN_CT_SEED_LIMIT"), 100, 0, 1_000)
         minimum = _bounded(os.environ.get("URLSCAN_CT_SEED_MIN_CONFIDENCE"), 80, 50, 100)
         archive_root = os.environ.get("URLSCAN_CT_ARCHIVE_ROOT", "").strip() or "data/certstream"
-        candidates = read_recent_candidates(archive_root, lookback, now, maximum=max(1, limit)) if limit else []
+        candidates = read_recent_candidates(archive_root, ct_lookback, now, maximum=max(1, limit)) if limit else []
         for candidate in candidates:
+            if not _within_rolling_window(candidate.get("observedAt"), now, ct_lookback):
+                continue
             domain = normalize_domain(refang(candidate["domain"]))
             match = score_domain(domain, registry) if domain else None
             if match and match.confidence >= minimum:
@@ -601,12 +793,26 @@ def _load_hunt_seeds(registry: BrandRegistry, now: datetime) -> list[_HuntSeed]:
     return _merge_hunt_seeds(seeds, maximum)
 
 
+def _rotating_seed_window(
+    seeds: list[_HuntSeed],
+    cursor: int,
+    shards: int,
+    maximum: int,
+) -> tuple[list[_HuntSeed], int]:
+    if not seeds or maximum <= 0:
+        return [], 0
+    start = max(0, cursor) % len(seeds)
+    per_shard = max(1, (len(seeds) + max(1, shards) - 1) // max(1, shards))
+    count = min(len(seeds), maximum, per_shard)
+    selected = [seeds[(start + offset) % len(seeds)] for offset in range(count)]
+    return selected, (start + count) % len(seeds)
+
+
 def _seed_for_result(result: dict[str, Any], seeds_by_domain: dict[str, _HuntSeed]) -> _HuntSeed | None:
     matches = {
         seed
         for value in _result_urls(result)
-        if (hostname := _hostname(value)) is not None
-        and (seed := seeds_by_domain.get(hostname)) is not None
+        if (hostname := _hostname(value)) is not None and (seed := seeds_by_domain.get(hostname)) is not None
     }
     brands = {seed.brand for seed in matches}
     if len(brands) != 1:
@@ -624,11 +830,7 @@ def _seed_url(summary: dict[str, Any], detail: dict[str, Any], seed: _HuntSeed) 
         _string(_dictionary(summary.get("page")).get("url")),
     ]
     return next(
-        (
-            value
-            for value in [*task_values, *page_values]
-            if value and _hostname(value) == seed.domain
-        ),
+        (value for value in [*task_values, *page_values] if value and _hostname(value) == seed.domain),
         None,
     )
 
@@ -642,6 +844,11 @@ def hunt_urlscan(
     now: datetime,
     requester: JsonRequester = _request_json,
     registry: BrandRegistry | None = None,
+    *,
+    seed_cursor: int | None = None,
+    seed_rotation_shards: int = 1,
+    seeds_per_run: int = 1_000,
+    progress: _HuntProgress | None = None,
 ) -> list[RadarSignal]:
     """Passively hunt existing URLScan results for reviewed Lithuanian targets."""
     if not api_key.strip():
@@ -663,15 +870,39 @@ def hunt_urlscan(
     signals: list[RadarSignal] = []
     processed: set[str] = set()
     hash_seeds: list[tuple[str, str]] = []
-    exact_seeds = _load_hunt_seeds(brand_registry, now)
+    all_exact_seeds = _load_hunt_seeds(brand_registry, now)
+    if seed_cursor is None:
+        exact_seeds = all_exact_seeds
+        rotation_start = 0
+    else:
+        exact_seeds, _next_cursor = _rotating_seed_window(
+            all_exact_seeds,
+            seed_cursor,
+            seed_rotation_shards,
+            seeds_per_run,
+        )
+        rotation_start = max(0, seed_cursor) % len(all_exact_seeds) if all_exact_seeds else 0
+    if progress is not None:
+        progress.candidate_count = len(all_exact_seeds)
+        progress.selected_candidates = len(exact_seeds)
+        progress.candidate_cursor = rotation_start
     seed_details = 0
+    queried_seed_count = 0
 
     for batch in _chunks(exact_seeds, seed_batch_size):
         if seed_details >= seed_detail_limit:
             break
         seeds_by_domain = {seed.domain: seed for seed in batch}
         query = build_exact_domain_query(list(seeds_by_domain), lookback)
-        for result in _search(query, seed_search_limit, api_key, requester):
+        requests_before = getattr(requester, "run_search_requests", None)
+        search_results = _search(query, seed_search_limit, api_key, requester)
+        requests_after = getattr(requester, "run_search_requests", None)
+        request_performed = requests_before is None or requests_after is None or requests_after > requests_before
+        if request_performed and seed_cursor is not None:
+            queried_seed_count += len(batch)
+            if progress is not None and all_exact_seeds:
+                progress.candidate_cursor = (rotation_start + queried_seed_count) % len(all_exact_seeds)
+        for result in search_results:
             if seed_details >= seed_detail_limit:
                 break
             uuid = _scan_uuid(result)
@@ -704,9 +935,7 @@ def hunt_urlscan(
             if signal:
                 signals.append(signal)
                 if evidence.title or evidence.verdict:
-                    hash_seeds.extend(
-                        (seed.brand, digest) for digest in _primary_hashes(detail, brand_registry)
-                    )
+                    hash_seeds.extend((seed.brand, digest) for digest in _primary_hashes(detail, brand_registry))
 
     detail_count = 0
 
@@ -742,9 +971,7 @@ def hunt_urlscan(
         if signal:
             signals.append(signal)
             if evidence.title or evidence.verdict:
-                hash_seeds.extend(
-                    (match.brand, digest) for digest in _primary_hashes(detail, brand_registry)
-                )
+                hash_seeds.extend((match.brand, digest) for digest in _primary_hashes(detail, brand_registry))
 
     title_details = 0
     if title_limit:
@@ -883,18 +1110,12 @@ def _archive_signal(
         or not isinstance(hashes, list)
         or len(hashes) > 8
         or not all(
-            isinstance(digest, str)
-            and digest == digest.lower()
-            and digest != EMPTY_SHA256
-            and SHA256.fullmatch(digest)
+            isinstance(digest, str) and digest == digest.lower() and digest != EMPTY_SHA256 and SHA256.fullmatch(digest)
             for digest in hashes
         )
         or not isinstance(brand_evidence, list)
         or not 1 <= len(brand_evidence) <= len(BRAND_EVIDENCE_VALUES)
-        or not all(
-            isinstance(label, str) and label in BRAND_EVIDENCE_VALUES
-            for label in brand_evidence
-        )
+        or not all(isinstance(label, str) and label in BRAND_EVIDENCE_VALUES for label in brand_evidence)
         or len(set(brand_evidence)) != len(brand_evidence)
         or not {"domain", "title", "verdict"}.intersection(brand_evidence)
         or safe_reference_url(reference) != reference
@@ -902,8 +1123,7 @@ def _archive_signal(
     ):
         return None
     if any(
-        value.get(field) is not None and not isinstance(value.get(field), str)
-        for field in ("brand", "country", "host")
+        value.get(field) is not None and not isinstance(value.get(field), str) for field in ("brand", "country", "host")
     ):
         return None
     try:
@@ -925,9 +1145,7 @@ def _archive_signal(
     last_seen_utc = last_seen.astimezone(UTC)
     if reference_time is not None:
         reference_utc = (
-            reference_time
-            if reference_time.tzinfo is not None
-            else reference_time.replace(tzinfo=UTC)
+            reference_time if reference_time.tzinfo is not None else reference_time.replace(tzinfo=UTC)
         ).astimezone(UTC)
         if last_seen_utc > reference_utc + MAXIMUM_TIMESTAMP_FUTURE_SKEW:
             return None
@@ -935,10 +1153,8 @@ def _archive_signal(
         partition_start = datetime.combine(partition_day, datetime.min.time(), tzinfo=VILNIUS)
         partition_end = partition_start + timedelta(days=1)
         if (
-            first_seen_utc
-            < partition_start.astimezone(UTC) - MAXIMUM_ARCHIVE_OBSERVATION_AGE
-            or last_seen_utc
-            > partition_end.astimezone(UTC) + MAXIMUM_TIMESTAMP_FUTURE_SKEW
+            first_seen_utc < partition_start.astimezone(UTC) - MAXIMUM_ARCHIVE_OBSERVATION_AGE
+            or last_seen_utc > partition_end.astimezone(UTC) + MAXIMUM_TIMESTAMP_FUTURE_SKEW
         ):
             return None
     return cast(
@@ -1098,22 +1314,263 @@ def read_recent_urlscan(
     return merge_signals(records, maximum)
 
 
+def _hunt_state_path(root: str | Path) -> Path:
+    return _bounded_archive_root(root) / "hunt-state.json"
+
+
+def _validated_hunt_state(value: object) -> dict[str, Any] | None:
+    if not isinstance(value, dict) or set(value) != HUNT_STATE_FIELDS:
+        return None
+    integers = (
+        "searchRequests",
+        "resultRequests",
+        "candidateCursor",
+        "candidateCount",
+        "selectedCandidates",
+        "lastRunSearchRequests",
+        "lastRunResultRequests",
+    )
+    if (
+        value.get("schemaVersion") != 1
+        or value.get("dataset") != "urlscan-hunt-state"
+        or not isinstance(value.get("configured"), bool)
+        or value.get("lastOutcome") not in HUNT_OUTCOMES
+        or not all(isinstance(value.get(field), int) and not isinstance(value.get(field), bool) for field in integers)
+    ):
+        return None
+    generated = value.get("generatedAt")
+    last_run = value.get("lastRunAt")
+    budget_day = value.get("budgetDay")
+    if (
+        not isinstance(generated, str)
+        or not UTC_MILLISECOND_TIMESTAMP.fullmatch(generated)
+        or not isinstance(last_run, str)
+        or not UTC_MILLISECOND_TIMESTAMP.fullmatch(last_run)
+        or not isinstance(budget_day, str)
+        or not _valid_day(budget_day)
+    ):
+        return None
+    try:
+        if _timestamp(datetime.fromisoformat(generated.replace("Z", "+00:00"))) != generated:
+            return None
+        if _timestamp(datetime.fromisoformat(last_run.replace("Z", "+00:00"))) != last_run:
+            return None
+    except ValueError:
+        return None
+    search_requests = value["searchRequests"]
+    result_requests = value["resultRequests"]
+    candidate_cursor = value["candidateCursor"]
+    candidate_count = value["candidateCount"]
+    selected = value["selectedCandidates"]
+    last_search = value["lastRunSearchRequests"]
+    last_result = value["lastRunResultRequests"]
+    configured = value["configured"]
+    outcome = value["lastOutcome"]
+    if (
+        not 0 <= search_requests <= PROVIDER_DAILY_SEARCH_LIMIT
+        or not 0 <= result_requests <= PROVIDER_DAILY_RESULT_LIMIT
+        or not 0 <= candidate_count <= 1_000
+        or not 0 <= selected <= candidate_count
+        or (candidate_count == 0 and candidate_cursor != 0)
+        or (candidate_count > 0 and not 0 <= candidate_cursor < candidate_count)
+        or not 0 <= last_search <= PROVIDER_MINUTE_LIMIT
+        or not 0 <= last_result <= PROVIDER_MINUTE_LIMIT
+        or (outcome == "skipped-not-configured") != (configured is False)
+        or generated != last_run
+        or datetime.fromisoformat(generated.replace("Z", "+00:00")).date().isoformat() != budget_day
+    ):
+        return None
+    return cast(dict[str, Any], value)
+
+
+def read_urlscan_hunt_state(root: str | Path) -> dict[str, Any] | None:
+    path = _hunt_state_path(root)
+    try:
+        if path.stat().st_size > MAXIMUM_HUNT_STATE_BYTES:
+            return None
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        return None
+    return _validated_hunt_state(payload)
+
+
+def write_urlscan_hunt_state(root: str | Path, state: dict[str, Any]) -> None:
+    validated = _validated_hunt_state(state)
+    if validated is None:
+        raise ValueError("URLScan hunt state has an invalid contract.")
+    path = _hunt_state_path(root)
+    body = json.dumps(validated, ensure_ascii=False, indent=2) + "\n"
+    if len(body.encode("utf-8")) > MAXIMUM_HUNT_STATE_BYTES:
+        raise ValueError("URLScan hunt state exceeds 32 KiB.")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f"{path.name}.tmp")
+    temporary.write_text(body, encoding="utf-8", newline="\n")
+    temporary.chmod(0o600)
+    os.replace(temporary, path)
+
+
+def _write_hunt_state_if_changed(
+    root: str | Path,
+    previous: dict[str, Any] | None,
+    state: dict[str, Any],
+) -> bool:
+    stable_fields = HUNT_STATE_FIELDS - {"generatedAt", "lastRunAt"}
+    if previous is not None and all(previous[field] == state[field] for field in stable_fields):
+        return False
+    write_urlscan_hunt_state(root, state)
+    return True
+
+
+def _state_for_run(
+    now: datetime,
+    *,
+    configured: bool,
+    outcome: str,
+    search_requests: int,
+    result_requests: int,
+    candidate_cursor: int,
+    candidate_count: int,
+    selected_candidates: int,
+    last_search_requests: int,
+    last_result_requests: int,
+) -> dict[str, Any]:
+    timestamp = _timestamp(now)
+    state = {
+        "schemaVersion": 1,
+        "dataset": "urlscan-hunt-state",
+        "generatedAt": timestamp,
+        "configured": configured,
+        "budgetDay": now.astimezone(UTC).date().isoformat(),
+        "searchRequests": search_requests,
+        "resultRequests": result_requests,
+        "candidateCursor": candidate_cursor,
+        "candidateCount": candidate_count,
+        "selectedCandidates": selected_candidates,
+        "lastRunAt": timestamp,
+        "lastOutcome": outcome,
+        "lastRunSearchRequests": last_search_requests,
+        "lastRunResultRequests": last_result_requests,
+    }
+    if _validated_hunt_state(state) is None:
+        raise ValueError("URLScan hunt state could not be constructed safely.")
+    return state
+
+
 def main() -> int:
+    now = datetime.now(UTC)
+    root = os.environ.get("URLSCAN_ARCHIVE_ROOT", "").strip() or "data/urlscan"
+    previous = read_urlscan_hunt_state(root)
+    budget_day = now.date().isoformat()
+    same_day = previous is not None and previous["budgetDay"] == budget_day
+    if same_day and previous is not None:
+        search_used = cast(int, previous["searchRequests"])
+        result_used = cast(int, previous["resultRequests"])
+    else:
+        search_used = 0
+        result_used = 0
+    previous_cursor = cast(int, previous["candidateCursor"]) if previous else 0
+    previous_count = cast(int, previous["candidateCount"]) if previous else 0
     api_key = os.environ.get("URLSCAN_API_KEY", "").strip()
     if not api_key:
+        try:
+            changed = _write_hunt_state_if_changed(
+                root,
+                previous,
+                _state_for_run(
+                    now,
+                    configured=False,
+                    outcome="skipped-not-configured",
+                    search_requests=search_used,
+                    result_requests=result_used,
+                    candidate_cursor=previous_cursor,
+                    candidate_count=previous_count,
+                    selected_candidates=0,
+                    last_search_requests=0,
+                    last_result_requests=0,
+                ),
+            )
+            print(
+                "URLScan hunt skipped successfully: URLSCAN_API_KEY is not configured; "
+                "no URLScan request was made; independently qualifying CertStream "
+                f"candidates remain eligible; state {'updated' if changed else 'unchanged'}."
+            )
+            return 0
+        except Exception as error:
+            message = str(error).splitlines()[0] if str(error) else type(error).__name__
+            print(f"URLScan skip state failed: {message}")
+            return 1
+
+    daily_search_cap = _bounded(os.environ.get("URLSCAN_DAILY_SEARCH_CAP"), 900, 1, PROVIDER_DAILY_SEARCH_LIMIT)
+    daily_result_cap = _bounded(os.environ.get("URLSCAN_DAILY_RESULT_CAP"), 8_000, 1, PROVIDER_DAILY_RESULT_LIMIT)
+    run_search_cap = _bounded(os.environ.get("URLSCAN_RUN_SEARCH_CAP"), 25, 1, PROVIDER_MINUTE_LIMIT - 20)
+    run_result_cap = _bounded(os.environ.get("URLSCAN_RUN_RESULT_CAP"), 100, 1, PROVIDER_MINUTE_LIMIT - 20)
+    requester = _BudgetedRequester(
+        _request_json,
+        search_used=search_used,
+        result_used=result_used,
+        daily_search_cap=daily_search_cap,
+        daily_result_cap=daily_result_cap,
+        run_search_cap=run_search_cap,
+        run_result_cap=run_result_cap,
+    )
+    shards = _bounded(os.environ.get("URLSCAN_SEED_ROTATION_SHARDS"), 1, 1, 48)
+    seeds_per_run = _bounded(os.environ.get("URLSCAN_SEEDS_PER_RUN"), 250, 1, 250)
+    progress = _HuntProgress(candidate_cursor=previous_cursor)
+    try:
+        signals = hunt_urlscan(
+            api_key,
+            now,
+            requester=requester,
+            seed_cursor=previous_cursor,
+            seed_rotation_shards=shards,
+            seeds_per_run=seeds_per_run,
+            progress=progress,
+        )
+        added = write_urlscan_archive(root, signals, now)
+        outcome = "budget-limited" if requester.exhausted else "completed"
+        _write_hunt_state_if_changed(
+            root,
+            previous,
+            _state_for_run(
+                now,
+                configured=True,
+                outcome=outcome,
+                search_requests=requester.search_used,
+                result_requests=requester.result_used,
+                candidate_cursor=progress.candidate_cursor,
+                candidate_count=progress.candidate_count,
+                selected_candidates=progress.selected_candidates,
+                last_search_requests=requester.run_search_requests,
+                last_result_requests=requester.run_result_requests,
+            ),
+        )
         print(
-            "URLScan hunt skipped: URLSCAN_API_KEY is not configured; "
-            "independently qualifying CertStream candidates remain eligible."
+            f"URLScan: {len(signals)} reviewed signals; {added} new archive records; "
+            f"{requester.run_search_requests} search and {requester.run_result_requests} "
+            f"result requests; outcome {outcome}."
         )
         return 0
-    try:
-        now = datetime.now(UTC)
-        signals = hunt_urlscan(api_key, now)
-        root = os.environ.get("URLSCAN_ARCHIVE_ROOT", "").strip() or "data/urlscan"
-        added = write_urlscan_archive(root, signals, now)
-        print(f"URLScan: {len(signals)} reviewed signals; {added} new archive records.")
-        return 0
     except Exception as error:
+        try:
+            _write_hunt_state_if_changed(
+                root,
+                previous,
+                _state_for_run(
+                    now,
+                    configured=True,
+                    outcome="failed",
+                    search_requests=requester.search_used,
+                    result_requests=requester.result_used,
+                    candidate_cursor=previous_cursor if previous_count else 0,
+                    candidate_count=previous_count,
+                    selected_candidates=0,
+                    last_search_requests=requester.run_search_requests,
+                    last_result_requests=requester.run_result_requests,
+                ),
+            )
+        except Exception as state_error:
+            state_message = str(state_error).splitlines()[0] if str(state_error) else type(state_error).__name__
+            print(f"URLScan failure state could not be recorded: {state_message}")
         message = str(error).splitlines()[0] if str(error) else type(error).__name__
         print(f"URLScan hunt failed: {message}")
         return 1

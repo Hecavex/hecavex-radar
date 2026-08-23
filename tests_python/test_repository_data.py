@@ -6,7 +6,11 @@ from pathlib import Path
 from hecavex_radar.brands import load_brand_registry
 from hecavex_radar.certstream_archive import read_candidate_file
 from hecavex_radar.history import read_public_history
-from hecavex_radar.urlscan import _reviewed_archive_signal, read_urlscan_file
+from hecavex_radar.urlscan import (
+    _reviewed_archive_signal,
+    read_urlscan_file,
+    read_urlscan_hunt_state,
+)
 
 
 def _record_lines(path: Path) -> int:
@@ -24,6 +28,11 @@ def test_every_checked_in_urlscan_record_passes_current_contract_and_review() ->
         records = read_urlscan_file(path)
         assert len(records) == _record_lines(path), path
         assert all(_reviewed_archive_signal(record, registry) for record in records), path
+
+    state_path = Path("data/urlscan/hunt-state.json")
+    if state_path.exists():
+        assert state_path.stat().st_size < 32 * 1024
+        assert read_urlscan_hunt_state("data/urlscan") is not None
 
 
 def test_checked_in_public_history_passes_the_exact_contract() -> None:
@@ -70,6 +79,25 @@ def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     assert "gh workflow run deploy-pages.yml" not in workflow
     assert 'workflows: ["CI"]' in deploy
     assert "Sync radar snapshot" not in deploy
+
+
+def test_urlscan_workflow_is_two_hour_passive_stateful_and_failure_safe() -> None:
+    workflow = Path(".github/workflows/hunt-urlscan.yml").read_text(encoding="utf-8")
+
+    assert 'cron: "37 */2 * * *"' in workflow
+    assert "URLSCAN_API_KEY: ${{ secrets.URLSCAN_API_KEY }}" in workflow
+    assert "URLSCAN_API_KEY: ${{ vars." not in workflow
+    assert "id: hunt" in workflow
+    assert "continue-on-error: true" in workflow
+    assert "id: commit" in workflow
+    assert "if: always()" in workflow
+    assert "git add -- data/urlscan" in workflow
+    assert "steps.hunt.outcome != 'success'" in workflow
+    assert "steps.commit.outcome != 'success'" in workflow
+    assert "URLSCAN_SEED_ROTATION_SHARDS || '1'" in workflow
+    assert "URLSCAN_SEEDS_PER_RUN || '250'" in workflow
+    assert "/api/v1/scan" not in workflow
+    assert "persist-credentials: false" in workflow
 
 
 def test_shared_identity_mark_uses_the_cold_signal_palette() -> None:
