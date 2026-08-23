@@ -94,10 +94,11 @@ jobs:
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
           grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
           for page in dist/index.html dist/history/index.html dist/methodology/index.html dist/docs/index.html; do
-            beacon_count="$(grep -Fo 'https://static.cloudflareinsights.com/beacon.min.js' "${page}" | wc -l)"
+            loader_count="$(grep -Fo 'data-hecavex-analytics-token=' "${page}" | wc -l)"
             token_count="$(grep -Fo "${HECAVEX_ANALYTICS_TOKEN}" "${page}" | wc -l)"
-            test "${beacon_count}" -eq 1
+            test "${loader_count}" -eq 1
             test "${token_count}" -eq 1
+            grep -Fq 'https://static.cloudflareinsights.com/beacon.min.js' "${page}"
             grep -Fq 'navigator.doNotTrack' "${page}"
             grep -Fq 'window.doNotTrack' "${page}"
           done
