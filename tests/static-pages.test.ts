@@ -96,5 +96,16 @@ describe("entry metadata", () => {
     expect(robots).toContain("Allow: /data/radar.json");
     expect(robots).toContain("Allow: /data/history.json");
     expect(robots).toContain("Disallow: /data/");
+    expect(robots).toContain("Content-Signal: search=yes, ai-input=yes, ai-train=no");
+    expect(robots).toContain("User-agent: GPTBot");
+  });
+
+  it("publishes a bounded machine-readable guide without weakening signal safety", () => {
+    const llms = readFileSync(resolve("public/llms.txt"), "utf8");
+    expect(llms).toContain("candidates, not maliciousness verdicts");
+    expect(llms).toContain("must not be made clickable or visited automatically");
+    expect(llms).toContain("https://radar.hecavex.com/data/radar.json");
+    expect(llms).toContain("https://radar.hecavex.com/data/history.json");
+    expect(llms).toContain("https://radar.hecavex.com/data/collection-health.json");
   });
 });

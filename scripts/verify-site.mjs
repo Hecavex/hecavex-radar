@@ -179,6 +179,14 @@ function parseFile(path) {
 }
 
 function verifyBuiltHtml() {
+  const robots = readFileSync(join(output, "robots.txt"), "utf8");
+  const llms = readFileSync(join(output, "llms.txt"), "utf8");
+  assert(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=no"), "Built robots.txt lost the reviewed content-use signal.");
+  for (const endpoint of ["radar.json", "history.json", "collection-health.json"]) {
+    assert(llms.includes(`https://radar.hecavex.com/data/${endpoint}`), `Built llms.txt omits approved endpoint ${endpoint}.`);
+  }
+  assert(llms.includes("must not be made clickable or visited automatically"), "Built llms.txt lost the candidate-handling safety boundary.");
+
   const htmlFiles = walk(output).filter((path) => path.endsWith(".html"));
   assert(htmlFiles.length === pages.length, `Expected ${pages.length} HTML entries, found ${htmlFiles.length}.`);
 

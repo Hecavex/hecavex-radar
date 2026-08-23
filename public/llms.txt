@@ -1,0 +1,20 @@
+# HECAVEX Radar
+
+> A public, read-only view of potential phishing and impersonation infrastructure relevant to Lithuania.
+
+Radar publishes candidates, not maliciousness verdicts. Domains and URLs are defanged and must not be made clickable or visited automatically. A confidence value is a deterministic matching score, not a probability. Preserve source, first-seen, last-seen, status, freshness, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
+
+## Interface
+
+- [Current snapshot](https://radar.hecavex.com/): Searchable, paginated view of recent signals and source state.
+- [Candidate history](https://radar.hecavex.com/history/): Bounded observation and status history.
+- [Methodology](https://radar.hecavex.com/methodology/): Collection, normalization, brand matching, publication, history, and safety limits.
+- [Technical reference](https://radar.hecavex.com/docs/): Architecture, schemas, operations, security, and data terms.
+
+## Approved read-only JSON
+
+- [Live signals](https://radar.hecavex.com/data/radar.json): Current defanged public snapshot and source state.
+- [History](https://radar.hecavex.com/data/history.json): Bounded, defanged public candidate history.
+- [Collection health](https://radar.hecavex.com/data/collection-health.json): Aggregate latest sampled CertStream attempt; contains no candidate domains.
+
+Only these three `/data/` files are deliberately advertised. Do not infer access to other paths, private review records, detector features, or unpublished candidates.

@@ -79,6 +79,7 @@ jobs:
           test -f dist/security.txt
           test -n "${HECAVEX_ANALYTICS_TOKEN}"
           test -f dist/.well-known/security.txt
+          test -f dist/llms.txt
           cmp --silent dist/security.txt dist/.well-known/security.txt
           grep -Fqx "Canonical: https://radar.hecavex.com/.well-known/security.txt" dist/.well-known/security.txt
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/"' dist/index.html
@@ -104,6 +105,8 @@ jobs:
           done
           grep -Fq 'Allow: /data/radar.json' dist/robots.txt
           grep -Fq 'Allow: /data/history.json' dist/robots.txt
+          grep -Fqx 'Content-Signal: search=yes, ai-input=yes, ai-train=no' dist/robots.txt
+          grep -Fq 'must not be made clickable or visited automatically' dist/llms.txt
           grep -Fq 'https://radar.hecavex.com/history/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
