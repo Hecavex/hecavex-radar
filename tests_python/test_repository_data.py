@@ -77,8 +77,9 @@ def test_certstream_workflow_commits_candidates_and_health_atomically() -> None:
     assert "CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}" in workflow
     assert "actions: write" not in workflow
     assert "gh workflow run deploy-pages.yml" not in workflow
-    assert 'workflows: ["CI"]' in deploy
-    assert "Sync radar snapshot" not in deploy
+    assert 'workflows: ["CI", "Sync radar snapshot"]' in deploy
+    assert 'github.event.workflow_run.name == \'Sync radar snapshot\'' in deploy
+    assert 'git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/radar.json' in deploy
 
 
 def test_urlscan_workflow_is_two_hour_passive_stateful_and_failure_safe() -> None:

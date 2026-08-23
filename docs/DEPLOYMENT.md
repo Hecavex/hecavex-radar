@@ -4,7 +4,7 @@ This is the HECAVEX maintainer runbook for the production service at [radar.heca
 
 ## Pages
 
-The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds the dashboard, `/history/`, `/methodology/`, and `/docs/` into `dist/`, and deploys only after successful CI for the current `main` commit. This single CI gate covers source changes, collection-health publications, and changed public datasets; superseded CI completions do not deploy stale content. URLScan archive-only commits wait for the hourly snapshot sync instead of deploying an unchanged dashboard.
+The repository's Pages source must be **GitHub Actions**. [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) verifies the frontend, builds the dashboard, `/history/`, `/methodology/`, and `/docs/` into `dist/`, and deploys after successful CI for a code commit or after a successful snapshot-sync run that changed `public/data/radar.json`. The latter uses GitHub's `workflow_run` event because publisher commits made with the workflow token do not recursively trigger push workflows. Both paths run the same frontend checks before deployment. Superseded code-CI completions and no-change syncs do not deploy stale or redundant content. URLScan archive-only commits wait for the hourly snapshot sync.
 
 [`sync-radar.yml`](../.github/workflows/sync-radar.yml) validates the configured inputs each hour. Every successful run advances `lastSuccessfulSyncAt` in the live snapshot, even when the observations are unchanged; `generatedAt` advances only for a material data or source-state change. Changed history projections and partitions are committed in the same transaction. Persisting `public/data/radar.json`, `public/data/history.json`, and `data/history/` together keeps the current view and reproducible observation trail aligned. Live-snapshot retention and sharp-drop protection compare against the actual previous publication rather than an artifact-only copy. The Pages job has no collector credentials and never changes data.
 
@@ -18,7 +18,7 @@ The publisher compares new output with rows seen during the previous 30 days and
 | `collect-certstream.yml` | `2,32 * * * *` and manual dispatch | Atomic commit of `data/certstream/<date>/domains.ndjson` and bounded `public/data/collection-health.json` | Repository contents write |
 | `hunt-urlscan.yml` | `37 */2 * * *` and manual dispatch | Bounded `data/urlscan/hunt-state.json` and validated `data/urlscan/<date>/signals.ndjson` | Optional `URLSCAN_API_KEY`; repository contents write |
 | `sync-radar.yml` | `17 * * * *` and manual dispatch | Persistent live snapshot, candidate history, and compacted history summary | Optional HECAVEX secrets; repository contents write |
-| `deploy-pages.yml` | Successful CI for the current `main` commit | GitHub Pages artifact | `pages: write` and `id-token: write` |
+| `deploy-pages.yml` | Successful code CI or a successful snapshot sync that changed the public snapshot | Verified GitHub Pages artifact | `pages: write` and `id-token: write` |
 
 Cron schedules use UTC. Each CertStream run samples a four-minute window; it is not continuous collection. The two archive writers and snapshot writer share one concurrency group so their pull/rebase/push sequences cannot run at the same time. They commit changes directly to `main`, so repository rules must allow normal GitHub Actions bot pushes while still blocking force-pushes and branch deletion.
 

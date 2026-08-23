@@ -2,7 +2,7 @@ name: Deploy radar
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["CI", "Sync radar snapshot"]
     types: [completed]
 
 permissions:
@@ -17,7 +17,10 @@ jobs:
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.event == 'push'
+      ((github.event.workflow_run.name == 'CI' && github.event.workflow_run.event == 'push') ||
+      (github.event.workflow_run.name == 'Sync radar snapshot' &&
+      (github.event.workflow_run.event == 'schedule' ||
+      github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -35,12 +38,20 @@ jobs:
         id: freshness
         env:
           EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
         shell: bash
         run: |
           should_deploy=true
-          if [[ "$(git rev-parse HEAD)" != "${EXPECTED_SHA}" ]]; then
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "${TRIGGER_WORKFLOW}" == "CI" && "${actual_sha}" != "${EXPECTED_SHA}" ]]; then
             echo "A newer main commit superseded this CI run; its own successful run will deploy."
             should_deploy=false
+          elif [[ "${TRIGGER_WORKFLOW}" == "Sync radar snapshot" ]]; then
+            if [[ "${actual_sha}" == "${EXPECTED_SHA}" ]] ||
+              git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/radar.json; then
+              echo "The sync completed without changing the public snapshot; deployment is unnecessary."
+              should_deploy=false
+            fi
           fi
           echo "should_deploy=${should_deploy}" >> "${GITHUB_OUTPUT}"
       - name: Set up Node.js

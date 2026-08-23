@@ -66,8 +66,15 @@ function verifyDeploymentTopology() {
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
   const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
 
-  assert(/workflows:\s*\["CI"\]/u.test(deploy), "Pages deployment must be gated only by the CI workflow.");
-  assert(!deploy.includes("Sync radar snapshot"), "Pages deployment still listens directly to snapshot sync.");
+  assert(
+    /workflows:\s*\["CI",\s*"Sync radar snapshot"\]/u.test(deploy),
+    "Pages deployment must follow verified code CI and successful snapshot synchronization.",
+  );
+  assert(
+    deploy.includes('github.event.workflow_run.name == \'Sync radar snapshot\'') &&
+      deploy.includes('git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/radar.json'),
+    "Snapshot-triggered deployment does not prove that the public snapshot changed.",
+  );
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
   assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
