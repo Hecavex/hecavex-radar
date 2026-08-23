@@ -318,8 +318,19 @@ def test_registry_rejects_malformed_review_date(reviewed_at: str, tmp_path: Path
 def test_registry_covers_documented_lithuanian_impersonation_targets() -> None:
     registry = load_brand_registry()
     brands = {entry.brand for entry in registry.entries}
-    assert {"Elektrum", "LP EXPRESS", "Skelbiu.lt", "SmartPosti", "Urbo"} <= brands
-    assert len(registry.entries) >= 45
+    assert {"Elektrum", "LP EXPRESS", "Mano Bankas", "Skelbiu.lt", "SmartPosti", "Urbo"} <= brands
+    assert len(registry.entries) >= 46
+
+
+def test_mano_bankas_requires_the_complete_reviewed_name_and_local_context() -> None:
+    registry = load_brand_registry()
+    match = score_domain("secure-mano-bankas-login.example", registry)
+    assert match is not None
+    assert match.brand == "Mano Bankas"
+    assert score_domain("www.mano.bank", registry) is None
+    assert score_domain("account.mano.bank", registry) is None
+    assert score_domain("mano-login.example", registry) is None
+    assert score_domain("manor-bank-login.example", registry) is None
 
 
 def test_resolves_only_exact_reviewed_brand_names_and_title_tokens() -> None:
