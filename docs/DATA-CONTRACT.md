@@ -252,3 +252,9 @@ Both arrays are capped at 2,500 records and the file is capped at 2 MiB. Duplica
 - Detector features, model versions, proprietary rules, evidence graphs, and case data.
 - Discovery-seed provider names and raw seed records.
 - Internal HECAVEX case history.
+
+## Website analytics boundary
+
+Website measurement is separate from the public Radar data contract. When the public `HECAVEX_ANALYTICS_TOKEN` build variable is configured, and unless the browser reports `navigator.doNotTrack === "1"` or `window.doNotTrack === "1"`, each rendered page loads the cookieless Cloudflare Web Analytics beacon from `https://static.cloudflareinsights.com/beacon.min.js`; the beacon sends page-view and browser-performance metrics to `https://cloudflareinsights.com`. Cloudflare documents that the beacon does not set or access cookies or browser storage. Keyless local and CI builds omit the loader; the production Pages gate requires it.
+
+Radar configures no custom analytics events. Snapshot rows, indicator text, evidence, search text, filter selections, unpublished candidates, and operator-review data are not serialized into analytics payloads. Cloudflare remains the processor of the ordinary page and performance measurements described in its [Web Analytics data-collection documentation](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/). The portfolio privacy notice is published at [hecavex.com/en/privacy](https://hecavex.com/en/privacy/).

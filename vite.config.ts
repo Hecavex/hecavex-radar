@@ -6,7 +6,34 @@ import { defineConfig } from "vitest/config";
 
 const snapshotPath = fileURLToPath(new URL("./public/data/radar.json", import.meta.url));
 const historyPath = fileURLToPath(new URL("./public/data/history.json", import.meta.url));
+const cloudflareAnalyticsScript = "https://static.cloudflareinsights.com/beacon.min.js";
+const cloudflareAnalyticsToken = process.env.HECAVEX_ANALYTICS_TOKEN?.trim() ?? "";
+if (cloudflareAnalyticsToken && !/^[a-f\d]{32}$/i.test(cloudflareAnalyticsToken)) {
+  throw new Error("HECAVEX_ANALYTICS_TOKEN must be a 32-character hexadecimal Cloudflare site token.");
+}
+const cloudflareAnalyticsLoader =
+  `(()=>{if(navigator.doNotTrack==="1"||window.doNotTrack==="1")return;` +
+  `const token=document.currentScript?.dataset.hecavexAnalyticsToken;if(!token)return;` +
+  `const beacon=document.createElement("script");beacon.type="module";beacon.src="${cloudflareAnalyticsScript}";` +
+  `beacon.dataset.cfBeacon=JSON.stringify({token});document.head.appendChild(beacon)})();`;
 type PrerenderPage = "radar" | "history" | "methodology" | "documentation";
+
+function cloudflareWebAnalyticsPlugin() {
+  return {
+    name: "hecavex-cloudflare-web-analytics",
+    transformIndexHtml() {
+      if (!cloudflareAnalyticsToken) return [];
+      return [
+        {
+          tag: "script",
+          attrs: { "data-hecavex-analytics-token": cloudflareAnalyticsToken },
+          children: cloudflareAnalyticsLoader,
+          injectTo: "body" as const,
+        },
+      ];
+    },
+  };
+}
 
 function staticPagePlugin() {
   return {
@@ -58,7 +85,7 @@ function staticPagePlugin() {
 }
 
 export default defineConfig({
-  plugins: [staticPagePlugin(), react()],
+  plugins: [staticPagePlugin(), cloudflareWebAnalyticsPlugin(), react()],
   build: {
     rollupOptions: {
       input: {

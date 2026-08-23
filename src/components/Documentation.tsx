@@ -509,6 +509,17 @@ export function Documentation() {
             </p>
             <a href="https://github.com/Hecavex/hecavex-radar">Review the service source</a>
           </article>
+          <article id="privacy-analytics">
+            <span>Privacy and analytics</span>
+            <h3>Cookieless performance measurement</h3>
+            <p>
+              Radar uses Cloudflare Web Analytics to measure page views and browser performance. Its beacon does not set
+              or read cookies or browser storage, and the loader stops when the browser sends a Do Not Track preference.
+              Radar sends no custom analytics events and does not serialize signal rows, indicator text, table searches,
+              filter values, or unpublished CTI data into analytics payloads.
+            </p>
+            <a href="https://hecavex.com/en/privacy/">Read the HECAVEX privacy notice</a>
+          </article>
         </div>
       </section>
 

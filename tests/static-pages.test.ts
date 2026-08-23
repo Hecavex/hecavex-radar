@@ -75,6 +75,12 @@ describe("entry metadata", () => {
     expect(document.querySelector('meta[property="og:image"]')?.getAttribute("content")).toMatch(/^https:\/\//);
     expect(document.querySelector('meta[name="twitter:card"]')?.getAttribute("content")).toBe("summary_large_image");
 
+    const policy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute("content") ?? "";
+    expect(policy).toContain("script-src 'self'");
+    expect(policy).toContain("'sha256-cXD3yRONXjVhOwLuzpI3OenAlyHsYJ7yGkcB7/Jt3sM='");
+    expect(policy).toContain("https://static.cloudflareinsights.com/beacon.min.js");
+    expect(policy).toContain("connect-src 'self' https://cloudflareinsights.com");
+
     const jsonLd = document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]');
     expect(jsonLd).not.toBeNull();
     expect(() => JSON.parse(jsonLd!.textContent ?? "")).not.toThrow();

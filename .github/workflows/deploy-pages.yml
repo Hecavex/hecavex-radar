@@ -67,12 +67,17 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Verify and build static site
         if: steps.freshness.outputs.should_deploy == 'true'
+        env:
+          HECAVEX_ANALYTICS_TOKEN: ${{ vars.HECAVEX_ANALYTICS_TOKEN }}
         run: pnpm check:frontend
       - name: Verify public deployment metadata
         if: steps.freshness.outputs.should_deploy == 'true'
+        env:
+          HECAVEX_ANALYTICS_TOKEN: ${{ vars.HECAVEX_ANALYTICS_TOKEN }}
         shell: bash
         run: |
           test -f dist/security.txt
+          test -n "${HECAVEX_ANALYTICS_TOKEN}"
           test -f dist/.well-known/security.txt
           cmp --silent dist/security.txt dist/.well-known/security.txt
           grep -Fqx "Canonical: https://radar.hecavex.com/.well-known/security.txt" dist/.well-known/security.txt
@@ -88,6 +93,14 @@ jobs:
           test -f dist/docs/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
           grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
+          for page in dist/index.html dist/history/index.html dist/methodology/index.html dist/docs/index.html; do
+            beacon_count="$(grep -Fo 'https://static.cloudflareinsights.com/beacon.min.js' "${page}" | wc -l)"
+            token_count="$(grep -Fo "${HECAVEX_ANALYTICS_TOKEN}" "${page}" | wc -l)"
+            test "${beacon_count}" -eq 1
+            test "${token_count}" -eq 1
+            grep -Fq 'navigator.doNotTrack' "${page}"
+            grep -Fq 'window.doNotTrack' "${page}"
+          done
           grep -Fq 'Allow: /data/radar.json' dist/robots.txt
           grep -Fq 'Allow: /data/history.json' dist/robots.txt
           grep -Fq 'https://radar.hecavex.com/history/' dist/sitemap.xml

@@ -36,6 +36,7 @@ Store credentials as repository secrets and feature switches as repository varia
 
 | Setting | Kind | Required when | Purpose |
 | --- | --- | --- | --- |
+| `HECAVEX_ANALYTICS_TOKEN` | Variable | Production Pages deployment | Public Cloudflare Web Analytics site token injected once per HTML page. An empty local or CI build omits the DNT-aware loader; the production deployment gate rejects an empty token or missing beacon. |
 | `URLSCAN_API_KEY` | Secret | Optional | Authenticates passive URLScan search and result retrieval. Without it, the job makes no API request, records an explicit successful skip in `hunt-state.json`, and continues. Confirm that the account and plan permit the intended automated and public use. |
 | `URLSCAN_RADAR_SEEDS_ENABLED`, `URLSCAN_RADAR_SNAPSHOT`, `URLSCAN_RADAR_SEED_LIMIT` | Variables | Optional | Include at most 250 current Radar rows observed in the rolling previous seven days as bounded exact-search seeds; enabled by default with `public/data/radar.json`. |
 | `URLSCAN_SEED_ROTATION_SHARDS`, `URLSCAN_SEEDS_PER_RUN` | Variables | Optional | Attempt the complete bounded seed set in one slice, selecting at most 250 seeds per run by default. Operators can lower these values; the cursor then preserves progress. |

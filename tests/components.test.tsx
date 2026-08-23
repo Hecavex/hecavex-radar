@@ -221,6 +221,8 @@ describe("on-site documentation", () => {
     expect(screen.getByRole("heading", { name: "Maintained on a best-effort basis" })).toBeInTheDocument();
     expect(screen.getByText(/at most 13\.3% of wall-clock time/i)).toBeInTheDocument();
     expect(screen.getByText(/83,875 messages containing 146,591 DNS names/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Cookieless performance measurement" })).toBeInTheDocument();
+    expect(screen.getByText(/sends no custom analytics events/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Software licensing does not relicense data" })).toBeInTheDocument();
   });
 
@@ -256,6 +258,8 @@ describe("on-site documentation", () => {
     render(<SiteFooter />);
     expect(screen.getByRole("link", { name: "Research" })).toHaveAttribute("href", "https://hecavex.com/en/research/");
     expect(screen.getByRole("link", { name: "Security" })).toHaveAttribute("href", "/.well-known/security.txt");
+    expect(screen.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "https://hecavex.com/en/privacy/");
+    expect(screen.getByText(/cookieless Cloudflare Web Analytics/i)).toBeInTheDocument();
   });
 
   it("closes the mobile navigation with Escape and restores summary focus", () => {

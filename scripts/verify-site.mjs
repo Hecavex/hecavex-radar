@@ -1,4 +1,4 @@
-/* global URL, document, getComputedStyle, process, setTimeout */
+/* global URL, document, getComputedStyle, navigator, process, setTimeout, window */
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
@@ -12,6 +12,7 @@ import { preview } from "vite";
 const root = resolve(import.meta.dirname, "..");
 const output = join(root, "dist");
 const publicOrigin = "https://radar.hecavex.com";
+const analyticsToken = process.env.HECAVEX_ANALYTICS_TOKEN?.trim() ?? "";
 const widths = [320, 360, 390, 768, 1024, 1280, 1440];
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
@@ -196,6 +197,21 @@ function verifyBuiltHtml() {
     assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
     assert(document.querySelectorAll(".product-navigation a").length === 4, `${route} does not expose four Radar links.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
+    const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
+      script.textContent.includes("https://static.cloudflareinsights.com/beacon.min.js"),
+    );
+    assert(
+      analyticsLoaders.length === (analyticsToken ? 1 : 0),
+      `${route} does not match the configured Cloudflare Web Analytics state.`,
+    );
+    if (analyticsToken) {
+      assert(
+        analyticsLoaders[0].textContent.includes('navigator.doNotTrack==="1"') &&
+          analyticsLoaders[0].textContent.includes('window.doNotTrack==="1"') &&
+          analyticsLoaders[0].getAttribute("data-hecavex-analytics-token") === analyticsToken,
+        `${route} has an unexpected Cloudflare Web Analytics configuration.`,
+      );
+    }
     const portfolioLabels = [...document.querySelectorAll(".portfolio-navigation a")].map((anchor) => anchor.textContent?.trim());
     const productLabels = [...document.querySelectorAll(".product-navigation a")].map((anchor) => anchor.textContent?.trim());
     assert(JSON.stringify(portfolioLabels) === JSON.stringify(portfolioNavigation), `${route} changes the portfolio navigation order.`);
@@ -414,9 +430,18 @@ async function verifyMobileKeyboardNavigation(page, entry, width) {
   assert(!(await page.locator(".mobile-navigation").evaluate((element) => element.hasAttribute("open"))), `${entry.path} mobile menu does not close with Space at ${width}px.`);
 }
 
+async function fulfillAnalyticsScript(route) {
+  await route.fulfill({
+    contentType: "application/javascript",
+    headers: { "access-control-allow-origin": "*" },
+    body: "",
+  });
+}
+
 async function verifyAccessibility(browser, origin, width) {
   const context = await browser.newContext({ viewport: { width, height: 900 }, bypassCSP: true });
   const page = await context.newPage();
+  await page.route("https://static.cloudflareinsights.com/beacon.min.js", fulfillAnalyticsScript);
   try {
     for (const entry of pages) {
       await page.goto(`${origin}${entry.path}`, { waitUntil: "networkidle" });
@@ -468,6 +493,11 @@ async function verifyInBrowser() {
     for (const width of widths) {
       const context = await browser.newContext({ viewport: { width, height: 900 } });
       const page = await context.newPage();
+      let analyticsRequests = 0;
+      await page.route("https://static.cloudflareinsights.com/beacon.min.js", async (route) => {
+        analyticsRequests += 1;
+        await fulfillAnalyticsScript(route);
+      });
       for (const entry of pages) {
         const browserErrors = [];
         const onConsole = (message) => {
@@ -611,12 +641,17 @@ async function verifyInBrowser() {
         page.off("console", onConsole);
         page.off("pageerror", onPageError);
       }
+      assert(
+        analyticsRequests === (analyticsToken ? pages.length : 0),
+        `Cloudflare Web Analytics loaded ${analyticsRequests} times for ${pages.length} pages at ${width}px.`,
+      );
       await context.close();
       if (width === 390 || width === 1024) await verifyAccessibility(browser, origin, width);
     }
 
     const delayedContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
     const delayedPage = await delayedContext.newPage();
+    await delayedPage.route("https://static.cloudflareinsights.com/beacon.min.js", fulfillAnalyticsScript);
     await delayedPage.route("**/data/radar.json", async (route) => {
       await new Promise((resolveDelay) => setTimeout(resolveDelay, 750));
       await route.continue();
@@ -628,6 +663,23 @@ async function verifyInBrowser() {
     assert(await delayedPage.locator("#root").getAttribute("data-hydrated") === "true", "Radar did not hydrate its embedded snapshot before refresh.");
     await delayedPage.waitForLoadState("networkidle");
     await delayedContext.close();
+
+    const dntContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+    await dntContext.addInitScript(() => {
+      Object.defineProperty(navigator, "doNotTrack", { configurable: true, get: () => "1" });
+      Object.defineProperty(window, "doNotTrack", { configurable: true, value: "1" });
+    });
+    const dntPage = await dntContext.newPage();
+    let dntAnalyticsRequests = 0;
+    await dntPage.route("https://static.cloudflareinsights.com/beacon.min.js", async (route) => {
+      dntAnalyticsRequests += 1;
+      await route.abort();
+    });
+    for (const entry of pages) {
+      await dntPage.goto(`${origin}${entry.path}`, { waitUntil: "networkidle" });
+    }
+    assert(dntAnalyticsRequests === 0, "Cloudflare Web Analytics loaded despite the browser's Do Not Track signal.");
+    await dntContext.close();
 
     const noScriptContext = await browser.newContext({ viewport: { width: 390, height: 900 }, javaScriptEnabled: false });
     const noScriptPage = await noScriptContext.newPage();

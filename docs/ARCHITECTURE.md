@@ -21,7 +21,7 @@ Synchronization also assigns deterministic event IDs to accepted observations an
 
 Private review is a separate trust boundary. `hecavex-review` keeps an append-only SQLite ledger outside the repository. An operator must explicitly export active decisions into `data/review/public-decisions.json`; only that strict, defanged schema is consumed by synchronization. Private notes, analyst identity, and raw evidence never cross the export boundary.
 
-Pages builds the committed dashboard together with reader-facing `/history/`, `/methodology/`, and `/docs/` pages. The browser has no backend API, login, or database. HECAVEX feed URLs require HTTPS in production and cannot contain credentials or an explicit port. HTTP is accepted on `localhost`, `127.0.0.1`, or `::1` at the default port only for maintainer tests.
+Pages builds the committed dashboard together with reader-facing `/history/`, `/methodology/`, and `/docs/` pages. The browser has no application backend, login, or database. A centrally injected, Do Not Track-aware Cloudflare Web Analytics loader provides cookieless page-view and browser-performance measurement; it is separate from the CTI pipeline and receives no custom events, signal rows, search text, filter values, or unpublished candidates. HECAVEX feed URLs require HTTPS in production and cannot contain credentials or an explicit port. HTTP is accepted on `localhost`, `127.0.0.1`, or `::1` at the default port only for maintainer tests.
 
 ## Certificate Transparency coverage
 
@@ -38,3 +38,4 @@ The current GitHub Actions listener samples CertStream for four minutes twice pe
 - An operator review addition must independently pass the current public domain matcher. Its confidence cannot exceed that matcher, its status is always `suspected`, and a suppression takes precedence over an addition.
 - Collection health uses a strict fixed-field schema, a 32 KiB limit, and atomic replacement of one file. It exposes aggregate counters and timing only, so attempts do not create an unbounded telemetry archive.
 - HECAVEX integration accepts a deliberately limited public export. Private detector features, evidence graphs, analyst notes, user data, credentials, and internal history stay outside this repository.
+- Cloudflare Web Analytics is restricted by CSP to its exact hosted beacon and reporting origin. The loader stops when `navigator.doNotTrack` or `window.doNotTrack` is `1`; otherwise the beacon uses no cookies or browser storage, and Radar does not connect CTI interactions to custom analytics events.
