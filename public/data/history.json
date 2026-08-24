@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-23T05:50:33.088Z",
+  "generatedAt": "2026-08-24T23:57:24.033Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a78cb24fc20a65f1ba1f",
+      "domain": "cpam93[.]eso-online[.]fr",
+      "brand": "ESO",
+      "firstSeen": "2026-08-24T23:51:42.897Z",
+      "lastSeen": "2026-08-24T23:51:42.897Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "808be89255afdb1006a8a76fdcbb01cb",
+          "observedAt": "2026-08-24T23:51:42.897Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "3d179a68c89e521dc72c",
       "domain": "trackmaxima[.]com",
