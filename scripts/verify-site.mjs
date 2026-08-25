@@ -1377,6 +1377,8 @@ async function verifyInBrowser() {
           const networkBar = document.querySelector(".network-bar")?.getBoundingClientRect();
           const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
           const hero = document.querySelector(".hero")?.getBoundingClientRect();
+          const radarHeroCopy = document.querySelector(".radar-hero .hero-copy")?.getBoundingClientRect();
+          const radarFreshness = document.querySelector(".radar-hero .freshness-card")?.getBoundingClientRect();
           const metricGrid = document.querySelector(".activity-strip")?.getBoundingClientRect();
           const contentToc = document.querySelector(".methodology-toc, .docs-toc");
           const contentTocStyle = contentToc ? getComputedStyle(contentToc) : null;
@@ -1399,6 +1401,10 @@ async function verifyInBrowser() {
             networkHeight: networkBar?.height ?? 0,
             productHeight: productBar?.height ?? 0,
             heroHeight: hero?.height ?? 0,
+            radarHeroCopyWidth: radarHeroCopy?.width ?? 0,
+            radarHeroCopyBottom: radarHeroCopy?.bottom ?? 0,
+            radarFreshnessTop: radarFreshness?.top ?? 0,
+            radarFreshnessWidth: radarFreshness?.width ?? 0,
             metricTop: metricGrid?.top ?? 0,
             contentTocBorderTop: contentTocStyle?.borderTop ?? "",
             contentTocBorderBottom: contentTocStyle?.borderBottom ?? "",
@@ -1432,6 +1438,20 @@ async function verifyInBrowser() {
         if (width === 1440 && entry.path === "/") {
           assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
           assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
+        }
+        if (width <= 760 && entry.path === "/") {
+          assert(
+            layout.radarHeroCopyWidth >= layout.clientWidth * 0.8,
+            `Radar hero copy is squeezed to ${layout.radarHeroCopyWidth}px at ${width}px.`,
+          );
+          assert(
+            layout.radarFreshnessWidth >= layout.clientWidth * 0.8,
+            `Radar freshness card is squeezed to ${layout.radarFreshnessWidth}px at ${width}px.`,
+          );
+          assert(
+            layout.radarFreshnessTop >= layout.radarHeroCopyBottom - 1,
+            `Radar freshness card overlaps the hero copy at ${width}px.`,
+          );
         }
         if (entry.path === "/methodology/" || entry.path === "/docs/") {
           assert(
