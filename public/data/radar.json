@@ -1,9 +1,33 @@
 {
   "schemaVersion": 1,
   "dataset": "live",
-  "generatedAt": "2026-08-24T23:57:24.033Z",
-  "lastSuccessfulSyncAt": "2026-08-25T10:59:04.826Z",
+  "generatedAt": "2026-08-25T12:00:11.999Z",
+  "lastSuccessfulSyncAt": "2026-08-25T12:00:11.999Z",
   "signals": [
+    {
+      "id": "5b0f8b137394c5f88ddf",
+      "url": "hxxps://support-vinted[.]ph",
+      "domain": "support-vinted[.]ph",
+      "firstSeen": "2026-08-25T11:47:24.305Z",
+      "lastSeen": "2026-08-25T11:47:24.305Z",
+      "sources": [
+        "HECAVEX"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "confidence": 100,
+      "reasonCodes": [
+        "manual-review",
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ]
+    },
     {
       "id": "a78cb24fc20a65f1ba1f",
       "url": "hxxps://cpam93[.]eso-online[.]fr",
@@ -256,7 +280,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-25T10:59:04.826Z",
+      "fetchedAt": "2026-08-25T12:00:11.999Z",
       "records": 2,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
@@ -272,7 +296,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-25T11:47:31.164Z",
+      "fetchedAt": "2026-08-25T12:00:11.999Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

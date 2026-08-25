@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-24T23:57:24.033Z",
+  "generatedAt": "2026-08-25T12:00:11.999Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5b0f8b137394c5f88ddf",
+      "domain": "support-vinted[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-25T11:47:24.305Z",
+      "lastSeen": "2026-08-25T11:47:24.305Z",
+      "observationCount": 1,
+      "sources": [
+        "HECAVEX"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "manual-review",
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "43d4e214f1e7ddf2a35922ae13f6625a",
+          "observedAt": "2026-08-25T11:47:24.305Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "HECAVEX"
+          ],
+          "reasonCodes": [
+            "manual-review",
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a78cb24fc20a65f1ba1f",
       "domain": "cpam93[.]eso-online[.]fr",
