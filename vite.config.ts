@@ -113,6 +113,8 @@ function staticPagePlugin() {
         const staticPages: Record<string, StaticPageRoute> = {
           "/changes/index.html": { kind: "changes", language: "en" },
           "/changes/": { kind: "changes", language: "en" },
+          "/lt/pokyciai/index.html": { kind: "changes", language: "lt" },
+          "/lt/pokyciai/": { kind: "changes", language: "lt" },
           "/trends/index.html": { kind: "trends", language: "en" },
           "/trends/": { kind: "trends", language: "en" },
           "/associations/index.html": { kind: "associations", language: "en" },
@@ -130,11 +132,9 @@ function staticPagePlugin() {
           "/lt/duomenys/index.html": { kind: "dataset", language: "lt" },
           "/lt/duomenys/": { kind: "dataset", language: "lt" },
         };
-        const lithuanianPages: Record<string, "radar" | "changes" | "brands" | "methodology"> = {
+        const lithuanianPages: Record<string, "radar" | "brands" | "methodology"> = {
           "/lt/index.html": "radar",
           "/lt/": "radar",
-          "/lt/pokyciai/index.html": "changes",
-          "/lt/pokyciai/": "changes",
           "/lt/prekes-zenklai/index.html": "brands",
           "/lt/prekes-zenklai/": "brands",
           "/lt/metodologija/index.html": "methodology",
@@ -152,7 +152,6 @@ function staticPagePlugin() {
           { encodeSnapshotBootstrap },
           { encodeHistoryBootstrap },
           { encodeStaticPageBootstrap },
-          { encodeLtChangesBootstrap },
           { parseRelatedObservations },
           { renderLithuanianPage, renderPrerenderedPage, renderStaticPage },
         ] = await Promise.all([
@@ -161,7 +160,6 @@ function staticPagePlugin() {
           import("./src/lib/snapshotBootstrap.ts"),
           import("./src/lib/historyBootstrap.ts"),
           import("./src/lib/staticPageBootstrap.ts"),
-          import("./src/lt/ltBootstrap.ts"),
           import("./src/lib/relatedObservations.ts"),
           import("./src/prerender.ts"),
         ]);
@@ -183,12 +181,10 @@ function staticPagePlugin() {
           staticMarkup = renderStaticPage(staticPage.kind, data, staticPage.language);
           bootstrap = ` data-page-kind="${staticPage.kind}" data-page-language="${staticPage.language}" data-page-bootstrap="${encodeStaticPageBootstrap(data)}"`;
         } else if (lithuanianPage) {
-          staticMarkup = renderLithuanianPage(lithuanianPage, snapshot, history, renderedAt);
+          staticMarkup = renderLithuanianPage(lithuanianPage, snapshot, renderedAt);
           bootstrap = lithuanianPage === "radar"
             ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
-            : lithuanianPage === "changes"
-              ? ` data-lt-changes-bootstrap="${encodeLtChangesBootstrap(snapshot, history, renderedAt)}"`
-              : "";
+            : "";
         } else {
           staticMarkup = renderPrerenderedPage(page!, snapshot, renderedAt, history, pageLanguage);
           bootstrap = page === "radar"

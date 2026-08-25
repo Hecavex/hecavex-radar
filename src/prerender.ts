@@ -13,7 +13,6 @@ import { StaticPage } from "./StaticPages.tsx";
 import type { BrandPageData, SignalPageData } from "./lib/pageBootstrap.ts";
 import type { StaticPageData, StaticPageKind } from "./lib/staticPageBootstrap.ts";
 import { LtBrandRegistryPage } from "./lt/LtBrandRegistryPage.tsx";
-import { LtChangesPage } from "./lt/LtChangesPage.tsx";
 import { LtMethodologyPage } from "./lt/LtMethodologyPage.tsx";
 import { LtRadarApp } from "./lt/LtRadarApp.tsx";
 import type { SiteLanguage } from "./components/SiteHeader.tsx";
@@ -70,16 +69,12 @@ export function renderBrandPage(data: BrandPageData): string {
 }
 
 export function renderLithuanianPage(
-  page: "radar" | "changes" | "brands" | "methodology",
+  page: "radar" | "brands" | "methodology",
   snapshot: RadarSnapshot,
-  history: RadarHistory,
   renderedAt: number,
 ): string {
   if (page === "radar") {
     return renderToString(createElement<{ initialSnapshot?: RadarSnapshot; initialNow?: number }>(LtRadarApp, { initialSnapshot: snapshot, initialNow: renderedAt }));
-  }
-  if (page === "changes") {
-    return renderToString(createElement<{ initialSnapshot?: RadarSnapshot; initialHistory?: RadarHistory; initialNow?: number }>(LtChangesPage, { initialSnapshot: snapshot, initialHistory: history, initialNow: renderedAt }));
   }
   if (page === "brands") return renderToString(createElement(LtBrandRegistryPage));
   return renderToString(createElement(LtMethodologyPage));

@@ -21,6 +21,7 @@ const pages = [
   { path: "/history/", marker: "Candidate history" },
   { path: "/brands/", marker: "Reviewed Lithuanian brand registry" },
   { path: "/changes/", marker: "What changed" },
+  { path: "/lt/pokyciai/", marker: "Kas pasikeitė" },
   { path: "/trends/", marker: "Discovery trends and review quality" },
   { path: "/associations/", marker: "Published associations" },
   { path: "/tools/", marker: "Check your indicators locally" },
@@ -540,7 +541,6 @@ function verifyBuiltHtml() {
     const historyBootstrap = root.getAttribute("data-history-bootstrap");
     const staticBootstrap = root.getAttribute("data-page-bootstrap");
     const pageLanguage = root.getAttribute("data-page-language");
-    const ltChangesBootstrap = root.getAttribute("data-lt-changes-bootstrap");
     if (route === "/" || route === "/lt/") {
       assert(bootstrap, `${route} has no embedded hydration snapshot.`);
       assert(!/[<>&"]/u.test(bootstrap), `${route} hydration snapshot is not safely attribute-encoded.`);
@@ -555,18 +555,23 @@ function verifyBuiltHtml() {
       assert(payload?.history?.dataset === "history", `${route} does not embed the public history dataset.`);
       assert(Number.isInteger(payload?.renderedAt), `${route} history artifact has no stable render timestamp.`);
       assert(!bootstrap, `${route} embeds the live dashboard snapshot.`);
-    } else if (route === "/lt/pokyciai/") {
-      assert(ltChangesBootstrap, `${route} has no localized changes bootstrap.`);
-      const payload = JSON.parse(decodeURIComponent(ltChangesBootstrap));
-      assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong localized data.`);
     } else if ([
-      "/changes/", "/trends/", "/associations/", "/tools/", "/dataset/",
+      "/changes/", "/lt/pokyciai/", "/trends/", "/associations/", "/tools/", "/dataset/",
       "/lt/tendencijos/", "/lt/sasajos/", "/lt/irankiai/", "/lt/duomenys/",
     ].includes(route)) {
       assert(staticBootstrap, `${route} has no embedded static artifact bootstrap.`);
       assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong static-page language.`);
       const payload = JSON.parse(decodeURIComponent(staticBootstrap));
       assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong static data.`);
+      if (route === "/changes/" || route === "/lt/pokyciai/") {
+        assert(payload?.events?.dataset === "radar-events", `${route} does not embed the canonical event record.`);
+        assert(document.querySelector(".artifact-hero"), `${route} omits the shared changes hero.`);
+        assert(document.querySelectorAll(".feed-strip > a").length === 4, `${route} omits a changes feed link.`);
+        assert(document.querySelector(".event-section"), `${route} omits the shared event log.`);
+        assert(document.querySelector(".related-route-card"), `${route} omits the retained-history route.`);
+        const signalPrefix = route.startsWith("/lt/") ? "/lt/signalai/" : "/signals/";
+        assert(document.querySelector(`.event-list a[href^="${signalPrefix}"]`), `${route} uses the wrong localized signal routes.`);
+      }
     } else if (route === "/docs/" || route === "/lt/dokumentacija/") {
       assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong documentation language.`);
     } else if (route.startsWith("/signals/") || route.startsWith("/lt/signalai/")) {
@@ -608,6 +613,18 @@ function verifyBuiltHtml() {
       }
     }
   }
+
+  const englishChanges = parseFile(outputPath("/changes/"));
+  const lithuanianChanges = parseFile(outputPath("/lt/pokyciai/"));
+  assert(
+    englishChanges.querySelectorAll(".event-list > li").length === lithuanianChanges.querySelectorAll(".event-list > li").length,
+    "English and Lithuanian changes pages expose different event counts.",
+  );
+  assert(
+    [...englishChanges.querySelectorAll("main > *")].map((element) => element.className).join("|") ===
+      [...lithuanianChanges.querySelectorAll("main > *")].map((element) => element.className).join("|"),
+    "English and Lithuanian changes pages no longer share the same section structure.",
+  );
 
   for (const page of pages) {
     const html = readFileSync(outputPath(page.path), "utf8");

@@ -27,16 +27,37 @@ function ArtifactHero({ eyebrow, title, description, icon: Icon }: { eyebrow: st
   return <header className="artifact-hero"><div><p className="eyebrow"><Icon aria-hidden="true" /> {eyebrow}</p><h1>{title}</h1></div><p>{description}</p></header>;
 }
 
+function formatEventDateTime(value: string, language: StaticPageLanguage): string {
+  if (language === "en") return formatDateTime(value);
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "Laikas nežinomas";
+  return new Intl.DateTimeFormat("lt-LT", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(timestamp);
+}
+
 export function ChangesPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
-  const typeLabels = { "first-publication": "First publication", reobservation: "Reobserved", "status-change": "Status changed", retraction: "Assessment retracted" } as const;
+  const lt = language === "lt";
+  const typeLabels = lt
+    ? { "first-publication": "Pirma publikacija", reobservation: "Pastebėta pakartotinai", "status-change": "Būsena pakeista", retraction: "Vertinimas atšauktas" } as const
+    : { "first-publication": "First publication", reobservation: "Reobserved", "status-change": "Status changed", retraction: "Assessment retracted" } as const;
   return <PageShell currentPage="changes" language={language}>
-    <ArtifactHero icon={CalendarClock} eyebrow="30-day event record" title="What changed" description="A durable event-level view of new publications, later observations, status changes, and explicit analyst retractions. This is publication activity, not a measure of phishing prevalence." />
-    <section className="feed-strip" aria-label="Change feeds"><div><Rss aria-hidden="true" /><span>Subscribe without polling the full snapshot</span></div><a href="/data/events.atom.xml">Atom</a><a href="/data/events.rss.xml">RSS</a><a href="/data/events.feed.json">JSON Feed</a><a href="/data/events.json">Event JSON</a></section>
-    <section className="event-section" aria-labelledby="events-title"><div className="section-heading"><div><p className="eyebrow">Publication log</p><h2 id="events-title">Recent events</h2></div><p><strong>{data.events.events.length}</strong> shown · {data.events.window.days}-day window</p></div>
-      <ol className="event-list">{data.events.events.map((event) => <li key={event.id}><time dateTime={event.occurredAt}>{formatDateTime(event.occurredAt)} UTC</time><span className={`event-type ${event.type}`}>{typeLabels[event.type]}</span><div><a href={signalPath(event.signalId)}>{event.domain}</a><span>{event.brand} · {event.sources.join(", ")}</span></div>{event.type === "status-change" ? <small>{event.previousStatus} → {event.status}</small> : null}</li>)}</ol>
-      {!data.events.events.length ? <p className="empty-copy">No event falls inside the current public window.</p> : null}
+    <ArtifactHero
+      icon={CalendarClock}
+      eyebrow={lt ? "30 dienų įvykių žurnalas" : "30-day event record"}
+      title={lt ? "Kas pasikeitė" : "What changed"}
+      description={lt
+        ? "Patvarus įvykių lygmens naujų publikacijų, vėlesnių stebėjimų, būsenos pokyčių ir aiškių analitiko atšaukimų vaizdas. Tai publikavimo veikla, o ne phishing paplitimo matas."
+        : "A durable event-level view of new publications, later observations, status changes, and explicit analyst retractions. This is publication activity, not a measure of phishing prevalence."}
+    />
+    <section className="feed-strip" aria-label={lt ? "Pokyčių srautai" : "Change feeds"}><div><Rss aria-hidden="true" /><span>{lt ? "Prenumeruoti neatsisiunčiant visos suvestinės" : "Subscribe without polling the full snapshot"}</span></div><a href="/data/events.atom.xml">Atom</a><a href="/data/events.rss.xml">RSS</a><a href="/data/events.feed.json">{lt ? "JSON srautas" : "JSON Feed"}</a><a href="/data/events.json">{lt ? "Įvykių JSON" : "Event JSON"}</a></section>
+    <section className="event-section" aria-labelledby="events-title"><div className="section-heading"><div><p className="eyebrow">{lt ? "Publikavimo žurnalas" : "Publication log"}</p><h2 id="events-title">{lt ? "Naujausi įvykiai" : "Recent events"}</h2></div><p><strong>{data.events.events.length}</strong> {lt ? `rodoma · ${data.events.window.days} dienų langas` : `shown · ${data.events.window.days}-day window`}</p></div>
+      <ol className="event-list">{data.events.events.map((event) => <li key={event.id}><time dateTime={event.occurredAt}>{formatEventDateTime(event.occurredAt, language)} UTC</time><span className={`event-type ${event.type}`}>{typeLabels[event.type]}</span><div><a href={signalPath(event.signalId, language)}>{event.domain}</a><span>{event.brand} · {event.sources.join(", ")}</span></div>{event.type === "status-change" ? <small>{event.previousStatus} → {event.status}</small> : null}</li>)}</ol>
+      {!data.events.events.length ? <p className="empty-copy">{lt ? "Dabartiniame viešame lange įvykių nėra." : "No event falls inside the current public window."}</p> : null}
     </section>
-    <section className="related-route-card"><div><p className="eyebrow"><Archive aria-hidden="true" /> Retained archive</p><h2>Need the full candidate timeline?</h2><p>The history view preserves bounded first-seen, last-seen, observation counts and status transitions beyond this feed window.</p></div><a href="/history/">Open candidate history →</a></section>
+    <section className="related-route-card"><div><p className="eyebrow"><Archive aria-hidden="true" /> {lt ? "Išsaugotas archyvas" : "Retained archive"}</p><h2>{lt ? "Reikia visos kandidato laiko juostos?" : "Need the full candidate timeline?"}</h2><p>{lt ? "Istorijos vaizde saugomas ribotas pirmo ir paskutinio stebėjimo laikas, stebėjimų skaičius ir būsenos perėjimai už šio srauto lango ribų." : "The history view preserves bounded first-seen, last-seen, observation counts and status transitions beyond this feed window."}</p></div><a href="/history/">{lt ? "Atverti kandidatų istoriją" : "Open candidate history"} →</a></section>
   </PageShell>;
 }
 

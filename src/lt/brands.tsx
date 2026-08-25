@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 
 import "../styles.css";
-import "./ltPages.css";
 import { LtBrandRegistryPage } from "./LtBrandRegistryPage.tsx";
 
 const root = document.getElementById("root");
