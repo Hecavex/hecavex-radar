@@ -1,20 +1,46 @@
 {
   "cursor": 0,
   "dataset": "domain-context",
-  "generatedAt": "2026-08-25T13:53:37.402Z",
+  "generatedAt": "2026-08-25T20:00:52.524Z",
   "latestRun": {
-    "attempted": 19,
-    "completed": 16,
-    "endedAt": "2026-08-25T13:53:37.402Z",
-    "outcome": "partial",
-    "startedAt": "2026-08-25T13:53:15.808Z"
+    "attempted": 13,
+    "completed": 13,
+    "endedAt": "2026-08-25T20:00:52.524Z",
+    "outcome": "completed",
+    "startedAt": "2026-08-25T20:00:44.366Z"
   },
   "records": [
     {
       "dns": {
         "a": [
-          "188[.]114[.]97[.]11",
-          "188[.]114[.]96[.]11"
+          "159[.]8[.]105[.]201"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 3600,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "bsconseils[.]eso-online[.]fr",
+      "observedAt": "2026-08-25T20:00:44.366Z",
+      "registration": {
+        "domain": "eso-online[.]fr",
+        "expiresAt": "2026-10-16T16:47:38.000Z",
+        "registeredAt": "2018-10-16T16:47:38.000Z",
+        "registrar": "OVH",
+        "statuses": [
+          "active"
+        ],
+        "updatedAt": "2025-11-30T23:08:43.327Z"
+      },
+      "signalId": "6d1985055ef1c90ba8d8"
+    },
+    {
+      "dns": {
+        "a": [
+          "104[.]21[.]39[.]85",
+          "172[.]67[.]170[.]22"
         ],
         "aaaa": [
           "2606[:]4700[:]3034[:][:]6815[:]2755",
@@ -30,8 +56,9 @@
         "queriesCompleted": 5
       },
       "domain": "cards-revolut[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": {
+        "domain": "cards-revolut[.]com",
         "expiresAt": "2027-05-21T10:02:36.000Z",
         "registeredAt": "2026-05-21T10:02:36.000Z",
         "registrar": "Tucows Domains Inc.",
@@ -56,27 +83,18 @@
         "queriesCompleted": 5
       },
       "domain": "cpam93[.]eso-online[.]fr",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
-      "signalId": "a78cb24fc20a65f1ba1f"
-    },
-    {
-      "dns": {
-        "a": [
-          "172[.]67[.]181[.]230",
-          "104[.]21[.]32[.]5"
+      "observedAt": "2026-08-25T20:00:44.366Z",
+      "registration": {
+        "domain": "eso-online[.]fr",
+        "expiresAt": "2026-10-16T16:47:38.000Z",
+        "registeredAt": "2018-10-16T16:47:38.000Z",
+        "registrar": "OVH",
+        "statuses": [
+          "active"
         ],
-        "aaaa": [],
-        "cname": [],
-        "minimumTtl": 300,
-        "mx": [],
-        "ns": [],
-        "queriesCompleted": 5
+        "updatedAt": "2025-11-30T23:08:43.327Z"
       },
-      "domain": "delivery-dhl[.]muttinfo[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
-      "signalId": "3480b4c86bea11951e12"
+      "signalId": "a78cb24fc20a65f1ba1f"
     },
     {
       "dns": {
@@ -92,8 +110,9 @@
         "queriesCompleted": 5
       },
       "domain": "dpd-service[.]cyou",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": {
+        "domain": "dpd-service[.]cyou",
         "expiresAt": "2027-02-11T23:59:59.000Z",
         "registeredAt": "2026-02-11T20:11:19.000Z",
         "registrar": "Global Domain Group LLC",
@@ -121,7 +140,7 @@
         "queriesCompleted": 5
       },
       "domain": "maxima-bank[.]ru",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": null,
       "signalId": "54b7622ec9c57480f3dc"
     },
@@ -138,32 +157,24 @@
         "queriesCompleted": 5
       },
       "domain": "portal[.]smartidverify[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
+      "observedAt": "2026-08-25T20:00:44.366Z",
+      "registration": {
+        "domain": "smartidverify[.]com",
+        "expiresAt": "2027-06-03T17:10:38.000Z",
+        "registeredAt": "2024-06-03T17:10:38.000Z",
+        "registrar": "Register[.]com - Network Solutions, LLC",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-05-14T07:51:16.000Z"
+      },
       "signalId": "71b7af4763ffa22c34dd"
     },
     {
       "dns": {
         "a": [
-          "159[.]223[.]233[.]186"
-        ],
-        "aaaa": [],
-        "cname": [],
-        "minimumTtl": 3600,
-        "mx": [],
-        "ns": [],
-        "queriesCompleted": 5
-      },
-      "domain": "revolut-bank[.]payment-alert[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
-      "signalId": "5e3902d0eb6232fb39c3"
-    },
-    {
-      "dns": {
-        "a": [
-          "172[.]67[.]154[.]66",
-          "104[.]21[.]48[.]155"
+          "104[.]21[.]48[.]155",
+          "172[.]67[.]154[.]66"
         ],
         "aaaa": [
           "2606[:]4700[:]3034[:][:]ac43[:]9a42",
@@ -179,8 +190,9 @@
         "queriesCompleted": 5
       },
       "domain": "revolut-casino-online[.]cz",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": {
+        "domain": "revolut-casino-online[.]cz",
         "expiresAt": "2027-08-20T22:00:00.000Z",
         "registeredAt": "2026-08-21T17:09:09.000Z",
         "registrar": null,
@@ -193,26 +205,28 @@
     },
     {
       "dns": {
-        "a": [],
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
         "aaaa": [],
         "cname": [],
-        "minimumTtl": null,
+        "minimumTtl": 86400,
         "mx": [],
         "ns": [],
         "queriesCompleted": 5
       },
       "domain": "service-revolut[.]ph",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": null,
       "signalId": "b2a74041369ff0a25a50"
     },
     {
       "dns": {
         "a": [
-          "198[.]49[.]23[.]144",
-          "198[.]185[.]159[.]145",
+          "198[.]185[.]159[.]144",
           "198[.]49[.]23[.]145",
-          "198[.]185[.]159[.]144"
+          "198[.]185[.]159[.]145",
+          "198[.]49[.]23[.]144"
         ],
         "aaaa": [],
         "cname": [],
@@ -221,16 +235,17 @@
           "1 smtp[.]google[.]com"
         ],
         "ns": [
+          "ns-cloud-a3[.]googledomains[.]com",
           "ns-cloud-a2[.]googledomains[.]com",
-          "ns-cloud-a4[.]googledomains[.]com",
           "ns-cloud-a1[.]googledomains[.]com",
-          "ns-cloud-a3[.]googledomains[.]com"
+          "ns-cloud-a4[.]googledomains[.]com"
         ],
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]net",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": {
+        "domain": "support-vinted[.]net",
         "expiresAt": "2026-12-17T18:30:43.000Z",
         "registeredAt": "2025-12-17T18:30:43.000Z",
         "registrar": "Squarespace Domains II LLC",
@@ -255,7 +270,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]ph",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": null,
       "signalId": "5b0f8b137394c5f88ddf"
     },
@@ -279,8 +294,9 @@
         "queriesCompleted": 5
       },
       "domain": "trackmaxima[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": {
+        "domain": "trackmaxima[.]com",
         "expiresAt": "2029-01-15T00:51:13.000Z",
         "registeredAt": "2026-01-15T00:51:13.000Z",
         "registrar": "GoDaddy[.]com, LLC",
@@ -307,8 +323,17 @@
         "queriesCompleted": 5
       },
       "domain": "wildcard[.]revolut-account[.]com",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
+      "observedAt": "2026-08-25T20:00:44.366Z",
+      "registration": {
+        "domain": "revolut-account[.]com",
+        "expiresAt": "2027-02-12T16:52:00.000Z",
+        "registeredAt": "2026-02-12T16:52:00.000Z",
+        "registrar": "Name[.]com, Inc.",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-02-14T11:12:35.000Z"
+      },
       "signalId": "74a34aa5a01e9ed77fb6"
     },
     {
@@ -323,42 +348,8 @@
         "ns": [],
         "queriesCompleted": 5
       },
-      "domain": "www[.]revolut-signin-facebooks[.]com[.]ph",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
-      "signalId": "b1af201f6fc52b550b14"
-    },
-    {
-      "dns": {
-        "a": [
-          "45[.]79[.]222[.]138"
-        ],
-        "aaaa": [],
-        "cname": [],
-        "minimumTtl": 86400,
-        "mx": [],
-        "ns": [],
-        "queriesCompleted": 5
-      },
-      "domain": "www[.]revolutsignin[.]com[.]ph",
-      "observedAt": "2026-08-25T13:53:15.808Z",
-      "registration": null,
-      "signalId": "2465c4e424633290ca58"
-    },
-    {
-      "dns": {
-        "a": [
-          "45[.]79[.]222[.]138"
-        ],
-        "aaaa": [],
-        "cname": [],
-        "minimumTtl": 86400,
-        "mx": [],
-        "ns": [],
-        "queriesCompleted": 5
-      },
       "domain": "www[.]swedbank-bank[.]com[.]ph",
-      "observedAt": "2026-08-25T13:53:15.808Z",
+      "observedAt": "2026-08-25T20:00:44.366Z",
       "registration": null,
       "signalId": "f1909ad7540e264b7fb4"
     }
