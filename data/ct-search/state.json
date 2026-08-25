@@ -1,17 +1,17 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-25T17:22:05.744Z",
+  "generatedAt": "2026-08-25T19:20:13.132Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-25T17:22:05.744Z",
+    "endedAt": "2026-08-25T19:20:13.132Z",
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-25T17:17:35.267Z"
+    "startedAt": "2026-08-25T19:19:26.054Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -67,48 +67,48 @@
       "brand": "DHL",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "dhlexpress"
     },
     "brand:dpdlietuva": {
       "brand": "DPD",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "dpdlietuva"
     },
     "brand:elektrum": {
       "brand": "Elektrum",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
       "brand": "ESO",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
       "brand": "Elektroniniai valdžios vartai",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "epaslaugos"
     },
     "brand:epristatymas": {
       "brand": "ePristatymas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T19:19:26.054Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
@@ -384,6 +384,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 6,
+  "queryCursor": 12,
   "schemaVersion": 1
 }
