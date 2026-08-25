@@ -1,17 +1,17 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-25T21:00:14.534Z",
+  "generatedAt": "2026-08-25T22:58:17.295Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-25T21:00:14.534Z",
+    "endedAt": "2026-08-25T22:58:17.295Z",
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-25T21:00:11.279Z"
+    "startedAt": "2026-08-25T22:58:13.266Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -163,48 +163,48 @@
       "brand": "Lietuvos draudimas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "lddraudimas"
     },
     "brand:lidllietuva": {
       "brand": "Lidl Lietuva",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "lidllietuva"
     },
     "brand:lietuvosbankas": {
       "brand": "Lietuvos bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "lietuvosbankas"
     },
     "brand:lpexpress": {
       "brand": "LP EXPRESS",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "lpexpress"
     },
     "brand:luminor": {
       "brand": "Luminor",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "luminor"
     },
     "brand:manobank": {
       "brand": "Mano Bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-25T22:58:13.266Z",
       "term": "manobank"
     },
     "brand:manovmi": {
@@ -384,6 +384,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 18,
+  "queryCursor": 24,
   "schemaVersion": 1
 }
