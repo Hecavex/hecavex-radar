@@ -111,6 +111,13 @@ jobs:
           test -f dist/data/pipeline-health.json
           test -f dist/data/changes.json
           test -f dist/data/related-observations.json
+          test -f dist/data/events.json
+          test -f dist/data/events.atom.xml
+          test -f dist/data/events.rss.xml
+          test -f dist/data/events.feed.json
+          test -f dist/data/brand-feeds.json
+          test -f dist/data/daily-trends.json
+          test -f dist/data/quality-metrics.json
           test -f dist/data/schemas/radar-v2.schema.json
           cmp --silent dist/security.txt dist/.well-known/security.txt
           grep -Fqx "Canonical: https://radar.hecavex.com/.well-known/security.txt" dist/.well-known/security.txt
@@ -129,7 +136,27 @@ jobs:
           test -f dist/docs/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
           grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
-          for page in dist/index.html dist/history/index.html dist/brands/index.html dist/methodology/index.html dist/docs/index.html; do
+          for route in changes trends associations tools dataset; do
+            test -f "dist/${route}/index.html"
+          done
+          for route in '' pokyciai prekes-zenklai metodologija; do
+            test -f "dist/lt/${route:+${route}/}index.html"
+          done
+          for page in \
+            dist/index.html \
+            dist/history/index.html \
+            dist/brands/index.html \
+            dist/changes/index.html \
+            dist/trends/index.html \
+            dist/associations/index.html \
+            dist/tools/index.html \
+            dist/dataset/index.html \
+            dist/methodology/index.html \
+            dist/docs/index.html \
+            dist/lt/index.html \
+            dist/lt/pokyciai/index.html \
+            dist/lt/prekes-zenklai/index.html \
+            dist/lt/metodologija/index.html; do
             loader_count="$(grep -Fo 'data-hecavex-analytics-token=' "${page}" | wc -l)"
             token_count="$(grep -Fo "${HECAVEX_ANALYTICS_TOKEN}" "${page}" | wc -l)"
             test "${loader_count}" -eq 1
@@ -145,8 +172,14 @@ jobs:
           grep -Fq 'must not be made clickable or visited automatically' dist/llms.txt
           grep -Fq 'https://radar.hecavex.com/history/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/brands/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/changes/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/trends/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/associations/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/tools/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/dataset/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/lt/' dist/sitemap.xml
       - name: Configure GitHub Pages
         if: steps.freshness.outputs.should_deploy == 'true'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6

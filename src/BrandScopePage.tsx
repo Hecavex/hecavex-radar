@@ -1,28 +1,11 @@
 import { ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import brandRegistry from "../data/brands-lt.json" with { type: "json" };
 import { SiteFooter } from "./components/SiteFooter.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
-
-type BrandEntry = {
-  brand: string;
-  aliases: string[];
-  fuzzyAliases?: string[];
-  excludedTerms?: string[];
-  excludedDomains?: string[];
-  category: string;
-  officialDomains: string[];
-  sources: string[];
-};
-
-const entries = brandRegistry.entries as BrandEntry[];
+import { brandEntries as entries, brandPath, brandRegistryReviewedAt, defangDomain } from "./lib/brandRegistry.ts";
 // Keep prerendering deterministic across Node and browser ICU implementations.
 const categories = [...new Set(entries.map((entry) => entry.category))].sort();
-
-function defangDomain(domain: string): string {
-  return domain.replaceAll(".", "[.]");
-}
 
 export function BrandScopePage() {
   const [query, setQuery] = useState("");
@@ -62,7 +45,7 @@ export function BrandScopePage() {
           <div><span>Reviewed brands</span><strong>{entries.length}</strong></div>
           <div><span>Official domains</span><strong>{officialDomainCount}</strong></div>
           <div><span>Categories</span><strong>{categories.length}</strong></div>
-          <div><span>Registry reviewed</span><strong>{brandRegistry.reviewedAt}</strong></div>
+          <div><span>Registry reviewed</span><strong>{brandRegistryReviewedAt}</strong></div>
         </section>
 
         <section className="scope-boundaries" aria-labelledby="scope-boundaries-title">
@@ -111,7 +94,7 @@ export function BrandScopePage() {
               <tbody>
                 {filteredEntries.map((entry) => (
                   <tr key={entry.brand}>
-                    <td><strong>{entry.brand}</strong><span>{entry.category}</span></td>
+                    <td><a className="brand-hub-link" href={brandPath(entry.brand)}>{entry.brand}</a><span>{entry.category}</span></td>
                     <td><div className="registry-values">{entry.aliases.map((alias) => <code key={alias}>{alias}</code>)}</div></td>
                     <td>
                       <div className="registry-values fuzzy-aliases">

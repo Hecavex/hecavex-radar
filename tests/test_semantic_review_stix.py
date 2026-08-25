@@ -242,6 +242,39 @@ class ReviewLedgerTests(unittest.TestCase):
         self.assertEqual(prepared["reviewState"], "confirmed-suspicious")
         self.assertEqual(prepared["ltRelevance"], "lithuanian-targeting")
 
+    def test_reviewed_indicator_has_a_public_history_sighting_when_available(self) -> None:
+        self._confirm()
+        assessment = build_public_export(
+            review_state(read_review_events(self.database)),
+            registry(),
+            "2026-08-25T12:01:00.000Z",
+        )["assessments"][0]
+        history_signal = signal()
+        history = {
+            "signals": [
+                {
+                    "id": history_signal["id"],
+                    "domain": history_signal["domain"],
+                    "firstSeen": "2026-08-25T10:00:00.000Z",
+                    "lastSeen": "2026-08-25T10:05:00.000Z",
+                    "observationCount": 3,
+                }
+            ]
+        }
+
+        bundle = build_reviewed_stix_bundle(
+            [assessment],
+            "2026-08-25T12:01:00.000Z",
+            history,
+        )
+        indicator = next(item for item in bundle["objects"] if item["type"] == "indicator")
+        sighting = next(item for item in bundle["objects"] if item["type"] == "sighting")
+        self.assertEqual(sighting["sighting_of_ref"], indicator["id"])
+        self.assertEqual(sighting["first_seen"], "2026-08-25T10:00:00.000Z")
+        self.assertEqual(sighting["last_seen"], "2026-08-25T10:05:00.000Z")
+        self.assertEqual(sighting["count"], 3)
+        self.assertEqual(sighting["created_by_ref"], RADAR_IDENTITY_ID)
+
 
 if __name__ == "__main__":
     unittest.main()

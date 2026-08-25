@@ -84,8 +84,9 @@ export function FilterBar({
         />
         <kbd>/</kbd>
       </div>
-      <div className="select-group" aria-label="Candidate filters">
-        <SlidersHorizontal aria-hidden="true" />
+      <details className="advanced-filter-shell" open={hasFilters || undefined}>
+        <summary><SlidersHorizontal aria-hidden="true" /> Advanced filters {hasFilters ? <span>Active</span> : null}</summary>
+        <div className="select-group" aria-label="Candidate filters">
         <label>
           <span className="sr-only">Source-reported status</span>
           <select aria-label="Source-reported status" value={filters.status} onChange={(event) => update("status", event.target.value as SignalStatus | "all")}>
@@ -162,7 +163,8 @@ export function FilterBar({
             <RotateCcw aria-hidden="true" /> Reset
           </button>
         )}
-      </div>
+        </div>
+      </details>
       <p className="filter-privacy-note">Free-text search stays in this browser and is never added to the shared URL.</p>
     </div>
   );

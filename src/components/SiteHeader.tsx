@@ -1,7 +1,22 @@
-import { Code2, Menu, X } from "lucide-react";
+import { Code2, Languages, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export type SitePage = "radar" | "history" | "brands" | "methodology" | "documentation";
+export type SitePage =
+  | "radar"
+  | "changes"
+  | "history"
+  | "brands"
+  | "trends"
+  | "associations"
+  | "tools"
+  | "quality"
+  | "dataset"
+  | "methodology"
+  | "documentation"
+  | "signal"
+  | "brand";
+
+export type SiteLanguage = "en" | "lt";
 
 const portfolioNavigation = [
   { label: "Research", href: "https://hecavex.com/en/research/", current: false },
@@ -11,19 +26,34 @@ const portfolioNavigation = [
   { label: "Data", href: "https://labs.hecavex.com/data/", current: false },
 ] as const;
 
-const productNavigation = [
-  { label: "Overview", href: "/", page: "radar" },
-  { label: "History", href: "/history/", page: "history" },
-  { label: "Scope", href: "/brands/", page: "brands" },
-  { label: "Methodology", href: "/methodology/", page: "methodology" },
-  { label: "Docs", href: "/docs/", page: "documentation" },
-] as const;
+const englishNavigation: Array<{ label: string; href: string; pages: SitePage[] }> = [
+  { label: "Overview", href: "/", pages: ["radar", "signal"] },
+  { label: "Changes", href: "/changes/", pages: ["changes", "history"] },
+  { label: "Brands", href: "/brands/", pages: ["brands", "brand"] },
+  { label: "Trends", href: "/trends/", pages: ["trends", "quality"] },
+  { label: "Associations", href: "/associations/", pages: ["associations"] },
+  { label: "Tools", href: "/tools/", pages: ["tools"] },
+  { label: "Methodology", href: "/methodology/", pages: ["methodology"] },
+  { label: "Docs", href: "/docs/", pages: ["documentation", "dataset"] },
+];
 
-function PortfolioNavigation({ className, onNavigate }: { className: string; onNavigate?: () => void }) {
+const lithuanianNavigation: Array<{ label: string; href: string; pages: SitePage[] }> = [
+  { label: "Apžvalga", href: "/lt/", pages: ["radar", "signal"] },
+  { label: "Pokyčiai", href: "/lt/pokyciai/", pages: ["changes", "history"] },
+  { label: "Prekių ženklai", href: "/lt/prekes-zenklai/", pages: ["brands", "brand"] },
+  { label: "Metodologija", href: "/lt/metodologija/", pages: ["methodology"] },
+];
+
+function PortfolioNavigation({ className, onNavigate, language }: { className: string; onNavigate?: () => void; language: SiteLanguage }) {
   return (
     <nav className={className} aria-label="HECAVEX projects">
       {portfolioNavigation.map((item) => (
-        <a key={item.label} href={item.href} aria-current={item.current ? "page" : undefined} onClick={onNavigate}>
+        <a
+          key={item.label}
+          href={language === "lt" && item.label === "Research" ? "https://hecavex.com/lt/tyrimai/" : item.href}
+          aria-current={item.current ? "page" : undefined}
+          onClick={onNavigate}
+        >
           {item.label}
         </a>
       ))}
@@ -31,16 +61,20 @@ function PortfolioNavigation({ className, onNavigate }: { className: string; onN
   );
 }
 
-function ProductNavigation(
-  { currentPage, className, onNavigate }: { currentPage: SitePage; className: string; onNavigate?: () => void },
-) {
+function ProductNavigation({ currentPage, className, onNavigate, language }: {
+  currentPage: SitePage;
+  className: string;
+  onNavigate?: () => void;
+  language: SiteLanguage;
+}) {
+  const navigation = language === "lt" ? lithuanianNavigation : englishNavigation;
   return (
-    <nav className={className} aria-label="Radar sections">
-      {productNavigation.map((item) => (
+    <nav className={className} aria-label={language === "lt" ? "Radaro skyriai" : "Radar sections"}>
+      {navigation.map((item) => (
         <a
           key={item.label}
           href={item.href}
-          aria-current={currentPage === item.page ? "page" : undefined}
+          aria-current={item.pages.includes(currentPage) ? "page" : undefined}
           onClick={onNavigate}
         >
           {item.label}
@@ -65,9 +99,15 @@ function SourceLink({ className, onNavigate }: { className?: string; onNavigate?
   );
 }
 
-export function SiteHeader({ currentPage }: { currentPage: SitePage }) {
+export function SiteHeader({ currentPage, language = "en", alternateHref }: {
+  currentPage: SitePage;
+  language?: SiteLanguage;
+  alternateHref?: string;
+}) {
   const navigationRef = useRef<HTMLDetailsElement>(null);
   const [navigationOpen, setNavigationOpen] = useState(false);
+  const researchHref = language === "lt" ? "https://hecavex.com/lt/" : "https://hecavex.com/en/";
+  const defaultAlternate = language === "lt" ? "/" : "/lt/";
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -88,24 +128,19 @@ export function SiteHeader({ currentPage }: { currentPage: SitePage }) {
   };
 
   return (
-    <header className="site-header" data-portfolio-shell="v1">
+    <header className="site-header" data-portfolio-shell="v2">
       <div className="network-bar">
-        <a className="brand" href="https://hecavex.com/en/" aria-label="HECAVEX Research">
+        <a className="brand" href={researchHref} aria-label="HECAVEX Research">
           <img src="/hecavex-mark.svg" alt="" width="36" height="36" />
           <span className="brand-copy">
             <strong>HECAVEX</strong>
-            <small>Radar / public threat signals</small>
+            <small>{language === "lt" ? "Radaras / vieši grėsmių signalai" : "Radar / public threat signals"}</small>
           </span>
         </a>
 
-        <PortfolioNavigation className="portfolio-navigation" />
+        <PortfolioNavigation className="portfolio-navigation" language={language} />
 
-        <details
-          className="mobile-navigation"
-          data-mobile-navigation
-          ref={navigationRef}
-          onToggle={(event) => setNavigationOpen(event.currentTarget.open)}
-        >
+        <details className="mobile-navigation" data-mobile-navigation ref={navigationRef} onToggle={(event) => setNavigationOpen(event.currentTarget.open)}>
           <summary aria-label={navigationOpen ? "Close navigation menu" : "Open navigation menu"}>
             <Menu className="menu-open-icon" aria-hidden="true" />
             <X className="menu-close-icon" aria-hidden="true" />
@@ -114,28 +149,30 @@ export function SiteHeader({ currentPage }: { currentPage: SitePage }) {
           <div className="mobile-navigation-panel">
             <div className="mobile-navigation-column">
               <span className="navigation-label">Radar</span>
-              <ProductNavigation
-                currentPage={currentPage}
-                className="mobile-product-navigation"
-                onNavigate={closeNavigation}
-              />
+              <ProductNavigation currentPage={currentPage} className="mobile-product-navigation" language={language} onNavigate={closeNavigation} />
+              <a className="language-link" href={alternateHref ?? defaultAlternate} onClick={closeNavigation}>
+                <Languages aria-hidden="true" /> {language === "lt" ? "English" : "Lietuviškai"}
+              </a>
               <SourceLink className="mobile-source-link" onNavigate={closeNavigation} />
             </div>
             <div className="mobile-navigation-column">
               <span className="navigation-label">HECAVEX network</span>
-              <PortfolioNavigation className="mobile-portfolio-navigation" onNavigate={closeNavigation} />
+              <PortfolioNavigation className="mobile-portfolio-navigation" language={language} onNavigate={closeNavigation} />
             </div>
           </div>
         </details>
       </div>
 
       <div className="product-bar">
-        <a className="product-identity" href="/">
+        <a className="product-identity" href={language === "lt" ? "/lt/" : "/"}>
           <strong>Radar</strong>
-          <span>Potential phishing infrastructure</span>
+          <span>{language === "lt" ? "Galima sukčiavimo infrastruktūra" : "Potential phishing infrastructure"}</span>
         </a>
-        <ProductNavigation currentPage={currentPage} className="product-navigation" />
+        <ProductNavigation currentPage={currentPage} className="product-navigation" language={language} />
         <div className="header-utility">
+          <a className="language-link" href={alternateHref ?? defaultAlternate} aria-label={language === "lt" ? "Open English version" : "Atverti lietuvišką versiją"}>
+            {language === "lt" ? "EN" : "LT"}
+          </a>
           <SourceLink />
         </div>
       </div>

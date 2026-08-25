@@ -4,6 +4,7 @@ import ipaddress
 import json
 import os
 import re
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import cast
@@ -25,6 +26,7 @@ SIGNAL_STATUSES = frozenset({"active", "suspected", "offline", "mitigated", "unk
 ALLOWED_SOURCES = frozenset({"CertStream", "URLScan", "HECAVEX"})
 MAXIMUM_STIX_SIGNALS = 25_000
 MAXIMUM_STIX_OBJECTS = MAXIMUM_STIX_SIGNALS * 2
+MAXIMUM_REVIEWED_STIX_OBJECTS = 1 + (MAXIMUM_STIX_SIGNALS * 2)
 MAXIMUM_STIX_BUNDLE_BYTES = 2 * 1024 * 1024
 EVIDENCE_TIERS = frozenset({"name-only", "corroborated", "reviewed"})
 REVIEW_STATES = frozenset(
@@ -304,6 +306,10 @@ def _indicator_id(signal_id: str, reviewed_at: str) -> str:
     return f"indicator--{uuid5(RADAR_REVIEWED_STIX_NAMESPACE, f'indicator:{signal_id}:{reviewed_at}')}"
 
 
+def _sighting_id(indicator_id: str) -> str:
+    return f"sighting--{uuid5(RADAR_REVIEWED_STIX_NAMESPACE, f'sighting:{indicator_id}')}"
+
+
 def _radar_identity() -> dict[str, object]:
     return {
         "type": "identity",
@@ -390,8 +396,92 @@ def _reviewed_indicator(assessment: dict[str, object]) -> dict[str, object] | No
     return indicator
 
 
-def build_reviewed_stix_bundle(assessments: object, generated_at: str) -> dict[str, object]:
-    _timestamp(generated_at, "generatedAt")
+def _observation_index(observation_history: object, generated_at: datetime) -> dict[str, dict[str, object]]:
+    raw_signals: object
+    if isinstance(observation_history, Mapping):
+        raw_signals = observation_history.get("signals")
+    else:
+        raw_signals = observation_history
+    if not isinstance(raw_signals, Sequence) or isinstance(raw_signals, (str, bytes)):
+        raise ValueError("Reviewed STIX sightings require a signal sequence or a history object.")
+    if len(raw_signals) > MAXIMUM_STIX_SIGNALS:
+        raise ValueError("Reviewed STIX sightings exceeded the bounded signal count.")
+    indexed: dict[str, dict[str, object]] = {}
+    for raw in raw_signals:
+        if not isinstance(raw, Mapping):
+            raise ValueError("Reviewed STIX sightings rejected a non-object observation summary.")
+        signal_id = raw.get("id")
+        display_domain = raw.get("domain")
+        if (
+            not isinstance(signal_id, str)
+            or not SIGNAL_ID.fullmatch(signal_id)
+            or not isinstance(display_domain, str)
+            or signal_id != stable_id(display_domain.lower())
+        ):
+            raise ValueError("Reviewed STIX sightings rejected an invalid signal identity.")
+        parsed = parse_and_defang_url(f"https://{refang(display_domain)}")
+        if parsed is None or parsed.display_domain != display_domain:
+            raise ValueError("Reviewed STIX sightings rejected a non-canonical domain.")
+        first_seen, first_value = _timestamp(raw.get("firstSeen"), "firstSeen")
+        last_seen, last_value = _timestamp(raw.get("lastSeen"), "lastSeen")
+        if first_value > last_value or last_value > generated_at:
+            raise ValueError("Reviewed STIX sightings rejected an impossible observation interval.")
+        raw_count = raw.get("observationCount", 1)
+        if type(raw_count) is not int or not 1 <= raw_count <= 999_999_999:
+            raise ValueError("Reviewed STIX sightings rejected an invalid observation count.")
+        existing = indexed.get(signal_id)
+        if existing is not None and existing["domain"] != display_domain:
+            raise ValueError("Reviewed STIX sightings rejected a conflicting signal identity.")
+        if existing is None:
+            indexed[signal_id] = {
+                "domain": display_domain,
+                "firstSeen": first_seen,
+                "lastSeen": last_seen,
+                "count": raw_count,
+            }
+            continue
+        indexed[signal_id] = {
+            "domain": display_domain,
+            "firstSeen": min(cast(str, existing["firstSeen"]), first_seen),
+            "lastSeen": max(cast(str, existing["lastSeen"]), last_seen),
+            "count": max(cast(int, existing["count"]), raw_count),
+        }
+    return indexed
+
+
+def _reviewed_sighting(
+    indicator: Mapping[str, object],
+    observation: Mapping[str, object],
+) -> dict[str, object]:
+    indicator_id = cast(str, indicator["id"])
+    signal_id = cast(str, indicator["x_hecavex_com_signal_id"])
+    first_seen = cast(str, observation["firstSeen"])
+    last_seen = cast(str, observation["lastSeen"])
+    created = cast(str, indicator["created"])
+    modified = max(cast(str, indicator["modified"]), last_seen, created)
+    return {
+        "type": "sighting",
+        "spec_version": "2.1",
+        "id": _sighting_id(indicator_id),
+        "created_by_ref": RADAR_IDENTITY_ID,
+        "created": created,
+        "modified": modified,
+        "first_seen": first_seen,
+        "last_seen": last_seen,
+        "count": cast(int, observation["count"]),
+        "sighting_of_ref": indicator_id,
+        "object_marking_refs": [TLP_CLEAR_MARKING_ID],
+        "x_hecavex_com_signal_id": signal_id,
+        "x_hecavex_com_observation_scope": "public-history-summary",
+    }
+
+
+def build_reviewed_stix_bundle(
+    assessments: object,
+    generated_at: str,
+    observation_history: object | None = None,
+) -> dict[str, object]:
+    _, generated_value = _timestamp(generated_at, "generatedAt")
     if not isinstance(assessments, (list, tuple)) or len(assessments) > MAXIMUM_STIX_SIGNALS:
         raise ValueError("Reviewed STIX export exceeded its bounded assessment count.")
     indicators: list[dict[str, object]] = []
@@ -408,7 +498,23 @@ def build_reviewed_stix_bundle(assessments: object, generated_at: str) -> dict[s
         seen_ids.add(identifier)
         indicators.append(indicator)
     indicators.sort(key=lambda item: cast(str, item["id"]))
-    objects = [_radar_identity(), *indicators]
+    sightings: list[dict[str, object]] = []
+    if observation_history is not None:
+        observations = _observation_index(observation_history, generated_value)
+        for indicator in indicators:
+            signal_id = cast(str, indicator["x_hecavex_com_signal_id"])
+            observation = observations.get(signal_id)
+            if observation is None:
+                continue
+            indicator_domain = cast(str, indicator["pattern"])[len("[domain-name:value = '") : -2]
+            observed_domain = refang(cast(str, observation["domain"]))
+            if indicator_domain != observed_domain:
+                raise ValueError("Reviewed STIX sightings rejected an indicator/history domain mismatch.")
+            sightings.append(_reviewed_sighting(indicator, observation))
+    sightings.sort(key=lambda item: cast(str, item["id"]))
+    objects = [_radar_identity(), *indicators, *sightings]
+    if len(objects) > MAXIMUM_REVIEWED_STIX_OBJECTS:
+        raise ValueError("Reviewed STIX export exceeded its bounded object count.")
     bundle_key = json.dumps(
         {"generated_at": generated_at, "object_ids": [item["id"] for item in objects]},
         ensure_ascii=False,
@@ -422,13 +528,18 @@ def build_reviewed_stix_bundle(assessments: object, generated_at: str) -> dict[s
     }
 
 
-def write_reviewed_stix_bundle(assessments: object, generated_at: str, output: str | Path) -> Path:
+def write_reviewed_stix_bundle(
+    assessments: object,
+    generated_at: str,
+    output: str | Path,
+    observation_history: object | None = None,
+) -> Path:
     repository = Path.cwd().resolve()
     public_data = (repository / "public" / "data").resolve()
     target = (repository / output).resolve()
     if target.parent != public_data or target.suffix.lower() != ".json":
         raise ValueError("RADAR_REVIEWED_STIX_OUTPUT must be a JSON file directly under public/data/.")
-    bundle = build_reviewed_stix_bundle(assessments, generated_at)
+    bundle = build_reviewed_stix_bundle(assessments, generated_at, observation_history)
     body = json.dumps(bundle, ensure_ascii=False, indent=2) + "\n"
     if len(body.encode("utf-8")) > MAXIMUM_STIX_BUNDLE_BYTES:
         raise RuntimeError("Refusing to publish a reviewed STIX bundle larger than 2 MiB.")

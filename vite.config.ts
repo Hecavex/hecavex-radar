@@ -1,11 +1,19 @@
 import { fileURLToPath } from "node:url";
-import { readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, isAbsolute, relative, resolve } from "node:path";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import type { StaticPageData } from "./src/lib/staticPageBootstrap.ts";
 
 const snapshotPath = fileURLToPath(new URL("./public/data/radar.json", import.meta.url));
 const historyPath = fileURLToPath(new URL("./public/data/history.json", import.meta.url));
+const eventsPath = fileURLToPath(new URL("./public/data/events.json", import.meta.url));
+const trendsPath = fileURLToPath(new URL("./public/data/daily-trends.json", import.meta.url));
+const qualityPath = fileURLToPath(new URL("./public/data/quality-metrics.json", import.meta.url));
+const relatedPath = fileURLToPath(new URL("./public/data/related-observations.json", import.meta.url));
+const publicDataPath = fileURLToPath(new URL("./public/data", import.meta.url));
+const outputPath = fileURLToPath(new URL("./dist", import.meta.url));
 const cloudflareAnalyticsScript = "https://static.cloudflareinsights.com/beacon.min.js";
 const cloudflareAnalyticsToken = process.env.HECAVEX_ANALYTICS_TOKEN?.trim() ?? "";
 if (cloudflareAnalyticsToken && !/^[a-f\d]{32}$/i.test(cloudflareAnalyticsToken)) {
@@ -17,6 +25,31 @@ const cloudflareAnalyticsLoader =
   `const beacon=document.createElement("script");beacon.type="module";beacon.src="${cloudflareAnalyticsScript}";` +
   `beacon.dataset.cfBeacon=JSON.stringify({token});document.head.appendChild(beacon)})();`;
 type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation";
+type StaticPageKind = "changes" | "trends" | "associations" | "tools" | "dataset";
+
+function readJson(path: string): unknown {
+  return JSON.parse(readFileSync(path, "utf8"));
+}
+
+function escapeHtml(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function replacePageRoot(html: string, markup: string, bootstrap: string): string {
+  const root = '<div id="root"></div>';
+  if (!html.includes(root)) throw new Error("Missing dynamic page root.");
+  return html.replace(root, `<div id="root" data-page-bootstrap="${bootstrap}">${markup}</div>`);
+}
+
+function writeGeneratedPage(relativePath: string, html: string): void {
+  const target = resolve(outputPath, relativePath);
+  const relativeTarget = relative(resolve(outputPath), target);
+  if (relativeTarget.startsWith("..") || isAbsolute(relativeTarget)) {
+    throw new Error("Refusing to write a generated page outside dist.");
+  }
+  mkdirSync(dirname(target), { recursive: true });
+  writeFileSync(target, html, "utf8");
+}
 
 function cloudflareWebAnalyticsPlugin() {
   return {
@@ -31,6 +64,25 @@ function cloudflareWebAnalyticsPlugin() {
           injectTo: "body" as const,
         },
       ];
+    },
+  };
+}
+
+function socialMetadataDefaultsPlugin() {
+  return {
+    name: "hecavex-social-metadata-defaults",
+    transformIndexHtml: {
+      order: "post" as const,
+      handler(html: string) {
+        const tags: string[] = [];
+        if (!html.includes('property="og:image"')) {
+          tags.push('<meta property="og:image" content="https://hecavex.com/assets/img/og/hecavex-default-en.png" />');
+        }
+        if (!html.includes('name="twitter:card"')) {
+          tags.push('<meta name="twitter:card" content="summary_large_image" />');
+        }
+        return tags.length ? html.replace("</head>", `${tags.join("")}\n</head>`) : html;
+      },
     },
   };
 }
@@ -53,41 +105,266 @@ function staticPagePlugin() {
           "/docs/index.html": "documentation",
           "/docs/": "documentation",
         };
+        const staticPages: Record<string, StaticPageKind> = {
+          "/changes/index.html": "changes",
+          "/changes/": "changes",
+          "/trends/index.html": "trends",
+          "/trends/": "trends",
+          "/associations/index.html": "associations",
+          "/associations/": "associations",
+          "/tools/index.html": "tools",
+          "/tools/": "tools",
+          "/dataset/index.html": "dataset",
+          "/dataset/": "dataset",
+        };
+        const lithuanianPages: Record<string, "radar" | "changes" | "brands" | "methodology"> = {
+          "/lt/index.html": "radar",
+          "/lt/": "radar",
+          "/lt/pokyciai/index.html": "changes",
+          "/lt/pokyciai/": "changes",
+          "/lt/prekes-zenklai/index.html": "brands",
+          "/lt/prekes-zenklai/": "brands",
+          "/lt/metodologija/index.html": "methodology",
+          "/lt/metodologija/": "methodology",
+        };
         const page = pages[context.path];
-        if (!page) return html;
+        const staticPage = staticPages[context.path];
+        const lithuanianPage = lithuanianPages[context.path];
+        if (!page && !staticPage && !lithuanianPage) return html;
 
         const [
           { parseSnapshot },
           { parseHistory },
           { encodeSnapshotBootstrap },
           { encodeHistoryBootstrap },
-          { renderPrerenderedPage },
+          { encodeStaticPageBootstrap },
+          { encodeLtChangesBootstrap },
+          { parseRelatedObservations },
+          { renderLithuanianPage, renderPrerenderedPage, renderStaticPage },
         ] = await Promise.all([
           import("./src/lib/data.ts"),
           import("./src/lib/historyData.ts"),
           import("./src/lib/snapshotBootstrap.ts"),
           import("./src/lib/historyBootstrap.ts"),
+          import("./src/lib/staticPageBootstrap.ts"),
+          import("./src/lt/ltBootstrap.ts"),
+          import("./src/lib/relatedObservations.ts"),
           import("./src/prerender.ts"),
         ]);
-        const snapshot = parseSnapshot(JSON.parse(readFileSync(snapshotPath, "utf8")));
-        const history = await parseHistory(JSON.parse(readFileSync(historyPath, "utf8")));
+        const snapshot = parseSnapshot(readJson(snapshotPath));
+        const history = await parseHistory(readJson(historyPath));
         const renderedAt = Date.parse(page === "history" ? history.generatedAt : snapshot.lastSuccessfulSyncAt);
-        const staticMarkup = renderPrerenderedPage(page, snapshot, renderedAt, history);
+        let staticMarkup: string;
+        let bootstrap = "";
+        if (staticPage) {
+          const data = {
+            snapshot,
+            history,
+            events: readJson(eventsPath),
+            trends: readJson(trendsPath),
+            quality: readJson(qualityPath),
+            related: parseRelatedObservations(readJson(relatedPath)),
+            renderedAt,
+          } as StaticPageData;
+          staticMarkup = renderStaticPage(staticPage, data);
+          bootstrap = ` data-page-kind="${staticPage}" data-page-bootstrap="${encodeStaticPageBootstrap(data)}"`;
+        } else if (lithuanianPage) {
+          staticMarkup = renderLithuanianPage(lithuanianPage, snapshot, history, renderedAt);
+          bootstrap = lithuanianPage === "radar"
+            ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
+            : lithuanianPage === "changes"
+              ? ` data-lt-changes-bootstrap="${encodeLtChangesBootstrap(snapshot, history, renderedAt)}"`
+              : "";
+        } else {
+          staticMarkup = renderPrerenderedPage(page!, snapshot, renderedAt, history);
+          bootstrap = page === "radar"
+            ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
+            : page === "history"
+              ? ` data-history-bootstrap="${encodeHistoryBootstrap(history, renderedAt)}"`
+              : "";
+        }
         const root = '<div id="root"></div>';
         if (!html.includes(root)) throw new Error(`Missing static-render root in ${context.path}`);
-        const bootstrap = page === "radar"
-          ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
-          : page === "history"
-            ? ` data-history-bootstrap="${encodeHistoryBootstrap(history, renderedAt)}"`
-            : "";
         return html.replace(root, `<div id="root"${bootstrap}>${staticMarkup}</div>`);
       },
     },
   };
 }
 
+function dynamicRoutesPlugin() {
+  return {
+    name: "hecavex-dynamic-static-routes",
+    async closeBundle() {
+      const signalTemplatePath = resolve(outputPath, "templates", "signal", "index.html");
+      const brandTemplatePath = resolve(outputPath, "templates", "brand", "index.html");
+      if (!existsSync(signalTemplatePath) || !existsSync(brandTemplatePath)) {
+        throw new Error("Dynamic page templates were not emitted by Vite.");
+      }
+      const signalTemplate = readFileSync(signalTemplatePath, "utf8");
+      const brandTemplate = readFileSync(brandTemplatePath, "utf8");
+      const [
+        { parseSnapshot },
+        { parseHistory },
+        { parseSignalDetail },
+        { parseRelatedObservations },
+        { brandEntries, brandPath, brandSlug, findBrand },
+        { signalPath },
+        { encodePageBootstrap },
+        { renderBrandPage, renderSignalPage },
+      ] = await Promise.all([
+        import("./src/lib/data.ts"),
+        import("./src/lib/historyData.ts"),
+        import("./src/lib/signalDetail.ts"),
+        import("./src/lib/relatedObservations.ts"),
+        import("./src/lib/brandRegistry.ts"),
+        import("./src/lib/signalRoutes.ts"),
+        import("./src/lib/pageBootstrap.ts"),
+        import("./src/prerender.ts"),
+      ]);
+      const snapshot = parseSnapshot(readJson(snapshotPath));
+      const history = await parseHistory(readJson(historyPath));
+      const related = parseRelatedObservations(readJson(relatedPath));
+      const currentById = new Map(snapshot.signals.map((signal) => [signal.id, signal]));
+      const historicalById = new Map(history.signals.map((signal) => [signal.id, signal]));
+      const allSignals = new Map(currentById);
+      for (const record of history.signals) {
+        if (allSignals.has(record.id)) continue;
+        allSignals.set(record.id, {
+          id: record.id,
+          url: `hxxps://${record.domain}`,
+          domain: record.domain,
+          firstSeen: record.firstSeen,
+          lastSeen: record.lastSeen,
+          sources: record.sources,
+          status: record.latestStatus,
+          brand: record.brand,
+          country: null,
+          host: null,
+          screenshotUrl: null,
+          matchScore: 0,
+          evidenceTier: "name-only",
+          reasonCodes: record.reasonCodes,
+        });
+      }
+      const nodesById = new Map(related.nodes.map((node) => [node.signalId, node]));
+      const sitemapUrls = new Set<string>([
+        "/", "/changes/", "/history/", "/brands/", "/trends/", "/associations/", "/tools/",
+        "/dataset/", "/methodology/", "/docs/", "/lt/", "/lt/pokyciai/", "/lt/prekes-zenklai/",
+        "/lt/metodologija/",
+      ]);
+
+      const decorate = (template: string, options: {
+        title: string;
+        description: string;
+        canonical: string;
+        alternate: string;
+        alternateLanguage: "en" | "lt";
+        language: "en" | "lt";
+        markup: string;
+        bootstrap: string;
+        feedRoot?: string;
+        feedTitle?: string;
+      }) => {
+        const withRoot = replacePageRoot(template, options.markup, options.bootstrap);
+        const english = options.language === "en" ? options.canonical : options.alternate;
+        const lithuanian = options.language === "lt" ? options.canonical : options.alternate;
+        return withRoot
+          .replace('<html lang="en">', `<html lang="${options.language}">`)
+          .replaceAll("__TITLE__", escapeHtml(options.title))
+          .replaceAll("__DESCRIPTION__", escapeHtml(options.description))
+          .replaceAll("__CANONICAL__", options.canonical)
+          .replaceAll("__ALTERNATE__", options.alternate)
+          .replaceAll("__ALTERNATE_LANG__", options.alternateLanguage)
+          .replaceAll("__ENGLISH__", english)
+          .replaceAll("__LITHUANIAN__", lithuanian)
+          .replaceAll("__FEED_ROOT__", options.feedRoot ?? "")
+          .replaceAll("__FEED_TITLE__", escapeHtml(options.feedTitle ?? "HECAVEX Radar brand changes"));
+      };
+
+      for (const signal of [...allSignals.values()].sort((left, right) => left.id.localeCompare(right.id))) {
+        const detailPath = resolve(publicDataPath, "signals", signal.id.slice(0, 2), `${signal.id}.json`);
+        const detail = existsSync(detailPath) ? parseSignalDetail(readJson(detailPath), signal) : null;
+        const attachedEdges = related.edges.filter((edge) => edge.source === signal.id || edge.target === signal.id);
+        const attachedIds = new Set(attachedEdges.flatMap((edge) => [edge.source, edge.target]));
+        const attachedNodes = [...attachedIds].map((id) => nodesById.get(id)).filter((node) => node !== undefined);
+        for (const language of ["en", "lt"] as const) {
+          const path = signalPath(signal, language);
+          const alternate = signalPath(signal, language === "en" ? "lt" : "en");
+          const data = {
+            signal,
+            generatedAt: snapshot.generatedAt,
+            history: historicalById.get(signal.id) ?? null,
+            detail,
+            brand: signal.brand ? findBrand(signal.brand) ?? null : null,
+            relatedNodes: attachedNodes,
+            relatedEdges: attachedEdges,
+            language,
+          };
+          const title = `${signal.domain} · HECAVEX Radar`;
+          const description = language === "lt"
+            ? `Išsaugotas galimo apsimetimo signalo įrašas: ${signal.domain}. Įrašas galioja viešos istorijos saugojimo laikotarpiu; tai automatinis tyrimo kandidatas, ne kenkėjiškumo verdiktas.`
+            : `Durable potential impersonation signal record for ${signal.domain}. Retained under the public history policy; an automated research candidate, not a maliciousness verdict.`;
+          const html = decorate(signalTemplate, {
+            title,
+            description,
+            canonical: `https://radar.hecavex.com${path}`,
+            alternate: `https://radar.hecavex.com${alternate}`,
+            alternateLanguage: language === "en" ? "lt" : "en",
+            language,
+            markup: renderSignalPage(data),
+            bootstrap: encodePageBootstrap(data),
+          });
+          writeGeneratedPage(`${path.slice(1)}index.html`, html);
+          sitemapUrls.add(path);
+        }
+      }
+
+      for (const brand of brandEntries) {
+        const currentSignals = snapshot.signals.filter((signal) => signal.brand === brand.brand)
+          .sort((left, right) => Date.parse(right.lastSeen) - Date.parse(left.lastSeen));
+        const brandHistory = history.signals.filter((signal) => signal.brand === brand.brand)
+          .sort((left, right) => Date.parse(right.lastSeen) - Date.parse(left.lastSeen));
+        const feedRoot = `/data/brands/${brandSlug(brand.brand)}`;
+        for (const language of ["en", "lt"] as const) {
+          const path = brandPath(brand.brand, language);
+          const alternate = brandPath(brand.brand, language === "en" ? "lt" : "en");
+          const data = { brand, generatedAt: snapshot.generatedAt, signals: currentSignals, history: brandHistory, language };
+          const description = language === "lt"
+            ? `${brand.brand} vieša HECAVEX Radar aptikimo apimtis, naujausi galimo apsimetimo kandidatai ir pokyčių srautai.`
+            : `${brand.brand} public HECAVEX Radar detection scope, recent potential impersonation candidates, and change feeds.`;
+          const html = decorate(brandTemplate, {
+            title: `${brand.brand} activity · HECAVEX Radar`,
+            description,
+            canonical: `https://radar.hecavex.com${path}`,
+            alternate: `https://radar.hecavex.com${alternate}`,
+            alternateLanguage: language === "en" ? "lt" : "en",
+            language,
+            markup: renderBrandPage(data),
+            bootstrap: encodePageBootstrap(data),
+            feedRoot: `https://radar.hecavex.com${feedRoot}`,
+            feedTitle: `${brand.brand} HECAVEX Radar changes`,
+          });
+          writeGeneratedPage(`${path.slice(1)}index.html`, html);
+          sitemapUrls.add(path);
+        }
+      }
+
+      const templateDirectory = resolve(outputPath, "templates");
+      const templateRelative = relative(resolve(outputPath), templateDirectory);
+      if (templateRelative !== "templates" || isAbsolute(templateRelative)) {
+        throw new Error("Refusing to remove an unexpected template output directory.");
+      }
+      rmSync(templateDirectory, { recursive: true, force: false });
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...sitemapUrls].sort().map((path) => `  <url><loc>https://radar.hecavex.com${path}</loc></url>`).join("\n")}\n</urlset>\n`;
+      writeGeneratedPage("sitemap.xml", sitemap);
+      writeGeneratedPage(".well-known/security.txt", readFileSync(resolve("public", ".well-known", "security.txt"), "utf8"));
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [staticPagePlugin(), cloudflareWebAnalyticsPlugin(), react()],
+  plugins: [staticPagePlugin(), socialMetadataDefaultsPlugin(), cloudflareWebAnalyticsPlugin(), react(), dynamicRoutesPlugin()],
   build: {
     rollupOptions: {
       input: {
@@ -96,6 +373,17 @@ export default defineConfig({
         brands: fileURLToPath(new URL("./brands/index.html", import.meta.url)),
         methodology: fileURLToPath(new URL("./methodology/index.html", import.meta.url)),
         documentation: fileURLToPath(new URL("./docs/index.html", import.meta.url)),
+        changes: fileURLToPath(new URL("./changes/index.html", import.meta.url)),
+        trends: fileURLToPath(new URL("./trends/index.html", import.meta.url)),
+        associations: fileURLToPath(new URL("./associations/index.html", import.meta.url)),
+        tools: fileURLToPath(new URL("./tools/index.html", import.meta.url)),
+        dataset: fileURLToPath(new URL("./dataset/index.html", import.meta.url)),
+        ltRadar: fileURLToPath(new URL("./lt/index.html", import.meta.url)),
+        ltChanges: fileURLToPath(new URL("./lt/pokyciai/index.html", import.meta.url)),
+        ltBrands: fileURLToPath(new URL("./lt/prekes-zenklai/index.html", import.meta.url)),
+        ltMethodology: fileURLToPath(new URL("./lt/metodologija/index.html", import.meta.url)),
+        signalTemplate: fileURLToPath(new URL("./templates/signal/index.html", import.meta.url)),
+        brandTemplate: fileURLToPath(new URL("./templates/brand/index.html", import.meta.url)),
       },
     },
   },

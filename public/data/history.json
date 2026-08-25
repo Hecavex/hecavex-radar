@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-25T12:13:16.615Z",
+  "generatedAt": "2026-08-25T16:30:13.777Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "6d1985055ef1c90ba8d8",
+      "domain": "bsconseils[.]eso-online[.]fr",
+      "brand": "ESO",
+      "firstSeen": "2026-08-25T16:22:17.726Z",
+      "lastSeen": "2026-08-25T16:22:17.726Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "73952ae364116fd97359378e25215708",
+          "observedAt": "2026-08-25T16:22:17.726Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5b0f8b137394c5f88ddf",
       "domain": "support-vinted[.]ph",

@@ -1,0 +1,405 @@
+name: Release weekly radar dataset
+
+on:
+  schedule:
+    - cron: "29 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+concurrency:
+  group: weekly-radar-dataset-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the release revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Select the ISO-week release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_week="$(date -u +'%G-W%V')"
+          tag="radar-data-${release_week}"
+          existing="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" |
+            jq -s -r --arg tag "${tag}" '
+              map(.[]) | map(select(.tag_name == $tag)) | first |
+              if . == null then "" else
+                [.id, (.draft | tostring), .target_commitish, (.immutable | tostring)] | @tsv
+              end
+            ')"
+
+          should_release=true
+          resume_draft=false
+          if [[ -n "${existing}" ]]; then
+            IFS=$'\t' read -r release_id is_draft target_commitish immutable <<< "${existing}"
+            if [[ "${is_draft}" == "false" ]]; then
+              if [[ "${immutable}" != "true" ]]; then
+                echo "::error::${tag} exists but is not immutable. Do not publish another weekly release until repository release immutability is enabled."
+                exit 1
+              fi
+              echo "${tag} is already published and immutable; this run is a no-op."
+              should_release=false
+            else
+              if [[ "${target_commitish}" != "${GITHUB_SHA}" ]]; then
+                echo "::error::Draft ${tag} targets ${target_commitish}, not ${GITHUB_SHA}. Review the interrupted draft manually."
+                exit 1
+              fi
+              resume_draft=true
+            fi
+          fi
+
+          {
+            echo "week=${release_week}"
+            echo "tag=${tag}"
+            echo "should_release=${should_release}"
+            echo "resume_draft=${resume_draft}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Require the immutable-release operator gate
+        if: steps.release.outputs.should_release == 'true'
+        env:
+          IMMUTABILITY_CONFIRMED: ${{ vars.RADAR_IMMUTABLE_RELEASES_CONFIRMED }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${IMMUTABILITY_CONFIRMED}" != "true" ]]; then
+            echo "::error::Enable release immutability in the repository Releases settings, then set RADAR_IMMUTABLE_RELEASES_CONFIRMED=true."
+            exit 1
+          fi
+
+      - name: Set up Python
+        if: steps.release.outputs.should_release == 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements/automation-runtime-py312.lock
+
+      - name: Install the validated publication runtime
+        if: steps.release.outputs.should_release == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
+          python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
+
+      - name: Validate the checked-in publication
+        if: steps.release.outputs.should_release == 'true'
+        run: python -m hecavex_radar.publication --stix
+
+      - name: Build a reproducible dataset package
+        if: steps.release.outputs.should_release == 'true'
+        id: package
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LC_ALL=C
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          from pathlib import Path, PurePosixPath
+
+          repository = Path.cwd()
+          public_root = repository / "public"
+          data_root = public_root / "data"
+          output_root = repository / "_release"
+          tag = os.environ["RELEASE_TAG"]
+          package_root = output_root / "stage" / tag
+          assets_root = output_root / "assets"
+          maximum_files = 10_000
+          maximum_bytes = 128 * 1024 * 1024
+
+          if output_root.parent != repository or output_root.name != "_release":
+              raise SystemExit("Refusing an unexpected release output path")
+          if public_root.is_symlink() or data_root.is_symlink():
+              raise SystemExit("Refusing a symlinked public dataset root")
+          if output_root.exists():
+              shutil.rmtree(output_root)
+          package_root.mkdir(parents=True)
+          assets_root.mkdir(parents=True)
+
+          feed_manifest_path = data_root / "feed-manifest.json"
+          feed_manifest = json.loads(feed_manifest_path.read_text(encoding="utf-8"))
+          snapshot = json.loads((data_root / "radar.json").read_text(encoding="utf-8"))
+          index = json.loads((data_root / "radar.index.json").read_text(encoding="utf-8"))
+          selected: dict[str, tuple[Path, bytes]] = {}
+          selection_totals = {"bytes": 0}
+
+          def select_public_file(raw_path: object, *, expected_bytes: object = None,
+                                 expected_sha256: object = None) -> None:
+              if not isinstance(raw_path, str) or not raw_path.startswith("/data/"):
+                  raise SystemExit(f"Refusing unsafe public artifact path: {raw_path!r}")
+              relative = PurePosixPath(raw_path.removeprefix("/"))
+              if (
+                  relative.is_absolute()
+                  or ".." in relative.parts
+                  or raw_path != f"/{relative.as_posix()}"
+                  or relative.as_posix() == "data/collection-health.json"
+              ):
+                  raise SystemExit(f"Refusing excluded or unsafe public artifact path: {raw_path}")
+              relative_text = relative.as_posix()
+              if relative_text in selected:
+                  raise SystemExit(f"Duplicate selected public artifact path: {raw_path}")
+
+              source = public_root.joinpath(*relative.parts)
+              cursor = public_root
+              for part in relative.parts:
+                  cursor /= part
+                  if cursor.is_symlink():
+                      raise SystemExit(f"Refusing symlink in public dataset: {relative_text}")
+              try:
+                  resolved = source.resolve(strict=True)
+              except OSError as error:
+                  raise SystemExit(f"Missing selected public artifact: {relative_text}") from error
+              if not resolved.is_relative_to(public_root.resolve()) or not source.is_file():
+                  raise SystemExit(f"Refusing non-file public artifact: {relative_text}")
+
+              payload = source.read_bytes()
+              digest = hashlib.sha256(payload).hexdigest()
+              if expected_bytes is not None and (not isinstance(expected_bytes, int) or len(payload) != expected_bytes):
+                  raise SystemExit(f"Selected artifact byte length drifted: {relative_text}")
+              if expected_sha256 is not None and (not isinstance(expected_sha256, str) or digest != expected_sha256):
+                  raise SystemExit(f"Selected artifact digest drifted: {relative_text}")
+              next_total_bytes = selection_totals["bytes"] + len(payload)
+              if len(selected) + 1 > maximum_files or next_total_bytes > maximum_bytes:
+                  raise SystemExit(
+                      f"Weekly dataset exceeds release caps while selecting {relative_text}: "
+                      f"files={len(selected) + 1}/{maximum_files}, "
+                      f"bytes={next_total_bytes}/{maximum_bytes}"
+                  )
+              selected[relative_text] = (source, payload)
+              selection_totals["bytes"] = next_total_bytes
+
+          artifacts = feed_manifest.get("artifacts")
+          if not isinstance(artifacts, list) or not artifacts:
+              raise SystemExit("Feed manifest has no canonical artifact list")
+          for artifact in artifacts:
+              if not isinstance(artifact, dict):
+                  raise SystemExit("Feed manifest contains a non-object artifact row")
+              artifact_path = artifact.get("path")
+              select_public_file(
+                  artifact_path,
+                  expected_bytes=artifact.get("bytes"),
+                  expected_sha256=artifact.get("sha256"),
+              )
+              checksum_path = f"{artifact_path}.sha256"
+              select_public_file(checksum_path)
+              checksum_payload = selected[checksum_path.removeprefix("/")][1]
+              expected_checksum = f"{artifact['sha256']}  {PurePosixPath(str(artifact_path)).name}\n".encode("ascii")
+              if checksum_payload != expected_checksum:
+                  raise SystemExit(f"Artifact checksum sidecar drifted: {checksum_path}")
+
+          select_public_file("/data/feed-manifest.json")
+          select_public_file("/data/feed-manifest.json.sha256")
+          feed_digest = hashlib.sha256(feed_manifest_path.read_bytes()).hexdigest()
+          expected_feed_checksum = f"{feed_digest}  feed-manifest.json\n".encode("ascii")
+          if selected["data/feed-manifest.json.sha256"][1] != expected_feed_checksum:
+              raise SystemExit("Feed-manifest checksum sidecar drifted")
+
+          shards = index.get("shards")
+          if not isinstance(shards, list):
+              raise SystemExit("Radar index has no shard list")
+          for shard in shards:
+              if not isinstance(shard, dict):
+                  raise SystemExit("Radar index contains a non-object shard row")
+              select_public_file(
+                  shard.get("path"),
+                  expected_bytes=shard.get("bytes"),
+                  expected_sha256=shard.get("sha256"),
+              )
+
+          signals = snapshot.get("signals")
+          if not isinstance(signals, list):
+              raise SystemExit("Radar snapshot has no signal list")
+          for signal in signals:
+              if not isinstance(signal, dict):
+                  raise SystemExit("Radar snapshot contains a non-object signal row")
+              if signal.get("detailAvailable") is not True:
+                  continue
+              signal_id = signal.get("id")
+              if not isinstance(signal_id, str) or len(signal_id) != 20 or any(character not in "0123456789abcdef" for character in signal_id):
+                  raise SystemExit(f"Refusing invalid detail signal ID: {signal_id!r}")
+              select_public_file(f"/data/signals/{signal_id[:2]}/{signal_id}.json")
+
+          actual: set[str] = set()
+          for candidate in data_root.rglob("*"):
+              if candidate.is_symlink():
+                  raise SystemExit(f"Refusing symlink in public dataset: {candidate.relative_to(public_root).as_posix()}")
+              if candidate.is_file():
+                  relative_text = candidate.relative_to(public_root).as_posix()
+                  if relative_text != "data/collection-health.json":
+                      actual.add(relative_text)
+          expected = set(selected)
+          if actual != expected:
+              missing = sorted(expected - actual)
+              unexpected = sorted(actual - expected)
+              raise SystemExit(
+                  "Public dataset inventory is not canonical; "
+                  f"missing={','.join(missing)}; unexpected={','.join(unexpected)}"
+              )
+
+          included = []
+          for relative_text, (_, payload) in sorted(selected.items()):
+              destination = package_root.joinpath(*PurePosixPath(relative_text).parts)
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              destination.write_bytes(payload)
+              included.append(
+                  {
+                      "path": relative_text,
+                      "bytes": len(payload),
+                      "sha256": hashlib.sha256(payload).hexdigest(),
+                  }
+              )
+
+          release_manifest = {
+              "schemaVersion": 1,
+              "dataset": "hecavex-radar-weekly-release",
+              "releaseWeek": tag.removeprefix("radar-data-"),
+              "tag": tag,
+              "sourceRepository": os.environ["GITHUB_REPOSITORY"],
+              "sourceCommit": os.environ["GITHUB_SHA"],
+              "snapshotGeneratedAt": feed_manifest["generatedAt"],
+              "archiveRoot": tag,
+              "license": "https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md",
+              "sourceFeedManifest": {
+                  "path": "data/feed-manifest.json",
+                  "sha256": feed_digest,
+              },
+              "excluded": [
+                  {
+                      "path": "data/collection-health.json",
+                      "reason": "This latest-attempt health document changes independently of the atomic snapshot.",
+                  }
+              ],
+              "limits": {
+                  "maximumFiles": maximum_files,
+                  "maximumBytes": maximum_bytes,
+              },
+              "files": included,
+          }
+          manifest_payload = (
+              json.dumps(release_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+          ).encode("utf-8")
+          (package_root / "RELEASE-MANIFEST.json").write_bytes(manifest_payload)
+          (assets_root / f"{tag}.manifest.json").write_bytes(manifest_payload)
+          PY
+
+          archive_name="${RELEASE_TAG}.tar.gz"
+          manifest_name="${RELEASE_TAG}.manifest.json"
+          tar --sort=name --format=gnu --mtime='UTC 1970-01-01' \
+            --owner=0 --group=0 --numeric-owner \
+            -C _release/stage -cf - "${RELEASE_TAG}" |
+            gzip -n -9 > "_release/assets/${archive_name}"
+          tar --sort=name --format=gnu --mtime='UTC 1970-01-01' \
+            --owner=0 --group=0 --numeric-owner \
+            -C _release/stage -cf - "${RELEASE_TAG}" |
+            gzip -n -9 > "_release/reproducibility-check.tar.gz"
+          cmp --silent "_release/assets/${archive_name}" "_release/reproducibility-check.tar.gz"
+          gzip --test "_release/assets/${archive_name}"
+          tar -tzf "_release/assets/${archive_name}" |
+            awk '/(^\/|(^|\/)\.\.($|\/))/ { bad=1 } END { exit bad }'
+          (
+            cd _release/assets
+            sha256sum "${archive_name}" "${manifest_name}" > SHA256SUMS
+            sha256sum --check SHA256SUMS
+          )
+          {
+            echo "archive_path=_release/assets/${archive_name}"
+            echo "manifest_path=_release/assets/${manifest_name}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Write release notes
+        if: steps.release.outputs.should_release == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        shell: bash
+        run: |
+          cat > _release/notes.md <<EOF
+          Weekly static export of the public HECAVEX Radar dataset at commit \`${GITHUB_SHA}\`.
+
+          The archive contains the manifest-declared publication artifacts and checksums, index-declared shards, and snapshot-declared signal sidecars as one point-in-time package. The independently replaced \`collection-health.json\` latest-attempt document is excluded. \`${RELEASE_TAG}.manifest.json\` records every included file and digest. \`SHA256SUMS\` covers the archive and standalone manifest.
+
+          Radar publishes sampled research leads, not maliciousness verdicts or comprehensive monitoring. Review the [methodology](https://radar.hecavex.com/methodology/) and [data terms](https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md) before use.
+
+          Verify downloads with \`sha256sum --check SHA256SUMS\`. Verify workflow provenance with \`gh attestation verify ${RELEASE_TAG}.tar.gz --repo ${GITHUB_REPOSITORY}\`.
+          EOF
+
+      - name: Create or refresh the draft release
+        if: steps.release.outputs.should_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_WEEK: ${{ steps.release.outputs.week }}
+          RESUME_DRAFT: ${{ steps.release.outputs.resume_draft }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${RESUME_DRAFT}" == "true" ]]; then
+            gh release upload "${RELEASE_TAG}" _release/assets/* --clobber
+            gh release edit "${RELEASE_TAG}" \
+              --target "${GITHUB_SHA}" \
+              --title "HECAVEX Radar dataset ${RELEASE_WEEK}" \
+              --notes-file _release/notes.md \
+              --draft
+          else
+            gh release create "${RELEASE_TAG}" _release/assets/* \
+              --target "${GITHUB_SHA}" \
+              --title "HECAVEX Radar dataset ${RELEASE_WEEK}" \
+              --notes-file _release/notes.md \
+              --latest=false \
+              --draft
+          fi
+
+          release_id="$(gh api "repos/${GITHUB_REPOSITORY}/releases" \
+            --jq ".[] | select(.tag_name == \"${RELEASE_TAG}\") | .id" | head -n 1)"
+          test -n "${release_id}"
+          gh api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" \
+            --jq '.assets[].name' | sort > _release/actual-assets.txt
+          printf '%s\n' SHA256SUMS "${RELEASE_TAG}.manifest.json" "${RELEASE_TAG}.tar.gz" |
+            sort > _release/expected-assets.txt
+          diff --unified _release/expected-assets.txt _release/actual-assets.txt
+
+      - name: Attest the archive and release manifest
+        if: steps.release.outputs.should_release == 'true'
+        id: attest
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-path: |
+            ${{ steps.package.outputs.archive_path }}
+            ${{ steps.package.outputs.manifest_path }}
+
+      - name: Publish and verify the immutable release
+        if: steps.release.outputs.should_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release edit "${RELEASE_TAG}" --draft=false --latest=false
+          immutable="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '.immutable')"
+          if [[ "${immutable}" != "true" ]]; then
+            echo "::error::GitHub published ${RELEASE_TAG} without immutable-release protection. Review repository Releases settings before any later release."
+            exit 1
+          fi

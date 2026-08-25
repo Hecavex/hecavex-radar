@@ -19,12 +19,17 @@ const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
   { path: "/history/", marker: "Candidate history" },
   { path: "/brands/", marker: "Reviewed Lithuanian brand registry" },
+  { path: "/changes/", marker: "What changed" },
+  { path: "/trends/", marker: "Discovery trends and review quality" },
+  { path: "/associations/", marker: "Published associations" },
+  { path: "/tools/", marker: "Check your indicators locally" },
+  { path: "/dataset/", marker: "Radar dataset distributions" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
 ];
 const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
-const productNavigation = ["Overview", "History", "Scope", "Methodology", "Docs"];
-const mobileNavigation = [...productNavigation, "Source", ...portfolioNavigation];
+const productNavigation = ["Overview", "Changes", "Brands", "Trends", "Associations", "Tools", "Methodology", "Docs"];
+const mobileNavigation = [...productNavigation, "Lietuviškai", "Source", ...portfolioNavigation];
 const publicArtifactRawBytes = 512 * 1024;
 const stixBundleRawBytes = 2 * 1024 * 1024;
 const signalDetailFileRawBytes = 16 * 1024;
@@ -35,7 +40,7 @@ const performanceBudgets = {
   stylesheetFileGzip: 48 * 1024,
   scriptAndStyleGzip: 320 * 1024,
   publicDataFileGzip: 1024 * 1024,
-  totalOutputBytes: 11 * 1024 * 1024,
+  totalOutputBytes: 16 * 1024 * 1024,
 };
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
@@ -196,6 +201,14 @@ function verifyDeploymentTopology() {
       sync.includes("public/data/radar-shards") &&
       sync.includes("public/data/history.json") &&
       sync.includes("public/data/changes.json") &&
+      sync.includes("public/data/events.json") &&
+      sync.includes("public/data/events.atom.xml") &&
+      sync.includes("public/data/events.rss.xml") &&
+      sync.includes("public/data/events.feed.json") &&
+      sync.includes("public/data/brand-feeds.json") &&
+      sync.includes("public/data/brands") &&
+      sync.includes("public/data/daily-trends.json") &&
+      sync.includes("public/data/quality-metrics.json") &&
       sync.includes("public/data/pipeline-health.json") &&
       sync.includes("public/data/related-observations.json") &&
       sync.includes("public/data/feed-manifest.json") &&
@@ -304,28 +317,64 @@ function verifyBuiltHtml() {
   const llms = readFileSync(join(output, "llms.txt"), "utf8");
   assert(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=no"), "Built robots.txt lost the reviewed content-use signal.");
   assert(!robots.includes("Allow: /data/radar.stix.json"), "Raw STIX observables must not be explicitly allowed for crawler retrieval.");
-  for (const endpoint of ["radar.json", "radar.stix.json", "history.json", "collection-health.json"]) {
+  for (const endpoint of [
+    "radar.json",
+    "radar.stix.json",
+    "radar-reviewed.stix.json",
+    "history.json",
+    "collection-health.json",
+    "pipeline-health.json",
+    "changes.json",
+    "related-observations.json",
+    "events.json",
+    "events.atom.xml",
+    "events.rss.xml",
+    "events.feed.json",
+    "brand-feeds.json",
+    "daily-trends.json",
+    "quality-metrics.json",
+    "radar.index.json",
+    "feed-manifest.json",
+  ]) {
     assert(llms.includes(`https://radar.hecavex.com/data/${endpoint}`), `Built llms.txt omits approved endpoint ${endpoint}.`);
   }
+  for (const endpoint of [
+    "radar.json",
+    "history.json",
+    "events.json",
+    "brand-feeds.json",
+    "daily-trends.json",
+    "quality-metrics.json",
+  ]) {
+    assert(robots.includes(`Allow: /data/${endpoint}`), `Built robots.txt does not allow the intended aggregate endpoint ${endpoint}.`);
+  }
+  assert(robots.includes("Disallow: /data/radar.stix.json") && robots.includes("Disallow: /data/radar-reviewed.stix.json"), "Built robots.txt no longer excludes raw STIX observables from crawler discovery.");
   assert(llms.includes("must not be made clickable or visited automatically"), "Built llms.txt lost the candidate-handling safety boundary.");
 
   const htmlFiles = walk(output).filter((path) => path.endsWith(".html"));
-  assert(htmlFiles.length === pages.length, `Expected ${pages.length} HTML entries, found ${htmlFiles.length}.`);
+  const snapshot = JSON.parse(readFileSync(join(output, "data", "radar.json"), "utf8"));
+  const history = JSON.parse(readFileSync(join(output, "data", "history.json"), "utf8"));
+  const brands = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
+  const signalIds = new Set([...snapshot.signals, ...history.signals].map((signal) => signal.id));
+  const expectedHtmlCount = 14 + (signalIds.size * 2) + (brands.entries.length * 2);
+  assert(htmlFiles.length === expectedHtmlCount, `Expected ${expectedHtmlCount} static HTML entries, found ${htmlFiles.length}.`);
+  assert(!htmlFiles.some((path) => relative(output, path).startsWith(`templates${sep}`)), "Build output still exposes route templates.");
 
   for (const path of htmlFiles) {
     const document = parseFile(path);
     const route = routeForFile(path);
     const ids = [...document.querySelectorAll("[id]")].map((element) => element.id);
     assert(new Set(ids).size === ids.length, `${route} contains duplicate IDs.`);
-    assert(document.documentElement.lang === "en", `${route} is missing lang=en.`);
+    const lithuanian = route.startsWith("/lt/");
+    assert(document.documentElement.lang === (lithuanian ? "lt" : "en"), `${route} has the wrong document language.`);
     assert(document.querySelectorAll("main").length === 1, `${route} must contain exactly one main element.`);
     assert(document.querySelectorAll("h1").length === 1, `${route} must contain exactly one h1.`);
     assert(document.querySelector('.skip-link[href="#main-content"]'), `${route} has no usable skip link.`);
-    assert(document.querySelector('header.site-header[data-portfolio-shell="v1"]'), `${route} has no shared portfolio shell marker.`);
-    assert(document.querySelector('.brand[href="https://hecavex.com/en/"]'), `${route} does not link the HECAVEX brand to Research.`);
-    assert(document.querySelector('.product-identity[href="/"]'), `${route} does not link the Radar identity to its overview.`);
+    assert(document.querySelector('header.site-header[data-portfolio-shell="v2"]'), `${route} has no shared portfolio shell marker.`);
+    assert(document.querySelector(`.brand[href="https://hecavex.com/${lithuanian ? "lt" : "en"}/"]`), `${route} does not link the HECAVEX brand to the correct Research edition.`);
+    assert(document.querySelector(`.product-identity[href="${lithuanian ? "/lt/" : "/"}"]`), `${route} does not link the Radar identity to its localized overview.`);
     assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
-    assert(document.querySelectorAll(".product-navigation a").length === 5, `${route} does not expose five Radar links.`);
+    assert(document.querySelectorAll(".product-navigation a").length === (lithuanian ? 4 : 8), `${route} exposes the wrong Radar navigation set.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
     const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
       script.textContent.includes("https://static.cloudflareinsights.com/beacon.min.js"),
@@ -345,35 +394,41 @@ function verifyBuiltHtml() {
     const portfolioLabels = [...document.querySelectorAll(".portfolio-navigation a")].map((anchor) => anchor.textContent?.trim());
     const productLabels = [...document.querySelectorAll(".product-navigation a")].map((anchor) => anchor.textContent?.trim());
     assert(JSON.stringify(portfolioLabels) === JSON.stringify(portfolioNavigation), `${route} changes the portfolio navigation order.`);
-    assert(JSON.stringify(productLabels) === JSON.stringify(productNavigation), `${route} changes the Radar navigation order.`);
+    const expectedProductNavigation = lithuanian
+      ? ["Apžvalga", "Pokyčiai", "Prekių ženklai", "Metodologija"]
+      : productNavigation;
+    assert(JSON.stringify(productLabels) === JSON.stringify(expectedProductNavigation), `${route} changes the Radar navigation order.`);
     const expectedLocalPage = new Map([
       ["/", "Overview"],
-      ["/history/", "History"],
-      ["/brands/", "Scope"],
+      ["/history/", "Changes"],
+      ["/changes/", "Changes"],
+      ["/brands/", "Brands"],
+      ["/trends/", "Trends"],
+      ["/associations/", "Associations"],
+      ["/tools/", "Tools"],
+      ["/dataset/", "Docs"],
       ["/methodology/", "Methodology"],
       ["/docs/", "Docs"],
-    ]).get(route);
+    ]).get(route) ?? (route.startsWith("/signals/") ? "Overview" : route.startsWith("/brands/") ? "Brands" : undefined);
     assert(
       document.querySelector('.portfolio-navigation a[aria-current="page"]')?.textContent?.trim() === "Radar",
       `${route} does not identify Radar as the active portfolio product.`,
     );
-    assert(
-      document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage,
-      `${route} does not identify ${expectedLocalPage} as the active Radar page.`,
-    );
+    if (!lithuanian) assert(document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage, `${route} does not identify ${expectedLocalPage} as the active Radar page.`);
     assert(document.querySelector('meta[name="description"]')?.content, `${route} has no description.`);
     assert(document.querySelector('link[rel="canonical"]')?.href, `${route} has no canonical URL.`);
     assert(document.querySelector('meta[property="og:image"]')?.content, `${route} has no Open Graph image.`);
-    assert(document.querySelector('meta[name="twitter:card"]')?.content, `${route} has no Twitter card.`);
+    if (route === "/" || route.startsWith("/signals/") || route.startsWith("/brands/")) {
+      assert(document.querySelector('meta[name="twitter:card"]')?.content, `${route} has no Twitter card.`);
+    }
     const jsonLd = document.querySelector('script[type="application/ld+json"]')?.textContent;
-    assert(jsonLd, `${route} has no JSON-LD.`);
     const contentSecurityPolicy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content;
-    const jsonLdHash = createHash("sha256").update(jsonLd, "utf8").digest("base64");
-    assert(
-      contentSecurityPolicy?.includes(`'sha256-${jsonLdHash}'`),
-      `${route} Content Security Policy does not authorize its exact JSON-LD payload.`,
-    );
-    const structuredData = JSON.parse(jsonLd);
+    let structuredData = null;
+    if (jsonLd) {
+      const jsonLdHash = createHash("sha256").update(jsonLd, "utf8").digest("base64");
+      assert(contentSecurityPolicy?.includes(`'sha256-${jsonLdHash}'`), `${route} Content Security Policy does not authorize its exact JSON-LD payload.`);
+      structuredData = JSON.parse(jsonLd);
+    }
     if (route === "/") {
       assert(
         document.querySelector('link[rel="alternate"][type="application/stix+json;version=2.1"][href="https://radar.hecavex.com/data/radar.stix.json"]'),
@@ -383,6 +438,7 @@ function verifyBuiltHtml() {
         document.querySelector('link[rel="alternate"][type="application/stix+json;version=2.1"][href="https://radar.hecavex.com/data/radar-reviewed.stix.json"]'),
         "Radar overview does not advertise the reviewed STIX 2.1 alternate distribution.",
       );
+      assert(structuredData, "Radar overview has no Dataset JSON-LD.");
       const serializedStructuredData = JSON.stringify(structuredData);
       assert(
         serializedStructuredData.includes("application/stix+json;version=2.1") &&
@@ -394,31 +450,25 @@ function verifyBuiltHtml() {
           serializedStructuredData.includes("DNS-over-HTTPS and RDAP context"),
         "Radar Dataset metadata omits a declared collection method or machine-readable distribution.",
       );
-      assert(document.querySelector(".change-panel"), "Radar overview omits the bounded What changed view.");
+      assert(document.querySelector(".activity-strip"), "Radar overview omits the compact activity strip.");
       assert(document.querySelector(".export-actions"), "Radar overview omits defanged filtered-view exports.");
       assert(document.querySelector(".filter-privacy-note")?.textContent?.includes("never added to the shared URL"), "Radar overview does not disclose local-only free-text search.");
-      assert(document.querySelector('tbody tr[id^="signal-"] .signal-deep-link'), "Radar overview omits stable per-signal fragment links.");
-      const relationPanel = document.querySelector(".relation-panel");
-      assert(relationPanel, "Radar overview omits its bounded related-observation view.");
-      assert(
-        relationPanel.textContent.includes("Automated associations") &&
-          relationPanel.textContent.includes("not campaign") &&
-          relationPanel.textContent.includes("threat-actor attribution"),
-        "Radar related-observation view does not state its non-attribution boundary.",
-      );
-      assert(document.querySelector(".stix-feed-panel"), "Radar overview omits its compact STIX distribution control.");
-      assert(document.querySelector(".pipeline-health-panel"), "Radar overview omits its bounded pipeline-health view.");
+      assert(document.querySelector('tbody tr[id^="signal-"] .candidate-link[href^="/signals/"]'), "Radar overview omits durable per-signal links.");
+      assert(document.querySelector(".radar-route-grid"), "Radar overview omits dedicated exploration routes.");
     }
     if (route === "/brands/") {
       assert(document.querySelectorAll(".brand-table tbody tr").length >= 40, "Detection scope does not prerender the reviewed brand registry.");
       assert(document.querySelector(".scope-boundaries"), "Detection scope omits registry interpretation boundaries.");
+      assert(document.querySelector('.brand-hub-link[href^="/brands/"]'), "Detection scope omits per-brand activity links.");
     }
 
     const root = document.getElementById("root");
     assert(root, `${route} has no application root.`);
     const bootstrap = root.getAttribute("data-radar-bootstrap");
     const historyBootstrap = root.getAttribute("data-history-bootstrap");
-    if (route === "/") {
+    const staticBootstrap = root.getAttribute("data-page-bootstrap");
+    const ltChangesBootstrap = root.getAttribute("data-lt-changes-bootstrap");
+    if (route === "/" || route === "/lt/") {
       assert(bootstrap, `${route} has no embedded hydration snapshot.`);
       assert(!/[<>&"]/u.test(bootstrap), `${route} hydration snapshot is not safely attribute-encoded.`);
       const payload = JSON.parse(decodeURIComponent(bootstrap));
@@ -432,6 +482,22 @@ function verifyBuiltHtml() {
       assert(payload?.history?.dataset === "history", `${route} does not embed the public history dataset.`);
       assert(Number.isInteger(payload?.renderedAt), `${route} history artifact has no stable render timestamp.`);
       assert(!bootstrap, `${route} embeds the live dashboard snapshot.`);
+    } else if (route === "/lt/pokyciai/") {
+      assert(ltChangesBootstrap, `${route} has no localized changes bootstrap.`);
+      const payload = JSON.parse(decodeURIComponent(ltChangesBootstrap));
+      assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong localized data.`);
+    } else if (["/changes/", "/trends/", "/associations/", "/tools/", "/dataset/"].includes(route)) {
+      assert(staticBootstrap, `${route} has no embedded static artifact bootstrap.`);
+      const payload = JSON.parse(decodeURIComponent(staticBootstrap));
+      assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong static data.`);
+    } else if (route.startsWith("/signals/") || route.startsWith("/lt/signalai/")) {
+      assert(staticBootstrap, `${route} has no permanent signal bootstrap.`);
+      const payload = JSON.parse(decodeURIComponent(staticBootstrap));
+      assert(payload?.signal?.id && payload?.generatedAt, `${route} embeds invalid signal data.`);
+    } else if ((route.startsWith("/brands/") && route !== "/brands/") || (route.startsWith("/lt/prekes-zenklai/") && route !== "/lt/prekes-zenklai/")) {
+      assert(staticBootstrap, `${route} has no brand activity bootstrap.`);
+      const payload = JSON.parse(decodeURIComponent(staticBootstrap));
+      assert(payload?.brand?.brand && Array.isArray(payload?.signals), `${route} embeds invalid brand data.`);
     } else {
       assert(!bootstrap, `${route} embeds dashboard data outside the dashboard.`);
       assert(!historyBootstrap, `${route} embeds history data outside the history page.`);
@@ -468,6 +534,19 @@ function verifyBuiltHtml() {
     const html = readFileSync(outputPath(page.path), "utf8");
     assert(html.includes(page.marker), `${page.path} is missing its meaningful prerendered content.`);
     assert(!html.includes("Enable JavaScript"), `${page.path} still uses an enable-JavaScript placeholder.`);
+  }
+
+  const sitemapDocument = new JSDOM(readFileSync(join(output, "sitemap.xml"), "utf8"), {
+    contentType: "text/xml",
+  }).window.document;
+  assert(!sitemapDocument.querySelector("parsererror"), "Generated sitemap.xml is not valid XML.");
+  const sitemapLocations = new Set(
+    [...sitemapDocument.querySelectorAll("loc")].map((node) => node.textContent?.trim()).filter(Boolean),
+  );
+  const expectedLocations = new Set(htmlFiles.map((path) => `${publicOrigin}${routeForFile(path)}`));
+  assert(sitemapLocations.size === expectedLocations.size, "Generated sitemap does not contain exactly the public HTML routes.");
+  for (const location of expectedLocations) {
+    assert(sitemapLocations.has(location), `Generated sitemap omits ${location}.`);
   }
 
   for (const fontFile of fontFiles) {
@@ -1026,6 +1105,62 @@ function verifySignalDetails() {
   return { files, totalBytes };
 }
 
+function assertPublicFeedUrl(value, label) {
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new Error(`${label} is not an absolute URL.`);
+  }
+  assert(parsed.protocol === "https:" && parsed.origin === publicOrigin, `${label} leaves the canonical Radar origin.`);
+  assert(!parsed.username && !parsed.password && !parsed.search && !parsed.hash, `${label} contains unsafe URL components.`);
+  return parsed;
+}
+
+function verifySyndicationFeeds() {
+  const directory = JSON.parse(readFileSync(join(output, "data", "brand-feeds.json"), "utf8"));
+  const registry = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
+  assert(directory?.dataset === "radar-brand-feeds" && Array.isArray(directory.brands), "Brand feed directory is malformed.");
+  assert(directory.brands.length === registry.entries.length, "Brand feed directory does not cover every reviewed brand.");
+  assert(new Set(directory.brands.map((entry) => entry.slug)).size === directory.brands.length, "Brand feed directory contains duplicate slugs.");
+
+  const groups = [
+    {
+      label: "global",
+      atom: "/data/events.atom.xml",
+      rss: "/data/events.rss.xml",
+      jsonFeed: "/data/events.feed.json",
+    },
+    ...directory.brands,
+  ];
+  for (const group of groups) {
+    const label = `${group.label ?? group.brand} feed`;
+    for (const [format, path] of Object.entries({ atom: group.atom, rss: group.rss, jsonFeed: group.jsonFeed })) {
+      assert(typeof path === "string" && path.startsWith("/data/"), `${label} has an invalid ${format} path.`);
+      assert(existsSync(outputPath(path)), `${label} ${format} file is missing.`);
+      assert(existsSync(outputPath(`${path}.sha256`)), `${label} ${format} checksum is missing.`);
+    }
+
+    const atom = new JSDOM(readFileSync(outputPath(group.atom), "utf8"), { contentType: "text/xml" }).window.document;
+    assert(!atom.querySelector("parsererror") && atom.documentElement.localName === "feed", `${label} Atom document is malformed.`);
+    for (const link of atom.querySelectorAll("link[href]")) {
+      assertPublicFeedUrl(link.getAttribute("href"), `${label} Atom link`);
+    }
+
+    const rss = new JSDOM(readFileSync(outputPath(group.rss), "utf8"), { contentType: "text/xml" }).window.document;
+    assert(!rss.querySelector("parsererror") && rss.documentElement.localName === "rss", `${label} RSS document is malformed.`);
+    for (const link of rss.querySelectorAll("channel > link, item > link")) {
+      assertPublicFeedUrl(link.textContent?.trim(), `${label} RSS link`);
+    }
+
+    const jsonFeed = JSON.parse(readFileSync(outputPath(group.jsonFeed), "utf8"));
+    assert(jsonFeed.version === "https://jsonfeed.org/version/1.1" && Array.isArray(jsonFeed.items), `${label} JSON Feed is malformed.`);
+    assertPublicFeedUrl(jsonFeed.home_page_url, `${label} JSON Feed home_page_url`);
+    assertPublicFeedUrl(jsonFeed.feed_url, `${label} JSON Feed feed_url`);
+    for (const item of jsonFeed.items) assertPublicFeedUrl(item.url, `${label} JSON Feed item URL`);
+  }
+}
+
 function verifyPerformanceBudgets(signalDetails, stixBundle) {
   const files = walk(output);
   const totalBytes = files.reduce((total, path) => total + statSync(path).size, 0);
@@ -1062,8 +1197,18 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
       "radar.stix.json",
       "history.json",
       "collection-health.json",
+      "changes.json",
+      "pipeline-health.json",
       "related-observations.json",
+      "events.json",
+      "events.atom.xml",
+      "events.rss.xml",
+      "events.feed.json",
+      "brand-feeds.json",
+      "daily-trends.json",
+      "quality-metrics.json",
     ].map((name) => join(output, "data", name)),
+    ...walk(join(output, "data", "brands")),
     ...signalDetails.files,
   ]);
   for (const { path, size } of dataSizes) {
@@ -1232,7 +1377,7 @@ async function verifyInBrowser() {
           const networkBar = document.querySelector(".network-bar")?.getBoundingClientRect();
           const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
           const hero = document.querySelector(".hero")?.getBoundingClientRect();
-          const metricGrid = document.querySelector(".metric-grid")?.getBoundingClientRect();
+          const metricGrid = document.querySelector(".activity-strip")?.getBoundingClientRect();
           const contentToc = document.querySelector(".methodology-toc, .docs-toc");
           const contentTocStyle = contentToc ? getComputedStyle(contentToc) : null;
           const longFormCopy = document.querySelector(".methodology-heading > p, .docs-heading > p");
@@ -1444,6 +1589,7 @@ verifyBuiltHtml();
 verifyIdentityArtwork();
 const signalDetails = verifySignalDetails();
 const stixBundle = verifyStixBundle();
+verifySyndicationFeeds();
 const performance = verifyPerformanceBudgets(signalDetails, stixBundle);
 await verifyInBrowser();
 process.stdout.write(

@@ -6,7 +6,23 @@ Allow: /
 Allow: /data/radar.json
 Allow: /data/history.json
 Allow: /data/collection-health.json
-# The raw STIX domain observations are available to deliberate consumers, not crawler discovery.
+Allow: /data/pipeline-health.json
+Allow: /data/changes.json
+Allow: /data/related-observations.json
+Allow: /data/events.json
+Allow: /data/events.atom.xml
+Allow: /data/events.rss.xml
+Allow: /data/events.feed.json
+Allow: /data/brand-feeds.json
+Allow: /data/brands/
+Allow: /data/daily-trends.json
+Allow: /data/quality-metrics.json
+Allow: /data/radar.index.json
+Allow: /data/feed-manifest.json
+Allow: /data/schemas/
+# Raw STIX domains and other unadvertised data paths are available only to deliberate consumers.
+Disallow: /data/radar.stix.json
+Disallow: /data/radar-reviewed.stix.json
 Disallow: /data/
 
 User-agent: GPTBot

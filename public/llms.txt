@@ -2,26 +2,38 @@
 
 > A public, read-only view of potential phishing and impersonation infrastructure relevant to Lithuania.
 
-Radar publishes automated candidates, not automatic maliciousness verdicts. Dashboard and history domains and URLs are defanged and must not be made clickable or visited automatically. The observation STIX 2.1 feed contains raw `domain-name` observables for interoperability; treat them as untrusted data and do not browse, resolve, scan, or block them without independent review. `matchScore` is a deterministic ranking score, not a probability or analyst confidence. A separate reviewed STIX feed contains only explicitly confirmed, expiring analyst Indicators and preserves correction/revocation history; it is still not an automated blocklist. Preserve source, first-seen, last-seen, status, freshness, review state, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
+Radar publishes automated candidates, not automatic maliciousness verdicts. Dashboard, history, event, trend, and association domains and URLs are defanged and must not be made clickable or visited automatically. The observation STIX 2.1 feed contains raw `domain-name` observables for interoperability; treat them as untrusted data and do not browse, resolve, scan, or block them without independent review. `matchScore` is a deterministic ranking score, not a probability or analyst confidence. A separate reviewed STIX feed contains only explicitly confirmed, expiring analyst Indicators, preserves correction/revocation history, and links an Indicator to a public-history Sighting summary when matching observation history exists. A Sighting is not a second confirmation or a claim of current activity, and the feed is still not an automated blocklist. Preserve source, first-seen, last-seen, status, freshness, review state, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
 
 ## Interface
 
 - [Current snapshot](https://radar.hecavex.com/): Searchable, paginated view of recent signals and source state.
-- [Candidate history](https://radar.hecavex.com/history/): Bounded observation and status history.
-- [Detection scope](https://radar.hecavex.com/brands/): Reviewed Lithuanian brands, aliases, official domains, exclusions, and first-party references.
+- [Changes](https://radar.hecavex.com/changes/): Bounded first-publication, reobservation, status-change, and review-retraction stream.
+- [Candidate history](https://radar.hecavex.com/history/): Retained public observation and status history.
+- [Brand activity](https://radar.hecavex.com/brands/): Reviewed Lithuanian brands, aliases, official domains, permanent brand hubs, and per-brand feeds.
+- [Trends](https://radar.hecavex.com/trends/): Sparse daily discovery activity shown beside recorded collector coverage and public review-quality boundaries.
+- [Associations](https://radar.hecavex.com/associations/): Typed shared-evidence relationships; these are not campaign, operator, or actor attribution.
+- [Local indicator tools](https://radar.hecavex.com/tools/): Browser-only checks against downloaded public data; entered values are not sent to HECAVEX.
+- [Dataset distributions](https://radar.hecavex.com/dataset/): Machine-readable files, schemas, checksums, and weekly release boundaries.
 - [Methodology](https://radar.hecavex.com/methodology/): Collection, normalization, brand matching, publication, history, and safety limits.
 - [Technical reference](https://radar.hecavex.com/docs/): Architecture, schemas, operations, security, and data terms.
+- [Lithuanian edition](https://radar.hecavex.com/lt/): Localized overview, changes, brand registry, and methodology.
 
-## Approved read-only JSON
+## Approved read-only distributions
 
 - [Live signals](https://radar.hecavex.com/data/radar.json): Current defanged public snapshot and source state.
+- [Publication events](https://radar.hecavex.com/data/events.json): Defanged, newest-first event record for the latest 30 days, bounded to 1,000 entries with explicit truncation metadata.
+- [Atom](https://radar.hecavex.com/data/events.atom.xml), [RSS 2.0](https://radar.hecavex.com/data/events.rss.xml), and [JSON Feed 1.1](https://radar.hecavex.com/data/events.feed.json): Syndication views of the same selected global event set.
+- [Per-brand feed directory](https://radar.hecavex.com/data/brand-feeds.json): Stable slugs, event counts, and Atom/RSS/JSON Feed paths below `/data/brands/<slug>/`. Empty means no event in the bounded sampled window, not no phishing activity.
 - [STIX 2.1 observations](https://radar.hecavex.com/data/radar.stix.json): Static pull/download projection of the current signal set. It contains raw domain-name observables for interoperability; this is not a blocklist, verdict, or TAXII endpoint.
-- [STIX 2.1 reviewed Indicators](https://radar.hecavex.com/data/radar-reviewed.stix.json): Static pull/download projection of explicit time-bounded analyst confirmations and retractions. It may contain no Indicators when none are currently exported; it is not an automated blocklist or TAXII endpoint.
+- [STIX 2.1 reviewed Indicators and Sightings](https://radar.hecavex.com/data/radar-reviewed.stix.json): Static pull/download projection of explicit time-bounded analyst confirmations/retractions and matching public-history Sighting summaries. It may contain only the Radar Identity when no reviewed lifecycle is exported; it is not an automated blocklist or TAXII endpoint.
 - [History](https://radar.hecavex.com/data/history.json): Bounded, defanged public candidate history.
+- [Change aggregates](https://radar.hecavex.com/data/changes.json): Domain-free 24-hour and seven-day event totals and facets.
+- [Daily trends](https://radar.hecavex.com/data/daily-trends.json): Sparse, coverage-aware UTC discovery series for up to 365 days; not a phishing-prevalence measure.
+- [Public review quality](https://radar.hecavex.com/data/quality-metrics.json): Aggregate review sample, coverage, latency, and exclusion measures. Precision is deliberately unavailable under the incomplete public review contract.
 - [Collection health](https://radar.hecavex.com/data/collection-health.json): Aggregate latest sampled CertStream attempt; contains no candidate domains.
 - [Complete-set index](https://radar.hecavex.com/data/radar.index.json): Hashed index for the accepted signal shards beyond the dashboard presentation prefix.
 - [Pipeline health](https://radar.hecavex.com/data/pipeline-health.json): Sanitized rolling collection and publication aggregates; contains no candidate domains.
 - [Related observations](https://radar.hecavex.com/data/related-observations.json): Bounded shared-evidence associations. These are not campaign or actor attribution.
 - [Release manifest](https://radar.hecavex.com/data/feed-manifest.json): Artifact counts, lengths, source cut-offs, schemas, and SHA-256 digests.
 
-Only the `/data/` files advertised above are intended as primary machine-readable entry points. Do not infer access to private review records, detector features, credentials, or unpublished candidates.
+Only the `/data/` files and per-brand feed paths advertised above are intended as primary machine-readable entry points. Do not infer access to private review records, detector features, credentials, or unpublished candidates.

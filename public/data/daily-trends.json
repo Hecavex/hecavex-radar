@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "dataset": "radar-daily-trends",
+  "generatedAt": "2026-08-25T16:30:13.777Z",
+  "retentionDays": 365,
+  "from": "2025-08-26",
+  "to": "2026-08-25",
+  "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
+  "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
+  "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
+  "omittedZeroDays": 358,
+  "collectorSchedule": {
+    "expectedIntervalSeconds": 900,
+    "expectedListeningSeconds": 480,
+    "derivedFrom": "pipeline-health-24h-window"
+  },
+  "series": [
+    {
+      "date": "2026-08-19",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": 0.0,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 1,
+        "uniqueSignals": 1,
+        "observations": 1,
+        "reobservations": 0,
+        "firstPublications": 0,
+        "statusChanges": 0,
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "Smart-ID": 1
+        },
+        "bySource": {
+          "URLScan": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-domain-match": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-20",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": 0.0,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 1,
+        "uniqueSignals": 1,
+        "observations": 1,
+        "reobservations": 0,
+        "firstPublications": 0,
+        "statusChanges": 0,
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "Revolut": 1
+        },
+        "bySource": {
+          "URLScan": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-domain-match": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-21",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": 0.0,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 12,
+        "uniqueSignals": 5,
+        "observations": 7,
+        "reobservations": 2,
+        "firstPublications": 5,
+        "statusChanges": 0,
+        "facetSampleSize": 5,
+        "evidenceClassifiedSignals": 5,
+        "byBrand": {
+          "Revolut": 3,
+          "Smart-ID": 1,
+          "Vinted": 1
+        },
+        "bySource": {
+          "URLScan": 5
+        },
+        "byEvidenceTier": {
+          "name-only": 3,
+          "corroborated": 2
+        },
+        "byReason": {
+          "brand-domain-match": 5,
+          "first-publication": 5
+        }
+      }
+    },
+    {
+      "date": "2026-08-22",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": 0.0,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 9,
+        "uniqueSignals": 5,
+        "observations": 5,
+        "reobservations": 0,
+        "firstPublications": 4,
+        "statusChanges": 0,
+        "facetSampleSize": 5,
+        "evidenceClassifiedSignals": 5,
+        "byBrand": {
+          "DPD": 1,
+          "MAXIMA": 1,
+          "Revolut": 1,
+          "Smart-ID": 1,
+          "Swedbank": 1
+        },
+        "bySource": {
+          "URLScan": 4,
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "corroborated": 3,
+          "name-only": 2
+        },
+        "byReason": {
+          "brand-domain-match": 4,
+          "first-publication": 4,
+          "brand-exact-token": 1,
+          "brand-title-match": 1,
+          "different-tld": 1,
+          "suspicious-context": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-23",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 14,
+        "healthyAttempts": 14,
+        "recordedSchedulePercent": 14.6,
+        "listeningCoveragePercent": 3.88,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 3351.958,
+        "outcomes": {
+          "healthy-empty": 14
+        }
+      },
+      "discovery": {
+        "events": 10,
+        "uniqueSignals": 6,
+        "observations": 7,
+        "reobservations": 1,
+        "firstPublications": 3,
+        "statusChanges": 0,
+        "facetSampleSize": 6,
+        "evidenceClassifiedSignals": 6,
+        "byBrand": {
+          "DHL": 2,
+          "Revolut": 2,
+          "MAXIMA": 1,
+          "Vinted": 1
+        },
+        "bySource": {
+          "URLScan": 6
+        },
+        "byEvidenceTier": {
+          "corroborated": 4,
+          "name-only": 2
+        },
+        "byReason": {
+          "brand-domain-match": 6,
+          "first-publication": 3
+        }
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "partialDay": false,
+      "collectorCoverage": {
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 12,
+        "healthyAttempts": 12,
+        "recordedSchedulePercent": 12.5,
+        "listeningCoveragePercent": 3.33,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 2873.967,
+        "outcomes": {
+          "healthy-empty": 11,
+          "healthy-matches": 1
+        }
+      },
+      "discovery": {
+        "events": 2,
+        "uniqueSignals": 1,
+        "observations": 1,
+        "reobservations": 0,
+        "firstPublications": 1,
+        "statusChanges": 0,
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "ESO": 1
+        },
+        "bySource": {
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-exact-token": 1,
+          "different-tld": 1,
+          "first-publication": 1,
+          "suspicious-context": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-25",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 59413,
+        "scheduledSlots": 66,
+        "recordedAttempts": 7,
+        "healthyAttempts": 7,
+        "recordedSchedulePercent": 10.6,
+        "listeningCoveragePercent": 3.64,
+        "scheduledListeningCeilingPercent": 53.32,
+        "listeningSeconds": 2159.991,
+        "outcomes": {
+          "healthy-empty": 6,
+          "healthy-matches": 1
+        }
+      },
+      "discovery": {
+        "events": 16,
+        "uniqueSignals": 8,
+        "observations": 9,
+        "reobservations": 1,
+        "firstPublications": 7,
+        "statusChanges": 0,
+        "facetSampleSize": 8,
+        "evidenceClassifiedSignals": 8,
+        "byBrand": {
+          "Revolut": 4,
+          "Vinted": 3,
+          "ESO": 1
+        },
+        "bySource": {
+          "URLScan": 6,
+          "CertStream": 1,
+          "HECAVEX": 1
+        },
+        "byEvidenceTier": {
+          "corroborated": 5,
+          "name-only": 3
+        },
+        "byReason": {
+          "first-publication": 7,
+          "brand-domain-match": 4,
+          "brand-title-match": 4,
+          "brand-exact-token": 2,
+          "different-tld": 2,
+          "provider-verdict": 2,
+          "suspicious-context": 2,
+          "manual-review": 1
+        }
+      }
+    }
+  ],
+  "privacy": "Aggregate counters only; no domains, URLs, signal identifiers or collector payloads."
+}

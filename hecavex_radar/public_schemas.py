@@ -664,6 +664,321 @@ RELATED_SCHEMA: Final[dict[str, object]] = {
 }
 
 
+EVENTS_SCHEMA: Final[dict[str, object]] = {
+    **_base("events-v1.schema.json", "HECAVEX Radar event stream v1"),
+    "$defs": {
+        "event": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": [
+                "id", "type", "occurredAt", "signalId", "signalPath", "domain", "brand",
+                "status", "previousStatus", "sources",
+            ],
+            "properties": {
+                "id": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+                "type": {
+                    "enum": ["first-publication", "reobservation", "status-change", "retraction"]
+                },
+                "occurredAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+                "signalId": {"type": "string", "pattern": HEX20_PATTERN},
+                "signalPath": {"type": "string", "pattern": "^/signals/[a-f0-9]{20}/$"},
+                "domain": {"type": "string", "pattern": DEFANGED_DOMAIN_PATTERN, "maxLength": 512},
+                "brand": {"type": "string", "minLength": 1, "maxLength": 120},
+                "status": {
+                    "enum": ["active", "suspected", "offline", "mitigated", "unknown", "retracted"]
+                },
+                "previousStatus": {
+                    "type": ["string", "null"],
+                    "enum": ["active", "suspected", "offline", "mitigated", "unknown", None],
+                },
+                "sources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "uniqueItems": True,
+                    "items": {"enum": ["CertStream", "URLScan", "HECAVEX"]},
+                },
+            },
+        }
+    },
+    "additionalProperties": False,
+    "required": [
+        "schemaVersion", "dataset", "generatedAt", "window", "totalAvailable", "truncated", "events"
+    ],
+    "properties": {
+        "schemaVersion": {"const": 1},
+        "dataset": {"const": "radar-events"},
+        "generatedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+        "window": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["days", "from", "to"],
+            "properties": {
+                "days": {"const": 30},
+                "from": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+                "to": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+            },
+        },
+        "totalAvailable": {"type": "integer", "minimum": 0, "maximum": 50_000},
+        "truncated": {"type": "boolean"},
+        "events": {"type": "array", "maxItems": 1_000, "items": {"$ref": "#/$defs/event"}},
+    },
+}
+
+
+JSON_FEED_SCHEMA: Final[dict[str, object]] = {
+    **_base("json-feed-v1.schema.json", "HECAVEX Radar JSON Feed 1.1 profile"),
+    "additionalProperties": True,
+    "required": ["version", "title", "items"],
+    "properties": {
+        "version": {"const": "https://jsonfeed.org/version/1.1"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 200},
+        "home_page_url": {
+            "type": "string",
+            "pattern": r"^https://radar\.hecavex\.com/[A-Za-z0-9_./-]*$",
+        },
+        "feed_url": {
+            "type": "string",
+            "pattern": r"^https://radar\.hecavex\.com/data/[A-Za-z0-9_./-]+$",
+        },
+        "language": {"const": "en"},
+        "items": {
+            "type": "array",
+            "maxItems": 1_000,
+            "items": {
+                "type": "object",
+                "additionalProperties": True,
+                "required": ["id", "url", "title", "content_text", "date_published", "tags"],
+                "properties": {
+                    "id": {"type": "string", "pattern": "^urn:hecavex-radar:event:[a-f0-9]{32}$"},
+                    "url": {
+                        "type": "string",
+                        "pattern": r"^https://radar\.hecavex\.com/signals/[a-f0-9]{20}/$",
+                    },
+                    "title": {"type": "string", "minLength": 1, "maxLength": 700},
+                    "content_text": {"type": "string", "minLength": 1, "maxLength": 1_500},
+                    "date_published": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+                    "tags": {
+                        "type": "array", "minItems": 2, "maxItems": 2,
+                        "items": {"type": "string", "minLength": 1, "maxLength": 120},
+                    },
+                },
+            },
+        },
+    },
+}
+
+
+BRAND_FEEDS_SCHEMA: Final[dict[str, object]] = {
+    **_base("brand-feeds-v1.schema.json", "HECAVEX Radar per-brand feed directory v1"),
+    "additionalProperties": False,
+    "required": ["schemaVersion", "dataset", "generatedAt", "semantics", "brands"],
+    "properties": {
+        "schemaVersion": {"const": 1},
+        "dataset": {"const": "radar-brand-feeds"},
+        "generatedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+        "semantics": {"type": "string", "minLength": 1, "maxLength": 400},
+        "brands": {
+            "type": "array",
+            "maxItems": 128,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["brand", "slug", "eventCount", "atom", "rss", "jsonFeed"],
+                "properties": {
+                    "brand": {"type": "string", "minLength": 1, "maxLength": 120},
+                    "slug": {"type": "string", "pattern": "^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$"},
+                    "eventCount": {"type": "integer", "minimum": 0, "maximum": 1_000},
+                    "atom": {"type": "string", "pattern": "^/data/brands/[a-z0-9-]+/events\\.atom\\.xml$"},
+                    "rss": {"type": "string", "pattern": "^/data/brands/[a-z0-9-]+/events\\.rss\\.xml$"},
+                    "jsonFeed": {"type": "string", "pattern": "^/data/brands/[a-z0-9-]+/events\\.feed\\.json$"},
+                },
+            },
+        },
+    },
+}
+
+
+QUALITY_METRICS_SCHEMA: Final[dict[str, object]] = {
+    **_base("quality-metrics-v1.schema.json", "HECAVEX Radar public quality metrics v1"),
+    "$defs": {
+        "count": {"type": "integer", "minimum": 0, "maximum": 2_000_000_000},
+        "countMap": {
+            "type": "object", "maxProperties": 64,
+            "additionalProperties": {"$ref": "#/$defs/count"},
+        },
+        "metric": {"type": ["number", "null"], "minimum": 0},
+    },
+    "additionalProperties": False,
+    "required": [
+        "schemaVersion", "dataset", "generatedAt", "window", "semantics", "reviewSample",
+        "reviewCoverage", "reviewLatencyHours", "currentExclusions", "precision", "privacy",
+    ],
+    "properties": {
+        "schemaVersion": {"const": 1},
+        "dataset": {"const": "radar-quality-metrics"},
+        "generatedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+        "window": {
+            "type": "object", "additionalProperties": False, "required": ["days", "from", "to"],
+            "properties": {
+                "days": {"type": "integer", "minimum": 1, "maximum": 365},
+                "from": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+                "to": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+            },
+        },
+        "semantics": {"type": "string", "minLength": 1, "maxLength": 500},
+        "reviewSample": {
+            "type": "object", "additionalProperties": False,
+            "required": [
+                "assessments", "uniqueSignals", "outcomes", "byBrand", "bySource",
+                "sourceLinkedAssessments", "byEvidence", "byDispositionReason", "byDetectionReason",
+            ],
+            "properties": {
+                "assessments": {"$ref": "#/$defs/count"},
+                "uniqueSignals": {"$ref": "#/$defs/count"},
+                "sourceLinkedAssessments": {"$ref": "#/$defs/count"},
+                **{
+                    name: {"$ref": "#/$defs/countMap"}
+                    for name in (
+                        "outcomes", "byBrand", "bySource", "byEvidence", "byDispositionReason",
+                        "byDetectionReason",
+                    )
+                },
+            },
+        },
+        "reviewCoverage": {
+            "type": "object", "additionalProperties": False,
+            "required": ["eligiblePublishedSignals", "assessedSignals", "percent", "scope"],
+            "properties": {
+                "eligiblePublishedSignals": {"$ref": "#/$defs/count"},
+                "assessedSignals": {"$ref": "#/$defs/count"},
+                "percent": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+                "scope": {"type": "string", "minLength": 1, "maxLength": 400},
+            },
+        },
+        "reviewLatencyHours": {
+            "type": "object", "additionalProperties": False,
+            "required": ["sampleSize", "median", "p90", "minimum", "maximum", "scope"],
+            "properties": {
+                "sampleSize": {"$ref": "#/$defs/count"},
+                **{name: {"$ref": "#/$defs/metric"} for name in ("median", "p90", "minimum", "maximum")},
+                "scope": {"type": "string", "minLength": 1, "maxLength": 400},
+            },
+        },
+        "currentExclusions": {
+            "type": "object", "additionalProperties": False,
+            "required": ["sampleSize", "exact", "subdomainPolicies", "byReason", "scope"],
+            "properties": {
+                "sampleSize": {"$ref": "#/$defs/count"}, "exact": {"$ref": "#/$defs/count"},
+                "subdomainPolicies": {"$ref": "#/$defs/count"},
+                "byReason": {"$ref": "#/$defs/countMap"},
+                "scope": {"type": "string", "minLength": 1, "maxLength": 400},
+            },
+        },
+        "precision": {
+            "type": "object", "additionalProperties": False,
+            "required": ["available", "sampleSize", "estimatePercent", "reason"],
+            "properties": {
+                "available": {"const": False}, "sampleSize": {"const": 0},
+                "estimatePercent": {"type": "null"},
+                "reason": {"type": "string", "minLength": 1, "maxLength": 500},
+            },
+        },
+        "privacy": {"type": "string", "minLength": 1, "maxLength": 400},
+    },
+}
+
+
+DAILY_TRENDS_SCHEMA: Final[dict[str, object]] = {
+    **_base("daily-trends-v1.schema.json", "HECAVEX Radar coverage-aware daily trends v1"),
+    "$defs": {
+        "count": {"type": "integer", "minimum": 0, "maximum": 2_000_000_000},
+        "countMap": {"type": "object", "maxProperties": 64, "additionalProperties": {"$ref": "#/$defs/count"}},
+        "percent": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    },
+    "additionalProperties": False,
+    "required": [
+        "schemaVersion", "dataset", "generatedAt", "retentionDays", "from", "to", "semantics",
+        "facetSemantics", "seriesSemantics", "omittedZeroDays", "collectorSchedule", "series", "privacy",
+    ],
+    "properties": {
+        "schemaVersion": {"const": 1}, "dataset": {"const": "radar-daily-trends"},
+        "generatedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+        "retentionDays": {"type": "integer", "minimum": 1, "maximum": 365},
+        "from": {"type": "string", "format": "date"}, "to": {"type": "string", "format": "date"},
+        **{
+            name: {"type": "string", "minLength": 1, "maxLength": 600}
+            for name in ("semantics", "facetSemantics", "seriesSemantics", "privacy")
+        },
+        "omittedZeroDays": {"type": "integer", "minimum": 0, "maximum": 365},
+        "collectorSchedule": {
+            "type": "object", "additionalProperties": False,
+            "required": ["expectedIntervalSeconds", "expectedListeningSeconds", "derivedFrom"],
+            "properties": {
+                "expectedIntervalSeconds": {"type": "integer", "minimum": 60, "maximum": 86_400},
+                "expectedListeningSeconds": {"type": "integer", "minimum": 0, "maximum": 86_400},
+                "derivedFrom": {"enum": ["pipeline-health-24h-window", "documented-default"]},
+            },
+        },
+        "series": {
+            "type": "array", "maxItems": 365,
+            "items": {
+                "type": "object", "additionalProperties": False,
+                "required": ["date", "partialDay", "collectorCoverage", "discovery"],
+                "properties": {
+                    "date": {"type": "string", "format": "date"}, "partialDay": {"type": "boolean"},
+                    "collectorCoverage": {
+                        "type": "object", "additionalProperties": False,
+                        "required": [
+                            "windowSeconds", "scheduledSlots", "recordedAttempts", "healthyAttempts",
+                            "recordedSchedulePercent", "listeningCoveragePercent",
+                            "scheduledListeningCeilingPercent", "listeningSeconds", "outcomes",
+                        ],
+                        "properties": {
+                            **{
+                                name: {"$ref": "#/$defs/count"}
+                                for name in ("windowSeconds", "scheduledSlots", "recordedAttempts", "healthyAttempts")
+                            },
+                            **{
+                                name: {"$ref": "#/$defs/percent"}
+                                for name in (
+                                    "recordedSchedulePercent", "listeningCoveragePercent",
+                                    "scheduledListeningCeilingPercent",
+                                )
+                            },
+                            "listeningSeconds": {"type": "number", "minimum": 0, "maximum": 86_400},
+                            "outcomes": {"$ref": "#/$defs/countMap"},
+                        },
+                    },
+                    "discovery": {
+                        "type": "object", "additionalProperties": False,
+                        "required": [
+                            "events", "uniqueSignals", "observations", "reobservations", "firstPublications",
+                            "statusChanges", "facetSampleSize", "evidenceClassifiedSignals", "byBrand", "bySource",
+                            "byEvidenceTier", "byReason",
+                        ],
+                        "properties": {
+                            **{
+                                name: {"$ref": "#/$defs/count"}
+                                for name in (
+                                    "events", "uniqueSignals", "observations", "reobservations",
+                                    "firstPublications", "statusChanges", "facetSampleSize",
+                                    "evidenceClassifiedSignals",
+                                )
+                            },
+                            **{
+                                name: {"$ref": "#/$defs/countMap"}
+                                for name in ("byBrand", "bySource", "byEvidenceTier", "byReason")
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
+
+
 MANIFEST_SCHEMA: Final[dict[str, object]] = {
     **_base("feed-manifest-v1.schema.json", "HECAVEX Radar feed manifest v1"),
     "additionalProperties": False,
@@ -716,7 +1031,7 @@ MANIFEST_SCHEMA: Final[dict[str, object]] = {
         "artifacts": {
             "type": "array",
             "minItems": 1,
-            "maxItems": 64,
+            "maxItems": 512,
             "items": {
                 "type": "object",
                 "additionalProperties": False,
@@ -726,7 +1041,12 @@ MANIFEST_SCHEMA: Final[dict[str, object]] = {
                         "type": "string",
                         "pattern": "^/data/[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$",
                     },
-                    "mediaType": {"enum": ["application/json", "application/stix+json"]},
+                    "mediaType": {
+                        "enum": [
+                            "application/json", "application/stix+json", "application/feed+json",
+                            "application/atom+xml", "application/rss+xml",
+                        ]
+                    },
                     "schema": {"type": ["string", "null"], "maxLength": 2048},
                     "bytes": {"type": "integer", "minimum": 1},
                     "sha256": {"type": "string", "pattern": SHA256_PATTERN},
@@ -744,5 +1064,10 @@ PUBLIC_SCHEMAS: Final[dict[str, dict[str, object]]] = {
     "pipeline-health-v1.schema.json": PIPELINE_HEALTH_SCHEMA,
     "changes-v1.schema.json": CHANGES_SCHEMA,
     "related-observations-v1.schema.json": RELATED_SCHEMA,
+    "events-v1.schema.json": EVENTS_SCHEMA,
+    "json-feed-v1.schema.json": JSON_FEED_SCHEMA,
+    "brand-feeds-v1.schema.json": BRAND_FEEDS_SCHEMA,
+    "quality-metrics-v1.schema.json": QUALITY_METRICS_SCHEMA,
+    "daily-trends-v1.schema.json": DAILY_TRENDS_SCHEMA,
     "feed-manifest-v1.schema.json": MANIFEST_SCHEMA,
 }

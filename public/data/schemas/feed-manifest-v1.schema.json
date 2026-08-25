@@ -129,7 +129,7 @@
     "artifacts": {
       "type": "array",
       "minItems": 1,
-      "maxItems": 64,
+      "maxItems": 512,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -148,7 +148,10 @@
           "mediaType": {
             "enum": [
               "application/json",
-              "application/stix+json"
+              "application/stix+json",
+              "application/feed+json",
+              "application/atom+xml",
+              "application/rss+xml"
             ]
           },
           "schema": {

@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from datetime import UTC, datetime, timedelta
@@ -20,18 +21,33 @@ from typing import cast
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
 from . import __version__
+from .brands import load_brand_registry
+from .daily_trends import build_daily_trends_from_repository
+from .event_feeds import (
+    MAXIMUM_EVENT_JSON_BYTES,
+    MAXIMUM_SYNDICATION_BYTES,
+    build_brand_event_feeds,
+    build_event_feeds,
+    read_recent_history_events,
+)
 from .models import RadarSignal, RadarSource, SignalDetail
 from .public_schemas import (
+    BRAND_FEEDS_SCHEMA,
     CHANGES_SCHEMA,
+    DAILY_TRENDS_SCHEMA,
+    EVENTS_SCHEMA,
+    JSON_FEED_SCHEMA,
     MANIFEST_SCHEMA,
     PIPELINE_HEALTH_SCHEMA,
     PUBLIC_SCHEMAS,
+    QUALITY_METRICS_SCHEMA,
     RADAR_INDEX_SCHEMA,
     RADAR_SCHEMA,
     RADAR_SHARD_SCHEMA,
     RELATED_SCHEMA,
     SCHEMA_BASE,
 )
+from .quality_metrics import build_quality_metrics
 
 MAXIMUM_DASHBOARD_BYTES = 512 * 1024
 MAXIMUM_SHARD_BYTES = 256 * 1024
@@ -39,6 +55,9 @@ MAXIMUM_RELATION_BYTES = 512 * 1024
 MAXIMUM_RELATION_EDGES = 2_000
 MAXIMUM_EVIDENCE_FANOUT = 12
 MAXIMUM_AGGREGATE_BYTES = 128 * 1024
+MAXIMUM_BRAND_FEED_DIRECTORY_BYTES = 256 * 1024
+MAXIMUM_QUALITY_BYTES = 256 * 1024
+MAXIMUM_TRENDS_BYTES = 512 * 1024
 PUBLIC_DATA = Path("public/data")
 CHECKSUM_SUFFIX = ".sha256"
 RELATION_WINDOW = timedelta(days=7)
@@ -997,10 +1016,20 @@ def write_feed_manifest(
         path = (repository / relative).resolve()
         if not path.is_file() or not path.is_relative_to((repository / PUBLIC_DATA).resolve()):
             continue
+        if path.name.endswith(".stix.json"):
+            media_type = "application/stix+json"
+        elif path.name.endswith(".feed.json"):
+            media_type = "application/feed+json"
+        elif path.name.endswith(".atom.xml"):
+            media_type = "application/atom+xml"
+        elif path.name.endswith(".rss.xml"):
+            media_type = "application/rss+xml"
+        else:
+            media_type = "application/json"
         artifact_rows.append(
             {
                 "path": "/" + relative.relative_to("public").as_posix(),
-                "mediaType": "application/stix+json" if path.name.endswith(".stix.json") else "application/json",
+                "mediaType": media_type,
                 "schema": schema,
                 "bytes": path.stat().st_size,
                 "sha256": _sha256(path),
@@ -1032,6 +1061,9 @@ def publish_supplemental_artifacts(
     snapshot: Mapping[str, object],
     complete_signals: Sequence[RadarSignal],
     details: Mapping[str, SignalDetail],
+    *,
+    history: Mapping[str, object] | None = None,
+    review_export: Mapping[str, object] | None = None,
 ) -> list[Path]:
     repository = Path.cwd().resolve()
     generated_at = snapshot.get("lastSuccessfulSyncAt")
@@ -1055,6 +1087,106 @@ def publish_supplemental_artifacts(
         pretty=True,
     )
 
+    effective_history = history
+    if effective_history is None:
+        loaded_history = _read_json(repository / PUBLIC_DATA / "history.json", 512 * 1024)
+        effective_history = cast(Mapping[str, object], loaded_history) if isinstance(loaded_history, dict) else {
+            "signals": list(complete_signals)
+        }
+    effective_review: Mapping[str, object] = review_export or {
+        "schemaVersion": 2,
+        "dataset": "radar-review-decisions",
+        "generatedAt": generated_at,
+        "suppressions": [],
+        "candidates": [],
+        "assessments": [],
+    }
+
+    recent_events = read_recent_history_events(repository / "data/history", generated_at)
+    event_bundle = build_event_feeds(recent_events, snapshot, generated_at, effective_review)
+    _validate(event_bundle.artifact, EVENTS_SCHEMA, "event stream")
+    events_path = _atomic_bytes(PUBLIC_DATA / "events.json", event_bundle.event_json, MAXIMUM_EVENT_JSON_BYTES)
+    atom_path = _atomic_bytes(PUBLIC_DATA / "events.atom.xml", event_bundle.atom, MAXIMUM_SYNDICATION_BYTES)
+    rss_path = _atomic_bytes(PUBLIC_DATA / "events.rss.xml", event_bundle.rss, MAXIMUM_SYNDICATION_BYTES)
+    json_feed_value = json.loads(event_bundle.json_feed)
+    _validate(json_feed_value, JSON_FEED_SCHEMA, "JSON Feed")
+    json_feed_path = _atomic_bytes(
+        PUBLIC_DATA / "events.feed.json", event_bundle.json_feed, MAXIMUM_SYNDICATION_BYTES
+    )
+
+    history_signals = effective_history.get("signals")
+    registry = load_brand_registry(repository / "data" / "brands-lt.json")
+    brand_values = [entry.brand for entry in registry.entries] + [
+        brand
+        for signal in [*complete_signals, *(history_signals if isinstance(history_signals, list) else [])]
+        if isinstance(signal, dict) and isinstance((brand := signal.get("brand")), str)
+    ]
+    brand_bundles = build_brand_event_feeds(event_bundle.artifact, brand_values)
+    brand_root = repository / PUBLIC_DATA / "brands"
+    if brand_root.exists():
+        shutil.rmtree(brand_root)
+    brand_paths: list[Path] = []
+    brand_rows: list[dict[str, object]] = []
+    for bundle in brand_bundles:
+        relative_root = PUBLIC_DATA / "brands" / bundle.slug
+        bundle_paths = {
+            "atom": _atomic_bytes(
+                relative_root / "events.atom.xml", bundle.atom, MAXIMUM_SYNDICATION_BYTES
+            ),
+            "rss": _atomic_bytes(
+                relative_root / "events.rss.xml", bundle.rss, MAXIMUM_SYNDICATION_BYTES
+            ),
+            "jsonFeed": _atomic_bytes(
+                relative_root / "events.feed.json", bundle.json_feed, MAXIMUM_SYNDICATION_BYTES
+            ),
+        }
+        _validate(json.loads(bundle.json_feed), JSON_FEED_SCHEMA, f"{bundle.brand} JSON Feed")
+        brand_paths.extend(bundle_paths.values())
+        brand_rows.append(
+            {
+                "brand": bundle.brand,
+                "slug": bundle.slug,
+                "eventCount": bundle.event_count,
+                **{
+                    name: "/" + path.relative_to(repository / "public").as_posix()
+                    for name, path in bundle_paths.items()
+                },
+            }
+        )
+    brand_directory = {
+        "schemaVersion": 1,
+        "dataset": "radar-brand-feeds",
+        "generatedAt": generated_at,
+        "semantics": (
+            "Each per-brand feed is a filtered view of the same bounded 30-day global event stream. "
+            "An empty feed means no publishable event in that sampled window, not no phishing activity."
+        ),
+        "brands": brand_rows,
+    }
+    _validate(brand_directory, BRAND_FEEDS_SCHEMA, "brand feed directory")
+    brand_directory_path = _write_json(
+        PUBLIC_DATA / "brand-feeds.json",
+        brand_directory,
+        MAXIMUM_BRAND_FEED_DIRECTORY_BYTES,
+        pretty=True,
+    )
+
+    quality = build_quality_metrics(effective_review, effective_history, generated_at)
+    _validate(quality, QUALITY_METRICS_SCHEMA, "quality metrics")
+    quality_path = _write_json(
+        PUBLIC_DATA / "quality-metrics.json", quality, MAXIMUM_QUALITY_BYTES, pretty=True
+    )
+    trends = build_daily_trends_from_repository(
+        repository,
+        cast(Sequence[Mapping[str, object]], complete_signals),
+        health,
+        generated_at,
+    )
+    _validate(trends, DAILY_TRENDS_SCHEMA, "daily trends")
+    trends_path = _write_json(
+        PUBLIC_DATA / "daily-trends.json", trends, MAXIMUM_TRENDS_BYTES, pretty=True
+    )
+
     schema_by_path: dict[Path, str | None] = {
         PUBLIC_DATA / "radar.json": f"{SCHEMA_BASE}radar-v2.schema.json",
         PUBLIC_DATA / "radar.stix.json": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
@@ -1064,7 +1196,19 @@ def publish_supplemental_artifacts(
         PUBLIC_DATA / "changes.json": f"{SCHEMA_BASE}changes-v1.schema.json",
         PUBLIC_DATA / "pipeline-health.json": f"{SCHEMA_BASE}pipeline-health-v1.schema.json",
         PUBLIC_DATA / "related-observations.json": f"{SCHEMA_BASE}related-observations-v1.schema.json",
+        PUBLIC_DATA / "events.json": f"{SCHEMA_BASE}events-v1.schema.json",
+        PUBLIC_DATA / "events.atom.xml": None,
+        PUBLIC_DATA / "events.rss.xml": None,
+        PUBLIC_DATA / "events.feed.json": f"{SCHEMA_BASE}json-feed-v1.schema.json",
+        PUBLIC_DATA / "brand-feeds.json": f"{SCHEMA_BASE}brand-feeds-v1.schema.json",
+        PUBLIC_DATA / "quality-metrics.json": f"{SCHEMA_BASE}quality-metrics-v1.schema.json",
+        PUBLIC_DATA / "daily-trends.json": f"{SCHEMA_BASE}daily-trends-v1.schema.json",
     }
+    for path in brand_paths:
+        relative = path.relative_to(repository)
+        schema_by_path[relative] = (
+            f"{SCHEMA_BASE}json-feed-v1.schema.json" if path.name.endswith(".feed.json") else None
+        )
     for path in schema_paths:
         schema_by_path[path.relative_to(repository)] = None
     for path in schema_by_path:
@@ -1076,7 +1220,22 @@ def publish_supplemental_artifacts(
     # wildcard staging step cannot reintroduce a permanently stale digest.
     (repository / PUBLIC_DATA / "collection-health.json.sha256").unlink(missing_ok=True)
     manifest_path = write_feed_manifest(repository, snapshot, len(complete_signals), schema_by_path)
-    return [index_path, changes_path, health_path, relations_path, manifest_path, *schema_paths]
+    return [
+        index_path,
+        changes_path,
+        health_path,
+        relations_path,
+        events_path,
+        atom_path,
+        rss_path,
+        json_feed_path,
+        brand_directory_path,
+        quality_path,
+        trends_path,
+        *brand_paths,
+        manifest_path,
+        *schema_paths,
+    ]
 
 
 def _load_required_json(path: Path, maximum: int) -> object:
@@ -1095,6 +1254,11 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         PUBLIC_DATA / "pipeline-health.json": (PIPELINE_HEALTH_SCHEMA, MAXIMUM_AGGREGATE_BYTES),
         PUBLIC_DATA / "changes.json": (CHANGES_SCHEMA, MAXIMUM_AGGREGATE_BYTES),
         PUBLIC_DATA / "related-observations.json": (RELATED_SCHEMA, MAXIMUM_RELATION_BYTES),
+        PUBLIC_DATA / "events.json": (EVENTS_SCHEMA, MAXIMUM_EVENT_JSON_BYTES),
+        PUBLIC_DATA / "events.feed.json": (JSON_FEED_SCHEMA, MAXIMUM_SYNDICATION_BYTES),
+        PUBLIC_DATA / "brand-feeds.json": (BRAND_FEEDS_SCHEMA, MAXIMUM_BRAND_FEED_DIRECTORY_BYTES),
+        PUBLIC_DATA / "quality-metrics.json": (QUALITY_METRICS_SCHEMA, MAXIMUM_QUALITY_BYTES),
+        PUBLIC_DATA / "daily-trends.json": (DAILY_TRENDS_SCHEMA, MAXIMUM_TRENDS_BYTES),
         PUBLIC_DATA / "feed-manifest.json": (MANIFEST_SCHEMA, 256 * 1024),
     }
     for relative, (schema, maximum) in schema_targets.items():
@@ -1167,6 +1331,24 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
             dict[str, object],
             _load_required_json(repository / PUBLIC_DATA / "related-observations.json", MAXIMUM_RELATION_BYTES),
         ),
+        "event stream": cast(
+            dict[str, object],
+            _load_required_json(repository / PUBLIC_DATA / "events.json", MAXIMUM_EVENT_JSON_BYTES),
+        ),
+        "brand feed directory": cast(
+            dict[str, object],
+            _load_required_json(
+                repository / PUBLIC_DATA / "brand-feeds.json", MAXIMUM_BRAND_FEED_DIRECTORY_BYTES
+            ),
+        ),
+        "quality metrics": cast(
+            dict[str, object],
+            _load_required_json(repository / PUBLIC_DATA / "quality-metrics.json", MAXIMUM_QUALITY_BYTES),
+        ),
+        "daily trends": cast(
+            dict[str, object],
+            _load_required_json(repository / PUBLIC_DATA / "daily-trends.json", MAXIMUM_TRENDS_BYTES),
+        ),
     }
     mismatched_generations = [
         label for label, artifact in generation_artifacts.items() if artifact.get("generatedAt") != successful_sync_at
@@ -1200,8 +1382,28 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         "/data/changes.json": f"{SCHEMA_BASE}changes-v1.schema.json",
         "/data/pipeline-health.json": f"{SCHEMA_BASE}pipeline-health-v1.schema.json",
         "/data/related-observations.json": f"{SCHEMA_BASE}related-observations-v1.schema.json",
+        "/data/events.json": f"{SCHEMA_BASE}events-v1.schema.json",
+        "/data/events.atom.xml": None,
+        "/data/events.rss.xml": None,
+        "/data/events.feed.json": f"{SCHEMA_BASE}json-feed-v1.schema.json",
+        "/data/brand-feeds.json": f"{SCHEMA_BASE}brand-feeds-v1.schema.json",
+        "/data/quality-metrics.json": f"{SCHEMA_BASE}quality-metrics-v1.schema.json",
+        "/data/daily-trends.json": f"{SCHEMA_BASE}daily-trends-v1.schema.json",
         **{f"/data/schemas/{name}": None for name in PUBLIC_SCHEMAS},
     }
+    brand_directory = cast(
+        dict[str, object],
+        _load_required_json(
+            repository / PUBLIC_DATA / "brand-feeds.json", MAXIMUM_BRAND_FEED_DIRECTORY_BYTES
+        ),
+    )
+    brand_rows = cast(list[dict[str, object]], brand_directory["brands"])
+    for row in brand_rows:
+        for field in ("atom", "rss", "jsonFeed"):
+            feed_reference = cast(str, row[field])
+            expected_manifest_schemas[feed_reference] = (
+                f"{SCHEMA_BASE}json-feed-v1.schema.json" if field == "jsonFeed" else None
+            )
     manifest_paths: set[str] = set()
     for raw_artifact in artifacts:
         artifact = cast(dict[str, object], raw_artifact)
@@ -1233,6 +1435,31 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
             + "; unexpected="
             + ",".join(unexpected)
         )
+
+    xml_paths = [
+        repository / PUBLIC_DATA / "events.atom.xml",
+        repository / PUBLIC_DATA / "events.rss.xml",
+        *[
+            repository / "public" / cast(str, row[field]).removeprefix("/")
+            for row in brand_rows
+            for field in ("atom", "rss")
+        ],
+    ]
+    for path in xml_paths:
+        try:
+            root = ET.fromstring(path.read_bytes())  # noqa: S314 - generated local static publication.
+        except (OSError, ET.ParseError) as error:
+            raise ValueError(f"{path.as_posix()} is missing or invalid XML.") from error
+        expected_root = "feed" if path.name.endswith(".atom.xml") else "rss"
+        if root.tag.rsplit("}", 1)[-1] != expected_root:
+            raise ValueError(f"{path.as_posix()} has an unexpected syndication root element.")
+    for row in brand_rows:
+        feed_path = repository / "public" / cast(str, row["jsonFeed"]).removeprefix("/")
+        feed = _load_required_json(feed_path, MAXIMUM_SYNDICATION_BYTES)
+        _validate(feed, JSON_FEED_SCHEMA, feed_path.as_posix())
+        items = cast(list[object], cast(dict[str, object], feed)["items"])
+        if len(items) != row["eventCount"]:
+            raise ValueError(f"{feed_path.as_posix()} does not match its brand-feed directory count.")
     feed_manifest_path = repository / PUBLIC_DATA / "feed-manifest.json"
     manifest_checksum = feed_manifest_path.with_name(feed_manifest_path.name + CHECKSUM_SUFFIX)
     expected_manifest_checksum = f"{_sha256(feed_manifest_path)}  {feed_manifest_path.name}\n"

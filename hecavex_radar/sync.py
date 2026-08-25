@@ -654,6 +654,20 @@ def synchronize() -> Path:
         maximum_signals=history_maximum,
     )
     print(f"Updated bounded public history at {history_path.relative_to(Path.cwd())}.", flush=True)
+    try:
+        history_value: object = json.loads(history_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("The freshly written public history could not be reloaded safely.") from error
+    if not isinstance(history_value, dict):
+        raise ValueError("The freshly written public history is not a JSON object.")
+    review_export: dict[str, object] = {
+        "schemaVersion": 2,
+        "dataset": "radar-review-decisions",
+        "generatedAt": now,
+        "suppressions": list(review_policy.suppressions),
+        "candidates": list(review_policy.candidates),
+        "assessments": list(review_policy.assessments),
+    }
     candidate_output = os.environ.get("HECAVEX_CANDIDATE_OUTPUT", "").strip()
     if candidate_output:
         candidate_path = write_hecavex_candidates(
@@ -708,12 +722,23 @@ def synchronize() -> Path:
     reviewed_stix_target = (Path.cwd().resolve() / reviewed_stix_output).resolve()
     if reviewed_stix_target in {target, stix_target}:
         raise ValueError("RADAR_REVIEWED_STIX_OUTPUT must be a separate publication file.")
-    reviewed_stix_path = write_reviewed_stix_bundle(review_policy.assessments, now, reviewed_stix_output)
+    reviewed_stix_path = write_reviewed_stix_bundle(
+        review_policy.assessments,
+        now,
+        reviewed_stix_output,
+        history_value,
+    )
     print(
         f"Published analyst-reviewed STIX 2.1 indicators to {reviewed_stix_path.relative_to(Path.cwd())}.",
         flush=True,
     )
-    supplemental_paths = publish_supplemental_artifacts(snapshot, complete_merged, details)
+    supplemental_paths = publish_supplemental_artifacts(
+        snapshot,
+        complete_merged,
+        details,
+        history=history_value,
+        review_export=review_export,
+    )
     print(
         f"Published {len(supplemental_paths)} schema, integrity, health, change, shard, and relationship artifacts.",
         flush=True,

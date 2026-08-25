@@ -7,11 +7,16 @@ It is not presented as a starter site, downloadable product, self-hosting packag
 ## Live service
 
 - [Radar dashboard](https://radar.hecavex.com/) — current validated candidate observations
-- [Candidate history](https://radar.hecavex.com/history/) — bounded observation provenance and explicit source transitions
-- [Methodology](https://radar.hecavex.com/methodology/) — collection, matching, publication, and limitation disclosures
-- [Technical reference](https://radar.hecavex.com/docs/) — schemas, operations, security boundaries, and data terms
+- [Changes](https://radar.hecavex.com/changes/) and [candidate history](https://radar.hecavex.com/history/) — bounded publication events, reobservations, status changes, and retained provenance
+- [Brand activity](https://radar.hecavex.com/brands/) — the reviewed Lithuanian registry, permanent brand hubs, and per-brand change feeds
+- [Trends](https://radar.hecavex.com/trends/) — coverage-aware discovery series and bounded public review-quality measures
+- [Associations](https://radar.hecavex.com/associations/) — typed shared-evidence relationships with an explicit non-attribution boundary
+- [Local indicator tools](https://radar.hecavex.com/tools/) — browser-only checks against downloaded public artifacts
+- [Dataset distributions](https://radar.hecavex.com/dataset/) — machine-readable entry points, schemas, integrity metadata, and release boundaries
+- [Lithuanian edition](https://radar.hecavex.com/lt/) — localized overview, changes, brand registry, and methodology
+- [Methodology](https://radar.hecavex.com/methodology/) and [technical reference](https://radar.hecavex.com/docs/) — collection limits, schemas, operations, security boundaries, and data terms
 
-Radar combines sampled live Certificate Transparency observations, bounded checkpointed searches of the public `crt.sh` index, passive searches of existing public URLScan reports, and an optional deliberately limited HECAVEX public export. For already published candidates it can add point-in-time DNS-over-HTTPS and RDAP context without requesting the candidate webpage. The Python pipeline validates every accepted record and defangs the dashboard and history artifacts. One STIX 2.1 projection carries observations; a second carries only explicitly reviewed, time-bounded Indicators. The React interface renders the static artifacts without an application server, account system, public write path, or database connection.
+Radar combines sampled live Certificate Transparency observations, bounded checkpointed searches of the public `crt.sh` index, passive searches of existing public URLScan reports, and an optional deliberately limited HECAVEX public export. For already published candidates it can add point-in-time DNS-over-HTTPS and RDAP context without requesting the candidate webpage. The Python pipeline validates every accepted record and defangs the dashboard, history, event, trend, and association artifacts. One STIX 2.1 projection carries observations; a second carries only explicitly reviewed, time-bounded Indicators and, when public observation history exists for an Indicator, a linked Sighting summary. The React interface renders the static artifacts without an application server, account system, public write path, or database connection.
 
 ## Publication and safety boundaries
 
@@ -38,7 +43,7 @@ The service is published through reviewed GitHub Actions workflows. Cron schedul
 | URLScan hunt | `37 */2 * * *` | Bounded hunt-state ledger and validated daily archive when the optional source is configured |
 | Official asset pivot | `47 3,15 * * *` | Stable first-party favicon/JavaScript hashes and independently qualified public URLScan observations |
 | DNS and RDAP context | `13 1,7,13,19 * * *` | Rotating, 14-day point-in-time context for published candidates |
-| Snapshot synchronization | `17 * * * *` | Live snapshot, observation and reviewed STIX 2.1 projections, retained history, and compacted history summary |
+| Snapshot synchronization | `17 * * * *` | Live snapshot; observation and reviewed STIX 2.1 projections; retained history; event, feed, trend, quality, association, and integrity artifacts |
 | Site deployment | Successful code CI, material snapshot sync, or changed CertStream health | Static production pages for `radar.hecavex.com` |
 
 The scheduled CertStream listener runs for eight minutes four times per hour: at most 768 minutes, or 53.3% of a day, if every run starts and completes. It is sampled live coverage, not a continuous listener, daily replay, or durable CT source. GitHub Actions can start late, drop a scheduled event, or fail, so actual listening time can be substantially lower. The dashboard publishes the latest attempt's actual timing, aggregate counts, outcome, schedule delay, last success, and freshness without retaining raw certificate names.
@@ -59,16 +64,22 @@ The hunt-state file is workflow evidence, not bootstrap configuration: its first
 | --- | --- |
 | `public/data/radar.json` | Current checked and bounded dashboard snapshot |
 | `public/data/radar.stix.json` | Current observation-only STIX 2.1 Bundle; raw domain-name observables, not a verdict or TAXII endpoint |
-| `public/data/radar-reviewed.stix.json` | Analyst-reviewed STIX 2.1 Indicators with explicit expiry and revocation semantics; not an automated blocklist |
+| `public/data/radar-reviewed.stix.json` | Analyst-reviewed STIX 2.1 Indicators with explicit expiry/revocation semantics and linked public-history Sightings when available; not an automated blocklist |
 | `public/data/radar.index.json` and `radar-shards/` | Complete accepted newest-first signal set in independently hashed 256 KiB shards |
 | `public/data/history.json` | Bounded public candidate-history projection |
 | `public/data/collection-health.json` | Latest bounded CertStream attempt health; no raw candidates |
 | `public/data/pipeline-health.json` | Sanitized 24-hour and seven-day collection, screening, enrichment, and publication aggregates |
 | `public/data/changes.json` | Aggregate first-publication, reobservation, and status-change view |
 | `public/data/related-observations.json` | Typed shared-evidence associations with explicit non-attribution semantics |
+| `public/data/events.json` | Defanged, newest-first, 30-day publication event stream, bounded to 1,000 first-publication, reobservation, status-change, and review-retraction events |
+| `public/data/events.atom.xml`, `events.rss.xml`, and `events.feed.json` | Atom, RSS 2.0, and JSON Feed 1.1 views of the same bounded global event stream |
+| `public/data/brand-feeds.json` and `public/data/brands/<slug>/` | Deterministic directory and Atom/RSS/JSON Feed views for every reviewed registry brand; an empty feed means no event in the bounded window, not no phishing activity |
+| `public/data/daily-trends.json` | Sparse, coverage-aware UTC discovery series for up to 365 days; not a phishing-prevalence measure |
+| `public/data/quality-metrics.json` | Aggregate public-review sample, coverage, latency, and exclusion measures; deliberately does not claim precision from an incomplete review sample |
 | `public/data/feed-manifest.json` and `*.sha256` | Generator revision, copied source `fetchedAt` timestamps, counts, artifact lengths, and release-integrity digests for the atomic hourly release |
 | `public/data/schemas/` | Versioned Draft 2020-12 schemas used by the publisher and CI |
 | `public/data/signals/` | Lazy, per-signal CertStream/URLScan evidence and optional DNS/RDAP context; 16 KiB each and 3 MiB in aggregate |
+| GitHub Releases tagged `radar-data-YYYY-Www` | Reproducible weekly package, standalone file manifest, `SHA256SUMS`, and GitHub workflow-provenance attestation |
 | `data/brands-lt.json` | Reviewed Lithuanian brand and official-domain registry |
 | `data/certstream/` | Date-partitioned successful sample metadata and defanged CT candidates |
 | `data/ct-search/` | Bounded `crt.sh` provider state, rotating query cursor, and per-brand result checkpoints; no unpublished domain names |
@@ -80,6 +91,8 @@ The hunt-state file is workflow evidence, not bootstrap configuration: its first
 Public snapshots and their schemas are documented in the [data contract](docs/DATA-CONTRACT.md). Third-party observations and screenshots remain subject to their source terms; see [data licensing and attribution](DATA-LICENSE.md).
 
 The four-per-hour `collection-health.json` document is intentionally outside the hourly release manifest and checksum set because it is replaced and deployed by the independent CertStream workflow. Its synchronized, bounded aggregate appears in `pipeline-health.json`. This prevents a newer health measurement from making an otherwise atomic hourly manifest stale.
+
+The Monday release workflow freezes the checked-in public data tree at one commit, excluding only that independently changing health document. Release immutability is a repository setting, not something the workflow silently enables. HECAVEX must enable it before setting the workflow's operator-confirmation variable; published weeks are then protected against tag or asset replacement and independently attested. See [weekly dataset releases](docs/DATASET-RELEASES.md).
 
 ## HECAVEX maintenance
 
@@ -113,6 +126,7 @@ That gate covers Python and frontend linting and type checks; the production bui
 - [Data sources and provenance](docs/DATA-SOURCES.md)
 - [Detection and brand matching](docs/DETECTION.md)
 - [Candidate history](docs/HISTORY.md)
+- [Weekly dataset releases](docs/DATASET-RELEASES.md)
 - [Private review workflow](docs/REVIEW-WORKFLOW.md)
 - [Deployment and schedules](docs/DEPLOYMENT.md)
 - [Performance budgets](docs/PERFORMANCE.md)

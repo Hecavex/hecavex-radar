@@ -71,7 +71,7 @@ type DetailLoadState =
   | { status: "ready"; detail: SignalDetail }
   | { status: "error" };
 
-function DetailItem({ label, children }: { label: string; children: ReactNode }) {
+export function DetailItem({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
       <dt>{label}</dt>
@@ -80,7 +80,7 @@ function DetailItem({ label, children }: { label: string; children: ReactNode })
   );
 }
 
-function CopyableValue({ value, label }: { value: string; label: string }) {
+export function CopyableValue({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -168,7 +168,7 @@ function CertificateDetail({ certificate }: { certificate: SignalCertificateDeta
   );
 }
 
-function ObservationDetail({ observation }: { observation: SignalDetailObservation }) {
+export function ObservationDetail({ observation }: { observation: SignalDetailObservation }) {
   return (
     <article className="detail-observation">
       <header>
@@ -243,7 +243,7 @@ function ObservationDetail({ observation }: { observation: SignalDetailObservati
   );
 }
 
-function DomainContext({ context }: { context: SignalDomainContext }) {
+export function DomainContext({ context }: { context: SignalDomainContext }) {
   const recordGroups = [
     ["A", context.dns.a],
     ["AAAA", context.dns.aaaa],

@@ -78,6 +78,36 @@ For archive-backed inputs, `healthy` confirms that the publisher loaded and vali
 
 Versioned Draft 2020-12 JSON Schemas are published below `public/data/schemas/`. Synchronization validates generated JSON before publication, CI revalidates the checked-in artifacts and all index/manifest digests, and the observation and reviewed STIX files additionally pass the standard STIX 2.1 validator. A digest proves byte integrity and release consistency, not that a candidate is malicious.
 
+## Publication event and syndication feeds
+
+`public/data/events.json` is the canonical defanged publication-event record used by the `/changes/` interface and all
+syndication views. Its window is the 30 days ending at `generatedAt`. It is ordered newest first, retains at most 1,000
+events, and exposes `totalAvailable` plus `truncated` so a consumer can distinguish a complete bounded window from a
+size-limited view. Event types are:
+
+- `first-publication`: the first explicit public status transition for a signal;
+- `reobservation`: a later source observation for an already published signal;
+- `status-change`: an explicit transition with a non-null previous status; and
+- `retraction`: an intentionally exported revoked analyst assessment, not an inference from disappearance.
+
+Each event contains a deterministic 32-character ID, canonical time, public signal ID and stable retained signal path,
+defanged domain, reviewed registry brand, current and previous status where applicable, and supported public source labels.
+It contains no clickable candidate URL, query, fragment, analyst identity, or private note. Absence from a later collection
+window never creates an event.
+
+`public/data/events.atom.xml`, `public/data/events.rss.xml`, and `public/data/events.feed.json` are Atom, RSS 2.0, and JSON
+Feed 1.1 projections of exactly the selected global event set. Feed links are absolute same-origin HTTPS URLs to signal
+records retained under the public history policy;
+indicator text remains defanged. The event JSON is capped at 1 MiB and each syndication document at 2 MiB.
+
+`public/data/brand-feeds.json` is the deterministic directory for per-brand Atom, RSS, and JSON Feed files below
+`public/data/brands/<slug>/`. A feed is emitted for every reviewed registry brand, including a valid empty feed. Each brand
+feed is only a filtered view of the already bounded global event set, never a separate collection result. Consequently, an
+empty brand feed means no publishable event for that brand in the sampled 30-day window; it does not mean the brand had no
+phishing activity. Slugs are normalized, collision-safe publication identifiers and must be read from the directory rather
+than reconstructed by a consumer. The directory is capped at 128 brands and 256 KiB. Every global and per-brand feed is
+listed in the atomic release manifest and has an adjacent checksum.
+
 ## STIX 2.1 projection
 
 `public/data/radar.stix.json` is a static STIX 2.1 Bundle generated from exactly the same accepted signal list as
@@ -130,11 +160,24 @@ untrusted data and must not browse, resolve, scan, or block it without independe
 
 ### Analyst-reviewed Indicator projection
 
-`public/data/radar-reviewed.stix.json` is a separate static STIX 2.1 Bundle. It never promotes an automated observation merely because its matcher score is high. An Indicator appears only after an operator records an explicit `confirmed-suspicious` assessment and intentionally exports the sanitized review ledger. Inconclusive reviews and unreviewed candidates are omitted.
+`public/data/radar-reviewed.stix.json` is a separate static STIX 2.1 Bundle. It never promotes an automated observation merely because its matcher score is high. An Indicator appears only after an operator records an explicit `confirmed-suspicious` assessment and intentionally exports the sanitized review ledger. Inconclusive reviews and unreviewed candidates are omitted. When there are no exported confirmations or retained revoked Indicator lifecycles, the Bundle validly contains only the HECAVEX Radar Identity.
 
 Each published Indicator has a deterministic ID derived from the public signal ID and first confirmation boundary, a STIX domain-name pattern, `valid_from` equal to that confirmation time, and the bounded analyst expiry as `valid_until`. A correction keeps the same Indicator ID and `created` value while advancing `modified`. A retraction preserves the Indicator and ID with `revoked: true`; it does not erase previously distributed intelligence. A later fresh confirmation starts a new Indicator lifecycle and ID. Expiry does not silently become revocation: after expiry the dashboard state returns to `needs-review`, while the Indicator retains its past `valid_until` boundary.
 
 Indicators use the HECAVEX Radar Identity through `created_by_ref` and the standard TLP:CLEAR marking reference. Standard STIX `confidence` is emitted only when the analyst explicitly records a bounded analyst-confidence value. It is separate from the automated `matchScore`. Controlled custom properties carry the public signal ID, brand, review disposition and reason, evidence-code list, and Lithuanian relevance. The feed is a static download, not TAXII, an automated blocklist, or a direction to visit the listed host.
+
+When an Indicator's signal ID and domain match a current signal or retained public history summary, the Bundle also contains
+one deterministic STIX 2.1 `sighting` object tied to that exact Indicator lifecycle through `sighting_of_ref`. Its
+`first_seen`, `last_seen`, and `count` come from the bounded public summary. A current row without a history count contributes
+`1`; when current and retained summaries overlap, publication takes the broadest interval and the greatest available count
+rather than adding overlapping totals. The Sighting carries the same Identity and TLP:CLEAR marking plus
+`x_hecavex_com_signal_id` and `x_hecavex_com_observation_scope: "public-history-summary"`. No Sighting is emitted when no
+matching public observation summary exists.
+
+A Sighting is observation context, not an additional analyst confirmation, a claim that the candidate is currently live,
+or an exact event ledger. A revoked Indicator can retain a Sighting because retraction does not erase the fact that the
+signal was previously observed. Sighting IDs are derived from the Indicator ID, so a later fresh confirmation lifecycle has
+its own Indicator and Sighting pair.
 
 ## Per-signal detail sidecars
 
@@ -330,11 +373,27 @@ Synchronization accepts only rows no older than 14 days by default and only whil
 snapshot. The collector sends no HTTP request to the candidate webpage. It performs DNS-over-HTTPS questions and
 IANA-bootstrapped RDAP lookups only, and it retains no registrant PII or raw provider response.
 
-## Rolling pipeline health and change aggregates
+## Rolling pipeline health, changes, trends, and review quality
 
 `public/data/pipeline-health.json` provides bounded 24-hour and seven-day aggregate views across collection, screening, enrichment, and publication. It includes scheduled versus recorded CertStream attempts, actual listening time and listening coverage, messages, DNS names, matches, new archive rows, URLScan enrichment-section counts, history-event counts, and current source state. Its current section can also expose a sanitized `ctSearch` latest-run summary and a sanitized `domainContext` latest-run summary with retained record count. Those summaries omit per-query names, cursors, candidate IDs, domains, DNS answers, and RDAP values. Expected live-stream slots and the scheduled-listening ceiling come from the latest published collector interval and duration. Indexed CT search is reported separately and never added to live-listening coverage. Missing workflow history cannot be reconstructed; only successful attempt rows committed to the bounded public archive are counted.
 
 `public/data/changes.json` separates first publication, actual status change, observation, and reobservation counts. It groups only bounded totals by source, status, controlled reason, and registry brand. It contains no domain, URL, signal ID, private review note, or detector payload; signal-level public chronology remains in `history.json`.
+
+`public/data/daily-trends.json` provides a sparse UTC series covering at most 365 days. For each retained day it separates
+recorded CertStream schedule/listening coverage from discovery activity, marks a still-open UTC day as partial, and reports
+event, unique-signal, observation, reobservation, first-publication, and status-change counts. Brand, source, evidence-tier,
+and controlled-reason facets count unique signals within that day. Dates with neither a recorded attempt nor a discovery
+event are omitted and counted in `omittedZeroDays`; consumers can derive expected live-listener slots from
+`collectorSchedule`. The series measures Radar activity under the coverage printed beside it, not Lithuanian phishing
+prevalence or total incident volume.
+
+`public/data/quality-metrics.json` describes only the bounded public analyst-review sample for a window of at most 365 days.
+It reports sanitized assessment outcomes and facets, coverage among eligible signals represented in public history,
+first-observation-to-review latency when supportable, and current exported exclusion-policy counts. Current suppressions
+have no public decision timestamp, so they are not silently inserted into timed review metrics. The contract deliberately
+publishes `precision.available: false`, a zero sample, and a null estimate because the public decisions do not form a
+complete dated positive-and-negative sample. These values must not be presented as Radar-wide accuracy or false-positive
+rates. The document contains aggregate counters only, never a domain, URL, signal ID, analyst identity, or private note.
 
 ## Related observations
 
