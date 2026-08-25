@@ -3,7 +3,6 @@ import { createRoot, hydrateRoot } from "react-dom/client";
 
 import { decodeSnapshotBootstrap } from "../lib/snapshotBootstrap.ts";
 import "../styles.css";
-import "./ltPages.css";
 import { LtRadarApp } from "./LtRadarApp.tsx";
 
 const root = document.getElementById("root");

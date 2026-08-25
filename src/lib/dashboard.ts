@@ -26,23 +26,50 @@ const EVIDENCE_FILTERS = new Set<Filters["evidence"]>([
 ]);
 const SORTS = new Set<Filters["sort"]>(["last-seen-desc", "first-seen-desc", "match-score-desc", "brand-asc"]);
 
-const REASON_EXPLANATIONS: Record<ReasonCode, string> = {
-  "brand-domain-match": "The observed hostname matched a reviewed brand-domain rule.",
-  "brand-title-match": "A public page title independently referenced the same brand.",
-  "provider-verdict": "A public URLScan result supplied a phishing-related provider assessment.",
-  "primary-html-hash-pivot": "The primary HTML hash matched independently observed infrastructure.",
-  "brand-exact-token": "The certificate name contained an exact reviewed brand token.",
-  "brand-joined-affix": "A reviewed brand token was joined to another hostname term.",
-  "brand-split-token": "Separated hostname labels reconstructed a reviewed brand token.",
-  "brand-lookalike-edit": "The hostname was within the reviewed edit-distance boundary for the brand.",
-  "suspicious-context": "The brand-like term appeared with a reviewed phishing-context word.",
-  punycode: "The observed hostname used an internationalized punycode label.",
-  "different-tld": "The brand-like hostname used a top-level domain outside the reviewed official set.",
-  "multiple-hyphens": "The hostname used repeated separators around brand-like terms.",
-  "hecavex-public-export": "A sanitized HECAVEX review export supplied this candidate.",
-  "manual-review": "A local analyst review record contributed bounded public provenance.",
-  "first-publication": "This is the first retained publication event for the candidate.",
-  "source-status-change": "A configured source reported a lifecycle-state change.",
+export type DashboardLanguage = "en" | "lt";
+
+const REASON_EXPLANATIONS: Record<DashboardLanguage, Record<ReasonCode, string>> = {
+  en: {
+    "brand-domain-match": "The observed hostname matched a reviewed brand-domain rule.",
+    "brand-title-match": "A public page title independently referenced the same brand.",
+    "provider-verdict": "A public URLScan result supplied a phishing-related provider assessment.",
+    "primary-html-hash-pivot": "The primary HTML hash matched independently observed infrastructure.",
+    "brand-exact-token": "The certificate name contained an exact reviewed brand token.",
+    "brand-joined-affix": "A reviewed brand token was joined to another hostname term.",
+    "brand-split-token": "Separated hostname labels reconstructed a reviewed brand token.",
+    "brand-lookalike-edit": "The hostname was within the reviewed edit-distance boundary for the brand.",
+    "suspicious-context": "The brand-like term appeared with a reviewed phishing-context word.",
+    punycode: "The observed hostname used an internationalized punycode label.",
+    "different-tld": "The brand-like hostname used a top-level domain outside the reviewed official set.",
+    "multiple-hyphens": "The hostname used repeated separators around brand-like terms.",
+    "hecavex-public-export": "A sanitized HECAVEX review export supplied this candidate.",
+    "manual-review": "A local analyst review record contributed bounded public provenance.",
+    "first-publication": "This is the first retained publication event for the candidate.",
+    "source-status-change": "A configured source reported a lifecycle-state change.",
+  },
+  lt: {
+    "brand-domain-match": "Stebėtas domeno vardas atitiko peržiūrėtą prekės ženklo domeno taisyklę.",
+    "brand-title-match": "Viešo puslapio antraštėje nepriklausomai paminėtas tas pats prekės ženklas.",
+    "provider-verdict": "Viešas URLScan rezultatas pateikė su sukčiavimu susijusį paslaugos teikėjo vertinimą.",
+    "primary-html-hash-pivot": "Pagrindinio HTML maišos reikšmė sutapo su nepriklausomai stebėta infrastruktūra.",
+    "brand-exact-token": "Sertifikato varde buvo tikslus peržiūrėtas prekės ženklo žodis.",
+    "brand-joined-affix": "Peržiūrėtas prekės ženklo žodis buvo sujungtas su kitu domeno vardo elementu.",
+    "brand-split-token": "Atskiros domeno vardo dalys sudarė peržiūrėtą prekės ženklo žodį.",
+    "brand-lookalike-edit": "Domeno vardas pateko į peržiūrėtą prekės ženklo redagavimo atstumo ribą.",
+    "suspicious-context": "Į prekės ženklą panašus terminas buvo vartojamas su peržiūrėtu sukčiavimo konteksto žodžiu.",
+    punycode: "Stebėtame domeno varde naudota tarptautinio domeno Punycode forma.",
+    "different-tld": "Į prekės ženklą panašus domenas naudojo aukščiausio lygio domeną už peržiūrėto oficialaus rinkinio ribų.",
+    "multiple-hyphens": "Domeno varde aplink į prekės ženklą panašius terminus pakartotinai naudoti brūkšneliai.",
+    "hecavex-public-export": "Šį kandidatą pateikė išvalytas viešas HECAVEX peržiūros eksportas.",
+    "manual-review": "Ribotą viešą kilmės informaciją papildė vietinis analitiko peržiūros įrašas.",
+    "first-publication": "Tai pirmasis išsaugotas kandidato paskelbimo įvykis.",
+    "source-status-change": "Sukonfigūruotas šaltinis pranešė apie gyvavimo ciklo būsenos pasikeitimą.",
+  },
+};
+
+const EVIDENCE_TIER_LABELS: Record<DashboardLanguage, Record<EvidenceTier, string>> = {
+  en: { "name-only": "Observed", corroborated: "Corroborated", reviewed: "Reviewed" },
+  lt: { "name-only": "Stebėta", corroborated: "Patvirtinta papildomu šaltiniu", reviewed: "Peržiūrėta" },
 };
 
 function includes(value: string | null, query: string): boolean {
@@ -70,14 +97,12 @@ export function signalEvidenceTier(signal: RadarSignal): EvidenceTier {
   return corroborated ? "corroborated" : "name-only";
 }
 
-export function evidenceTierLabel(tier: EvidenceTier): string {
-  if (tier === "name-only") return "Observed";
-  if (tier === "reviewed") return "Reviewed";
-  return "Corroborated";
+export function evidenceTierLabel(tier: EvidenceTier, language: DashboardLanguage = "en"): string {
+  return EVIDENCE_TIER_LABELS[language][tier];
 }
 
-export function explainReasons(signal: RadarSignal): string[] {
-  return (signal.reasonCodes ?? []).map((reason) => REASON_EXPLANATIONS[reason]);
+export function explainReasons(signal: RadarSignal, language: DashboardLanguage = "en"): string[] {
+  return (signal.reasonCodes ?? []).map((reason) => REASON_EXPLANATIONS[language][reason]);
 }
 
 function cutoffForRange(range: Filters["timeRange"], now: number): number | null {

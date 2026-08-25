@@ -17,6 +17,7 @@ const analyticsToken = process.env.HECAVEX_ANALYTICS_TOKEN?.trim() ?? "";
 const widths = [320, 360, 390, 768, 1024, 1280, 1440];
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
+  { path: "/lt/", marker: "Atrankinis aptikimas, o ne nuolatinė stebėsena" },
   { path: "/history/", marker: "Candidate history" },
   { path: "/brands/", marker: "Reviewed Lithuanian brand registry" },
   { path: "/changes/", marker: "What changed" },
@@ -30,7 +31,20 @@ const pages = [
 ];
 const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
 const productNavigation = ["Overview", "Changes", "Brands", "Trends", "Associations", "Tools", "Methodology", "Docs"];
-const mobileNavigation = [...productNavigation, "Lietuviškai", "Source", ...portfolioNavigation];
+const lithuanianProductNavigation = ["Apžvalga", "Pokyčiai", "Prekių ženklai", "Tendencijos", "Sąsajos", "Įrankiai", "Metodologija", "Dokumentacija"];
+
+function productNavigationForPath(path) {
+  return path.startsWith("/lt/") ? lithuanianProductNavigation : productNavigation;
+}
+
+function mobileNavigationForPath(path) {
+  return [
+    ...productNavigationForPath(path),
+    path.startsWith("/lt/") ? "English" : "Lietuviškai",
+    "Source",
+    ...portfolioNavigation,
+  ];
+}
 const publicArtifactRawBytes = 512 * 1024;
 const stixBundleRawBytes = 2 * 1024 * 1024;
 const signalDetailFileRawBytes = 16 * 1024;
@@ -378,7 +392,7 @@ function verifyBuiltHtml() {
     assert(document.querySelector(`.brand[href="https://hecavex.com/${lithuanian ? "lt" : "en"}/"]`), `${route} does not link the HECAVEX brand to the correct Research edition.`);
     assert(document.querySelector(`.product-identity[href="${lithuanian ? "/lt/" : "/"}"]`), `${route} does not link the Radar identity to its localized overview.`);
     assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
-    assert(document.querySelectorAll(".product-navigation a").length === (lithuanian ? 4 : 8), `${route} exposes the wrong Radar navigation set.`);
+    assert(document.querySelectorAll(".product-navigation a").length === 8, `${route} exposes the wrong Radar navigation set.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
     const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
       script.textContent.includes("https://static.cloudflareinsights.com/beacon.min.js"),
@@ -398,27 +412,39 @@ function verifyBuiltHtml() {
     const portfolioLabels = [...document.querySelectorAll(".portfolio-navigation a")].map((anchor) => anchor.textContent?.trim());
     const productLabels = [...document.querySelectorAll(".product-navigation a")].map((anchor) => anchor.textContent?.trim());
     assert(JSON.stringify(portfolioLabels) === JSON.stringify(portfolioNavigation), `${route} changes the portfolio navigation order.`);
-    const expectedProductNavigation = lithuanian
-      ? ["Apžvalga", "Pokyčiai", "Prekių ženklai", "Metodologija"]
-      : productNavigation;
+    const expectedProductNavigation = productNavigationForPath(route);
     assert(JSON.stringify(productLabels) === JSON.stringify(expectedProductNavigation), `${route} changes the Radar navigation order.`);
     const expectedLocalPage = new Map([
       ["/", "Overview"],
+      ["/lt/", "Apžvalga"],
       ["/history/", "Changes"],
       ["/changes/", "Changes"],
+      ["/lt/pokyciai/", "Pokyčiai"],
       ["/brands/", "Brands"],
+      ["/lt/prekes-zenklai/", "Prekių ženklai"],
       ["/trends/", "Trends"],
       ["/associations/", "Associations"],
       ["/tools/", "Tools"],
       ["/dataset/", "Docs"],
       ["/methodology/", "Methodology"],
+      ["/lt/metodologija/", "Metodologija"],
       ["/docs/", "Docs"],
-    ]).get(route) ?? (route.startsWith("/signals/") ? "Overview" : route.startsWith("/brands/") ? "Brands" : undefined);
+    ]).get(route) ?? (
+      route.startsWith("/signals/")
+        ? "Overview"
+        : route.startsWith("/lt/signalai/")
+          ? "Apžvalga"
+          : route.startsWith("/brands/")
+            ? "Brands"
+            : route.startsWith("/lt/prekes-zenklai/")
+              ? "Prekių ženklai"
+              : undefined
+    );
     assert(
       document.querySelector('.portfolio-navigation a[aria-current="page"]')?.textContent?.trim() === "Radar",
       `${route} does not identify Radar as the active portfolio product.`,
     );
-    if (!lithuanian && !notFound) assert(document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage, `${route} does not identify ${expectedLocalPage} as the active Radar page.`);
+    if (!notFound) assert(document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage, `${route} does not identify ${expectedLocalPage} as the active Radar page.`);
     assert(document.querySelector('meta[name="description"]')?.content, `${route} has no description.`);
     if (notFound) {
       assert(document.querySelector('meta[name="robots"]')?.content === "noindex, follow", "Custom 404 page must remain noindex, follow.");
@@ -428,7 +454,14 @@ function verifyBuiltHtml() {
       assert(document.querySelector('link[rel="canonical"]')?.href, `${route} has no canonical URL.`);
     }
     assert(document.querySelector('meta[property="og:image"]')?.content, `${route} has no Open Graph image.`);
-    if (route === "/" || route.startsWith("/signals/") || route.startsWith("/brands/")) {
+    if (
+      route === "/" ||
+      route === "/lt/" ||
+      route.startsWith("/signals/") ||
+      route.startsWith("/lt/signalai/") ||
+      route.startsWith("/brands/") ||
+      route.startsWith("/lt/prekes-zenklai/")
+    ) {
       assert(document.querySelector('meta[name="twitter:card"]')?.content, `${route} has no Twitter card.`);
     }
     const jsonLd = document.querySelector('script[type="application/ld+json"]')?.textContent;
@@ -461,12 +494,29 @@ function verifyBuiltHtml() {
           serializedStructuredData.includes("DNS-over-HTTPS and RDAP context"),
         "Radar Dataset metadata omits a declared collection method or machine-readable distribution.",
       );
-      assert(document.querySelector(".activity-strip"), "Radar overview omits the compact activity strip.");
-      assert(document.querySelector(".export-actions"), "Radar overview omits defanged filtered-view exports.");
-      assert(document.querySelector(".filter-privacy-note")?.textContent?.includes("never added to the shared URL"), "Radar overview does not disclose local-only free-text search.");
-      assert(document.querySelector('tbody tr[id^="signal-"] .signal-deep-link[href^="/signals/"]'), "Radar overview omits durable per-signal links.");
-      assert(document.querySelector('tbody tr[id^="signal-"] button[aria-haspopup="dialog"]'), "Radar overview omits in-page signal detail controls.");
-      assert(document.querySelector(".radar-route-grid"), "Radar overview omits dedicated exploration routes.");
+    }
+    if (route === "/" || route === "/lt/") {
+      const signalPrefix = lithuanian ? "/lt/signalai/" : "/signals/";
+      const privacyMarker = lithuanian ? "nėra pridedamas prie bendrinamo URL" : "never added to the shared URL";
+      assert(document.querySelector(".hero.radar-hero"), `${route} omits the shared Radar hero.`);
+      assert(document.querySelector(".activity-strip"), `${route} omits the compact activity strip.`);
+      assert(document.querySelector(".filter-shell"), `${route} omits the shared candidate filters.`);
+      assert(document.querySelector(".signal-table"), `${route} omits the shared signal table.`);
+      assert(document.querySelector(".export-actions"), `${route} omits defanged filtered-view exports.`);
+      assert(
+        document.querySelector(".filter-privacy-note")?.textContent?.includes(privacyMarker),
+        `${route} does not disclose local-only free-text search.`,
+      );
+      assert(
+        document.querySelector(`tbody tr[id^="signal-"] .signal-deep-link[href^="${signalPrefix}"]`),
+        `${route} omits localized durable per-signal links.`,
+      );
+      assert(
+        document.querySelector('tbody tr[id^="signal-"] button[aria-haspopup="dialog"]'),
+        `${route} omits in-page signal detail controls.`,
+      );
+      assert(document.querySelector(".radar-route-grid"), `${route} omits dedicated exploration routes.`);
+      assert(document.querySelector(".collection-disclosure"), `${route} omits the collection disclosure.`);
     }
     if (route === "/brands/") {
       assert(document.querySelectorAll(".brand-table tbody tr").length >= 40, "Detection scope does not prerender the reviewed brand registry.");
@@ -1280,6 +1330,7 @@ async function focusWithTab(page, locator, limit = 12) {
 }
 
 async function verifyMobileKeyboardNavigation(page, entry, width) {
+  const expectedNavigation = mobileNavigationForPath(entry.path);
   const summary = page.locator(".mobile-navigation summary");
   assert(await focusWithTab(page, summary), `${entry.path} mobile menu cannot be reached with Tab at ${width}px.`);
   const summaryFocus = await summary.evaluate((element) => {
@@ -1294,7 +1345,7 @@ async function verifyMobileKeyboardNavigation(page, entry, width) {
   await page.keyboard.press("Enter");
   assert(await page.locator(".mobile-navigation").evaluate((element) => element.hasAttribute("open")), `${entry.path} mobile menu does not open with Enter at ${width}px.`);
 
-  for (const label of mobileNavigation) {
+  for (const label of expectedNavigation) {
     await page.keyboard.press("Tab");
     const active = await page.evaluate(() => ({
       label: document.activeElement?.textContent?.replace(/\s+/gu, " ").trim(),
@@ -1345,25 +1396,35 @@ async function verifyAccessibility(browser, origin, width) {
   }
 }
 
-async function verifySignalDialog(browser, origin, width) {
+async function verifySignalDialog(browser, origin, width, language) {
+  const rootPath = language === "lt" ? "/lt/" : "/";
+  const permanentPrefix = language === "lt" ? "/lt/signalai/" : "/signals/";
+  const closeLabel = language === "lt" ? "Užverti signalo informaciją" : "Close signal details";
   const context = await browser.newContext({ viewport: { width, height: 900 }, bypassCSP: true });
   const page = await context.newPage();
   await page.route("https://static.cloudflareinsights.com/beacon.min.js", fulfillAnalyticsScript);
   try {
-    await page.goto(`${origin}/`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}${rootPath}`, { waitUntil: "networkidle" });
     const firstRow = page.locator('.signal-table tbody tr[id^="signal-"]').first();
     const candidateTrigger = firstRow.locator("button.candidate-link");
     const timelineTrigger = firstRow.locator("button.record-link");
     const permanentPath = await firstRow.locator("a.signal-deep-link").getAttribute("href");
-    assert(permanentPath?.startsWith("/signals/"), `Radar signal has no permanent record path at ${width}px.`);
+    assert(
+      permanentPath?.startsWith(permanentPrefix),
+      `${rootPath} signal has no localized permanent record path at ${width}px.`,
+    );
 
     await candidateTrigger.click();
     const dialog = page.locator('[role="dialog"]');
-    assert(await dialog.isVisible(), `Radar candidate control did not open a signal dialog at ${width}px.`);
-    const closeButton = dialog.locator('button[aria-label="Close signal details"]');
-    assert(await closeButton.evaluate((element) => element === document.activeElement), `Radar signal dialog did not place focus on Close at ${width}px.`);
+    assert(await dialog.isVisible(), `${rootPath} candidate control did not open a signal dialog at ${width}px.`);
+    const closeButton = dialog.locator(`button[aria-label="${closeLabel}"]`);
+    assert(await closeButton.count() === 1, `${rootPath} signal dialog does not expose its localized close label at ${width}px.`);
+    assert(
+      await closeButton.evaluate((element) => element === document.activeElement),
+      `${rootPath} signal dialog did not place focus on its localized Close control at ${width}px.`,
+    );
     const relevanceRow = dialog.locator(".candidate-provenance-full");
-    assert(await relevanceRow.count() === 1, `Radar signal dialog has no full-width Lithuanian relevance row at ${width}px.`);
+    assert(await relevanceRow.count() === 1, `${rootPath} signal dialog has no full-width Lithuanian relevance row at ${width}px.`);
     const relevanceLayout = await relevanceRow.evaluate((element) => {
       const row = element.getBoundingClientRect();
       const grid = element.parentElement?.getBoundingClientRect();
@@ -1373,15 +1434,15 @@ async function verifySignalDialog(browser, origin, width) {
       relevanceLayout &&
         Math.abs(relevanceLayout.rowLeft - relevanceLayout.gridLeft) <= 2 &&
         Math.abs(relevanceLayout.rowRight - relevanceLayout.gridRight) <= 2,
-      `Lithuanian relevance does not span the provenance grid at ${width}px: ${JSON.stringify(relevanceLayout)}.`,
+      `${rootPath} Lithuanian relevance does not span the provenance grid at ${width}px: ${JSON.stringify(relevanceLayout)}.`,
     );
     assert(
       await dialog.locator("a.permanent-record-link").getAttribute("href") === permanentPath,
-      `Radar signal dialog does not preserve its permanent record path at ${width}px.`,
+      `${rootPath} signal dialog does not preserve its permanent record path at ${width}px.`,
     );
     if (await dialog.locator(".signal-intelligence").count()) {
       await dialog.locator(".detail-observations, .detail-state.error").first().waitFor({ state: "visible" });
-      assert(!(await dialog.locator(".detail-state.error").count()), `Radar signal detail sidecar failed to load at ${width}px.`);
+      assert(!(await dialog.locator(".detail-state.error").count()), `${rootPath} signal detail sidecar failed to load at ${width}px.`);
     }
 
     await page.addScriptTag({ content: axe.source });
@@ -1394,18 +1455,18 @@ async function verifySignalDialog(browser, origin, width) {
         .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
         .map((violation) => ({ id: violation.id, impact: violation.impact, targets: violation.nodes.map((node) => node.target) }));
     });
-    assert(violations.length === 0, `Open Radar signal dialog has serious accessibility violations at ${width}px: ${JSON.stringify(violations)}`);
+    assert(violations.length === 0, `${rootPath} open signal dialog has serious accessibility violations at ${width}px: ${JSON.stringify(violations)}`);
 
     await page.keyboard.press("Escape");
-    assert(!(await dialog.count()), `Radar signal dialog did not close with Escape at ${width}px.`);
-    assert(await candidateTrigger.evaluate((element) => element === document.activeElement), `Radar signal dialog did not restore candidate focus at ${width}px.`);
+    assert(!(await dialog.count()), `${rootPath} signal dialog did not close with Escape at ${width}px.`);
+    assert(await candidateTrigger.evaluate((element) => element === document.activeElement), `${rootPath} signal dialog did not restore candidate focus at ${width}px.`);
 
     await timelineTrigger.click();
     const reopenedDialog = page.locator('[role="dialog"]');
-    assert(await reopenedDialog.isVisible(), `Radar timeline control did not open a signal dialog at ${width}px.`);
-    await reopenedDialog.locator('button[aria-label="Close signal details"]').click();
-    assert(!(await reopenedDialog.count()), `Radar signal dialog did not close from its Close control at ${width}px.`);
-    assert(await timelineTrigger.evaluate((element) => element === document.activeElement), `Radar signal dialog did not restore timeline focus at ${width}px.`);
+    assert(await reopenedDialog.isVisible(), `${rootPath} timeline control did not open a signal dialog at ${width}px.`);
+    await reopenedDialog.locator(`button[aria-label="${closeLabel}"]`).click();
+    assert(!(await reopenedDialog.count()), `${rootPath} signal dialog did not close from its localized Close control at ${width}px.`);
+    assert(await timelineTrigger.evaluate((element) => element === document.activeElement), `${rootPath} signal dialog did not restore timeline focus at ${width}px.`);
   } finally {
     await context.close();
   }
@@ -1493,6 +1554,20 @@ async function verifyInBrowser() {
           const longestHost = hostNames.sort((left, right) => (right.textContent?.length ?? 0) - (left.textContent?.length ?? 0))[0];
           const hostingCellRect = longestHost?.closest("td")?.getBoundingClientRect();
           const hostStyle = longestHost ? getComputedStyle(longestHost) : null;
+          const overviewBlocks = [
+            ["hero", ".radar-hero"],
+            ["activity", ".activity-strip"],
+            ["filters", ".filter-shell"],
+            ["table", ".table-panel"],
+            ["exports", ".export-actions"],
+            ["routes", ".radar-route-grid"],
+            ["disclosure", ".collection-disclosure"],
+          ].map(([name, selector]) => {
+            const rect = document.querySelector(selector)?.getBoundingClientRect();
+            return rect
+              ? { name, width: rect.width, height: rect.height, left: rect.left, right: rect.right }
+              : { name, width: 0, height: 0, left: 0, right: 0 };
+          });
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
@@ -1530,8 +1605,10 @@ async function verifyInBrowser() {
             hostOverflowY: hostStyle?.overflowY ?? "",
             hostClientHeight: longestHost?.clientHeight ?? 0,
             hostScrollHeight: longestHost?.scrollHeight ?? 0,
+            overviewBlocks,
           };
         });
+        const overview = entry.path === "/" || entry.path === "/lt/";
         assert(
           layout.documentWidth <= layout.clientWidth + 1 && layout.bodyWidth <= layout.clientWidth + 1,
           `${entry.path} overflows horizontally at ${width}px (${layout.documentWidth}/${layout.bodyWidth} > ${layout.clientWidth}).`,
@@ -1546,7 +1623,19 @@ async function verifyInBrowser() {
         } else {
           assert(layout.productHeight === 0, `${entry.path} exposes the desktop product row at ${width}px.`);
         }
-        if (width === 1440 && entry.path === "/") {
+        if (overview) {
+          for (const block of layout.overviewBlocks) {
+            assert(
+              block.width > 0 && block.height > 0,
+              `${entry.path} ${block.name} block has no rendered geometry at ${width}px.`,
+            );
+            assert(
+              block.left >= -1 && block.right <= layout.clientWidth + 1,
+              `${entry.path} ${block.name} block escapes the viewport at ${width}px (${block.left}-${block.right}).`,
+            );
+          }
+        }
+        if (width === 1440 && overview) {
           assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
           assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
           assert(
@@ -1560,7 +1649,7 @@ async function verifyInBrowser() {
             "Radar hosting evidence is clipped instead of visibly wrapped.",
           );
         }
-        if (width <= 760 && entry.path === "/") {
+        if (width <= 760 && overview) {
           assert(
             layout.radarHeroCopyWidth >= layout.clientWidth * 0.8,
             `Radar hero copy is squeezed to ${layout.radarHeroCopyWidth}px at ${width}px.`,
@@ -1632,11 +1721,12 @@ async function verifyInBrowser() {
         );
 
         if (width <= 1160) {
+          const expectedMobileNavigation = mobileNavigationForPath(entry.path);
           const summary = page.locator(".mobile-navigation summary");
           assert(await summary.isVisible(), `${entry.path} mobile menu is not reachable at ${width}px.`);
           await verifyMobileKeyboardNavigation(page, entry, width);
           await summary.click();
-          for (const label of mobileNavigation) {
+          for (const label of expectedMobileNavigation) {
             assert(
               await page.locator(".mobile-navigation-panel a", { hasText: label }).isVisible(),
               `${entry.path} mobile navigation hides ${label} at ${width}px.`,
@@ -1650,7 +1740,7 @@ async function verifyInBrowser() {
               `${entry.path} desktop portfolio navigation hides ${label} at ${width}px.`,
             );
           }
-          for (const label of productNavigation) {
+          for (const label of productNavigationForPath(entry.path)) {
             assert(
               await page.locator(".product-navigation a", { hasText: label }).isVisible(),
               `${entry.path} desktop product navigation hides ${label} at ${width}px.`,
@@ -1659,12 +1749,19 @@ async function verifyInBrowser() {
           assert(await page.locator(".header-utility .source-link").isVisible(), `${entry.path} desktop Source utility is hidden at ${width}px.`);
         }
 
-        if (width === 1440 && entry.path === "/") {
+        if (width === 1440 && overview) {
+          const sourceLabel = entry.path === "/lt/" ? "Šaltinis" : "Source";
           await page.locator("#signal-search").fill("private local search");
-          assert(!page.url().includes("private") && !page.url().includes("query="), "Free-text signal search leaked into the URL.");
-          await page.locator('select[aria-label="Source"]').selectOption("CertStream");
-          assert(page.url().includes("source=CertStream") && !page.url().includes("private"), "Controlled source filter did not produce a safe shareable URL.");
-          assert(await page.locator('.export-actions button', { hasText: "CSV" }).isVisible(), "Defanged CSV export is not visible.");
+          assert(!page.url().includes("private") && !page.url().includes("query="), `${entry.path} free-text signal search leaked into the URL.`);
+          await page.locator(`select[aria-label="${sourceLabel}"]`).selectOption("CertStream");
+          assert(
+            page.url().includes("source=CertStream") && !page.url().includes("private"),
+            `${entry.path} controlled source filter did not produce a safe shareable URL.`,
+          );
+          assert(
+            await page.locator(".export-actions button", { hasText: "CSV" }).isVisible(),
+            `${entry.path} defanged CSV export is not visible.`,
+          );
         }
 
         assert(browserErrors.length === 0, `${entry.path} failed its CSP-enforced browser smoke check at ${width}px: ${browserErrors.join(" | ")}`);
@@ -1678,7 +1775,8 @@ async function verifyInBrowser() {
       await context.close();
       if (width === 390 || width === 1024) {
         await verifyAccessibility(browser, origin, width);
-        await verifySignalDialog(browser, origin, width);
+        await verifySignalDialog(browser, origin, width, "en");
+        await verifySignalDialog(browser, origin, width, "lt");
       }
     }
 
@@ -1722,7 +1820,8 @@ async function verifyInBrowser() {
       assert((await noScriptPage.locator("body").innerText()).includes(entry.marker), `${entry.path} loses core content without JavaScript.`);
       const summary = noScriptPage.locator(".mobile-navigation summary");
       await summary.click();
-      assert(await noScriptPage.locator(".mobile-navigation-panel a", { hasText: "Methodology" }).isVisible(), `${entry.path} no-JS menu does not open.`);
+      const methodologyLabel = entry.path.startsWith("/lt/") ? "Metodologija" : "Methodology";
+      assert(await noScriptPage.locator(".mobile-navigation-panel a", { hasText: methodologyLabel }).isVisible(), `${entry.path} no-JS menu does not open.`);
     }
     await noScriptContext.close();
   } finally {

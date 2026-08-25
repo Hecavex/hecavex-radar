@@ -1,11 +1,11 @@
 import { AlertTriangle, RadioTower } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { Dashboard } from "../components/Dashboard.tsx";
 import { SiteHeader } from "../components/SiteHeader.tsx";
 import { loadSnapshot } from "../lib/data.ts";
 import type { RadarSnapshot } from "../types.ts";
 import { LtFooter } from "./LtFooter.tsx";
-import { LtRadarOverview } from "./LtRadarOverview.tsx";
 
 type LoadState =
   | { status: "loading" }
@@ -31,8 +31,8 @@ export function LtRadarApp({ initialSnapshot, initialNow }: { initialSnapshot?: 
     <div className="site-shell">
       <SiteHeader currentPage="radar" language="lt" alternateHref="/" />
       {state.status === "loading" && <main className="state-page" id="main-content" aria-live="polite"><RadioTower className="state-icon pulse" aria-hidden="true" /><p className="eyebrow">Gaunama suvestinė</p><h1>Kraunami naujausi signalai</h1></main>}
-      {state.status === "error" && <main className="state-page" id="main-content" aria-live="assertive"><AlertTriangle className="state-icon danger" aria-hidden="true" /><p className="eyebrow">Duomenys nepasiekiami</p><h1>Nepavyko įkelti radaro suvestinės</h1><p>{state.message}</p></main>}
-      {state.status === "ready" && <LtRadarOverview snapshot={state.snapshot} now={state.renderedAt} />}
+      {state.status === "error" && <main className="state-page" id="main-content" aria-live="assertive"><AlertTriangle className="state-icon danger" aria-hidden="true" /><p className="eyebrow">Duomenys nepasiekiami</p><h1>Nepavyko įkelti radaro suvestinės</h1><p>{state.message}</p><button className="button" type="button" onClick={() => window.location.reload()}>Bandyti dar kartą</button></main>}
+      {state.status === "ready" && <Dashboard snapshot={state.snapshot} now={state.renderedAt} language="lt" />}
       <LtFooter />
     </div>
   );

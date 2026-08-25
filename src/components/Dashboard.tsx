@@ -3,13 +3,20 @@ import { useEffect, useMemo, useState } from "react";
 
 import { controlledFilterSearch, dashboardMetrics, DEFAULT_FILTERS, filterSignals, filtersFromSearch, sortSignals } from "../lib/dashboard.ts";
 import { formatDateTime, formatNumber, formatRelativeTime } from "../lib/format.ts";
+import { formatDateTimeLt, formatNumberLt, formatRelativeTimeLt } from "../lt/formatLt.ts";
 import type { Filters, RadarSnapshot } from "../types.ts";
 import { CollectionDisclosure } from "./CollectionDisclosure.tsx";
 import { ExportActions } from "./ExportActions.tsx";
 import { FilterBar } from "./FilterBar.tsx";
 import { SignalTable } from "./SignalTable.tsx";
+import type { SiteLanguage } from "./SiteHeader.tsx";
 
-export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnapshot; now?: number }) {
+export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
+  snapshot: RadarSnapshot;
+  now?: number;
+  language?: SiteLanguage;
+}) {
+  const lt = language === "lt";
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [urlStateReady, setUrlStateReady] = useState(false);
   const summary = useMemo(() => dashboardMetrics(snapshot), [snapshot]);
@@ -19,6 +26,10 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
   const dayAgo = now - 86_400_000;
   const newToday = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) >= dayAgo).length;
   const reobservedToday = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) < dayAgo && Date.parse(signal.lastSeen) >= dayAgo).length;
+  const number = lt ? formatNumberLt : formatNumber;
+  const relativeTime = lt ? formatRelativeTimeLt : formatRelativeTime;
+  const dateTime = lt ? formatDateTimeLt : formatDateTime;
+  const signalsAnchor = lt ? "signalai" : "signals";
 
   useEffect(() => {
     const updateFromLocation = () => {
@@ -43,42 +54,56 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
       <section className="hero radar-hero" aria-labelledby="radar-title">
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-copy">
-          <p className="eyebrow"><Radar aria-hidden="true" /> Open threat intelligence · Lithuania</p>
-          <h1 id="radar-title">Phishing signals.<br /><span>Observed, not assumed.</span></h1>
-          <p className="hero-intro">Defanged potential phishing and impersonation domains discovered through sampled Certificate Transparency, URLScan, and sanitized HECAVEX inputs. Every row is a lead, never a verdict.</p>
-          <div className="hero-actions"><a className="hero-action-primary" href="#signals"><ArrowDown aria-hidden="true" /> Browse {formatNumber(summary.total)} candidates</a><a href="/methodology/">How collection works</a></div>
+          <p className="eyebrow"><Radar aria-hidden="true" /> {lt ? "Atviroji grėsmių žvalgyba · Lietuva" : "Open threat intelligence · Lithuania"}</p>
+          <h1 id="radar-title">
+            {lt ? <>Sukčiavimo signalai.<br /><span>Pastebėti, ne numanomi.</span></> : <>Phishing signals.<br /><span>Observed, not assumed.</span></>}
+          </h1>
+          <p className="hero-intro">
+            {lt
+              ? "Neutralizuoti galimi sukčiavimo ir apsimetimo domenai, aptikti atrankiniu būdu stebint Certificate Transparency, URLScan ir naudojant saugiai parengtus HECAVEX duomenis. Kiekviena eilutė yra tyrimo kryptis, o ne nuosprendis."
+              : "Defanged potential phishing and impersonation domains discovered through sampled Certificate Transparency, URLScan, and sanitized HECAVEX inputs. Every row is a lead, never a verdict."}
+          </p>
+          <div className="hero-actions">
+            <a className="hero-action-primary" href={`#${signalsAnchor}`}><ArrowDown aria-hidden="true" /> {lt ? `Peržiūrėti ${number(summary.total)} kandidatų` : `Browse ${number(summary.total)} candidates`}</a>
+            <a href={lt ? "/lt/metodologija/" : "/methodology/"}>{lt ? "Kaip renkami duomenys" : "How collection works"}</a>
+          </div>
         </div>
-        <aside className={`freshness-card ${isStale ? "stale" : "fresh"}`} aria-label="Snapshot freshness">
+        <aside className={`freshness-card ${isStale ? "stale" : "fresh"}`} aria-label={lt ? "Suvestinės šviežumas" : "Snapshot freshness"}>
           <span className="live-dot" aria-hidden="true" />
-          <div><small>{isStale ? "Snapshot sync delayed" : "Snapshot current"}</small><strong>{formatRelativeTime(snapshot.lastSuccessfulSyncAt, now)}</strong><span>Last successful sync {formatDateTime(snapshot.lastSuccessfulSyncAt)} UTC</span><span>Data changed {formatRelativeTime(snapshot.generatedAt, now)}</span></div>
+          <div>
+            <small>{lt ? (isStale ? "Suvestinės sinchronizavimas vėluoja" : "Suvestinė atnaujinta") : (isStale ? "Snapshot sync delayed" : "Snapshot current")}</small>
+            <strong>{relativeTime(snapshot.lastSuccessfulSyncAt, now)}</strong>
+            <span>{lt ? `Paskutinis sėkmingas sinchronizavimas ${dateTime(snapshot.lastSuccessfulSyncAt)} Lietuvos laiku` : `Last successful sync ${dateTime(snapshot.lastSuccessfulSyncAt)} UTC`}</span>
+            <span>{lt ? `Duomenys pasikeitė ${relativeTime(snapshot.generatedAt, now)}` : `Data changed ${relativeTime(snapshot.generatedAt, now)}`}</span>
+          </div>
         </aside>
       </section>
 
-      <section className="activity-strip" aria-label="Current Radar activity">
-        <div><Database aria-hidden="true" /><span>Current candidates</span><strong>{formatNumber(summary.total)}</strong></div>
-        <div><Clock3 aria-hidden="true" /><span>First published 24h</span><strong>{formatNumber(newToday)}</strong></div>
-        <div><Activity aria-hidden="true" /><span>Reobserved 24h</span><strong>{formatNumber(reobservedToday)}</strong></div>
-        <div><ShieldCheck aria-hidden="true" /><span>Potential brands</span><strong>{formatNumber(summary.brands)}</strong></div>
-        <a href="/changes/"><span>Full event record</span><strong>Changes <ArrowRight aria-hidden="true" /></strong></a>
+      <section className="activity-strip" aria-label={lt ? "Dabartinė Radaro veikla" : "Current Radar activity"}>
+        <div><Database aria-hidden="true" /><span>{lt ? "Dabartiniai kandidatai" : "Current candidates"}</span><strong>{number(summary.total)}</strong></div>
+        <div><Clock3 aria-hidden="true" /><span>{lt ? "Pirmos publikacijos per 24 val." : "First published 24h"}</span><strong>{number(newToday)}</strong></div>
+        <div><Activity aria-hidden="true" /><span>{lt ? "Pakartotinai stebėti per 24 val." : "Reobserved 24h"}</span><strong>{number(reobservedToday)}</strong></div>
+        <div><ShieldCheck aria-hidden="true" /><span>{lt ? "Galimi prekių ženklai" : "Potential brands"}</span><strong>{number(summary.brands)}</strong></div>
+        <a href={lt ? "/lt/pokyciai/" : "/changes/"}><span>{lt ? "Visas įvykių žurnalas" : "Full event record"}</span><strong>{lt ? "Pokyčiai" : "Changes"} <ArrowRight aria-hidden="true" /></strong></a>
       </section>
 
-      <section className="signal-section" id="signals" aria-labelledby="signals-title">
+      <section className="signal-section" id={signalsAnchor} aria-labelledby="signals-title">
         <div className="section-heading">
-          <div><p className="eyebrow">Current signal window</p><h2 id="signals-title">Recently observed candidates</h2></div>
-          <div className="signal-heading-actions"><p><strong>{formatNumber(filteredSignals.length)}</strong> matching {formatNumber(snapshot.signals.length)}</p><ExportActions signals={filteredSignals} snapshotGeneratedAt={snapshot.generatedAt} /></div>
+          <div><p className="eyebrow">{lt ? "Dabartinis signalų langas" : "Current signal window"}</p><h2 id="signals-title">{lt ? "Neseniai pastebėti kandidatai" : "Recently observed candidates"}</h2></div>
+          <div className="signal-heading-actions"><p>{lt ? <><strong>{number(filteredSignals.length)}</strong> atitinka iš {number(snapshot.signals.length)}</> : <><strong>{number(filteredSignals.length)}</strong> matching {number(snapshot.signals.length)}</>}</p><ExportActions signals={filteredSignals} snapshotGeneratedAt={snapshot.generatedAt} language={language} /></div>
         </div>
-        <FilterBar signals={snapshot.signals} filters={filters} onChange={setFilters} />
-        <SignalTable signals={filteredSignals} now={now} snapshotGeneratedAt={snapshot.generatedAt} onFacet={updateFacet} />
+        <FilterBar signals={snapshot.signals} filters={filters} onChange={setFilters} language={language} />
+        <SignalTable signals={filteredSignals} now={now} snapshotGeneratedAt={snapshot.generatedAt} onFacet={updateFacet} language={language} />
       </section>
 
-      <section className="radar-route-grid" aria-label="Explore Radar">
-        <a href="/changes/"><Clock3 aria-hidden="true" /><span><strong>Changes</strong><small>New, reobserved, changed, or retracted</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/trends/"><Activity aria-hidden="true" /><span><strong>Trends and quality</strong><small>Counts shown beside collector coverage</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/associations/"><Waypoints aria-hidden="true" /><span><strong>Associations</strong><small>Inspect bounded shared evidence</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/tools/"><ShieldCheck aria-hidden="true" /><span><strong>Local IOC check</strong><small>Compare values without uploading them</small></span><ArrowRight aria-hidden="true" /></a>
+      <section className="radar-route-grid" aria-label={lt ? "Naršyti Radarą" : "Explore Radar"}>
+        <a href={lt ? "/lt/pokyciai/" : "/changes/"}><Clock3 aria-hidden="true" /><span><strong>{lt ? "Pokyčiai" : "Changes"}</strong><small>{lt ? "Nauji, pakartotinai stebėti, pakeisti arba atšaukti" : "New, reobserved, changed, or retracted"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href="/trends/"><Activity aria-hidden="true" /><span><strong>{lt ? "Tendencijos ir kokybė" : "Trends and quality"}</strong><small>{lt ? "Skaičiai pateikiami kartu su rinktuvų aprėptimi" : "Counts shown beside collector coverage"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href="/associations/"><Waypoints aria-hidden="true" /><span><strong>{lt ? "Sąsajos" : "Associations"}</strong><small>{lt ? "Tirti ribotus bendrus įrodymus" : "Inspect bounded shared evidence"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href="/tools/"><ShieldCheck aria-hidden="true" /><span><strong>{lt ? "Vietinė IOC patikra" : "Local IOC check"}</strong><small>{lt ? "Palyginti reikšmes jų neįkeliant" : "Compare values without uploading them"}</small></span><ArrowRight aria-hidden="true" /></a>
       </section>
 
-      <CollectionDisclosure />
+      <CollectionDisclosure language={language} />
     </main>
   );
 }

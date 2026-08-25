@@ -6,6 +6,8 @@ import { evidenceTierLabel, explainReasons, signalEvidenceTier, signalMatchScore
 import { loadSignalDetail } from "../lib/signalDetail.ts";
 import { signalPath } from "../lib/signalRoutes.ts";
 import type { RadarSignal, SignalCertificateDetail, SignalDetail, SignalDetailObservation, SignalDomainContext } from "../types.ts";
+import { formatDateTimeLt } from "../lt/formatLt.ts";
+import type { SiteLanguage } from "./SiteHeader.tsx";
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -65,12 +67,255 @@ interface ScreenshotModalProps {
   snapshotGeneratedAt: string;
   returnFocus: HTMLElement;
   onClose: () => void;
+  language?: SiteLanguage;
 }
 
 type DetailLoadState =
   | { status: "idle" | "loading" }
   | { status: "ready"; detail: SignalDetail }
   | { status: "error" };
+
+const modalCopy = {
+  en: {
+    copied: "Copied",
+    copiedLabel: (label: string) => `${label} copied`,
+    copyLabel: (label: string, value: string) => `Copy ${label} ${value}`,
+    tlsCertificate: "TLS certificate",
+    issuer: "Issuer",
+    declaredCountry: "Declared country",
+    commonName: "Common name",
+    certificateCommonName: "certificate common name",
+    serialNumber: "Serial number",
+    certificateSerialNumber: "certificate serial number",
+    validFrom: "Valid from",
+    validUntil: "Valid until",
+    relatedCertificateNames: "Related certificate names",
+    certificateDnsName: "certificate DNS name",
+    showingCertificateNames: (shown: number, total: number) => `Showing ${shown} of ${total} related certificate names.`,
+    certificateFingerprints: "Certificate fingerprints",
+    fingerprintNote: "MD5 and SHA-1 values are legacy identifiers for pivots, not proof of certificate security.",
+    certificateFingerprint: (algorithm: string) => `${algorithm} certificate fingerprint`,
+    observedAt: (timestamp: string) => `Observed ${timestamp}`,
+    observedPage: "Observed page",
+    pageTitle: "Page title",
+    pageHttpStatus: "Page HTTP status",
+    observedNetwork: "Observed network",
+    ipAddress: "IP address",
+    defangedIpAddress: "defanged IP address",
+    autonomousSystem: "Autonomous system",
+    asDescription: "AS description",
+    asRegistry: "AS registry",
+    urlscanAssessment: "URLScan assessment",
+    urlscanVerdictScore: "URLScan verdict score",
+    scoreScale: " / -100 to 100",
+    reportedCategories: "Reported categories",
+    observedRedirectDestination: "Observed redirect destination",
+    defangedRedirectDestination: "defanged redirect destination",
+    providerAssessmentNote: "Provider assessment is separate from the Radar match score. A redirect is observed behavior, not a benign verdict; destination and content can vary by visitor, time, or cloaking rules.",
+    boundedContextObserved: (timestamp: string) => `Bounded context observed ${timestamp}`,
+    dnsContext: "DNS context",
+    dnsRecordsObserved: "DNS records observed",
+    queriesCompleted: "Queries completed",
+    minimumTtl: "Minimum TTL",
+    seconds: (value: number) => `${value} seconds`,
+    dnsRecord: (recordType: string) => `${recordType} record`,
+    noDnsRecords: "No answer records were retained. Missing data is unknown.",
+    registrationContext: "Registration context",
+    registeredDomain: "Registered domain",
+    registeredDomainCopy: "registered domain",
+    registrar: "Registrar",
+    registered: "Registered",
+    updated: "Updated",
+    expires: "Expires",
+    statuses: "Statuses",
+    noRegistration: "No registration record was retained. Missing RDAP context is unknown.",
+    dnsRegistrationBoundary: "DNS and registration values are point-in-time context, not ownership or maliciousness evidence.",
+    passiveEvidence: "Passive evidence",
+    closeDetails: "Close signal details",
+    whyIncluded: "Why Radar included this",
+    automatedExplanation: "Automated candidate explanation",
+    candidateEvidenceState: "Candidate evidence state",
+    matchScore: (score: number) => `Match score ${score}/100`,
+    noReason: "No granular public reason was retained for this candidate.",
+    signalId: "Signal ID",
+    signalIdCopy: "signal ID",
+    potentialBrand: "Potential brand match",
+    unclassified: "Unclassified",
+    sourceState: "Source-reported state",
+    sources: "Sources",
+    discoveredVia: "Discovered via",
+    corroboratedBy: "Corroborated by",
+    firstSeen: "First seen",
+    lastSeen: "Last seen",
+    snapshotGenerated: "Snapshot generated",
+    lithuanianRelevance: "Lithuanian relevance",
+    scoreBoundary: "The match score ranks rule strength. It is not a probability, maliciousness verdict, or block recommendation.",
+    domainIntelligence: "Domain intelligence",
+    passiveContext: "Passive context",
+    loadingContext: "Loading bounded public metadata from Radar's static archive.",
+    contextUnavailable: "Domain intelligence is temporarily unavailable. The core signal and any archived evidence remain below.",
+    tryAgain: "Try again",
+    noDomainContext: "No bounded DNS/RDAP context is published for this candidate. Missing context is unknown.",
+    screenshotAlt: (domain: string) => `Archived screenshot for ${domain}`,
+    noScreenshot: "No archived screenshot is available for this observation.",
+    observedHashes: "Observed SHA-256 hashes",
+    hashesNote: "Primary HTML response evidence supplied with this observation; hashes are safe to copy for defensive pivots.",
+    reasonCodes: "Publication reason codes",
+    reasonCodesNote: "Controlled public provenance labels explain why this candidate passed validation; they are not verdicts.",
+    externalBoundary: "Viewing a screenshot or report contacts urlscan.io. The suspicious website is not contacted.",
+    openPermanentRecord: "Open permanent record",
+    requestCorrection: "Request correction",
+    openImage: "Open image",
+    openReport: "Open report",
+    correctionSubject: (id: string) => `HECAVEX Radar correction ${id}`,
+    correctionBody: (signal: RadarSignal, snapshot: string) => [
+      `Signal ID: ${signal.id}`,
+      `Defanged indicator: ${signal.url}`,
+      `Snapshot: ${snapshot}`,
+    ].join("\n"),
+  },
+  lt: {
+    copied: "Nukopijuota",
+    copiedLabel: (label: string) => `${label}: nukopijuota`,
+    copyLabel: (label: string, value: string) => `Kopijuoti: ${label}, ${value}`,
+    tlsCertificate: "TLS sertifikatas",
+    issuer: "Išdavėjas",
+    declaredCountry: "Deklaruota šalis",
+    commonName: "Bendrasis vardas",
+    certificateCommonName: "sertifikato bendrasis vardas",
+    serialNumber: "Serijos numeris",
+    certificateSerialNumber: "sertifikato serijos numeris",
+    validFrom: "Galioja nuo",
+    validUntil: "Galioja iki",
+    relatedCertificateNames: "Susiję sertifikato vardai",
+    certificateDnsName: "sertifikato DNS vardas",
+    showingCertificateNames: (shown: number, total: number) => `Rodomi ${shown} iš ${total} susijusių sertifikato vardų.`,
+    certificateFingerprints: "Sertifikato kontrolinės sumos",
+    fingerprintNote: "MD5 ir SHA-1 reikšmės yra pasenę pivotų identifikatoriai, o ne sertifikato saugumo įrodymas.",
+    certificateFingerprint: (algorithm: string) => `${algorithm} sertifikato kontrolinė suma`,
+    observedAt: (timestamp: string) => `Stebėta ${timestamp}`,
+    observedPage: "Stebėtas puslapis",
+    pageTitle: "Puslapio pavadinimas",
+    pageHttpStatus: "Puslapio HTTP būsena",
+    observedNetwork: "Stebėtas tinklas",
+    ipAddress: "IP adresas",
+    defangedIpAddress: "neutralizuotas IP adresas",
+    autonomousSystem: "Autonominė sistema",
+    asDescription: "AS aprašymas",
+    asRegistry: "AS registras",
+    urlscanAssessment: "URLScan vertinimas",
+    urlscanVerdictScore: "URLScan verdikto balas",
+    scoreScale: " / nuo -100 iki 100",
+    reportedCategories: "Nurodytos kategorijos",
+    observedRedirectDestination: "Stebėta peradresavimo paskirties vieta",
+    defangedRedirectDestination: "neutralizuota peradresavimo paskirties vieta",
+    providerAssessmentNote: "Paslaugos teikėjo vertinimas nėra Radaro atitikimo balas. Peradresavimas yra stebėtas elgesys, o ne saugumo patvirtinimas; paskirties vieta ir turinys gali kisti pagal lankytoją, laiką ar maskavimo taisykles.",
+    boundedContextObserved: (timestamp: string) => `Ribotas kontekstas stebėtas ${timestamp}`,
+    dnsContext: "DNS kontekstas",
+    dnsRecordsObserved: "Stebėti DNS įrašai",
+    queriesCompleted: "Atlikta užklausų",
+    minimumTtl: "Mažiausias TTL",
+    seconds: (value: number) => `${value} sek.`,
+    dnsRecord: (recordType: string) => `${recordType} įrašas`,
+    noDnsRecords: "Atsakymo įrašų neišsaugota. Trūkstami duomenys lieka nežinomi.",
+    registrationContext: "Registracijos kontekstas",
+    registeredDomain: "Registruotas domenas",
+    registeredDomainCopy: "registruotas domenas",
+    registrar: "Registratorius",
+    registered: "Užregistruota",
+    updated: "Atnaujinta",
+    expires: "Galioja iki",
+    statuses: "Būsenos",
+    noRegistration: "Registracijos įrašas neišsaugotas. Trūkstamas RDAP kontekstas lieka nežinomas.",
+    dnsRegistrationBoundary: "DNS ir registracijos reikšmės yra konkretaus laiko kontekstas, o ne nuosavybės ar kenkėjiškumo įrodymas.",
+    passiveEvidence: "Pasyvūs įrodymai",
+    closeDetails: "Užverti signalo informaciją",
+    whyIncluded: "Kodėl Radaras įtraukė šį kandidatą",
+    automatedExplanation: "Automatinis kandidato paaiškinimas",
+    candidateEvidenceState: "Kandidato įrodymų būsena",
+    matchScore: (score: number) => `Atitikimo balas ${score}/100`,
+    noReason: "Išsami vieša šio kandidato įtraukimo priežastis neišsaugota.",
+    signalId: "Signalo ID",
+    signalIdCopy: "signalo ID",
+    potentialBrand: "Galimas prekės ženklas",
+    unclassified: "Neklasifikuota",
+    sourceState: "Šaltinio nurodyta būsena",
+    sources: "Šaltiniai",
+    discoveredVia: "Aptikta per",
+    corroboratedBy: "Patvirtinta per",
+    firstSeen: "Pirmą kartą stebėta",
+    lastSeen: "Paskutinį kartą stebėta",
+    snapshotGenerated: "Suvestinė sukurta",
+    lithuanianRelevance: "Aktualumas Lietuvai",
+    scoreBoundary: "Atitikimo balas rikiuoja taisyklių stiprumą. Tai nėra tikimybė, kenkėjiškumo verdiktas ar blokavimo rekomendacija.",
+    domainIntelligence: "Domeno žvalgybos duomenys",
+    passiveContext: "Pasyvus kontekstas",
+    loadingContext: "Kraunami riboti vieši metaduomenys iš statinio Radaro archyvo.",
+    contextUnavailable: "Domeno žvalgybos duomenys laikinai nepasiekiami. Pagrindinis signalas ir išsaugoti įrodymai lieka pateikti žemiau.",
+    tryAgain: "Bandyti dar kartą",
+    noDomainContext: "Šiam kandidatui nepaskelbtas ribotas DNS/RDAP kontekstas. Trūkstami duomenys lieka nežinomi.",
+    screenshotAlt: (domain: string) => `Išsaugota ${domain} ekrano kopija`,
+    noScreenshot: "Šiam stebėjimui išsaugotos ekrano kopijos nėra.",
+    observedHashes: "Stebėtos SHA-256 maišos",
+    hashesNote: "Su šiuo stebėjimu pateikti pirminio HTML atsako įrodymai; maišų reikšmes saugu kopijuoti gynybiniams pivotams.",
+    reasonCodes: "Paskelbimo priežasčių kodai",
+    reasonCodesNote: "Kontroliuojamos viešos kilmės žymos paaiškina, kodėl kandidatas praėjo patikrą; jos nėra verdiktai.",
+    externalBoundary: "Atidarius ekrano kopiją ar ataskaitą susisiekiama su urlscan.io. Su įtartina svetaine ryšys neužmezgamas.",
+    openPermanentRecord: "Atverti nuolatinį įrašą",
+    requestCorrection: "Pranešti apie klaidą",
+    openImage: "Atverti vaizdą",
+    openReport: "Atverti ataskaitą",
+    correctionSubject: (id: string) => `HECAVEX Radaro pataisymas ${id}`,
+    correctionBody: (signal: RadarSignal, snapshot: string) => [
+      `Signalo ID: ${signal.id}`,
+      `Neutralizuotas indikatorius: ${signal.url}`,
+      `Suvestinė: ${snapshot}`,
+    ].join("\n"),
+  },
+} as const;
+
+const statusLabels: Record<SiteLanguage, Record<RadarSignal["status"], string>> = {
+  en: { active: "active", suspected: "suspected", offline: "offline", mitigated: "mitigated", unknown: "unknown" },
+  lt: { active: "aktyvus", suspected: "įtariamas", offline: "nepasiekiamas", mitigated: "suvaldytas", unknown: "nežinomas" },
+};
+
+const reviewStateLabels: Record<SiteLanguage, Record<NonNullable<RadarSignal["reviewState"]>, string>> = {
+  en: {
+    unreviewed: "unreviewed",
+    "needs-review": "needs review",
+    "confirmed-suspicious": "confirmed suspicious",
+    "false-positive": "false positive",
+    "benign-brand-reference": "benign brand reference",
+    inconclusive: "inconclusive",
+  },
+  lt: {
+    unreviewed: "neperžiūrėta",
+    "needs-review": "reikia peržiūros",
+    "confirmed-suspicious": "patvirtinta kaip įtartina",
+    "false-positive": "klaidingas teigiamas rezultatas",
+    "benign-brand-reference": "teisėta prekės ženklo nuoroda",
+    inconclusive: "nepakanka duomenų",
+  },
+};
+
+const relevanceLabels: Record<SiteLanguage, Record<NonNullable<RadarSignal["ltRelevance"]>, string>> = {
+  en: {
+    "lithuanian-targeting": "Lithuanian targeting",
+    "lithuanian-brand-relevance": "Lithuanian brand relevance",
+    "global-brand-reference": "Global brand reference",
+    unknown: "Unknown",
+  },
+  lt: {
+    "lithuanian-targeting": "Taikymasis į Lietuvą",
+    "lithuanian-brand-relevance": "Sąsaja su Lietuvos prekės ženklu",
+    "global-brand-reference": "Pasaulinio prekės ženklo paminėjimas",
+    unknown: "Nežinoma",
+  },
+};
+
+function localizedTimestamp(value: string, language: SiteLanguage): string {
+  return language === "lt" ? `${formatDateTimeLt(value)} Lietuvos laiku` : `${formatDateTime(value)} UTC`;
+}
 
 export function DetailItem({ label, children, fullRow = false }: { label: string; children: ReactNode; fullRow?: boolean }) {
   return (
@@ -81,8 +326,9 @@ export function DetailItem({ label, children, fullRow = false }: { label: string
   );
 }
 
-export function CopyableValue({ value, label }: { value: string; label: string }) {
+export function CopyableValue({ value, label, language = "en" }: { value: string; label: string; language?: SiteLanguage }) {
   const [copied, setCopied] = useState(false);
+  const copyText = modalCopy[language];
 
   const copy = async () => {
     try {
@@ -100,16 +346,17 @@ export function CopyableValue({ value, label }: { value: string; label: string }
       <button
         type="button"
         onClick={() => void copy()}
-        aria-label={copied ? `${label} copied` : `Copy ${label} ${value}`}
+        aria-label={copied ? copyText.copiedLabel(label) : copyText.copyLabel(label, value)}
       >
         {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
       </button>
-      <span className="sr-only" aria-live="polite">{copied ? "Copied" : ""}</span>
+      <span className="sr-only" aria-live="polite">{copied ? copyText.copied : ""}</span>
     </span>
   );
 }
 
-function CertificateDetail({ certificate }: { certificate: SignalCertificateDetail }) {
+function CertificateDetail({ certificate, language }: { certificate: SignalCertificateDetail; language: SiteLanguage }) {
+  const copy = modalCopy[language];
   const fingerprints = [
     ["MD5", certificate.fingerprints.md5],
     ["SHA-1", certificate.fingerprints.sha1],
@@ -118,48 +365,46 @@ function CertificateDetail({ certificate }: { certificate: SignalCertificateDeta
   const hasFingerprints = fingerprints.some(([, digest]) => digest !== null);
 
   return (
-    <section className="detail-group" aria-label="TLS certificate">
-      <h5>TLS certificate</h5>
+    <section className="detail-group" aria-label={copy.tlsCertificate}>
+      <h5>{copy.tlsCertificate}</h5>
       <dl className="detail-grid">
-        {certificate.issuer ? <DetailItem label="Issuer"><span>{certificate.issuer}</span></DetailItem> : null}
-        {certificate.countryName ? <DetailItem label="Declared country"><span>{certificate.countryName}</span></DetailItem> : null}
+        {certificate.issuer ? <DetailItem label={copy.issuer}><span>{certificate.issuer}</span></DetailItem> : null}
+        {certificate.countryName ? <DetailItem label={copy.declaredCountry}><span>{certificate.countryName}</span></DetailItem> : null}
         {certificate.commonName ? (
-          <DetailItem label="Common name"><CopyableValue value={certificate.commonName} label="certificate common name" /></DetailItem>
+          <DetailItem label={copy.commonName}><CopyableValue value={certificate.commonName} label={copy.certificateCommonName} language={language} /></DetailItem>
         ) : null}
         {certificate.serialNumberHex ? (
-          <DetailItem label="Serial number"><CopyableValue value={certificate.serialNumberHex} label="certificate serial number" /></DetailItem>
+          <DetailItem label={copy.serialNumber}><CopyableValue value={certificate.serialNumberHex} label={copy.certificateSerialNumber} language={language} /></DetailItem>
         ) : null}
         {certificate.notBefore ? (
-          <DetailItem label="Valid from"><time dateTime={certificate.notBefore}>{formatDateTime(certificate.notBefore)} UTC</time></DetailItem>
+          <DetailItem label={copy.validFrom}><time dateTime={certificate.notBefore}>{localizedTimestamp(certificate.notBefore, language)}</time></DetailItem>
         ) : null}
         {certificate.notAfter ? (
-          <DetailItem label="Valid until"><time dateTime={certificate.notAfter}>{formatDateTime(certificate.notAfter)} UTC</time></DetailItem>
+          <DetailItem label={copy.validUntil}><time dateTime={certificate.notAfter}>{localizedTimestamp(certificate.notAfter, language)}</time></DetailItem>
         ) : null}
       </dl>
       {certificate.subjectAltNames.length > 0 ? (
         <div className="detail-list">
-          <h6>Related certificate names</h6>
+          <h6>{copy.relatedCertificateNames}</h6>
           <ul>
             {certificate.subjectAltNames.map((name) => (
-              <li key={name}><CopyableValue value={name} label="certificate DNS name" /></li>
+              <li key={name}><CopyableValue value={name} label={copy.certificateDnsName} language={language} /></li>
             ))}
           </ul>
           {certificate.subjectAltNameCount > certificate.subjectAltNames.length ? (
-            <p>
-              Showing {certificate.subjectAltNames.length} of {certificate.subjectAltNameCount} related certificate names.
-            </p>
+            <p>{copy.showingCertificateNames(certificate.subjectAltNames.length, certificate.subjectAltNameCount)}</p>
           ) : null}
         </div>
       ) : null}
       {hasFingerprints ? (
         <div className="detail-list">
-          <h6>Certificate fingerprints</h6>
-          <p>MD5 and SHA-1 values are legacy identifiers for pivots, not proof of certificate security.</p>
+          <h6>{copy.certificateFingerprints}</h6>
+          <p>{copy.fingerprintNote}</p>
           <ul>
             {fingerprints.map(([algorithm, digest]) => digest ? (
               <li key={algorithm}>
                 <span>{algorithm}</span>
-                <CopyableValue value={digest} label={`${algorithm} certificate fingerprint`} />
+                <CopyableValue value={digest} label={copy.certificateFingerprint(algorithm)} language={language} />
               </li>
             ) : null)}
           </ul>
@@ -169,82 +414,82 @@ function CertificateDetail({ certificate }: { certificate: SignalCertificateDeta
   );
 }
 
-export function ObservationDetail({ observation }: { observation: SignalDetailObservation }) {
+export function ObservationDetail({ observation, language = "en" }: { observation: SignalDetailObservation; language?: SiteLanguage }) {
+  const copy = modalCopy[language];
   return (
     <article className="detail-observation">
       <header>
         <div>
           <span className="source-chip">{observation.source}</span>
-          <h4>Observed {formatDateTime(observation.observedAt)} UTC</h4>
+          <h4>{copy.observedAt(localizedTimestamp(observation.observedAt, language))}</h4>
         </div>
       </header>
       {observation.page ? (
-        <section className="detail-group" aria-label="Observed page">
-          <h5>Observed page</h5>
+        <section className="detail-group" aria-label={copy.observedPage}>
+          <h5>{copy.observedPage}</h5>
           <dl className="detail-grid">
-            {observation.page.title ? <DetailItem label="Page title"><span>{observation.page.title}</span></DetailItem> : null}
+            {observation.page.title ? <DetailItem label={copy.pageTitle}><span>{observation.page.title}</span></DetailItem> : null}
             {observation.page.httpStatus !== null ? (
-              <DetailItem label="Page HTTP status"><code>{observation.page.httpStatus}</code></DetailItem>
+              <DetailItem label={copy.pageHttpStatus}><code>{observation.page.httpStatus}</code></DetailItem>
             ) : null}
           </dl>
         </section>
       ) : null}
       {observation.network ? (
-        <section className="detail-group" aria-label="Observed network">
-          <h5>Observed network</h5>
+        <section className="detail-group" aria-label={copy.observedNetwork}>
+          <h5>{copy.observedNetwork}</h5>
           <dl className="detail-grid">
             {observation.network.ipAddress ? (
-              <DetailItem label="IP address"><CopyableValue value={observation.network.ipAddress} label="defanged IP address" /></DetailItem>
+              <DetailItem label={copy.ipAddress}><CopyableValue value={observation.network.ipAddress} label={copy.defangedIpAddress} language={language} /></DetailItem>
             ) : null}
             {observation.network.asn !== null ? (
-              <DetailItem label="Autonomous system"><CopyableValue value={`AS${observation.network.asn}`} label="autonomous system" /></DetailItem>
+              <DetailItem label={copy.autonomousSystem}><CopyableValue value={`AS${observation.network.asn}`} label={copy.autonomousSystem} language={language} /></DetailItem>
             ) : null}
             {observation.network.asnDescription ? (
-              <DetailItem label="AS description"><span>{observation.network.asnDescription}</span></DetailItem>
+              <DetailItem label={copy.asDescription}><span>{observation.network.asnDescription}</span></DetailItem>
             ) : null}
             {observation.network.asnRegistry ? (
-              <DetailItem label="AS registry"><span>{observation.network.asnRegistry}</span></DetailItem>
+              <DetailItem label={copy.asRegistry}><span>{observation.network.asnRegistry}</span></DetailItem>
             ) : null}
           </dl>
         </section>
       ) : null}
       {observation.assessment ? (
-        <section className="detail-group" aria-label="URLScan assessment">
-          <h5>URLScan assessment</h5>
+        <section className="detail-group" aria-label={copy.urlscanAssessment}>
+          <h5>{copy.urlscanAssessment}</h5>
           <dl className="detail-grid">
             {observation.assessment.urlscanVerdictScore !== null ? (
-              <DetailItem label="URLScan verdict score">
-                <strong>{observation.assessment.urlscanVerdictScore}</strong><span className="detail-scale"> / -100 to 100</span>
+              <DetailItem label={copy.urlscanVerdictScore}>
+                <strong>{observation.assessment.urlscanVerdictScore}</strong><span className="detail-scale">{copy.scoreScale}</span>
               </DetailItem>
             ) : null}
             {observation.assessment.urlscanCategories.length > 0 ? (
-              <DetailItem label="Reported categories">
+              <DetailItem label={copy.reportedCategories}>
                 <span className="detail-tags">
                   {observation.assessment.urlscanCategories.map((category) => <span key={category}>{category}</span>)}
                 </span>
               </DetailItem>
             ) : null}
             {observation.assessment.redirectedToDomain ? (
-              <DetailItem label="Observed redirect destination">
+              <DetailItem label={copy.observedRedirectDestination}>
                 <CopyableValue
                   value={observation.assessment.redirectedToDomain}
-                  label="defanged redirect destination"
+                  label={copy.defangedRedirectDestination}
+                  language={language}
                 />
               </DetailItem>
             ) : null}
           </dl>
-          <p className="detail-note">
-            Provider assessment is separate from the Radar match score. A redirect is observed behavior, not a benign verdict;
-            destination and content can vary by visitor, time, or cloaking rules.
-          </p>
+          <p className="detail-note">{copy.providerAssessmentNote}</p>
         </section>
       ) : null}
-      {observation.certificate ? <CertificateDetail certificate={observation.certificate} /> : null}
+      {observation.certificate ? <CertificateDetail certificate={observation.certificate} language={language} /> : null}
     </article>
   );
 }
 
-export function DomainContext({ context }: { context: SignalDomainContext }) {
+export function DomainContext({ context, language = "en" }: { context: SignalDomainContext; language?: SiteLanguage }) {
+  const copy = modalCopy[language];
   const recordGroups = [
     ["A", context.dns.a],
     ["AAAA", context.dns.aaaa],
@@ -258,58 +503,55 @@ export function DomainContext({ context }: { context: SignalDomainContext }) {
       <header>
         <div>
           <span className="source-chip">DNS / RDAP</span>
-          <h4>Bounded context observed {formatDateTime(context.observedAt)} UTC</h4>
+          <h4>{copy.boundedContextObserved(localizedTimestamp(context.observedAt, language))}</h4>
         </div>
       </header>
-      <section className="detail-group" aria-label="DNS context">
-        <h5>DNS records observed</h5>
+      <section className="detail-group" aria-label={copy.dnsContext}>
+        <h5>{copy.dnsRecordsObserved}</h5>
         <dl className="detail-grid">
-          <DetailItem label="Queries completed"><span>{context.dns.queriesCompleted} / 5</span></DetailItem>
-          {context.dns.minimumTtl !== null ? <DetailItem label="Minimum TTL"><span>{context.dns.minimumTtl} seconds</span></DetailItem> : null}
+          <DetailItem label={copy.queriesCompleted}><span>{context.dns.queriesCompleted} / 5</span></DetailItem>
+          {context.dns.minimumTtl !== null ? <DetailItem label={copy.minimumTtl}><span>{copy.seconds(context.dns.minimumTtl)}</span></DetailItem> : null}
         </dl>
         <div className="detail-list">
           <ul>
             {recordGroups.flatMap(([recordType, values]) => values.map((value) => (
-              <li key={`${recordType}-${value}`}><span>{recordType}</span><CopyableValue value={value} label={`${recordType} record`} /></li>
+              <li key={`${recordType}-${value}`}><span>{recordType}</span><CopyableValue value={value} label={copy.dnsRecord(recordType)} language={language} /></li>
             )))}
           </ul>
-          {recordGroups.every(([, values]) => values.length === 0) ? <p>No answer records were retained. Missing data is unknown.</p> : null}
+          {recordGroups.every(([, values]) => values.length === 0) ? <p>{copy.noDnsRecords}</p> : null}
         </div>
       </section>
-      <section className="detail-group" aria-label="Registration context">
-        <h5>Registration context</h5>
+      <section className="detail-group" aria-label={copy.registrationContext}>
+        <h5>{copy.registrationContext}</h5>
         {registration ? (
           <dl className="detail-grid">
-            {registration.domain ? <DetailItem label="Registered domain"><CopyableValue value={registration.domain} label="registered domain" /></DetailItem> : null}
-            {registration.registrar ? <DetailItem label="Registrar"><span>{registration.registrar}</span></DetailItem> : null}
-            {registration.registeredAt ? <DetailItem label="Registered"><time dateTime={registration.registeredAt}>{formatDateTime(registration.registeredAt)} UTC</time></DetailItem> : null}
-            {registration.updatedAt ? <DetailItem label="Updated"><time dateTime={registration.updatedAt}>{formatDateTime(registration.updatedAt)} UTC</time></DetailItem> : null}
-            {registration.expiresAt ? <DetailItem label="Expires"><time dateTime={registration.expiresAt}>{formatDateTime(registration.expiresAt)} UTC</time></DetailItem> : null}
-            {registration.statuses.length ? <DetailItem label="Statuses"><span>{registration.statuses.join(", ")}</span></DetailItem> : null}
+            {registration.domain ? <DetailItem label={copy.registeredDomain}><CopyableValue value={registration.domain} label={copy.registeredDomainCopy} language={language} /></DetailItem> : null}
+            {registration.registrar ? <DetailItem label={copy.registrar}><span>{registration.registrar}</span></DetailItem> : null}
+            {registration.registeredAt ? <DetailItem label={copy.registered}><time dateTime={registration.registeredAt}>{localizedTimestamp(registration.registeredAt, language)}</time></DetailItem> : null}
+            {registration.updatedAt ? <DetailItem label={copy.updated}><time dateTime={registration.updatedAt}>{localizedTimestamp(registration.updatedAt, language)}</time></DetailItem> : null}
+            {registration.expiresAt ? <DetailItem label={copy.expires}><time dateTime={registration.expiresAt}>{localizedTimestamp(registration.expiresAt, language)}</time></DetailItem> : null}
+            {registration.statuses.length ? <DetailItem label={copy.statuses}><span>{registration.statuses.join(", ")}</span></DetailItem> : null}
           </dl>
-        ) : <p className="detail-note">No registration record was retained. Missing RDAP context is unknown.</p>}
-        <p className="detail-note">DNS and registration values are point-in-time context, not ownership or maliciousness evidence.</p>
+        ) : <p className="detail-note">{copy.noRegistration}</p>}
+        <p className="detail-note">{copy.dnsRegistrationBoundary}</p>
       </section>
     </article>
   );
 }
 
-export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onClose }: ScreenshotModalProps) {
+export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onClose, language = "en" }: ScreenshotModalProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const copy = modalCopy[language];
   const [detailState, setDetailState] = useState<DetailLoadState>({
     status: signal.detailAvailable ? "loading" : "idle",
   });
   const [detailAttempt, setDetailAttempt] = useState(0);
   const evidenceTier = signalEvidenceTier(signal);
-  const reasonExplanations = explainReasons(signal);
-  const correctionBody = [
-    `Signal ID: ${signal.id}`,
-    `Defanged indicator: ${signal.url}`,
-    `Snapshot: ${snapshotGeneratedAt}`,
-  ].join("\n");
-  const correctionHref = `mailto:info@hecavex.com?subject=${encodeURIComponent(`HECAVEX Radar correction ${signal.id}`)}&body=${encodeURIComponent(correctionBody)}`;
+  const reasonExplanations = explainReasons(signal, language);
+  const correctionBody = copy.correctionBody(signal, snapshotGeneratedAt);
+  const correctionHref = `mailto:info@hecavex.com?subject=${encodeURIComponent(copy.correctionSubject(signal.id))}&body=${encodeURIComponent(correctionBody)}`;
 
   useEffect(() => {
     if (!signal.detailAvailable) {
@@ -388,23 +630,23 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
       <section ref={dialogRef} className="capture-modal" role="dialog" aria-modal="true" aria-labelledby="capture-title" tabIndex={-1}>
         <div className="capture-heading">
           <div>
-            <p className="eyebrow">Passive evidence</p>
+            <p className="eyebrow">{copy.passiveEvidence}</p>
             <h2 id="capture-title">{signal.domain}</h2>
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close signal details">
+          <button ref={closeRef} type="button" onClick={onClose} aria-label={copy.closeDetails}>
             <X aria-hidden="true" />
           </button>
         </div>
         <section className="candidate-summary" aria-labelledby="candidate-summary-title">
           <div className="candidate-summary-heading">
             <div>
-              <p className="eyebrow">Why Radar included this</p>
-              <h3 id="candidate-summary-title">Automated candidate explanation</h3>
+              <p className="eyebrow">{copy.whyIncluded}</p>
+              <h3 id="candidate-summary-title">{copy.automatedExplanation}</h3>
             </div>
-            <div className="evidence-badges" aria-label="Candidate evidence state">
-              <span className={`evidence-tier ${evidenceTier}`}>{evidenceTierLabel(evidenceTier)}</span>
-              <span>Match score {signalMatchScore(signal)}/100</span>
-              {signal.reviewState && signal.reviewState !== "unreviewed" ? <span>{signal.reviewState.replaceAll("-", " ")}</span> : null}
+            <div className="evidence-badges" aria-label={copy.candidateEvidenceState}>
+              <span className={`evidence-tier ${evidenceTier}`}>{evidenceTierLabel(evidenceTier, language)}</span>
+              <span>{copy.matchScore(signalMatchScore(signal))}</span>
+              {signal.reviewState && signal.reviewState !== "unreviewed" ? <span>{reviewStateLabels[language][signal.reviewState]}</span> : null}
             </div>
           </div>
           {reasonExplanations.length ? (
@@ -412,51 +654,49 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
               {reasonExplanations.map((reason, index) => <li key={`${signal.id}-${index}`}>{reason}</li>)}
             </ul>
           ) : (
-            <p className="candidate-explanation-empty">No granular public reason was retained for this candidate.</p>
+            <p className="candidate-explanation-empty">{copy.noReason}</p>
           )}
           <dl className="candidate-provenance">
-            <DetailItem label="Signal ID"><CopyableValue value={signal.id} label="signal ID" /></DetailItem>
-            <DetailItem label="Potential brand match"><span>{signal.brand ?? "Unclassified"}</span></DetailItem>
-            <DetailItem label="Source-reported state"><span>{signal.status}</span></DetailItem>
-            <DetailItem label="Sources"><span>{signal.sources.join(", ")}</span></DetailItem>
-            {signal.discoveredVia?.length ? <DetailItem label="Discovered via"><span>{signal.discoveredVia.join(", ")}</span></DetailItem> : null}
-            {signal.corroboratedBy?.length ? <DetailItem label="Corroborated by"><span>{signal.corroboratedBy.join(", ")}</span></DetailItem> : null}
-            <DetailItem label="First seen"><time dateTime={signal.firstSeen}>{formatDateTime(signal.firstSeen)} UTC</time></DetailItem>
-            <DetailItem label="Last seen"><time dateTime={signal.lastSeen}>{formatDateTime(signal.lastSeen)} UTC</time></DetailItem>
-            <DetailItem label="Snapshot generated"><time dateTime={snapshotGeneratedAt}>{formatDateTime(snapshotGeneratedAt)} UTC</time></DetailItem>
-            {signal.ltRelevance ? <DetailItem label="Lithuanian relevance" fullRow><span>{signal.ltRelevance.replaceAll("-", " ")}</span></DetailItem> : null}
+            <DetailItem label={copy.signalId}><CopyableValue value={signal.id} label={copy.signalIdCopy} language={language} /></DetailItem>
+            <DetailItem label={copy.potentialBrand}><span>{signal.brand ?? copy.unclassified}</span></DetailItem>
+            <DetailItem label={copy.sourceState}><span>{statusLabels[language][signal.status]}</span></DetailItem>
+            <DetailItem label={copy.sources}><span>{signal.sources.join(", ")}</span></DetailItem>
+            {signal.discoveredVia?.length ? <DetailItem label={copy.discoveredVia}><span>{signal.discoveredVia.join(", ")}</span></DetailItem> : null}
+            {signal.corroboratedBy?.length ? <DetailItem label={copy.corroboratedBy}><span>{signal.corroboratedBy.join(", ")}</span></DetailItem> : null}
+            <DetailItem label={copy.firstSeen}><time dateTime={signal.firstSeen}>{localizedTimestamp(signal.firstSeen, language)}</time></DetailItem>
+            <DetailItem label={copy.lastSeen}><time dateTime={signal.lastSeen}>{localizedTimestamp(signal.lastSeen, language)}</time></DetailItem>
+            <DetailItem label={copy.snapshotGenerated}><time dateTime={snapshotGeneratedAt}>{localizedTimestamp(snapshotGeneratedAt, language)}</time></DetailItem>
+            {signal.ltRelevance ? <DetailItem label={copy.lithuanianRelevance} fullRow><span>{relevanceLabels[language][signal.ltRelevance]}</span></DetailItem> : null}
           </dl>
-          <p className="candidate-boundary">
-            The match score ranks rule strength. It is not a probability, maliciousness verdict, or block recommendation.
-          </p>
+          <p className="candidate-boundary">{copy.scoreBoundary}</p>
         </section>
         {signal.detailAvailable ? (
           <section className="signal-intelligence" aria-labelledby="signal-intelligence-title">
             <div className="signal-intelligence-heading">
               <div>
-                <p className="eyebrow">Domain intelligence</p>
-                <h3 id="signal-intelligence-title">Passive context</h3>
+                <p className="eyebrow">{copy.domainIntelligence}</p>
+                <h3 id="signal-intelligence-title">{copy.passiveContext}</h3>
               </div>
-              <span>Match score {signalMatchScore(signal)}/100</span>
+              <span>{copy.matchScore(signalMatchScore(signal))}</span>
             </div>
             {detailState.status === "loading" ? (
               <div className="detail-state" role="status" aria-live="polite">
-                <p>Loading bounded public metadata from Radar's static archive.</p>
+                <p>{copy.loadingContext}</p>
               </div>
             ) : null}
             {detailState.status === "error" ? (
               <div className="detail-state error" role="status">
-                <p>Domain intelligence is temporarily unavailable. The core signal and any archived evidence remain below.</p>
-                <button type="button" onClick={() => setDetailAttempt((attempt) => attempt + 1)}>Try again</button>
+                <p>{copy.contextUnavailable}</p>
+                <button type="button" onClick={() => setDetailAttempt((attempt) => attempt + 1)}>{copy.tryAgain}</button>
               </div>
             ) : null}
             {detailState.status === "ready" ? (
               <div className="detail-observations">
                 {detailState.detail.observations.map((observation) => (
-                  <ObservationDetail key={observation.source} observation={observation} />
+                  <ObservationDetail key={observation.source} observation={observation} language={language} />
                 ))}
-                {detailState.detail.domainContext ? <DomainContext context={detailState.detail.domainContext} /> : (
-                  <p className="detail-context-missing">No bounded DNS/RDAP context is published for this candidate. Missing context is unknown.</p>
+                {detailState.detail.domainContext ? <DomainContext context={detailState.detail.domainContext} language={language} /> : (
+                  <p className="detail-context-missing">{copy.noDomainContext}</p>
                 )}
               </div>
             ) : null}
@@ -464,42 +704,42 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
         ) : null}
         {signal.screenshotUrl ? (
           <div className="capture-frame">
-            <img src={signal.screenshotUrl} alt={`Archived screenshot for ${signal.domain}`} referrerPolicy="no-referrer" />
+            <img src={signal.screenshotUrl} alt={copy.screenshotAlt(signal.domain)} referrerPolicy="no-referrer" />
           </div>
         ) : (
-          <div className="evidence-empty"><p>No archived screenshot is available for this observation.</p></div>
+          <div className="evidence-empty"><p>{copy.noScreenshot}</p></div>
         )}
         {signal.hashes?.length ? (
           <section className="evidence-hashes" aria-labelledby="hashes-title">
-            <h3 id="hashes-title">Observed SHA-256 hashes</h3>
-            <p>Primary HTML response evidence supplied with this observation; hashes are safe to copy for defensive pivots.</p>
+            <h3 id="hashes-title">{copy.observedHashes}</h3>
+            <p>{copy.hashesNote}</p>
             <ul>{signal.hashes.map((digest) => <li key={digest}><code>{digest}</code></li>)}</ul>
           </section>
         ) : null}
         {signal.reasonCodes?.length ? (
           <section className="evidence-hashes" aria-labelledby="reasons-title">
-            <h3 id="reasons-title">Publication reason codes</h3>
-            <p>Controlled public provenance labels explain why this candidate passed validation; they are not verdicts.</p>
+            <h3 id="reasons-title">{copy.reasonCodes}</h3>
+            <p>{copy.reasonCodesNote}</p>
             <ul>{signal.reasonCodes.map((reason) => <li key={reason}><code>{reason}</code></li>)}</ul>
           </section>
         ) : null}
         <div className="capture-footer">
-          <p>Viewing a screenshot or report contacts urlscan.io. The suspicious website is not contacted.</p>
+          <p>{copy.externalBoundary}</p>
           <div className="capture-links">
-            <a className="permanent-record-link" href={signalPath(signal)}>
-              Open permanent record <ArrowRight aria-hidden="true" />
+            <a className="permanent-record-link" href={signalPath(signal, language)}>
+              {copy.openPermanentRecord} <ArrowRight aria-hidden="true" />
             </a>
             <a href={correctionHref}>
-              Request correction <Flag aria-hidden="true" />
+              {copy.requestCorrection} <Flag aria-hidden="true" />
             </a>
             {signal.screenshotUrl ? (
               <a href={signal.screenshotUrl} target="_blank" rel="noreferrer noopener">
-                Open image <ExternalLink aria-hidden="true" />
+                {copy.openImage} <ExternalLink aria-hidden="true" />
               </a>
             ) : null}
             {signal.referenceUrl ? (
               <a href={signal.referenceUrl} target="_blank" rel="noreferrer noopener">
-                Open report <ExternalLink aria-hidden="true" />
+                {copy.openReport} <ExternalLink aria-hidden="true" />
               </a>
             ) : null}
           </div>

@@ -42,7 +42,11 @@ const lithuanianNavigation: Array<{ label: string; href: string; pages: SitePage
   { label: "Apžvalga", href: "/lt/", pages: ["radar", "signal"] },
   { label: "Pokyčiai", href: "/lt/pokyciai/", pages: ["changes", "history"] },
   { label: "Prekių ženklai", href: "/lt/prekes-zenklai/", pages: ["brands", "brand"] },
+  { label: "Tendencijos", href: "/trends/", pages: ["trends", "quality"] },
+  { label: "Sąsajos", href: "/associations/", pages: ["associations"] },
+  { label: "Įrankiai", href: "/tools/", pages: ["tools"] },
   { label: "Metodologija", href: "/lt/metodologija/", pages: ["methodology"] },
+  { label: "Dokumentacija", href: "/docs/", pages: ["documentation", "dataset"] },
 ];
 
 function PortfolioNavigation({ className, onNavigate, language }: { className: string; onNavigate?: () => void; language: SiteLanguage }) {

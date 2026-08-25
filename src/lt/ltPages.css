@@ -1,4 +1,3 @@
-.lt-radar-page,
 .lt-changes-page,
 .lt-brand-page,
 .lt-methodology-page {
@@ -7,7 +6,6 @@
   padding: 68px 0 104px;
 }
 
-.lt-radar-hero,
 .lt-page-heading {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
@@ -17,7 +15,6 @@
   border-bottom: 1px solid var(--line);
 }
 
-.lt-radar-hero h1,
 .lt-page-heading h1 {
   max-width: 900px;
   margin: 14px 0 18px;
@@ -26,31 +23,12 @@
   letter-spacing: -0.065em;
 }
 
-.lt-radar-hero h1 span { color: var(--muted); }
-
-.lt-radar-hero > div > p:not(.eyebrow),
 .lt-page-heading > p {
   max-width: 760px;
   color: var(--text-secondary);
   font-size: clamp(1rem, 1.5vw, 1.22rem);
   line-height: 1.65;
 }
-
-.lt-freshness {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 4px 14px;
-  align-items: center;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-left: 2px solid var(--green);
-  background: var(--panel);
-}
-
-.lt-freshness svg { grid-row: 1 / 5; width: 22px; color: var(--green); }
-.lt-freshness span,
-.lt-freshness small { color: var(--muted); }
-.lt-freshness strong { font-size: 1.25rem; }
 
 .lt-stat-strip {
   display: grid;
@@ -74,7 +52,6 @@
 .lt-stat-strip span { color: var(--muted); font: 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
 .lt-stat-strip strong { font-size: 1.8rem; }
 
-.lt-signal-section,
 .lt-changes-preview,
 .lt-history-index,
 .lt-registry,
@@ -105,9 +82,6 @@
 }
 .lt-filter-bar button { padding: 0 18px; cursor: pointer; }
 
-.lt-signal-table td > span,
-.lt-signal-table td > small,
-.lt-signal-table td > time + span,
 .lt-history-list article span {
   display: block;
   margin-top: 7px;
@@ -115,18 +89,6 @@
   font-size: 0.78rem;
 }
 
-.lt-signal-table td { vertical-align: top; }
-.lt-signal-table td:nth-child(1) { width: 34%; }
-.lt-signal-table td:nth-child(2) { width: 15%; }
-.lt-signal-table td:nth-child(3) { width: 19%; }
-.lt-signal-table td:nth-child(4) { width: 19%; }
-.lt-signal-table td:nth-child(5) { width: 13%; }
-.lt-signal-link { display: block; color: var(--text); overflow-wrap: anywhere; }
-.lt-signal-link:hover { color: var(--accent); }
-.lt-signal-table .status-pill { display: inline-flex; margin: 0 10px 8px 0; }
-.lt-signal-table td > strong { overflow-wrap: anywhere; }
-
-.lt-boundary-note,
 .lt-method-note {
   display: grid;
   grid-template-columns: minmax(150px, 0.3fr) 1fr;
@@ -137,7 +99,6 @@
   border-left: 2px solid var(--warning);
   background: color-mix(in srgb, var(--warning) 6%, var(--panel));
 }
-.lt-boundary-note p,
 .lt-method-note p { margin: 0; color: var(--text-secondary); }
 
 .lt-change-columns,
@@ -238,7 +199,6 @@
 .lt-method-report { padding-top: 24px; border-top: 1px solid var(--line); color: var(--text-secondary); }
 
 @media (max-width: 1050px) {
-  .lt-radar-hero,
   .lt-page-heading { grid-template-columns: 1fr; gap: 30px; }
   .lt-stat-strip { grid-template-columns: repeat(2, 1fr); }
   .lt-stat-strip > div:nth-child(2) { border-right: 0; }
@@ -250,16 +210,9 @@
 }
 
 @media (max-width: 760px) {
-  .lt-signal-table td {
-    width: auto;
-    max-width: none;
-  }
-
-  .lt-radar-page,
   .lt-changes-page,
   .lt-brand-page,
   .lt-methodology-page { width: min(100% - 28px, 1390px); padding-top: 42px; }
-  .lt-radar-hero h1,
   .lt-page-heading h1 { font-size: clamp(2.7rem, 14vw, 4.4rem); }
   .lt-stat-strip,
   .lt-change-columns,
@@ -292,6 +245,5 @@
   .lt-methodology-toc { align-items: flex-start; flex-direction: column; }
   .lt-methodology-toc div { gap: 14px; }
   .lt-method-section > header { display: block; }
-  .lt-boundary-note,
   .lt-method-note { grid-template-columns: 1fr; gap: 10px; }
 }
