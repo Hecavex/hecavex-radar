@@ -101,7 +101,7 @@ export function CollectionDisclosure({ language = "en" }: { language?: SiteLangu
         <a href={lt ? "/lt/metodologija/#rinkimas" : "/methodology/#collection"}>
           {lt ? "Duomenų rinkimo metodologija" : "Collection methodology"}
         </a>
-        <a href="/docs/#operations">
+        <a href={lt ? "/lt/dokumentacija/#veikimas" : "/docs/#operations"}>
           {lt ? "Tvarkaraščiai ir šaltinių būsenų reikšmės" : "Schedules and source-state semantics"}
         </a>
       </p>

@@ -8,17 +8,28 @@ import { formatDateTime } from "./lib/format.ts";
 import { signalPath } from "./lib/signalRoutes.ts";
 import type { DailyTrendRow, StaticPageData, StaticPageKind } from "./lib/staticPageBootstrap.ts";
 
-function PageShell({ currentPage, children }: { currentPage: StaticPageKind; children: React.ReactNode }) {
-  return <div className="site-shell"><SiteHeader currentPage={currentPage} /><main className="content-page intelligence-page" id="main-content">{children}</main><SiteFooter /></div>;
+export type StaticPageLanguage = "en" | "lt";
+
+const staticRoutes: Record<StaticPageKind, Record<StaticPageLanguage, string>> = {
+  changes: { en: "/changes/", lt: "/lt/pokyciai/" },
+  trends: { en: "/trends/", lt: "/lt/tendencijos/" },
+  associations: { en: "/associations/", lt: "/lt/sasajos/" },
+  tools: { en: "/tools/", lt: "/lt/irankiai/" },
+  dataset: { en: "/dataset/", lt: "/lt/duomenys/" },
+};
+
+function PageShell({ currentPage, language, children }: { currentPage: StaticPageKind; language: StaticPageLanguage; children: React.ReactNode }) {
+  const alternateLanguage = language === "lt" ? "en" : "lt";
+  return <div className="site-shell"><SiteHeader currentPage={currentPage} language={language} alternateHref={staticRoutes[currentPage][alternateLanguage]} /><main className="content-page intelligence-page" id="main-content">{children}</main><SiteFooter language={language} /></div>;
 }
 
 function ArtifactHero({ eyebrow, title, description, icon: Icon }: { eyebrow: string; title: string; description: string; icon: typeof Activity }) {
   return <header className="artifact-hero"><div><p className="eyebrow"><Icon aria-hidden="true" /> {eyebrow}</p><h1>{title}</h1></div><p>{description}</p></header>;
 }
 
-export function ChangesPage({ data }: { data: StaticPageData }) {
+export function ChangesPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
   const typeLabels = { "first-publication": "First publication", reobservation: "Reobserved", "status-change": "Status changed", retraction: "Assessment retracted" } as const;
-  return <PageShell currentPage="changes">
+  return <PageShell currentPage="changes" language={language}>
     <ArtifactHero icon={CalendarClock} eyebrow="30-day event record" title="What changed" description="A durable event-level view of new publications, later observations, status changes, and explicit analyst retractions. This is publication activity, not a measure of phishing prevalence." />
     <section className="feed-strip" aria-label="Change feeds"><div><Rss aria-hidden="true" /><span>Subscribe without polling the full snapshot</span></div><a href="/data/events.atom.xml">Atom</a><a href="/data/events.rss.xml">RSS</a><a href="/data/events.feed.json">JSON Feed</a><a href="/data/events.json">Event JSON</a></section>
     <section className="event-section" aria-labelledby="events-title"><div className="section-heading"><div><p className="eyebrow">Publication log</p><h2 id="events-title">Recent events</h2></div><p><strong>{data.events.events.length}</strong> shown · {data.events.window.days}-day window</p></div>
@@ -29,9 +40,10 @@ export function ChangesPage({ data }: { data: StaticPageData }) {
   </PageShell>;
 }
 
-function CoverageBar({ row, maximum }: { row: DailyTrendRow; maximum: number }) {
+function CoverageBar({ row, maximum, language }: { row: DailyTrendRow; maximum: number; language: StaticPageLanguage }) {
   const coverage = row.collectorCoverage.listeningCoveragePercent ?? 0;
-  return <article className="trend-row"><time dateTime={row.date}>{row.date}</time><div className="trend-bars"><progress className="discovery" max={Math.max(1, maximum)} value={row.discovery.uniqueSignals} title={`${row.discovery.uniqueSignals} unique signals`}>{row.discovery.uniqueSignals}</progress><progress className="coverage" max={100} value={coverage} title={`${coverage}% listening coverage`}>{coverage}%</progress></div><strong>{row.discovery.uniqueSignals}</strong><small>{coverage}% coverage</small></article>;
+  const lt = language === "lt";
+  return <article className="trend-row"><time dateTime={row.date}>{row.date}</time><div className="trend-bars"><progress className="discovery" max={Math.max(1, maximum)} value={row.discovery.uniqueSignals} title={`${row.discovery.uniqueSignals} ${lt ? "unikalūs signalai" : "unique signals"}`}>{row.discovery.uniqueSignals}</progress><progress className="coverage" max={100} value={coverage} title={`${coverage}% ${lt ? "klausymosi aprėptis" : "listening coverage"}`}>{coverage}%</progress></div><strong>{row.discovery.uniqueSignals}</strong><small>{coverage}% {lt ? "aprėptis" : "coverage"}</small></article>;
 }
 
 function Counts({ values, empty = "No values in the public sample" }: { values: Record<string, number>; empty?: string }) {
@@ -39,24 +51,27 @@ function Counts({ values, empty = "No values in the public sample" }: { values: 
   return entries.length ? <ul className="facet-counts">{entries.slice(0, 12).map(([label, value]) => <li key={label}><span>{label}</span><strong>{value}</strong></li>)}</ul> : <p className="empty-copy">{empty}</p>;
 }
 
-export function TrendsPage({ data }: { data: StaticPageData }) {
+export function TrendsPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
+  const lt = language === "lt";
   const maximum = Math.max(0, ...data.trends.series.map((row) => row.discovery.uniqueSignals));
   const current = data.trends.series.at(-1);
-  return <PageShell currentPage="trends">
-    <ArtifactHero icon={Activity} eyebrow="Coverage-aware measurements" title="Discovery trends and review quality" description="Radar publishes its own activity beside collector coverage. The charts describe what this sampled pipeline saw and published. They do not estimate all Lithuanian phishing." />
-    <section className="trend-boundary"><RadioTower aria-hidden="true" /><div><strong>Coverage travels with every count</strong><p>{data.trends.semantics}</p></div></section>
-    <section className="trend-section"><div className="section-heading"><div><p className="eyebrow">Sparse UTC series</p><h2>Daily discovery</h2></div><a href="/data/daily-trends.json">Download JSON</a></div><div className="trend-legend"><span><i className="discovery" /> unique signals</span><span><i className="coverage" /> listening coverage</span></div><div className="trend-chart">{data.trends.series.map((row) => <CoverageBar key={row.date} row={row} maximum={maximum} />)}</div><p className="boundary-note">{data.trends.seriesSemantics} {data.trends.omittedZeroDays} zero days are omitted.</p></section>
-    <section className="quality-grid"><article><p className="eyebrow">Current recorded day</p><h2>{current?.date ?? data.trends.to}</h2><dl><div><dt>Unique signals</dt><dd>{current?.discovery.uniqueSignals ?? 0}</dd></div><div><dt>First publications</dt><dd>{current?.discovery.firstPublications ?? 0}</dd></div><div><dt>Reobservations</dt><dd>{current?.discovery.reobservations ?? 0}</dd></div><div><dt>Healthy attempts</dt><dd>{current?.collectorCoverage.healthyAttempts ?? 0}</dd></div></dl></article><article><p className="eyebrow">Analyst sample</p><h2>Review coverage</h2><dl><div><dt>Eligible signals</dt><dd>{data.quality.reviewCoverage.eligiblePublishedSignals}</dd></div><div><dt>Assessed</dt><dd>{data.quality.reviewCoverage.assessedSignals}</dd></div><div><dt>Coverage</dt><dd>{data.quality.reviewCoverage.percent ?? "Unavailable"}{data.quality.reviewCoverage.percent !== null ? "%" : ""}</dd></div><div><dt>Median latency</dt><dd>{data.quality.reviewLatencyHours.median ?? "Unavailable"}{data.quality.reviewLatencyHours.median !== null ? "h" : ""}</dd></div></dl></article><article className="quality-warning"><p className="eyebrow">Precision</p><h2>Not supportable yet</h2><p>{data.quality.precision.reason}</p></article></section>
-    <section className="quality-facets"><article><h3>Review outcomes</h3><Counts values={data.quality.reviewSample.outcomes} /></article><article><h3>Evidence in reviewed sample</h3><Counts values={data.quality.reviewSample.byEvidence} /></article><article><h3>Current exclusions</h3><Counts values={data.quality.currentExclusions.byReason} /></article></section>
+  return <PageShell currentPage="trends" language={language}>
+    <ArtifactHero icon={Activity} eyebrow={lt ? "Aprėptį nurodantys matavimai" : "Coverage-aware measurements"} title={lt ? "Aptikimo tendencijos ir peržiūros kokybė" : "Discovery trends and review quality"} description={lt ? "Radaras skelbia savo veiklos rodiklius kartu su rinktuvų aprėptimi. Grafikai aprašo tik tai, ką ši atrankinė sistema pastebėjo ir paskelbė. Jie nevertina viso phishing masto Lietuvoje." : "Radar publishes its own activity beside collector coverage. The charts describe what this sampled pipeline saw and published. They do not estimate all Lithuanian phishing."} />
+    <section className="trend-boundary"><RadioTower aria-hidden="true" /><div><strong>{lt ? "Kiekvienas skaičius pateikiamas su aprėptimi" : "Coverage travels with every count"}</strong><p>{lt ? "Rodikliai apima tik užfiksuotus rinkimo bandymus ir paskelbtus signalus; jie nėra viso interneto ar visų Lietuvos phishing atvejų matas." : data.trends.semantics}</p></div></section>
+    <section className="trend-section"><div className="section-heading"><div><p className="eyebrow">{lt ? "Reta UTC seka" : "Sparse UTC series"}</p><h2>{lt ? "Kasdienis aptikimas" : "Daily discovery"}</h2></div><a href="/data/daily-trends.json">{lt ? "Atsisiųsti JSON" : "Download JSON"}</a></div><div className="trend-legend"><span><i className="discovery" /> {lt ? "unikalūs signalai" : "unique signals"}</span><span><i className="coverage" /> {lt ? "klausymosi aprėptis" : "listening coverage"}</span></div><div className="trend-chart">{data.trends.series.map((row) => <CoverageBar key={row.date} row={row} maximum={maximum} language={language} />)}</div><p className="boundary-note">{lt ? `Rodomos tik dienos, kuriomis buvo užfiksuota publikavimo veikla. Praleista dienų be įrašų: ${data.trends.omittedZeroDays}.` : `${data.trends.seriesSemantics} ${data.trends.omittedZeroDays} zero days are omitted.`}</p></section>
+    <section className="quality-grid"><article><p className="eyebrow">{lt ? "Dabartinė užfiksuota diena" : "Current recorded day"}</p><h2>{current?.date ?? data.trends.to}</h2><dl><div><dt>{lt ? "Unikalūs signalai" : "Unique signals"}</dt><dd>{current?.discovery.uniqueSignals ?? 0}</dd></div><div><dt>{lt ? "Pirmosios publikacijos" : "First publications"}</dt><dd>{current?.discovery.firstPublications ?? 0}</dd></div><div><dt>{lt ? "Pakartotiniai stebėjimai" : "Reobservations"}</dt><dd>{current?.discovery.reobservations ?? 0}</dd></div><div><dt>{lt ? "Sėkmingi bandymai" : "Healthy attempts"}</dt><dd>{current?.collectorCoverage.healthyAttempts ?? 0}</dd></div></dl></article><article><p className="eyebrow">{lt ? "Analitiko imtis" : "Analyst sample"}</p><h2>{lt ? "Peržiūros aprėptis" : "Review coverage"}</h2><dl><div><dt>{lt ? "Tinkami signalai" : "Eligible signals"}</dt><dd>{data.quality.reviewCoverage.eligiblePublishedSignals}</dd></div><div><dt>{lt ? "Įvertinta" : "Assessed"}</dt><dd>{data.quality.reviewCoverage.assessedSignals}</dd></div><div><dt>{lt ? "Aprėptis" : "Coverage"}</dt><dd>{data.quality.reviewCoverage.percent ?? (lt ? "Nėra duomenų" : "Unavailable")}{data.quality.reviewCoverage.percent !== null ? "%" : ""}</dd></div><div><dt>{lt ? "Medianinis vėlavimas" : "Median latency"}</dt><dd>{data.quality.reviewLatencyHours.median ?? (lt ? "Nėra duomenų" : "Unavailable")}{data.quality.reviewLatencyHours.median !== null ? (lt ? " val." : "h") : ""}</dd></div></dl></article><article className="quality-warning"><p className="eyebrow">{lt ? "Tikslumas" : "Precision"}</p><h2>{lt ? "Kol kas patikimai neapskaičiuojamas" : "Not supportable yet"}</h2><p>{lt ? "Peržiūrėtų įrašų imtis dar per maža, kad būtų galima skelbti prasmingą tikslumo įvertį." : data.quality.precision.reason}</p></article></section>
+    <section className="quality-facets"><article><h3>{lt ? "Peržiūros rezultatai" : "Review outcomes"}</h3><Counts values={data.quality.reviewSample.outcomes} empty={lt ? "Viešoje imtyje reikšmių nėra" : "No values in the public sample"} /></article><article><h3>{lt ? "Peržiūrėtos imties įrodymai" : "Evidence in reviewed sample"}</h3><Counts values={data.quality.reviewSample.byEvidence} empty={lt ? "Viešoje imtyje reikšmių nėra" : "No values in the public sample"} /></article><article><h3>{lt ? "Dabartinės išimtys" : "Current exclusions"}</h3><Counts values={data.quality.currentExclusions.byReason} empty={lt ? "Viešoje imtyje reikšmių nėra" : "No values in the public sample"} /></article></section>
   </PageShell>;
 }
 
-export function AssociationsPage({ data }: { data: StaticPageData }) {
-  return <PageShell currentPage="associations"><ArtifactHero icon={Waypoints} eyebrow="Evidence graph" title="Published associations" description="Inspect every bounded relationship Radar can support from shared hashes, certificates, redirects, network context, and DNS. Association never means attribution." /><AssociationExplorer signals={data.snapshot.signals} artifact={data.related} /></PageShell>;
+export function AssociationsPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
+  const lt = language === "lt";
+  return <PageShell currentPage="associations" language={language}><ArtifactHero icon={Waypoints} eyebrow={lt ? "Įrodymų grafas" : "Evidence graph"} title={lt ? "Paskelbtos sąsajos" : "Published associations"} description={lt ? "Peržiūrėkite ribotus ryšius, kuriuos Radaras gali pagrįsti bendromis maišos reikšmėmis, sertifikatais, peradresavimais, tinklo kontekstu ir DNS. Sąsaja niekada nereiškia priskyrimo." : "Inspect every bounded relationship Radar can support from shared hashes, certificates, redirects, network context, and DNS. Association never means attribution."} /><AssociationExplorer signals={data.snapshot.signals} artifact={data.related} language={language} signalHref={(signalId) => language === "lt" ? `/lt/signalai/${signalId}/` : `/signals/${signalId}/`} /></PageShell>;
 }
 
-export function ToolsPage({ data }: { data: StaticPageData }) {
-  return <PageShell currentPage="tools"><ArtifactHero icon={ShieldCheck} eyebrow="Browser-only defensive utility" title="Check your indicators locally" description="Compare domains, URLs, and hashes with Radar's current and retained public records. The comparison happens in browser memory; submitted values are never sent to HECAVEX." /><BrowserIocChecker signals={data.snapshot.signals} history={data.history} /></PageShell>;
+export function ToolsPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
+  const lt = language === "lt";
+  return <PageShell currentPage="tools" language={language}><ArtifactHero icon={ShieldCheck} eyebrow={lt ? "Tik naršyklėje veikiantis gynybinis įrankis" : "Browser-only defensive utility"} title={lt ? "Patikrinkite indikatorius vietoje" : "Check your indicators locally"} description={lt ? "Palyginkite domenus, URL ir maišos reikšmes su dabartiniais bei išsaugotais viešais Radaro įrašais. Palyginimas vyksta naršyklės atmintyje; pateiktos reikšmės HECAVEX nesiunčiamos." : "Compare domains, URLs, and hashes with Radar's current and retained public records. The comparison happens in browser memory; submitted values are never sent to HECAVEX."} /><BrowserIocChecker signals={data.snapshot.signals} history={data.history} language={language} signalHref={(signalId) => language === "lt" ? `/lt/signalai/${signalId}/` : `/signals/${signalId}/`} /></PageShell>;
 }
 
 const downloads = [
@@ -71,18 +86,19 @@ const downloads = [
   ["Release manifest", "/data/feed-manifest.json", "JSON"],
 ] as const;
 
-export function DatasetPage({ data }: { data: StaticPageData }) {
-  return <PageShell currentPage="dataset"><ArtifactHero icon={Database} eyebrow="Public data catalogue" title="Radar dataset distributions" description="Machine-readable, bounded defensive research artifacts with schemas, checksums, retention semantics, and explicit safety limits." />
-    <section className="dataset-summary"><div><span>Snapshot generated</span><strong>{formatDateTime(data.snapshot.generatedAt)} UTC</strong></div><div><span>Current signals</span><strong>{data.snapshot.signals.length}</strong></div><div><span>History records</span><strong>{data.history.signals.length}</strong></div><div><span>Event window</span><strong>{data.events.window.days} days</strong></div></section>
-    <section className="download-grid" aria-label="Dataset downloads">{downloads.map(([title, href, format]) => <a href={href} key={href}><FileCheck2 aria-hidden="true" /><span><strong>{title}</strong><small>{format}</small></span><Download aria-hidden="true" /></a>)}</section>
-    <section className="dataset-explanation"><article><p className="eyebrow">Integrity</p><h2>Verify before use</h2><p>Every canonical artifact has a SHA-256 sidecar and appears in the release manifest. Weekly release archives are attested through GitHub when the scheduled release succeeds.</p><a href="https://github.com/Hecavex/hecavex-radar/releases" target="_blank" rel="noreferrer noopener">Weekly releases <ExternalLink aria-hidden="true" /></a></article><article><p className="eyebrow"><GitCompareArrows aria-hidden="true" /> Semantics</p><h2>Signals, not verdicts</h2><p>Defanged dashboard rows are discovery leads. Only the reviewed STIX distribution contains analyst-confirmed Indicators. Missing rows, enrichment, or review are unknown.</p><a href="/docs/#data-contract">Read the data contract →</a></article></section>
+export function DatasetPage({ data, language = "en" }: { data: StaticPageData; language?: StaticPageLanguage }) {
+  const lt = language === "lt";
+  return <PageShell currentPage="dataset" language={language}><ArtifactHero icon={Database} eyebrow={lt ? "Viešas duomenų katalogas" : "Public data catalogue"} title={lt ? "Radaro duomenų rinkiniai" : "Radar dataset distributions"} description={lt ? "Mašininiu būdu skaitomi, riboti gynybinio tyrimo duomenys su schemomis, kontrolinėmis sumomis, saugojimo semantika ir aiškiomis saugumo ribomis." : "Machine-readable, bounded defensive research artifacts with schemas, checksums, retention semantics, and explicit safety limits."} />
+    <section className="dataset-summary"><div><span>{lt ? "Suvestinė sugeneruota" : "Snapshot generated"}</span><strong>{formatDateTime(data.snapshot.generatedAt)} UTC</strong></div><div><span>{lt ? "Dabartiniai signalai" : "Current signals"}</span><strong>{data.snapshot.signals.length}</strong></div><div><span>{lt ? "Istorijos įrašai" : "History records"}</span><strong>{data.history.signals.length}</strong></div><div><span>{lt ? "Įvykių langas" : "Event window"}</span><strong>{data.events.window.days} {lt ? "dienų" : "days"}</strong></div></section>
+    <section className="download-grid" aria-label={lt ? "Duomenų rinkinių atsisiuntimai" : "Dataset downloads"}>{downloads.map(([title, href, format]) => <a href={href} key={href}><FileCheck2 aria-hidden="true" /><span><strong>{lt ? ({"Current defanged snapshot":"Dabartinė neutralizuota suvestinė","Current snapshot index":"Dabartinės suvestinės indeksas","Observation bundle":"Stebėjimų rinkinys","Reviewed indicators and sightings":"Peržiūrėti indikatoriai ir stebėjimai","Event record":"Įvykių žurnalas","Daily coverage-aware trends":"Kasdienės tendencijos su aprėptimi","Public review quality":"Viešos peržiūros kokybė","Association graph":"Sąsajų grafas","Release manifest":"Laidos manifestas"} as Record<string, string>)[title] : title}</strong><small>{format}</small></span><Download aria-hidden="true" /></a>)}</section>
+    <section className="dataset-explanation"><article><p className="eyebrow">{lt ? "Vientisumas" : "Integrity"}</p><h2>{lt ? "Patikrinkite prieš naudodami" : "Verify before use"}</h2><p>{lt ? "Kiekvienas kanoninis duomenų failas turi SHA-256 kontrolinę sumą ir yra įtrauktas į laidos manifestą. Sėkmingai įvykus suplanuotai laidai, savaitiniai archyvai patvirtinami per GitHub." : "Every canonical artifact has a SHA-256 sidecar and appears in the release manifest. Weekly release archives are attested through GitHub when the scheduled release succeeds."}</p><a href="https://github.com/Hecavex/hecavex-radar/releases" target="_blank" rel="noreferrer noopener">{lt ? "Savaitinės laidos" : "Weekly releases"} <ExternalLink aria-hidden="true" /></a></article><article><p className="eyebrow"><GitCompareArrows aria-hidden="true" /> {lt ? "Semantika" : "Semantics"}</p><h2>{lt ? "Signalai, ne nuosprendžiai" : "Signals, not verdicts"}</h2><p>{lt ? "Neutralizuotos skydelio eilutės yra tyrimo kryptys. Tik peržiūrėtame STIX rinkinyje gali būti analitiko patvirtintų indikatorių. Trūkstami įrašai, papildomas kontekstas ar peržiūra lieka nežinomi." : "Defanged dashboard rows are discovery leads. Only the reviewed STIX distribution contains analyst-confirmed Indicators. Missing rows, enrichment, or review are unknown."}</p><a href={lt ? "/lt/dokumentacija/#duomenu-sutartis" : "/docs/#data-contract"}>{lt ? "Skaityti duomenų sutartį" : "Read the data contract"} →</a></article></section>
   </PageShell>;
 }
 
-export function StaticPage({ kind, data }: { kind: StaticPageKind; data: StaticPageData }) {
-  if (kind === "changes") return <ChangesPage data={data} />;
-  if (kind === "trends") return <TrendsPage data={data} />;
-  if (kind === "associations") return <AssociationsPage data={data} />;
-  if (kind === "tools") return <ToolsPage data={data} />;
-  return <DatasetPage data={data} />;
+export function StaticPage({ kind, data, language = "en" }: { kind: StaticPageKind; data: StaticPageData; language?: StaticPageLanguage }) {
+  if (kind === "changes") return <ChangesPage data={data} language={language} />;
+  if (kind === "trends") return <TrendsPage data={data} language={language} />;
+  if (kind === "associations") return <AssociationsPage data={data} language={language} />;
+  if (kind === "tools") return <ToolsPage data={data} language={language} />;
+  return <DatasetPage data={data} language={language} />;
 }

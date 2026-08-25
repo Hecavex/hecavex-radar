@@ -1,3 +1,5 @@
+import { LtDocumentation } from "../lt/LtDocumentation.tsx";
+
 const signalFields = [
   ["id", "string", "First 20 hexadecimal characters of SHA-256 over the normalized defanged hostname."],
   ["url", "string", "Defanged HTTP(S) indicator. Userinfo is rejected; query and fragment are removed; unsafe paths are redacted."],
@@ -58,7 +60,8 @@ const sourceStates = [
   ["skipped", "An optional deployment input was not configured or attempted."],
 ] as const;
 
-export function Documentation() {
+export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
+  if (language === "lt") return <LtDocumentation />;
   return (
     <article className="docs-content" aria-labelledby="documentation-title">
       <header className="docs-heading">

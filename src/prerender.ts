@@ -16,6 +16,7 @@ import { LtBrandRegistryPage } from "./lt/LtBrandRegistryPage.tsx";
 import { LtChangesPage } from "./lt/LtChangesPage.tsx";
 import { LtMethodologyPage } from "./lt/LtMethodologyPage.tsx";
 import { LtRadarApp } from "./lt/LtRadarApp.tsx";
+import type { SiteLanguage } from "./components/SiteHeader.tsx";
 import type { RadarHistory, RadarSnapshot } from "./types.ts";
 
 export type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation" | "not-found";
@@ -25,6 +26,7 @@ export function renderPrerenderedPage(
   snapshot: RadarSnapshot,
   renderedAt = Date.now(),
   history?: RadarHistory,
+  language: SiteLanguage = "en",
 ): string {
   if (page === "radar") {
     return renderToString(
@@ -50,13 +52,13 @@ export function renderPrerenderedPage(
     return renderToString(createElement(BrandScopePage));
   }
   if (page === "documentation") {
-    return renderToString(createElement(DocumentationPage));
+    return renderToString(createElement(DocumentationPage, { language }));
   }
   return renderToString(createElement(NotFoundPage));
 }
 
-export function renderStaticPage(kind: StaticPageKind, data: StaticPageData): string {
-  return renderToString(createElement(StaticPage, { kind, data }));
+export function renderStaticPage(kind: StaticPageKind, data: StaticPageData, language: SiteLanguage = "en"): string {
+  return renderToString(createElement(StaticPage, { kind, data, language }));
 }
 
 export function renderSignalPage(data: SignalPageData): string {

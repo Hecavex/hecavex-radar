@@ -42,12 +42,29 @@ const lithuanianNavigation: Array<{ label: string; href: string; pages: SitePage
   { label: "Apžvalga", href: "/lt/", pages: ["radar", "signal"] },
   { label: "Pokyčiai", href: "/lt/pokyciai/", pages: ["changes", "history"] },
   { label: "Prekių ženklai", href: "/lt/prekes-zenklai/", pages: ["brands", "brand"] },
-  { label: "Tendencijos", href: "/trends/", pages: ["trends", "quality"] },
-  { label: "Sąsajos", href: "/associations/", pages: ["associations"] },
-  { label: "Įrankiai", href: "/tools/", pages: ["tools"] },
+  { label: "Tendencijos", href: "/lt/tendencijos/", pages: ["trends", "quality"] },
+  { label: "Sąsajos", href: "/lt/sasajos/", pages: ["associations"] },
+  { label: "Įrankiai", href: "/lt/irankiai/", pages: ["tools"] },
   { label: "Metodologija", href: "/lt/metodologija/", pages: ["methodology"] },
-  { label: "Dokumentacija", href: "/docs/", pages: ["documentation", "dataset"] },
+  { label: "Dokumentacija", href: "/lt/dokumentacija/", pages: ["documentation", "dataset"] },
 ];
+
+const alternateRoutes: Record<SitePage, { en: string; lt: string }> = {
+  radar: { en: "/", lt: "/lt/" },
+  changes: { en: "/changes/", lt: "/lt/pokyciai/" },
+  history: { en: "/history/", lt: "/lt/pokyciai/" },
+  brands: { en: "/brands/", lt: "/lt/prekes-zenklai/" },
+  brand: { en: "/brands/", lt: "/lt/prekes-zenklai/" },
+  trends: { en: "/trends/", lt: "/lt/tendencijos/" },
+  quality: { en: "/trends/", lt: "/lt/tendencijos/" },
+  associations: { en: "/associations/", lt: "/lt/sasajos/" },
+  tools: { en: "/tools/", lt: "/lt/irankiai/" },
+  dataset: { en: "/dataset/", lt: "/lt/duomenys/" },
+  methodology: { en: "/methodology/", lt: "/lt/metodologija/" },
+  documentation: { en: "/docs/", lt: "/lt/dokumentacija/" },
+  signal: { en: "/", lt: "/lt/" },
+  "not-found": { en: "/", lt: "/lt/" },
+};
 
 function PortfolioNavigation({ className, onNavigate, language }: { className: string; onNavigate?: () => void; language: SiteLanguage }) {
   return (
@@ -112,7 +129,7 @@ export function SiteHeader({ currentPage, language = "en", alternateHref }: {
   const navigationRef = useRef<HTMLDetailsElement>(null);
   const [navigationOpen, setNavigationOpen] = useState(false);
   const researchHref = language === "lt" ? "https://hecavex.com/lt/" : "https://hecavex.com/en/";
-  const defaultAlternate = language === "lt" ? "/" : "/lt/";
+  const defaultAlternate = language === "lt" ? alternateRoutes[currentPage].en : alternateRoutes[currentPage].lt;
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {

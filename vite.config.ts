@@ -26,6 +26,8 @@ const cloudflareAnalyticsLoader =
   `beacon.dataset.cfBeacon=JSON.stringify({token});document.head.appendChild(beacon)})();`;
 type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation" | "not-found";
 type StaticPageKind = "changes" | "trends" | "associations" | "tools" | "dataset";
+type PageLanguage = "en" | "lt";
+type StaticPageRoute = { kind: StaticPageKind; language: PageLanguage };
 
 function readJson(path: string): unknown {
   return JSON.parse(readFileSync(path, "utf8"));
@@ -104,19 +106,29 @@ function staticPagePlugin() {
           "/methodology/": "methodology",
           "/docs/index.html": "documentation",
           "/docs/": "documentation",
+          "/lt/dokumentacija/index.html": "documentation",
+          "/lt/dokumentacija/": "documentation",
           "/404.html": "not-found",
         };
-        const staticPages: Record<string, StaticPageKind> = {
-          "/changes/index.html": "changes",
-          "/changes/": "changes",
-          "/trends/index.html": "trends",
-          "/trends/": "trends",
-          "/associations/index.html": "associations",
-          "/associations/": "associations",
-          "/tools/index.html": "tools",
-          "/tools/": "tools",
-          "/dataset/index.html": "dataset",
-          "/dataset/": "dataset",
+        const staticPages: Record<string, StaticPageRoute> = {
+          "/changes/index.html": { kind: "changes", language: "en" },
+          "/changes/": { kind: "changes", language: "en" },
+          "/trends/index.html": { kind: "trends", language: "en" },
+          "/trends/": { kind: "trends", language: "en" },
+          "/associations/index.html": { kind: "associations", language: "en" },
+          "/associations/": { kind: "associations", language: "en" },
+          "/tools/index.html": { kind: "tools", language: "en" },
+          "/tools/": { kind: "tools", language: "en" },
+          "/dataset/index.html": { kind: "dataset", language: "en" },
+          "/dataset/": { kind: "dataset", language: "en" },
+          "/lt/tendencijos/index.html": { kind: "trends", language: "lt" },
+          "/lt/tendencijos/": { kind: "trends", language: "lt" },
+          "/lt/sasajos/index.html": { kind: "associations", language: "lt" },
+          "/lt/sasajos/": { kind: "associations", language: "lt" },
+          "/lt/irankiai/index.html": { kind: "tools", language: "lt" },
+          "/lt/irankiai/": { kind: "tools", language: "lt" },
+          "/lt/duomenys/index.html": { kind: "dataset", language: "lt" },
+          "/lt/duomenys/": { kind: "dataset", language: "lt" },
         };
         const lithuanianPages: Record<string, "radar" | "changes" | "brands" | "methodology"> = {
           "/lt/index.html": "radar",
@@ -131,6 +143,7 @@ function staticPagePlugin() {
         const page = pages[context.path];
         const staticPage = staticPages[context.path];
         const lithuanianPage = lithuanianPages[context.path];
+        const pageLanguage: PageLanguage = context.path.startsWith("/lt/") ? "lt" : "en";
         if (!page && !staticPage && !lithuanianPage) return html;
 
         const [
@@ -167,8 +180,8 @@ function staticPagePlugin() {
             related: parseRelatedObservations(readJson(relatedPath)),
             renderedAt,
           } as StaticPageData;
-          staticMarkup = renderStaticPage(staticPage, data);
-          bootstrap = ` data-page-kind="${staticPage}" data-page-bootstrap="${encodeStaticPageBootstrap(data)}"`;
+          staticMarkup = renderStaticPage(staticPage.kind, data, staticPage.language);
+          bootstrap = ` data-page-kind="${staticPage.kind}" data-page-language="${staticPage.language}" data-page-bootstrap="${encodeStaticPageBootstrap(data)}"`;
         } else if (lithuanianPage) {
           staticMarkup = renderLithuanianPage(lithuanianPage, snapshot, history, renderedAt);
           bootstrap = lithuanianPage === "radar"
@@ -177,11 +190,13 @@ function staticPagePlugin() {
               ? ` data-lt-changes-bootstrap="${encodeLtChangesBootstrap(snapshot, history, renderedAt)}"`
               : "";
         } else {
-          staticMarkup = renderPrerenderedPage(page!, snapshot, renderedAt, history);
+          staticMarkup = renderPrerenderedPage(page!, snapshot, renderedAt, history, pageLanguage);
           bootstrap = page === "radar"
             ? ` data-radar-bootstrap="${encodeSnapshotBootstrap(snapshot, renderedAt)}"`
             : page === "history"
               ? ` data-history-bootstrap="${encodeHistoryBootstrap(history, renderedAt)}"`
+              : page === "documentation"
+                ? ` data-page-language="${pageLanguage}"`
               : "";
         }
         const root = '<div id="root"></div>';
@@ -251,7 +266,8 @@ function dynamicRoutesPlugin() {
       const sitemapUrls = new Set<string>([
         "/", "/changes/", "/history/", "/brands/", "/trends/", "/associations/", "/tools/",
         "/dataset/", "/methodology/", "/docs/", "/lt/", "/lt/pokyciai/", "/lt/prekes-zenklai/",
-        "/lt/metodologija/",
+        "/lt/tendencijos/", "/lt/sasajos/", "/lt/irankiai/", "/lt/duomenys/", "/lt/metodologija/",
+        "/lt/dokumentacija/",
       ]);
 
       const decorate = (template: string, options: {
@@ -384,6 +400,11 @@ export default defineConfig({
         ltChanges: fileURLToPath(new URL("./lt/pokyciai/index.html", import.meta.url)),
         ltBrands: fileURLToPath(new URL("./lt/prekes-zenklai/index.html", import.meta.url)),
         ltMethodology: fileURLToPath(new URL("./lt/metodologija/index.html", import.meta.url)),
+        ltTrends: fileURLToPath(new URL("./lt/tendencijos/index.html", import.meta.url)),
+        ltAssociations: fileURLToPath(new URL("./lt/sasajos/index.html", import.meta.url)),
+        ltTools: fileURLToPath(new URL("./lt/irankiai/index.html", import.meta.url)),
+        ltDataset: fileURLToPath(new URL("./lt/duomenys/index.html", import.meta.url)),
+        ltDocumentation: fileURLToPath(new URL("./lt/dokumentacija/index.html", import.meta.url)),
         signalTemplate: fileURLToPath(new URL("./templates/signal/index.html", import.meta.url)),
         brandTemplate: fileURLToPath(new URL("./templates/brand/index.html", import.meta.url)),
       },

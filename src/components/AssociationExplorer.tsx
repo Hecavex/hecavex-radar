@@ -20,22 +20,38 @@ import {
   type RelationStrength,
 } from "../lib/relatedObservations.ts";
 import { formatDateTime } from "../lib/format.ts";
+import { formatDateTimeLt, statusLt } from "../lt/formatLt.ts";
 import type { RadarSignal } from "../types.ts";
 
 const PAGE_SIZE = 25;
 
-const evidenceLabels: Record<RelationEvidenceType, string> = {
-  "primary-html-sha256": "Primary HTML SHA-256",
-  "certificate-sha256": "Certificate SHA-256",
-  "certificate-san": "Certificate name",
-  "redirect-domain": "Redirect destination",
-  "ip-address": "Observed IP address",
-  asn: "Observed ASN",
-  "dns-a": "DNS A answer",
-  "dns-aaaa": "DNS AAAA answer",
-  "dns-cname": "DNS CNAME answer",
-  "dns-ns": "DNS nameserver",
-  "dns-mx": "DNS mail exchanger",
+const evidenceLabels: Record<"en" | "lt", Record<RelationEvidenceType, string>> = {
+  en: {
+    "primary-html-sha256": "Primary HTML SHA-256",
+    "certificate-sha256": "Certificate SHA-256",
+    "certificate-san": "Certificate name",
+    "redirect-domain": "Redirect destination",
+    "ip-address": "Observed IP address",
+    asn: "Observed ASN",
+    "dns-a": "DNS A answer",
+    "dns-aaaa": "DNS AAAA answer",
+    "dns-cname": "DNS CNAME answer",
+    "dns-ns": "DNS nameserver",
+    "dns-mx": "DNS mail exchanger",
+  },
+  lt: {
+    "primary-html-sha256": "Pagrindinio HTML SHA-256",
+    "certificate-sha256": "Sertifikato SHA-256",
+    "certificate-san": "Sertifikato vardas",
+    "redirect-domain": "Peradresavimo paskirties domenas",
+    "ip-address": "Stebėtas IP adresas",
+    asn: "Stebėtas ASN",
+    "dns-a": "DNS A atsakymas",
+    "dns-aaaa": "DNS AAAA atsakymas",
+    "dns-cname": "DNS CNAME atsakymas",
+    "dns-ns": "DNS vardų serveris",
+    "dns-mx": "DNS pašto serveris",
+  },
 };
 
 type ExplorerState =
@@ -50,33 +66,37 @@ export type AssociationExplorerProps = {
   /** Omit to load Radar's public artifact; pass null to render an unavailable state. */
   artifact?: RelatedObservations | null;
   signalHref?: (signalId: string) => string;
+  language?: "en" | "lt";
 };
 
 function SignalEndpoint({
   node,
   signal,
   signalHref,
+  language,
 }: {
   node: RelatedObservationNode;
   signal: RadarSignal | undefined;
   signalHref: (signalId: string) => string;
+  language: "en" | "lt";
 }) {
+  const lt = language === "lt";
   return (
     <a className="radar-association-endpoint" href={signalHref(node.signalId)}>
       <code>{node.domain}</code>
-      <span>{signal?.brand ?? "Current row unavailable"}</span>
-      <small>{signal ? `${signal.status} · score ${signal.matchScore ?? signal.confidence ?? 0}/100` : `Signal ${node.signalId}`}</small>
+      <span>{signal?.brand ?? (lt ? "Dabartinio įrašo nėra" : "Current row unavailable")}</span>
+      <small>{signal ? `${lt ? statusLt[signal.status] : signal.status} · ${lt ? "balas" : "score"} ${signal.matchScore ?? signal.confidence ?? 0}/100` : `${lt ? "Signalas" : "Signal"} ${node.signalId}`}</small>
       <ExternalLink aria-hidden="true" />
     </a>
   );
 }
 
-function EvidenceList({ evidence }: { evidence: RelatedObservationEvidence[] }) {
+function EvidenceList({ evidence, language }: { evidence: RelatedObservationEvidence[]; language: "en" | "lt" }) {
   return (
-    <ul className="radar-association-evidence" aria-label="Evidence shared by this pair">
+    <ul className="radar-association-evidence" aria-label={language === "lt" ? "Šios poros bendri įrodymai" : "Evidence shared by this pair"}>
       {evidence.map((item) => (
         <li key={`${item.type}:${item.value}`}>
-          <span>{evidenceLabels[item.type]}</span>
+          <span>{evidenceLabels[language][item.type]}</span>
           <code title={item.value}>{item.value}</code>
         </li>
       ))}
@@ -92,7 +112,9 @@ export function AssociationExplorer({
   signals,
   artifact,
   signalHref = (signalId) => `/signals/${signalId}/`,
+  language = "en",
 }: AssociationExplorerProps) {
+  const lt = language === "lt";
   const [state, setState] = useState<ExplorerState>(() => artifact === undefined
     ? { status: "loading" }
     : artifact === null
@@ -170,7 +192,7 @@ export function AssociationExplorer({
         sourceBrand,
         targetBrand,
         edge.id,
-        ...edge.evidence.flatMap((item) => [item.type, evidenceLabels[item.type], item.value]),
+        ...edge.evidence.flatMap((item) => [item.type, evidenceLabels[language][item.type], item.value]),
       ].some((value) => value.toLowerCase().includes(needle));
     });
 
@@ -182,7 +204,7 @@ export function AssociationExplorer({
       if (sort === "cluster") return (leftSource?.clusterId ?? "").localeCompare(rightSource?.clusterId ?? "") || left.id.localeCompare(right.id);
       return edgeStrengthRank(left) - edgeStrengthRank(right) || right.evidence.length - left.evidence.length || left.id.localeCompare(right.id);
     });
-  }, [activeArtifact, brand, cluster, evidenceType, nodesById, query, signalsById, sort, strength]);
+  }, [activeArtifact, brand, cluster, evidenceType, language, nodesById, query, signalsById, sort, strength]);
 
   const filteredClusterCount = useMemo(() => new Set(filteredEdges.map((edge) => nodesById.get(edge.source)?.clusterId).filter(Boolean)).size, [filteredEdges, nodesById]);
   const pageCount = Math.max(1, Math.ceil(filteredEdges.length / PAGE_SIZE));
@@ -209,107 +231,109 @@ export function AssociationExplorer({
     <section className="radar-tool radar-association-explorer" aria-labelledby="association-explorer-title">
       <header className="radar-tool-heading">
         <div>
-          <p className="eyebrow"><Network aria-hidden="true" /> Infrastructure associations</p>
-          <h2 id="association-explorer-title">Explore shared public evidence</h2>
+          <p className="eyebrow"><Network aria-hidden="true" /> {lt ? "Infrastruktūros sąsajos" : "Infrastructure associations"}</p>
+          <h2 id="association-explorer-title">{lt ? "Tyrinėkite bendrus viešus įrodymus" : "Explore shared public evidence"}</h2>
         </div>
         <p>
-          Inspect every association retained in the bounded public graph. Filter by evidence, strength, brand,
-          or cluster without turning technical overlap into an attribution claim.
+          {lt
+            ? "Peržiūrėkite visas ribotame viešame grafe išsaugotas sąsajas. Filtruokite pagal įrodymus, jų stiprumą, prekių ženklą ar klasterį, nepaversdami techninio sutapimo priskyrimo teiginiu."
+            : "Inspect every association retained in the bounded public graph. Filter by evidence, strength, brand, or cluster without turning technical overlap into an attribution claim."}
         </p>
       </header>
 
       <div className="radar-tool-notice radar-tool-notice--warning" role="note">
         <TriangleAlert aria-hidden="true" />
         <div>
-          <strong>Association is not attribution</strong>
+          <strong>{lt ? "Sąsaja nėra priskyrimas" : "Association is not attribution"}</strong>
           <p>
-            Shared hosting, certificates, DNS, redirects, and code can have benign or third-party explanations.
-            A cluster does not identify a campaign, operator, owner, malware family, or threat actor.
+            {lt
+              ? "Bendra priegloba, sertifikatai, DNS, peradresavimai ir kodas gali turėti teisėtą arba trečiosios šalies paaiškinimą. Klasteris nenustato kampanijos, operatoriaus, savininko, kenkėjiškos programos šeimos ar grėsmės veikėjo."
+              : "Shared hosting, certificates, DNS, redirects, and code can have benign or third-party explanations. A cluster does not identify a campaign, operator, owner, malware family, or threat actor."}
           </p>
         </div>
       </div>
 
       {state.status === "loading" ? (
-        <div className="radar-tool-empty" aria-live="polite">Loading the bounded association artifact.</div>
+        <div className="radar-tool-empty" aria-live="polite">{lt ? "Įkeliamas ribotas sąsajų duomenų rinkinys." : "Loading the bounded association artifact."}</div>
       ) : state.status === "unavailable" ? (
         <div className="radar-tool-empty" role="status">
-          Association data is temporarily unavailable. Candidate and history datasets remain unaffected.
+          {lt ? "Sąsajų duomenys laikinai nepasiekiami. Kandidatų ir istorijos duomenų rinkiniai nepakito." : "Association data is temporarily unavailable. Candidate and history datasets remain unaffected."}
         </div>
       ) : activeArtifact && activeArtifact.edges.length === 0 ? (
         <div className="radar-tool-empty" role="status">
-          No candidate pair meets the current shared-evidence publication rules.
+          {lt ? "Nė viena kandidatų pora neatitinka dabartinių bendrų įrodymų skelbimo taisyklių." : "No candidate pair meets the current shared-evidence publication rules."}
         </div>
       ) : activeArtifact ? (
         <>
-          <div className="radar-tool-summary radar-association-summary" aria-label="Association artifact summary">
-            <div><span>Published pairs</span><strong>{activeArtifact.edges.length}</strong></div>
-            <div><span>Signals linked</span><strong>{activeArtifact.nodes.length}</strong></div>
-            <div><span>Evidence clusters</span><strong>{clusterOptions.length}</strong></div>
+          <div className="radar-tool-summary radar-association-summary" aria-label={lt ? "Sąsajų duomenų suvestinė" : "Association artifact summary"}>
+            <div><span>{lt ? "Paskelbtos poros" : "Published pairs"}</span><strong>{activeArtifact.edges.length}</strong></div>
+            <div><span>{lt ? "Susieti signalai" : "Signals linked"}</span><strong>{activeArtifact.nodes.length}</strong></div>
+            <div><span>{lt ? "Įrodymų klasteriai" : "Evidence clusters"}</span><strong>{clusterOptions.length}</strong></div>
             <div>
-              <span>Generated</span>
-              <time dateTime={activeArtifact.generatedAt}>{formatDateTime(activeArtifact.generatedAt)} UTC</time>
+              <span>{lt ? "Sugeneruota" : "Generated"}</span>
+              <time dateTime={activeArtifact.generatedAt}>{lt ? `${formatDateTimeLt(activeArtifact.generatedAt)} Lietuvos laiku` : `${formatDateTime(activeArtifact.generatedAt)} UTC`}</time>
             </div>
           </div>
 
-          <div className="radar-association-facets" aria-label="Evidence facets">
+          <div className="radar-association-facets" aria-label={lt ? "Įrodymų rūšys" : "Evidence facets"}>
             <button type="button" className={evidenceType === "all" ? "active" : ""} onClick={() => selectEvidence("all")}>
-              <span>All evidence</span><strong>{activeArtifact.edges.length}</strong>
+              <span>{lt ? "Visi įrodymai" : "All evidence"}</span><strong>{activeArtifact.edges.length}</strong>
             </button>
             {RELATION_EVIDENCE_TYPES.filter((type) => (evidenceCounts.get(type) ?? 0) > 0).map((type) => (
               <button type="button" className={evidenceType === type ? "active" : ""} onClick={() => selectEvidence(type)} key={type}>
-                <span>{evidenceLabels[type]}</span><strong>{evidenceCounts.get(type)}</strong>
+                <span>{evidenceLabels[language][type]}</span><strong>{evidenceCounts.get(type)}</strong>
               </button>
             ))}
           </div>
 
           <div className="radar-association-filters">
             <label className="radar-tool-search">
-              <span>Search associations</span>
-              <span><Search aria-hidden="true" /><input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder="Domain, evidence, brand…" /></span>
+              <span>{lt ? "Ieškoti sąsajų" : "Search associations"}</span>
+              <span><Search aria-hidden="true" /><input value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={lt ? "Domenas, įrodymas, prekių ženklas…" : "Domain, evidence, brand…"} /></span>
             </label>
             <label>
-              <span>Evidence strength</span>
+              <span>{lt ? "Įrodymų stiprumas" : "Evidence strength"}</span>
               <select value={strength} onChange={(event) => { setStrength(event.target.value as RelationStrength | "all"); setPage(1); }}>
-                <option value="all">All strengths</option>
-                <option value="strong">Exact strong evidence</option>
-                <option value="corroborated-supporting">Corroborated supporting</option>
+                <option value="all">{lt ? "Visi stiprumo lygiai" : "All strengths"}</option>
+                <option value="strong">{lt ? "Tikslūs stiprūs įrodymai" : "Exact strong evidence"}</option>
+                <option value="corroborated-supporting">{lt ? "Papildomai patvirtinantys įrodymai" : "Corroborated supporting"}</option>
               </select>
             </label>
             <label>
-              <span>Potential brand match</span>
+              <span>{lt ? "Galimas prekių ženklo atitikmuo" : "Potential brand match"}</span>
               <select value={brand} onChange={(event) => { setBrand(event.target.value); setPage(1); }}>
-                <option value="all">All brand matches</option>
+                <option value="all">{lt ? "Visi prekių ženklai" : "All brand matches"}</option>
                 {brandOptions.map((value) => <option value={value} key={value}>{value}</option>)}
               </select>
             </label>
             <label>
-              <span>Evidence cluster</span>
+              <span>{lt ? "Įrodymų klasteris" : "Evidence cluster"}</span>
               <select value={cluster} onChange={(event) => { setCluster(event.target.value); setPage(1); }}>
-                <option value="all">All clusters</option>
-                {clusterOptions.map(([value, count]) => <option value={value} key={value}>{value} · {count} signals</option>)}
+                <option value="all">{lt ? "Visi klasteriai" : "All clusters"}</option>
+                {clusterOptions.map(([value, count]) => <option value={value} key={value}>{value} · {count} {lt ? "signalai" : "signals"}</option>)}
               </select>
             </label>
             <label>
-              <span>Order</span>
+              <span>{lt ? "Rikiavimas" : "Order"}</span>
               <select value={sort} onChange={(event) => { setSort(event.target.value as ExplorerSort); setPage(1); }}>
-                <option value="strength">Strongest evidence</option>
-                <option value="evidence">Most evidence</option>
-                <option value="domain">Domain</option>
-                <option value="cluster">Cluster</option>
+                <option value="strength">{lt ? "Stipriausi įrodymai" : "Strongest evidence"}</option>
+                <option value="evidence">{lt ? "Daugiausia įrodymų" : "Most evidence"}</option>
+                <option value="domain">{lt ? "Domenas" : "Domain"}</option>
+                <option value="cluster">{lt ? "Klasteris" : "Cluster"}</option>
               </select>
             </label>
             <button type="button" className="radar-tool-button" onClick={resetFilters} disabled={!hasFilters}>
-              <FilterX aria-hidden="true" /> Reset filters
+              <FilterX aria-hidden="true" /> {lt ? "Atkurti filtrus" : "Reset filters"}
             </button>
           </div>
 
           <div className="radar-association-result-heading">
-            <p><strong>{filteredEdges.length}</strong> matching associations across <strong>{filteredClusterCount}</strong> clusters</p>
-            <a href="/data/related-observations.json" download><Download aria-hidden="true" /> Download published JSON</a>
+            <p><strong>{filteredEdges.length}</strong> {lt ? "atitinkančios sąsajos" : "matching associations"} · <strong>{filteredClusterCount}</strong> {lt ? "klasteriai" : "clusters"}</p>
+            <a href="/data/related-observations.json" download><Download aria-hidden="true" /> {lt ? "Atsisiųsti paskelbtą JSON" : "Download published JSON"}</a>
           </div>
 
           {visibleEdges.length === 0 ? (
-            <div className="radar-tool-empty">No published association matches these filters.</div>
+            <div className="radar-tool-empty">{lt ? "Nė viena paskelbta sąsaja neatitinka šių filtrų." : "No published association matches these filters."}</div>
           ) : (
             <ol className="radar-association-list">
               {visibleEdges.map((edge) => {
@@ -320,17 +344,17 @@ export function AssociationExplorer({
                   <li key={edge.id}>
                     <div className="radar-association-meta">
                       <span className={`radar-association-strength radar-association-strength--${edge.strength}`}>
-                        {edge.strength === "strong" ? "Exact strong evidence" : "Corroborated supporting evidence"}
+                        {edge.strength === "strong" ? (lt ? "Tikslūs stiprūs įrodymai" : "Exact strong evidence") : (lt ? "Papildomai patvirtinantys įrodymai" : "Corroborated supporting evidence")}
                       </span>
-                      <span>Cluster {source.clusterId}</span>
-                      <span>{edge.evidence.length} evidence item{edge.evidence.length === 1 ? "" : "s"}</span>
+                      <span>{lt ? "Klasteris" : "Cluster"} {source.clusterId}</span>
+                      <span>{edge.evidence.length} {lt ? "įrodymų elementai" : `evidence item${edge.evidence.length === 1 ? "" : "s"}`}</span>
                     </div>
                     <div className="radar-association-pair">
-                      <SignalEndpoint node={source} signal={signalsById.get(source.signalId)} signalHref={signalHref} />
+                      <SignalEndpoint node={source} signal={signalsById.get(source.signalId)} signalHref={signalHref} language={language} />
                       <GitCompareArrows aria-hidden="true" />
-                      <SignalEndpoint node={target} signal={signalsById.get(target.signalId)} signalHref={signalHref} />
+                      <SignalEndpoint node={target} signal={signalsById.get(target.signalId)} signalHref={signalHref} language={language} />
                     </div>
-                    <EvidenceList evidence={edge.evidence} />
+                    <EvidenceList evidence={edge.evidence} language={language} />
                   </li>
                 );
               })}
@@ -338,21 +362,21 @@ export function AssociationExplorer({
           )}
 
           {pageCount > 1 ? (
-            <nav className="radar-tool-pagination" aria-label="Association result pages">
-              <button type="button" onClick={() => setPage(Math.max(1, safePage - 1))} disabled={safePage === 1}>Previous</button>
-              <span>Page {safePage} of {pageCount}</span>
-              <button type="button" onClick={() => setPage(Math.min(pageCount, safePage + 1))} disabled={safePage === pageCount}>Next</button>
+            <nav className="radar-tool-pagination" aria-label={lt ? "Sąsajų rezultatų puslapiai" : "Association result pages"}>
+              <button type="button" onClick={() => setPage(Math.max(1, safePage - 1))} disabled={safePage === 1}>{lt ? "Ankstesnis" : "Previous"}</button>
+              <span>{lt ? "Puslapis" : "Page"} {safePage} {lt ? "iš" : "of"} {pageCount}</span>
+              <button type="button" onClick={() => setPage(Math.min(pageCount, safePage + 1))} disabled={safePage === pageCount}>{lt ? "Kitas" : "Next"}</button>
             </nav>
           ) : null}
 
           <footer className="radar-association-boundary">
             <p>{activeArtifact.semantics}</p>
             <span>
-              Suppressed before publication: {activeArtifact.suppressedEvidence.highFanoutValues} high-fanout values,
-              {" "}{activeArtifact.suppressedEvidence.temporalPairs} temporal pairs. Public edge limit:
+              {lt ? "Prieš skelbimą atmesta" : "Suppressed before publication"}: {activeArtifact.suppressedEvidence.highFanoutValues} {lt ? "per dažnai pasikartojančių reikšmių" : "high-fanout values"},
+              {" "}{activeArtifact.suppressedEvidence.temporalPairs} {lt ? "vien laiku pagrįstų porų. Viešų briaunų riba" : "temporal pairs. Public edge limit"}:
               {" "}{activeArtifact.suppressedEvidence.edgeLimit}.
             </span>
-            <a href="/methodology/#publication">Read the publication boundaries</a>
+            <a href={lt ? "/lt/metodologija/#skelbimas" : "/methodology/#publication"}>{lt ? "Skaityti skelbimo ribas" : "Read the publication boundaries"}</a>
           </footer>
         </>
       ) : null}

@@ -25,8 +25,13 @@ const pages = [
   { path: "/associations/", marker: "Published associations" },
   { path: "/tools/", marker: "Check your indicators locally" },
   { path: "/dataset/", marker: "Radar dataset distributions" },
+  { path: "/lt/tendencijos/", marker: "Aptikimo tendencijos ir peržiūros kokybė" },
+  { path: "/lt/sasajos/", marker: "Paskelbtos sąsajos" },
+  { path: "/lt/irankiai/", marker: "Patikrinkite indikatorius vietoje" },
+  { path: "/lt/duomenys/", marker: "Radaro duomenų rinkiniai" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
+  { path: "/lt/dokumentacija/", marker: "HECAVEX Radaro techninis žinynas" },
   { path: "/404.html", marker: "This route has no signal." },
 ];
 const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
@@ -372,7 +377,7 @@ function verifyBuiltHtml() {
   const history = JSON.parse(readFileSync(join(output, "data", "history.json"), "utf8"));
   const brands = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
   const signalIds = new Set([...snapshot.signals, ...history.signals].map((signal) => signal.id));
-  const expectedHtmlCount = 15 + (signalIds.size * 2) + (brands.entries.length * 2);
+  const expectedHtmlCount = 20 + (signalIds.size * 2) + (brands.entries.length * 2);
   assert(htmlFiles.length === expectedHtmlCount, `Expected ${expectedHtmlCount} static HTML entries, found ${htmlFiles.length}.`);
   assert(!htmlFiles.some((path) => relative(output, path).startsWith(`templates${sep}`)), "Build output still exposes route templates.");
   assert(!existsSync(join(output, "signals", "index.html")), "Build output creates a soft-404 landing page at /signals/.");
@@ -423,12 +428,17 @@ function verifyBuiltHtml() {
       ["/brands/", "Brands"],
       ["/lt/prekes-zenklai/", "Prekių ženklai"],
       ["/trends/", "Trends"],
+      ["/lt/tendencijos/", "Tendencijos"],
       ["/associations/", "Associations"],
+      ["/lt/sasajos/", "Sąsajos"],
       ["/tools/", "Tools"],
+      ["/lt/irankiai/", "Įrankiai"],
       ["/dataset/", "Docs"],
+      ["/lt/duomenys/", "Dokumentacija"],
       ["/methodology/", "Methodology"],
       ["/lt/metodologija/", "Metodologija"],
       ["/docs/", "Docs"],
+      ["/lt/dokumentacija/", "Dokumentacija"],
     ]).get(route) ?? (
       route.startsWith("/signals/")
         ? "Overview"
@@ -529,6 +539,7 @@ function verifyBuiltHtml() {
     const bootstrap = root.getAttribute("data-radar-bootstrap");
     const historyBootstrap = root.getAttribute("data-history-bootstrap");
     const staticBootstrap = root.getAttribute("data-page-bootstrap");
+    const pageLanguage = root.getAttribute("data-page-language");
     const ltChangesBootstrap = root.getAttribute("data-lt-changes-bootstrap");
     if (route === "/" || route === "/lt/") {
       assert(bootstrap, `${route} has no embedded hydration snapshot.`);
@@ -548,10 +559,16 @@ function verifyBuiltHtml() {
       assert(ltChangesBootstrap, `${route} has no localized changes bootstrap.`);
       const payload = JSON.parse(decodeURIComponent(ltChangesBootstrap));
       assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong localized data.`);
-    } else if (["/changes/", "/trends/", "/associations/", "/tools/", "/dataset/"].includes(route)) {
+    } else if ([
+      "/changes/", "/trends/", "/associations/", "/tools/", "/dataset/",
+      "/lt/tendencijos/", "/lt/sasajos/", "/lt/irankiai/", "/lt/duomenys/",
+    ].includes(route)) {
       assert(staticBootstrap, `${route} has no embedded static artifact bootstrap.`);
+      assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong static-page language.`);
       const payload = JSON.parse(decodeURIComponent(staticBootstrap));
       assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong static data.`);
+    } else if (route === "/docs/" || route === "/lt/dokumentacija/") {
+      assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong documentation language.`);
     } else if (route.startsWith("/signals/") || route.startsWith("/lt/signalai/")) {
       assert(staticBootstrap, `${route} has no permanent signal bootstrap.`);
       const payload = JSON.parse(decodeURIComponent(staticBootstrap));
@@ -1669,7 +1686,7 @@ async function verifyInBrowser() {
             `Radar candidate controls overflow their mobile card at ${width}px.`,
           );
         }
-        if (entry.path === "/methodology/" || entry.path === "/docs/") {
+        if (["/methodology/", "/lt/metodologija/", "/docs/", "/lt/dokumentacija/"].includes(entry.path)) {
           assert(
             layout.contentTocBorderTop === layout.contentTocBorderBottom && layout.contentTocBorderTop.startsWith("1px solid "),
             `${entry.path} content navigation dividers are not a matching 1px pair at ${width}px ` +
@@ -1680,11 +1697,11 @@ async function verifyInBrowser() {
             `${entry.path} long-form prose alignment drifted at ${width}px ` +
               `(${layout.longFormAlign}/${layout.longFormAlignLast}/${layout.longFormHyphens}).`,
           );
-          if (entry.path === "/docs/") {
+          if (entry.path === "/docs/" || entry.path === "/lt/dokumentacija/") {
             assert(layout.docsTableCellAlign !== "justify", `Documentation table cells inherited prose justification at ${width}px.`);
           }
         }
-        if (entry.path === "/methodology/") {
+        if (entry.path === "/methodology/" || entry.path === "/lt/metodologija/") {
           assert(layout.methodologyFieldCount === 8, `Methodology field reference has ${layout.methodologyFieldCount} entries instead of 8.`);
           if (width <= 760) {
             assert(

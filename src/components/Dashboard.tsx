@@ -98,9 +98,9 @@ export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
 
       <section className="radar-route-grid" aria-label={lt ? "Naršyti Radarą" : "Explore Radar"}>
         <a href={lt ? "/lt/pokyciai/" : "/changes/"}><Clock3 aria-hidden="true" /><span><strong>{lt ? "Pokyčiai" : "Changes"}</strong><small>{lt ? "Nauji, pakartotinai stebėti, pakeisti arba atšaukti" : "New, reobserved, changed, or retracted"}</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/trends/"><Activity aria-hidden="true" /><span><strong>{lt ? "Tendencijos ir kokybė" : "Trends and quality"}</strong><small>{lt ? "Skaičiai pateikiami kartu su rinktuvų aprėptimi" : "Counts shown beside collector coverage"}</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/associations/"><Waypoints aria-hidden="true" /><span><strong>{lt ? "Sąsajos" : "Associations"}</strong><small>{lt ? "Tirti ribotus bendrus įrodymus" : "Inspect bounded shared evidence"}</small></span><ArrowRight aria-hidden="true" /></a>
-        <a href="/tools/"><ShieldCheck aria-hidden="true" /><span><strong>{lt ? "Vietinė IOC patikra" : "Local IOC check"}</strong><small>{lt ? "Palyginti reikšmes jų neįkeliant" : "Compare values without uploading them"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href={lt ? "/lt/tendencijos/" : "/trends/"}><Activity aria-hidden="true" /><span><strong>{lt ? "Tendencijos ir kokybė" : "Trends and quality"}</strong><small>{lt ? "Skaičiai pateikiami kartu su rinktuvų aprėptimi" : "Counts shown beside collector coverage"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href={lt ? "/lt/sasajos/" : "/associations/"}><Waypoints aria-hidden="true" /><span><strong>{lt ? "Sąsajos" : "Associations"}</strong><small>{lt ? "Tirti ribotus bendrus įrodymus" : "Inspect bounded shared evidence"}</small></span><ArrowRight aria-hidden="true" /></a>
+        <a href={lt ? "/lt/irankiai/" : "/tools/"}><ShieldCheck aria-hidden="true" /><span><strong>{lt ? "Vietinė IOC patikra" : "Local IOC check"}</strong><small>{lt ? "Palyginti reikšmes jų neįkeliant" : "Compare values without uploading them"}</small></span><ArrowRight aria-hidden="true" /></a>
       </section>
 
       <CollectionDisclosure language={language} />
