@@ -35,6 +35,7 @@ from .sources import (
     load_urlscan,
     skipped_sources,
 )
+from .stix import write_stix_bundle
 
 SIGNAL_STATUSES = {"active", "suspected", "offline", "mitigated", "unknown"}
 MAXIMUM_RETAINED_SIGNALS = 25_000
@@ -598,6 +599,15 @@ def synchronize() -> Path:
         )
     else:
         print(f"Published {len(merged)} defanged signals to {target.relative_to(Path.cwd())}.", flush=True)
+    stix_output = os.environ.get("RADAR_STIX_OUTPUT", "").strip() or "public/data/radar.stix.json"
+    stix_target = (Path.cwd().resolve() / stix_output).resolve()
+    if stix_target == target:
+        raise ValueError("RADAR_STIX_OUTPUT must not replace the dashboard snapshot.")
+    stix_path = write_stix_bundle(snapshot, stix_output)
+    print(
+        f"Published an observational STIX 2.1 bundle to {stix_path.relative_to(Path.cwd())}.",
+        flush=True,
+    )
     print(f"Published {len(detail_ids)} bounded signal-detail sidecars.", flush=True)
     return target
 

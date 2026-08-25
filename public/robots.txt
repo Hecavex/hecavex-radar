@@ -2,10 +2,11 @@
 User-agent: *
 Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
-# These are the deliberately public data distributions. Other data paths stay excluded.
+# Defanged and aggregate distributions are crawler-readable.
 Allow: /data/radar.json
 Allow: /data/history.json
 Allow: /data/collection-health.json
+# The raw STIX domain observations are available to deliberate consumers, not crawler discovery.
 Disallow: /data/
 
 User-agent: GPTBot

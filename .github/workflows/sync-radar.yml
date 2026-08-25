@@ -58,6 +58,7 @@ jobs:
           RADAR_SNAPSHOT_GUARD_DAYS: ${{ vars.RADAR_SNAPSHOT_GUARD_DAYS || '30' }}
           RADAR_RETAIN_EXISTING_SIGNALS: ${{ vars.RADAR_RETAIN_EXISTING_SIGNALS || 'true' }}
           RADAR_RETAIN_DAYS: ${{ vars.RADAR_RETAIN_DAYS || '7' }}
+          RADAR_STIX_OUTPUT: public/data/radar.stix.json
           RADAR_DETAIL_ROOT: public/data/signals
           RADAR_HISTORY_DETAIL_DAYS: ${{ vars.RADAR_HISTORY_DETAIL_DAYS || '30' }}
           RADAR_HISTORY_SUMMARY_DAYS: ${{ vars.RADAR_HISTORY_SUMMARY_DAYS || '730' }}
@@ -69,7 +70,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          git add -- public/data/radar.json public/data/history.json public/data/signals data/history
+          git add -- public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals data/history
           if git diff --cached --quiet; then
             echo "Snapshot is unchanged."
             exit 0

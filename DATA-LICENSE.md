@@ -4,6 +4,8 @@ The Apache License 2.0 covers original HECAVEX Radar software and documentation.
 
 Records published by [radar.hecavex.com](https://radar.hecavex.com) use only the source labels CertStream, URLScan, and HECAVEX, and the snapshot includes those source homepages. Third-party discovery lists are transient search inputs: they cannot create a dashboard row, are not copied into the archives, and are never relabeled as HECAVEX. HECAVEX operators remain responsible for the current access, attribution, redistribution, and rate-limit terms of every enabled service input.
 
+The static STIX 2.1 distribution is a format projection of the current public Radar signal set. Its use of standard STIX object types, deterministic identifiers, or raw interoperable domain-name values does not relicense an observation, waive a source's terms, declare TLP:CLEAR, or grant permission to redistribute third-party report metadata. Consumers must preserve applicable source attribution and rights. Inclusion is not a maliciousness verdict, attribution claim, or blocking recommendation.
+
 ## Source-specific notes
 
 - **Certificate Transparency / CertStream:** certificate observations are public CT facts. The Radar matcher and collector are Apache-2.0. The scheduled workflow runs [`reloading01/certstream-server-rust`](https://github.com/reloading01/certstream-server-rust), which is separately distributed under the [MIT license](https://github.com/reloading01/certstream-server-rust/blob/main/LICENSE); CT-log software and services retain their own terms.

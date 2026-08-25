@@ -62,6 +62,53 @@ The top-level `sources` array reports the state of each supported public source.
 `partial` means an attempted source was unavailable or only retained recent rows remain. `skipped` means the source was not configured for that publication.
 For archive-backed inputs, `healthy` confirms that the publisher loaded and validated the available archive; it is not an upstream collector-uptime or freshness guarantee.
 
+## STIX 2.1 projection
+
+`public/data/radar.stix.json` is a static STIX 2.1 Bundle generated from exactly the same accepted signal list as
+`public/data/radar.json`. It is a pull/download distribution, not a TAXII discovery, Collections, filtering, pagination,
+authentication, or push service. A qualifying source observation reaches it after the next successful hourly snapshot
+synchronization and Pages deployment; GitHub Actions schedules can start late or fail.
+
+The Bundle contains exactly two objects for each current Radar row, ordered by normalized domain and signal ID:
+
+1. One standard `domain-name` Cyber-observable Object with a deterministic UUIDv5 identifier and normalized raw DNS
+   value. This value is intentionally refanged for STIX interoperability. It never contains a scheme, port, path, query,
+   fragment, credential, or IP address.
+2. One linked `observed-data` Domain Object representing exactly one latest public observation. Its `first_observed` and
+   `last_observed` both equal the Radar row's `lastSeen`, `number_observed` is `1`, and `object_refs` contains only the
+   corresponding Domain Name identifier. Radar's merged first/last interval remains separate namespaced metadata rather
+   than being misrepresented as an exact STIX event count.
+
+The Observed Data object uses `created = firstSeen` and `modified = generatedAt`. Its deterministic identifier includes
+both the stable Radar signal ID and `firstSeen`; discovering an earlier historical first-seen boundary therefore creates a
+new STIX object instead of illegally changing `created` on an existing version. Bundle, Domain Name, and Observed Data IDs
+use separate deterministic UUIDv5 namespaces. The standard OASIS namespace is used only for the Domain Name SCO's
+ID-contributing `value`; HECAVEX uses its own namespace for Bundle and Observed Data IDs.
+
+Radar context is carried only in source-unique custom properties:
+
+| Property | Meaning |
+| --- | --- |
+| `x_hecavex_com_signal_id` | Corresponding 20-character public Radar signal ID. |
+| `x_hecavex_com_sources` | Sorted supported public source labels. |
+| `x_hecavex_com_status` | Current Radar status; it is not STIX revocation. |
+| `x_hecavex_com_matching_score` | Radar's 0-100 matching/ranking score; it is deliberately not mapped to standard STIX `confidence`. |
+| `x_hecavex_com_observation_only` | Always `true`; inclusion is an observation, not a verdict. |
+| `x_hecavex_com_radar_first_seen`, `x_hecavex_com_radar_last_seen` | Full merged Radar observation interval. |
+| `x_hecavex_com_brand` | Optional registry-resolved claimed target, not attribution. |
+| `x_hecavex_com_reason_codes` | Optional controlled public provenance labels. |
+
+`x_hecavex_com_sources` retains the complete fixed source-label list. An optional `external_references` array is emitted only
+when the row has both URLScan provenance and a validated canonical public URLScan result URL; it then contains exactly one
+entry with `source_name: "URLScan"` and that `url`. The property is omitted otherwise. The projection contains no STIX
+Indicator, detection pattern, standard `confidence`, `revoked` state, malware label, threat-actor attribution, block
+decision, screenshot, certificate, network detail, hash, or candidate URL path.
+
+The producer rejects duplicate or mismatched domains and IDs, malformed timestamps, unsupported sources, unsafe reference
+URLs, non-canonical fields, unexpected object counts, and output above 2 MiB. The production build independently verifies
+an exact one-to-one correspondence with `radar.json` before deployment. STIX consumers must treat every raw domain value as
+untrusted data and must not browse, resolve, scan, or block it without independent review.
+
 ## Per-signal detail sidecars
 
 When a live row contains `"detailAvailable": true`, the dashboard may request exactly

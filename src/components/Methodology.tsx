@@ -17,7 +17,7 @@ const steps = [
   {
     number: "04",
     title: "Publish",
-    body: "Defang accepted indicators, mark public observations as suspected, merge duplicate hosts, and write a static JSON snapshot.",
+    body: "Defang dashboard indicators, mark public observations as suspected, merge duplicate hosts, and project normalized domain observations into the static STIX 2.1 feed.",
   },
 ] as const;
 
@@ -161,7 +161,8 @@ export function Methodology() {
           <h2 id="publication-title">What the dashboard exposes</h2>
           <p>
             The hourly publisher revalidates recent archives against the current registry, merges compatible observations,
-            limits output, and atomically replaces one static snapshot.
+            limits output, and writes the dashboard snapshot and its observation-only STIX 2.1 projection from the same
+            accepted signal set.
           </p>
         </div>
         <dl className="methodology-field-list">
@@ -180,6 +181,10 @@ export function Methodology() {
             invalidate the merged row.
           </p>
         </div>
+        <p className="methodology-report">
+          The static <a href="/data/radar.stix.json">STIX 2.1 pull feed</a> contains raw domain-name observables for
+          potential or suspected candidates. It is not a TAXII endpoint, blocklist, maliciousness verdict, or attribution claim.
+        </p>
       </section>
 
       <section className="methodology-detail" id="history" aria-labelledby="history-method-title">

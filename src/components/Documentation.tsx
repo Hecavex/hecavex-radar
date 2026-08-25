@@ -69,6 +69,7 @@ export function Documentation() {
           <a href="#architecture">Architecture</a>
           <a href="#sources">Sources</a>
           <a href="#public-data">Public data</a>
+          <a href="#stix-feed">STIX feed</a>
           <a href="#data-contract">Data contract</a>
           <a href="#history-review">History and review</a>
           <a href="#operations">Operations</a>
@@ -194,6 +195,15 @@ export function Documentation() {
             <a href="/data/radar.json">Open public radar.json</a>
           </article>
           <article>
+            <span>Current snapshot · STIX 2.1</span>
+            <h3>Machine-readable observation bundle</h3>
+            <p>
+              Whenever a material public snapshot is successfully published, its current candidates are also projected
+              into one STIX 2.1 Bundle. It contains observations, not detection patterns or maliciousness verdicts.
+            </p>
+            <a href="/data/radar.stix.json" download>Download public radar.stix.json</a>
+          </article>
+          <article>
             <span>Retained history · JSON</span>
             <h3>Candidate history</h3>
             <p>
@@ -237,6 +247,59 @@ export function Documentation() {
             latest material data change, and each source&apos;s <code>fetchedAt</code> and <code>state</code>. A source timestamp
             is an archive-read time. CertStream connection evidence is reported separately in the bounded
             collection-health document and still does not prove continuous coverage.
+          </p>
+        </div>
+      </section>
+
+      <section className="docs-section" id="stix-feed" aria-labelledby="stix-feed-docs-title">
+        <div className="docs-section-heading">
+          <p className="eyebrow">STIX 2.1 distribution</p>
+          <h2 id="stix-feed-docs-title">Radar observations for defensive tooling</h2>
+          <p>
+            Use the stable HTTPS URL <a href="/data/radar.stix.json"><code>https://radar.hecavex.com/data/radar.stix.json</code></a>.
+            Each successful material snapshot republishes the current candidate set as a static pull/download feed.
+          </p>
+        </div>
+        <div className="docs-card-grid">
+          <article>
+            <span>Bundle contents</span>
+            <h3>Observed Data, not Indicators</h3>
+            <p>
+              Each Radar row becomes one STIX <code>domain-name</code> Cyber-observable Object and one linked
+              <code>observed-data</code> Domain Object. The feed intentionally contains no STIX Indicator object,
+              detection pattern, malware label, threat-actor attribution, or block decision.
+            </p>
+          </article>
+          <article>
+            <span>Interoperability boundary</span>
+            <h3>Domains are refanged in STIX</h3>
+            <p>
+              STIX <code>domain-name.value</code> uses a normalized refanged hostname so compliant tooling can parse it.
+              Treat values as untrusted observables: do not browse, resolve, scan, or block them without independent review.
+            </p>
+          </article>
+          <article>
+            <span>Radar context</span>
+            <h3>Scores remain matching scores</h3>
+            <p>
+              Radar source, brand, status, matching score, reason codes, and stable signal ID use namespaced custom
+              properties. The matching score is not mapped to STIX confidence because it is neither a probability nor a verdict.
+            </p>
+          </article>
+          <article>
+            <span>Static delivery</span>
+            <h3>STIX now; TAXII later if needed</h3>
+            <p>
+              Radar currently publishes a static STIX 2.1 JSON bundle over HTTPS. It does not operate a TAXII discovery,
+              collection, pagination, or authentication service. TAXII would require a service runtime such as the planned VPS.
+            </p>
+          </article>
+        </div>
+        <div className="docs-callout docs-warning-callout">
+          <strong>Observation-only feed</strong>
+          <p>
+            Inclusion means Radar observed a potential or suspected impersonation signal that passed its publication
+            rules. It does not prove malicious intent, current activity, ownership, attribution, or suitability for blocking.
           </p>
         </div>
       </section>

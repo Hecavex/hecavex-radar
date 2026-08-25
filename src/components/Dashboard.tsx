@@ -10,6 +10,7 @@ import { DistributionPanel } from "./DistributionPanel.tsx";
 import { FilterBar } from "./FilterBar.tsx";
 import { SignalTable } from "./SignalTable.tsx";
 import { SourcePanel } from "./SourcePanel.tsx";
+import { StixFeedPanel } from "./StixFeedPanel.tsx";
 
 const metrics = [
   { key: "total", label: "Recent signals", icon: Database },
@@ -57,7 +58,7 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
         </div>
       </section>
 
-      <section className="metric-grid" aria-label="Radar summary">
+      <section className="metric-grid radar-metrics" aria-label="Radar summary">
         {metrics.map(({ key, label, icon: Icon }) => (
           <article className="metric-card" key={key}>
             <Icon aria-hidden="true" />
@@ -66,6 +67,8 @@ export function Dashboard({ snapshot, now = Date.now() }: { snapshot: RadarSnaps
           </article>
         ))}
       </section>
+
+      <StixFeedPanel />
 
       <section className="signal-section" id="signals" aria-labelledby="signals-title">
         <div className="section-heading">

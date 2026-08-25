@@ -11,12 +11,13 @@ It is not presented as a starter site, downloadable product, self-hosting packag
 - [Methodology](https://radar.hecavex.com/methodology/) — collection, matching, publication, and limitation disclosures
 - [Technical reference](https://radar.hecavex.com/docs/) — schemas, operations, security boundaries, and data terms
 
-Radar combines sampled Certificate Transparency observations, passive searches of existing public URLScan reports, and an optional deliberately limited HECAVEX public export. The Python pipeline validates and defangs every accepted record before producing bounded static JSON artifacts. The React interface renders those artifacts without an application server, account system, public write path, or database connection.
+Radar combines sampled Certificate Transparency observations, passive searches of existing public URLScan reports, and an optional deliberately limited HECAVEX public export. The Python pipeline validates every accepted record and defangs the dashboard and history artifacts. A separate STIX 2.1 projection uses normalized raw domain-name observables for interoperable parsing. The React interface renders the static artifacts without an application server, account system, public write path, or database connection.
 
 ## Publication and safety boundaries
 
 - Public source labels are limited to CertStream, URLScan, and configured HECAVEX exports.
-- Indicators are defanged before publication. Credentials, query strings, fragments, and sensitive-looking path data are excluded.
+- Dashboard and history indicators are defanged before publication. Credentials, query strings, fragments, and sensitive-looking path data are excluded.
+- The STIX 2.1 distribution is the deliberate exception to display defanging: it contains raw domain-name observables only, with no URL paths. Treat those values as untrusted data and do not browse, resolve, scan, or block them without independent review.
 - CertStream matches are research leads, not confirmation of phishing. Qualifying records are published as `suspected`; the collector reads certificate names and never visits candidate hosts.
 - URLScan is optional passive corroboration. Radar searches existing public reports and never submits or opens a candidate URL. Missing or non-public scan visibility does not suppress an independently qualifying CertStream record.
 - Screenshots and evidence links are URLScan-only. Opening evidence may contact `urlscan.io`, never the observed host.
@@ -33,7 +34,7 @@ The service is published through reviewed GitHub Actions workflows. Cron schedul
 | CertStream sample | `8,23,38,53 * * * *` | Defanged candidate archive and latest bounded collection-health record |
 | URLScan hunt | `37 */2 * * *` | Bounded hunt-state ledger and validated daily archive when the optional source is configured |
 | Official asset pivot | `47 3,15 * * *` | Stable first-party favicon/JavaScript hashes and independently qualified public URLScan observations |
-| Snapshot synchronization | `17 * * * *` | Live snapshot, retained history, and compacted history summary |
+| Snapshot synchronization | `17 * * * *` | Live snapshot, STIX 2.1 projection, retained history, and compacted history summary |
 | Site deployment | Successful code CI, material snapshot sync, or changed CertStream health | Static production pages for `radar.hecavex.com` |
 
 The scheduled CertStream listener runs for eight minutes four times per hour: at most 768 minutes, or 53.3% of a day, if every run starts and completes. It is sampled live coverage, not a continuous listener, daily replay, or durable CT source. GitHub Actions can start late, drop a scheduled event, or fail, so actual listening time can be substantially lower. The dashboard publishes the latest attempt's actual timing, aggregate counts, outcome, schedule delay, last success, and freshness without retaining raw certificate names. The accepted plan for durable checkpointed CT coverage is recorded in [ADR 0001](docs/decisions/0001-ct-coverage.md).
@@ -49,6 +50,7 @@ The hunt-state file is workflow evidence, not bootstrap configuration: its first
 | Path | Role in `radar.hecavex.com` |
 | --- | --- |
 | `public/data/radar.json` | Current checked and bounded dashboard snapshot |
+| `public/data/radar.stix.json` | Current observation-only STIX 2.1 Bundle; raw domain-name observables, not a verdict or TAXII endpoint |
 | `public/data/history.json` | Bounded public candidate-history projection |
 | `public/data/collection-health.json` | Latest bounded CertStream attempt health; no raw candidates |
 | `public/data/signals/` | Lazy, per-signal CertStream/URLScan context; 16 KiB each and 3 MiB in aggregate |

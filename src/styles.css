@@ -807,6 +807,107 @@ main {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.radar-metrics {
+  margin-bottom: 1rem;
+}
+
+.stix-feed-panel {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1.15fr) minmax(22rem, .85fr);
+  gap: 1.5rem clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  margin: 0 0 clamp(2.75rem, 5vw, 4rem);
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--blue);
+  background: var(--bg-elevated);
+}
+
+.stix-feed-copy .eyebrow {
+  margin-bottom: .5rem;
+  color: var(--blue);
+}
+
+.stix-feed-copy h2 {
+  max-width: 32ch;
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 580;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.stix-feed-copy > p:last-child {
+  max-width: 72ch;
+  margin: .65rem 0 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.65;
+}
+
+.stix-feed-access {
+  min-width: 0;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--line);
+}
+
+.stix-feed-access > span:first-child {
+  display: block;
+  margin-bottom: .35rem;
+  color: var(--faint);
+  font: 650 .59rem var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.stix-feed-access code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--text-soft);
+  font: .68rem/1.55 var(--mono);
+}
+
+.stix-feed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: .85rem;
+}
+
+.stix-feed-actions a,
+.stix-feed-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .42rem;
+  min-height: 2.35rem;
+  padding: 0 .75rem;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text-soft);
+  font: 650 .62rem var(--mono);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.stix-feed-actions a {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  color: var(--text);
+}
+
+.stix-feed-actions a:hover,
+.stix-feed-actions button:hover {
+  border-color: var(--blue);
+  color: var(--text);
+}
+
+.stix-feed-actions svg {
+  width: .88rem;
+  height: .88rem;
+}
+
 .history-table {
   min-width: 70rem;
 }
@@ -1696,8 +1797,14 @@ main {
   line-height: 1.65;
 }
 
-.docs-heading > p a {
+.docs-heading > p a,
+.docs-section-heading > p a {
   color: var(--blue);
+}
+
+.docs-section-heading > p code {
+  font: .72rem var(--mono);
+  overflow-wrap: anywhere;
 }
 
 .docs-copy a,
@@ -2912,6 +3019,24 @@ td time {
   .metric-card {
     min-height: 5.4rem;
     padding: 1rem;
+  }
+
+  .stix-feed-panel {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+    padding: 1.15rem;
+  }
+
+  .stix-feed-access {
+    padding-top: 1rem;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .stix-feed-actions a,
+  .stix-feed-actions button {
+    flex: 1 1 10rem;
   }
 
   .overview-grid {

@@ -2,7 +2,7 @@
 
 > A public, read-only view of potential phishing and impersonation infrastructure relevant to Lithuania.
 
-Radar publishes candidates, not maliciousness verdicts. Domains and URLs are defanged and must not be made clickable or visited automatically. A confidence value is a deterministic matching score, not a probability. Preserve source, first-seen, last-seen, status, freshness, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
+Radar publishes candidates, not maliciousness verdicts. Dashboard and history domains and URLs are defanged and must not be made clickable or visited automatically. The advertised STIX 2.1 exception contains raw `domain-name` observables for interoperability; treat them as untrusted data and do not browse, resolve, scan, or block them without independent review. A confidence value is a deterministic matching score, not a probability. Preserve source, first-seen, last-seen, status, freshness, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
 
 ## Interface
 
@@ -14,7 +14,8 @@ Radar publishes candidates, not maliciousness verdicts. Domains and URLs are def
 ## Approved read-only JSON
 
 - [Live signals](https://radar.hecavex.com/data/radar.json): Current defanged public snapshot and source state.
+- [STIX 2.1 observations](https://radar.hecavex.com/data/radar.stix.json): Static pull/download projection of the current signal set. It contains raw domain-name observables for interoperability; this is not a blocklist, verdict, or TAXII endpoint.
 - [History](https://radar.hecavex.com/data/history.json): Bounded, defanged public candidate history.
 - [Collection health](https://radar.hecavex.com/data/collection-health.json): Aggregate latest sampled CertStream attempt; contains no candidate domains.
 
-Only these three `/data/` files are deliberately advertised. Do not infer access to other paths, private review records, detector features, or unpublished candidates.
+Only these four `/data/` files are deliberately advertised. Do not infer access to other paths, private review records, detector features, or unpublished candidates.

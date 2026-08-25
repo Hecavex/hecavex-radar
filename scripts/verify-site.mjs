@@ -1,5 +1,6 @@
 /* global URL, document, getComputedStyle, navigator, process, setTimeout, window */
 
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { gzipSync } from "node:zlib";
@@ -24,6 +25,7 @@ const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
 const productNavigation = ["Overview", "History", "Methodology", "Docs"];
 const mobileNavigation = [...productNavigation, "Source", ...portfolioNavigation];
 const publicArtifactRawBytes = 512 * 1024;
+const stixBundleRawBytes = 2 * 1024 * 1024;
 const signalDetailFileRawBytes = 16 * 1024;
 const signalDetailSetRawBytes = 3 * 1024 * 1024;
 const performanceBudgets = {
@@ -32,7 +34,7 @@ const performanceBudgets = {
   stylesheetFileGzip: 48 * 1024,
   scriptAndStyleGzip: 320 * 1024,
   publicDataFileGzip: 1024 * 1024,
-  totalOutputBytes: 8 * 1024 * 1024,
+  totalOutputBytes: 11 * 1024 * 1024,
 };
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
@@ -68,6 +70,7 @@ function verifyDeploymentTopology() {
   const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
   const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
+  const stixPublisher = readFileSync(join(root, "hecavex_radar", "stix.py"), "utf8");
   const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
 
   assert(
@@ -84,8 +87,10 @@ function verifyDeploymentTopology() {
     "Pages deployment no longer limits each upstream workflow to its approved trigger semantics.",
   );
   assert(
-    deploy.includes("public/data/radar.json public/data/history.json public/data/signals") &&
+    deploy.includes("public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals") &&
       deploy.includes("public/data/collection-health.json") &&
+      deploy.includes("test -f dist/data/radar.stix.json") &&
+      deploy.includes("! grep -Fq 'Allow: /data/radar.stix.json' dist/robots.txt") &&
       deploy.includes("git merge-base --is-ancestor") &&
       deploy.includes("data/(certstream|urlscan|history)/|public/data/"),
     "Pages deployment freshness checks no longer cover every staged public-data boundary.",
@@ -125,8 +130,9 @@ function verifyDeploymentTopology() {
     "CI path filters no longer ignore only archive-only collection changes.",
   );
   assert(
-    sync.includes("git add -- public/data/radar.json public/data/history.json public/data/signals data/history"),
-    "Snapshot synchronization does not stage sidecars, history, and the live snapshot atomically.",
+    sync.includes("git add -- public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals data/history") &&
+      sync.includes("RADAR_STIX_OUTPUT: public/data/radar.stix.json"),
+    "Snapshot synchronization does not stage the STIX projection, sidecars, history, and live snapshot atomically.",
   );
   for (const setting of [
     "RADAR_HISTORY_DETAIL_DAYS",
@@ -137,7 +143,8 @@ function verifyDeploymentTopology() {
   }
   assert(
     snapshotPublisher.includes("MAXIMUM_SNAPSHOT_BYTES = 512 * 1024") &&
-      historyPublisher.includes("MAXIMUM_PUBLIC_BYTES = 512 * 1024"),
+      historyPublisher.includes("MAXIMUM_PUBLIC_BYTES = 512 * 1024") &&
+      stixPublisher.includes("MAXIMUM_STIX_BUNDLE_BYTES = 2 * 1024 * 1024"),
     "Python public-artifact caps no longer match the deployment budget proof.",
   );
   assert(!viteConfig.includes("Date.now()"), "Vite prerendering still uses a nondeterministic wall-clock timestamp.");
@@ -222,7 +229,8 @@ function verifyBuiltHtml() {
   const robots = readFileSync(join(output, "robots.txt"), "utf8");
   const llms = readFileSync(join(output, "llms.txt"), "utf8");
   assert(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=no"), "Built robots.txt lost the reviewed content-use signal.");
-  for (const endpoint of ["radar.json", "history.json", "collection-health.json"]) {
+  assert(!robots.includes("Allow: /data/radar.stix.json"), "Raw STIX observables must not be explicitly allowed for crawler retrieval.");
+  for (const endpoint of ["radar.json", "radar.stix.json", "history.json", "collection-health.json"]) {
     assert(llms.includes(`https://radar.hecavex.com/data/${endpoint}`), `Built llms.txt omits approved endpoint ${endpoint}.`);
   }
   assert(llms.includes("must not be made clickable or visited automatically"), "Built llms.txt lost the candidate-handling safety boundary.");
@@ -284,7 +292,25 @@ function verifyBuiltHtml() {
     assert(document.querySelector('meta[name="twitter:card"]')?.content, `${route} has no Twitter card.`);
     const jsonLd = document.querySelector('script[type="application/ld+json"]')?.textContent;
     assert(jsonLd, `${route} has no JSON-LD.`);
-    JSON.parse(jsonLd);
+    const contentSecurityPolicy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content;
+    const jsonLdHash = createHash("sha256").update(jsonLd, "utf8").digest("base64");
+    assert(
+      contentSecurityPolicy?.includes(`'sha256-${jsonLdHash}'`),
+      `${route} Content Security Policy does not authorize its exact JSON-LD payload.`,
+    );
+    const structuredData = JSON.parse(jsonLd);
+    if (route === "/") {
+      assert(
+        document.querySelector('link[rel="alternate"][type="application/stix+json;version=2.1"][href="https://radar.hecavex.com/data/radar.stix.json"]'),
+        "Radar overview does not advertise the STIX 2.1 alternate distribution.",
+      );
+      const serializedStructuredData = JSON.stringify(structuredData);
+      assert(
+        serializedStructuredData.includes("application/stix+json;version=2.1") &&
+          serializedStructuredData.includes("https://radar.hecavex.com/data/radar.stix.json"),
+        "Radar Dataset metadata omits the STIX 2.1 distribution.",
+      );
+    }
 
     const root = document.getElementById("root");
     assert(root, `${route} has no application root.`);
@@ -388,6 +414,31 @@ const fingerprintFields = ["md5", "sha1", "sha256"];
 const utcTimestamp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u;
 const signalIdentifier = /^[a-f\d]{20}$/u;
 const lowerHex = /^[a-f\d]+$/u;
+const stixUuid = /^[a-f\d]{8}-[a-f\d]{4}-5[a-f\d]{3}-[89ab][a-f\d]{3}-[a-f\d]{12}$/u;
+const stixBundleFields = ["type", "id", "objects"];
+const stixDomainFields = ["type", "spec_version", "id", "value"];
+const stixObservedRequiredFields = [
+  "type",
+  "spec_version",
+  "id",
+  "created",
+  "modified",
+  "first_observed",
+  "last_observed",
+  "number_observed",
+  "object_refs",
+  "x_hecavex_com_signal_id",
+  "x_hecavex_com_sources",
+  "x_hecavex_com_status",
+  "x_hecavex_com_matching_score",
+  "x_hecavex_com_observation_only",
+  "x_hecavex_com_radar_first_seen",
+  "x_hecavex_com_radar_last_seen",
+];
+const stixObservedOptionalFields = ["external_references", "x_hecavex_com_brand", "x_hecavex_com_reason_codes"];
+const supportedSources = new Set(["CertStream", "URLScan", "HECAVEX"]);
+const stixDomainNamespace = "00abedb4-aa42-466c-9c01-fed23315a9b7";
+const urlNamespace = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
 
 function isRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -401,6 +452,154 @@ function timestampValue(value) {
   if (typeof value !== "string" || !utcTimestamp.test(value)) return null;
   const parsed = Date.parse(value);
   return Number.isFinite(parsed) && new Date(parsed).toISOString() === value ? parsed : null;
+}
+
+function uuidBytes(value) {
+  const compact = value.replaceAll("-", "");
+  assert(/^[a-f\d]{32}$/u.test(compact), `Invalid UUID namespace ${value}.`);
+  return Uint8Array.from(compact.match(/.{2}/gu), (pair) => Number.parseInt(pair, 16));
+}
+
+function uuid5(namespace, name) {
+  const digest = createHash("sha1").update(uuidBytes(namespace)).update(name, "utf8").digest().subarray(0, 16);
+  digest[6] = (digest[6] & 0x0f) | 0x50;
+  digest[8] = (digest[8] & 0x3f) | 0x80;
+  const hex = [...digest].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function refangedRadarDomain(value) {
+  if (typeof value !== "string" || value.length === 0 || value.includes("[:]") || value.includes(":")) return null;
+  const domain = value.replaceAll("[.]", ".");
+  if (domain.length > 253 || domain !== domain.toLowerCase() || domain.includes("[") || domain.includes("]")) return null;
+  const labels = domain.split(".");
+  if (labels.length < 2) return null;
+  return labels.every((label) => /^[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?$/u.test(label)) ? domain : null;
+}
+
+function verifyStixBundle() {
+  const snapshot = JSON.parse(readFileSync(join(output, "data", "radar.json"), "utf8"));
+  assert(Array.isArray(snapshot.signals), "Built radar.json has no signal list for STIX verification.");
+  const path = join(output, "data", "radar.stix.json");
+  const rawBytes = statSync(path).size;
+  assert(rawBytes > 0 && rawBytes <= stixBundleRawBytes, "Built radar.stix.json is empty or larger than 2 MiB.");
+
+  let bundle;
+  try {
+    bundle = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    throw new Error("Built radar.stix.json is not valid UTF-8 JSON.");
+  }
+  assert(hasExactFields(bundle, stixBundleFields), "STIX bundle does not use its exact top-level fields.");
+  assert(bundle.type === "bundle" && typeof bundle.id === "string", "STIX bundle has the wrong type or no identifier.");
+  assert(stixUuid.test(bundle.id.replace(/^bundle--/u, "")), "STIX bundle identifier is not a namespaced UUIDv5.");
+  assert(Array.isArray(bundle.objects), "STIX bundle has no object list.");
+  assert(bundle.objects.length === snapshot.signals.length * 2, "STIX bundle is not a one-to-one projection of live signals.");
+
+  const expectedSignals = [...snapshot.signals].sort((left, right) => {
+    const leftDomain = refangedRadarDomain(left.domain) ?? "";
+    const rightDomain = refangedRadarDomain(right.domain) ?? "";
+    return leftDomain.localeCompare(rightDomain) || String(left.id).localeCompare(String(right.id));
+  });
+  const radarNamespace = uuid5(urlNamespace, "https://radar.hecavex.com/data/radar.stix.json");
+  const objectIds = new Set();
+  const expectedObjectIds = [];
+  for (let index = 0; index < expectedSignals.length; index += 1) {
+    const signal = expectedSignals[index];
+    const domain = refangedRadarDomain(signal.domain);
+    assert(domain !== null, `Live signal ${signal.id} cannot be safely represented as a STIX domain-name.`);
+    const domainObject = bundle.objects[index * 2];
+    const observed = bundle.objects[index * 2 + 1];
+    const label = `STIX signal ${signal.id}`;
+
+    assert(hasExactFields(domainObject, stixDomainFields), `${label} domain-name object has unexpected fields.`);
+    assert(domainObject.type === "domain-name" && domainObject.spec_version === "2.1", `${label} has the wrong SCO type or version.`);
+    assert(typeof domainObject.id === "string" && domainObject.id.startsWith("domain-name--"), `${label} has no domain-name ID.`);
+    assert(stixUuid.test(domainObject.id.slice("domain-name--".length)), `${label} domain-name ID is not a UUIDv5.`);
+    assert(
+      domainObject.id === `domain-name--${uuid5(stixDomainNamespace, JSON.stringify({ value: domain }))}`,
+      `${label} domain-name ID is not the deterministic STIX 2.1 identifier.`,
+    );
+    assert(domainObject.value === domain, `${label} does not contain the corresponding raw normalized domain.`);
+    assert(
+      !["[", "]", "/", "?", ":", "#"].some((character) => domainObject.value.includes(character)),
+      `${label} domain-name value is defanged or contains URL data.`,
+    );
+
+    assert(isRecord(observed), `${label} has no Observed Data object.`);
+    const observedKeys = Object.keys(observed);
+    assert(
+      stixObservedRequiredFields.every((field) => Object.hasOwn(observed, field)) &&
+        observedKeys.every((field) => stixObservedRequiredFields.includes(field) || stixObservedOptionalFields.includes(field)),
+      `${label} Observed Data object has missing or unexpected fields.`,
+    );
+    assert(observed.type === "observed-data" && observed.spec_version === "2.1", `${label} has the wrong SDO type or version.`);
+    assert(typeof observed.id === "string" && observed.id.startsWith("observed-data--"), `${label} has no Observed Data ID.`);
+    assert(stixUuid.test(observed.id.slice("observed-data--".length)), `${label} Observed Data ID is not a UUIDv5.`);
+    assert(
+      observed.id === `observed-data--${uuid5(radarNamespace, `observed-data:${signal.id}:${signal.firstSeen}`)}`,
+      `${label} Observed Data ID is not the deterministic Radar identifier.`,
+    );
+    assert(observed.created === signal.firstSeen && observed.modified === snapshot.generatedAt, `${label} version timestamps drift from the snapshot.`);
+    assert(timestampValue(observed.created) !== null && timestampValue(observed.modified) !== null, `${label} version timestamps are malformed.`);
+    assert(timestampValue(observed.created) <= timestampValue(observed.modified), `${label} was modified before it was created.`);
+    assert(
+      observed.first_observed === signal.lastSeen && observed.last_observed === signal.lastSeen && observed.number_observed === 1,
+      `${label} must represent exactly one latest observation.`,
+    );
+    assert(Array.isArray(observed.object_refs) && observed.object_refs.length === 1 && observed.object_refs[0] === domainObject.id, `${label} does not reference its SCO exactly once.`);
+    assert(observed.x_hecavex_com_signal_id === signal.id, `${label} lost the Radar signal identifier.`);
+    const expectedSources = [...signal.sources].sort();
+    assert(expectedSources.every((source) => supportedSources.has(source)), `${label} contains an unsupported Radar source.`);
+    assert(JSON.stringify(observed.x_hecavex_com_sources) === JSON.stringify(expectedSources), `${label} source metadata drifted.`);
+    assert(observed.x_hecavex_com_status === signal.status, `${label} status metadata drifted.`);
+    assert(observed.x_hecavex_com_matching_score === signal.confidence, `${label} matching score metadata drifted.`);
+    assert(observed.x_hecavex_com_observation_only === true, `${label} lost its observation-only boundary.`);
+    assert(
+      observed.x_hecavex_com_radar_first_seen === signal.firstSeen && observed.x_hecavex_com_radar_last_seen === signal.lastSeen,
+      `${label} lost its Radar observation interval.`,
+    );
+    if (signal.brand === null) {
+      assert(!Object.hasOwn(observed, "x_hecavex_com_brand"), `${label} invents a null brand property.`);
+    } else {
+      assert(observed.x_hecavex_com_brand === signal.brand, `${label} brand metadata drifted.`);
+    }
+    const expectedReasons = signal.reasonCodes ?? [];
+    if (expectedReasons.length === 0) {
+      assert(!Object.hasOwn(observed, "x_hecavex_com_reason_codes"), `${label} invents empty reason metadata.`);
+    } else {
+      assert(JSON.stringify(observed.x_hecavex_com_reason_codes) === JSON.stringify(expectedReasons), `${label} reason metadata drifted.`);
+    }
+    assert(!Object.hasOwn(observed, "confidence") && !Object.hasOwn(observed, "revoked"), `${label} misuses a standard STIX verdict property.`);
+
+    const expectedReferenceUrl =
+      expectedSources.includes("URLScan") && typeof signal.referenceUrl === "string" ? signal.referenceUrl : null;
+    if (expectedReferenceUrl === null) {
+      assert(!Object.hasOwn(observed, "external_references"), `${label} exposes an external reference without a URLScan result.`);
+    } else {
+      assert(
+        Array.isArray(observed.external_references) && observed.external_references.length === 1,
+        `${label} must expose exactly one URLScan external reference.`,
+      );
+      const reference = observed.external_references[0];
+      assert(
+        hasExactFields(reference, ["source_name", "url"]) &&
+          reference.source_name === "URLScan" &&
+          reference.url === expectedReferenceUrl &&
+          /^https:\/\/urlscan\.io\/result\/[a-f\d-]{36}\/$/u.test(reference.url),
+        `${label} exposes an unsafe or mismatched URLScan external reference.`,
+      );
+    }
+
+    for (const id of [domainObject.id, observed.id]) {
+      assert(!objectIds.has(id), `STIX bundle contains duplicate object ID ${id}.`);
+      objectIds.add(id);
+      expectedObjectIds.push(id);
+    }
+  }
+  const bundleKey = JSON.stringify({ generated_at: snapshot.generatedAt, object_ids: expectedObjectIds });
+  assert(bundle.id === `bundle--${uuid5(radarNamespace, bundleKey)}`, "STIX bundle identifier does not match its exact projected contents.");
+  return { path, rawBytes };
 }
 
 function isNullableText(value, maximum) {
@@ -635,7 +834,7 @@ function verifySignalDetails() {
   return { files, totalBytes };
 }
 
-function verifyPerformanceBudgets(signalDetails) {
+function verifyPerformanceBudgets(signalDetails, stixBundle) {
   const files = walk(output);
   const totalBytes = files.reduce((total, path) => total + statSync(path).size, 0);
   assert(
@@ -666,7 +865,7 @@ function verifyPerformanceBudgets(signalDetails) {
     `Scripts and styles total ${executableBytes} gzip bytes; budget is ${performanceBudgets.scriptAndStyleGzip}.`,
   );
   const dataSizes = compressedSizes([
-    ...["radar.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
+    ...["radar.json", "radar.stix.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
     ...signalDetails.files,
   ]);
   for (const { path, size } of dataSizes) {
@@ -675,6 +874,7 @@ function verifyPerformanceBudgets(signalDetails) {
   }
   const replaceable = new Set([
     join(output, "data", "radar.json"),
+    stixBundle.path,
     join(output, "data", "history.json"),
     join(output, "index.html"),
     join(output, "history", "index.html"),
@@ -688,6 +888,7 @@ function verifyPerformanceBudgets(signalDetails) {
   const worstCaseOutputBytes =
     fixedBytes +
     2 * publicArtifactRawBytes +
+    stixBundleRawBytes +
     currentHydrationHtmlBytes +
     2 * (3 * publicArtifactRawBytes + 1024) +
     signalDetailSetRawBytes;
@@ -1024,7 +1225,8 @@ verifyPythonAutomationLocks();
 verifyBuiltHtml();
 verifyIdentityArtwork();
 const signalDetails = verifySignalDetails();
-const performance = verifyPerformanceBudgets(signalDetails);
+const stixBundle = verifyStixBundle();
+const performance = verifyPerformanceBudgets(signalDetails, stixBundle);
 await verifyInBrowser();
 process.stdout.write(
   `Measured production sizes: ${performance.totalBytes} bytes total; ` +
