@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-25T16:30:13.777Z",
+  "generatedAt": "2026-08-25T19:17:05.383Z",
   "retentionDays": 365,
   "from": "2025-08-26",
   "to": "2026-08-25",
@@ -202,7 +202,7 @@
         "firstPublications": 3,
         "statusChanges": 0,
         "facetSampleSize": 6,
-        "evidenceClassifiedSignals": 6,
+        "evidenceClassifiedSignals": 4,
         "byBrand": {
           "DHL": 2,
           "Revolut": 2,
@@ -213,8 +213,8 @@
           "URLScan": 6
         },
         "byEvidenceTier": {
-          "corroborated": 4,
-          "name-only": 2
+          "corroborated": 3,
+          "name-only": 1
         },
         "byReason": {
           "brand-domain-match": 6,
@@ -269,16 +269,16 @@
       "date": "2026-08-25",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 59413,
-        "scheduledSlots": 66,
-        "recordedAttempts": 7,
-        "healthyAttempts": 7,
-        "recordedSchedulePercent": 10.6,
-        "listeningCoveragePercent": 3.64,
-        "scheduledListeningCeilingPercent": 53.32,
-        "listeningSeconds": 2159.991,
+        "windowSeconds": 69425,
+        "scheduledSlots": 77,
+        "recordedAttempts": 8,
+        "healthyAttempts": 8,
+        "recordedSchedulePercent": 10.4,
+        "listeningCoveragePercent": 3.8,
+        "scheduledListeningCeilingPercent": 53.24,
+        "listeningSeconds": 2639.989,
         "outcomes": {
-          "healthy-empty": 6,
+          "healthy-empty": 7,
           "healthy-matches": 1
         }
       },
@@ -290,7 +290,7 @@
         "firstPublications": 7,
         "statusChanges": 0,
         "facetSampleSize": 8,
-        "evidenceClassifiedSignals": 8,
+        "evidenceClassifiedSignals": 3,
         "byBrand": {
           "Revolut": 4,
           "Vinted": 3,
@@ -302,8 +302,8 @@
           "HECAVEX": 1
         },
         "byEvidenceTier": {
-          "corroborated": 5,
-          "name-only": 3
+          "name-only": 2,
+          "corroborated": 1
         },
         "byReason": {
           "first-publication": 7,
