@@ -29,7 +29,7 @@ from .provenance import normalize_reason_codes
 from .publication import apply_source_counts, fit_dashboard_signals, publish_supplemental_artifacts
 from .review import load_public_review
 from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
-from .signal_detail import build_signal_details, write_signal_details
+from .signal_detail import build_signal_details, load_recent_context_changes, write_signal_details
 from .sources import (
     SOURCE_NAMES,
     fetch_hecavex,
@@ -147,7 +147,7 @@ def _existing_signal_count(target: Path, recent_since: datetime | None = None) -
         return None
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") not in {1, 2}
+        or payload.get("schemaVersion") != 2
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
     ):
@@ -186,7 +186,7 @@ def _load_existing_snapshot(
         return [], {}
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") not in {1, 2}
+        or payload.get("schemaVersion") != 2
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
     ):
@@ -626,7 +626,16 @@ def synchronize() -> Path:
     detail_root = os.environ.get("RADAR_DETAIL_ROOT", "").strip() or "public/data/signals"
     domain_context_path = os.environ.get("DOMAIN_CONTEXT_PATH", "").strip() or "data/enrichment/domain-context.json"
     domain_context = load_domain_context(domain_context_path, now=sync_time)
-    details = build_signal_details(merged, intelligence, now, domain_context)
+    context_journal_root = os.environ.get("PASSIVE_CONTEXT_JOURNAL", "").strip() or "data/history/context"
+    context_changes = load_recent_context_changes(
+        context_journal_root,
+        now,
+        retention_days=_bounded_integer(os.environ.get("PASSIVE_CONTEXT_JOURNAL_DAYS"), 60, 30, 90),
+        allow_urlscan_redistribution=(
+            os.environ.get("URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED", "").strip().lower() == "true"
+        ),
+    )
+    details = build_signal_details(merged, intelligence, now, domain_context, context_changes)
     detail_ids = write_signal_details(detail_root, details)
     for signal in merged:
         if signal["id"] in detail_ids:
@@ -738,6 +747,7 @@ def synchronize() -> Path:
         details,
         history=history_value,
         review_export=review_export,
+        misp_enabled=_enabled(os.environ.get("RADAR_MISP_FEED_ENABLED")),
     )
     print(
         f"Published {len(supplemental_paths)} schema, integrity, health, change, shard, and relationship artifacts.",

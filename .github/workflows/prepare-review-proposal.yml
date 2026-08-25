@@ -1,0 +1,121 @@
+name: Prepare sanitized review proposal
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Sanitized proposal type
+        required: true
+        type: choice
+        options:
+          - false-positive
+          - missed-candidate
+          - official-domain-correction
+          - removal-request
+      issue_number:
+        description: Public issue number containing the original sanitized request
+        required: true
+        type: string
+      signal_id:
+        description: Public 20-character Radar signal ID (required for false-positive/removal)
+        required: false
+        type: string
+      brand:
+        description: Exact reviewed registry brand name
+        required: true
+        type: string
+      subject:
+        description: Fully defanged domain, for example example[.]com
+        required: true
+        type: string
+      reason:
+        description: Controlled reason code valid for the selected action
+        required: true
+        type: string
+      scope:
+        description: Exact host or host and subdomains
+        required: true
+        default: exact
+        type: choice
+        options:
+          - exact
+          - subdomains
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: radar-review-proposal
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require maintain or admin permission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${GITHUB_ACTOR}/permission" --jq .permission)"
+          case "$permission" in
+            admin|maintain) ;;
+            *) echo "This workflow is restricted to repository maintainers." >&2; exit 1 ;;
+          esac
+      - name: Check out default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements/automation-runtime-py312.lock
+      - name: Install pinned runtime
+        run: |
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
+          python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
+      - name: Validate and write sanitized proposal
+        env:
+          PROPOSAL_ACTION: ${{ inputs.action }}
+          PROPOSAL_ISSUE: ${{ inputs.issue_number }}
+          PROPOSAL_SIGNAL: ${{ inputs.signal_id }}
+          PROPOSAL_BRAND: ${{ inputs.brand }}
+          PROPOSAL_SUBJECT: ${{ inputs.subject }}
+          PROPOSAL_REASON: ${{ inputs.reason }}
+          PROPOSAL_SCOPE: ${{ inputs.scope }}
+        run: |
+          python -m hecavex_radar.review_proposal \
+            --action "$PROPOSAL_ACTION" \
+            --issue-number "$PROPOSAL_ISSUE" \
+            --repository "$GITHUB_REPOSITORY" \
+            --signal-id "$PROPOSAL_SIGNAL" \
+            --brand "$PROPOSAL_BRAND" \
+            --subject "$PROPOSAL_SUBJECT" \
+            --reason "$PROPOSAL_REASON" \
+            --scope "$PROPOSAL_SCOPE" \
+            --output "data/review/proposals/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+      - name: Create proposal branch
+        env:
+          BRANCH: review-proposal/${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add data/review/proposals/
+          git commit -m "review: add sanitized proposal ${GITHUB_RUN_ID}"
+          git push --set-upstream origin "$BRANCH"
+      - name: Open draft pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: review-proposal/${{ github.run_id }}-${{ github.run_attempt }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH" \
+            --draft \
+            --title "Review sanitized Radar proposal ${GITHUB_RUN_ID}" \
+            --body "Maintainer-generated sanitized proposal. This pull request does not execute issue content, scan the subject, or publish a review decision. CODEOWNERS review and CI are required before any separate decision export."

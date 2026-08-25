@@ -5,7 +5,7 @@ import { formatDateTime } from "../lib/format.ts";
 import { evidenceTierLabel, explainReasons, signalEvidenceTier, signalMatchScore } from "../lib/dashboard.ts";
 import { loadSignalDetail } from "../lib/signalDetail.ts";
 import { signalPath } from "../lib/signalRoutes.ts";
-import type { RadarSignal, SignalCertificateDetail, SignalDetail, SignalDetailObservation, SignalDomainContext } from "../types.ts";
+import type { RadarSignal, SignalCertificateDetail, SignalContextChange, SignalDetail, SignalDetailObservation, SignalDomainContext } from "../types.ts";
 import { formatDateTimeLt } from "../lt/formatLt.ts";
 import type { SiteLanguage } from "./SiteHeader.tsx";
 
@@ -539,6 +539,36 @@ export function DomainContext({ context, language = "en" }: { context: SignalDom
   );
 }
 
+export function ContextChanges({ changes, language = "en" }: { changes: SignalContextChange[]; language?: SiteLanguage }) {
+  const title = language === "lt" ? "Konteksto pokyčiai" : "Context changes";
+  const changedFields = language === "lt" ? "Pasikeitę laukai" : "Changed fields";
+  const sourceReference = language === "lt" ? "Šaltinio nuoroda" : "Source reference";
+  const providerObserved = language === "lt" ? "Šaltinio stebėjimo laikas" : "Provider observed";
+  const boundary = language === "lt"
+    ? "Tai riboti pasyviai stebėti pokyčiai, o ne veikėjo tapatybės ar kenkėjiško ketinimo įrodymas."
+    : "These are bounded passive changes, not evidence of operator identity or malicious intent.";
+  return (
+    <article className="detail-observation context-changes">
+      <header><div><span className="source-chip">{title}</span><h4>{title}</h4></div></header>
+      <ol className="signal-timeline">
+        {changes.map((change) => (
+          <li key={change.eventId}>
+            <time dateTime={change.observedAt}>{localizedTimestamp(change.observedAt, language)}</time>
+            <strong>{change.changeType.replaceAll("-", " ")}</strong>
+            <span>{changedFields}: {change.changedFields.join(", ")}</span>
+            <span>{providerObserved}: <time dateTime={change.source.observedAt}>{localizedTimestamp(change.source.observedAt, language)}</time></span>
+            <a href={change.source.referenceUrl} target="_blank" rel="noreferrer noopener">{sourceReference}: {change.source.name} <ExternalLink aria-hidden="true" /></a>
+            <CopyableValue value={change.evidence.currentSha256} label="component SHA-256" language={language} />
+            {change.evidence.primaryHtmlSha256.map((digest) => <CopyableValue key={digest} value={digest} label="primary HTML SHA-256" language={language} />)}
+            {change.evidence.certificateSha256 ? <CopyableValue value={change.evidence.certificateSha256} label="certificate SHA-256" language={language} /> : null}
+          </li>
+        ))}
+      </ol>
+      <p className="detail-note">{boundary}</p>
+    </article>
+  );
+}
+
 export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onClose, language = "en" }: ScreenshotModalProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
@@ -698,6 +728,7 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
                 {detailState.detail.domainContext ? <DomainContext context={detailState.detail.domainContext} language={language} /> : (
                   <p className="detail-context-missing">{copy.noDomainContext}</p>
                 )}
+                {detailState.detail.contextChanges?.length ? <ContextChanges changes={detailState.detail.contextChanges} language={language} /> : null}
               </div>
             ) : null}
           </section>

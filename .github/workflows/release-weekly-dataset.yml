@@ -109,6 +109,7 @@ jobs:
         id: package
         env:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED: ${{ vars.URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED || 'false' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -305,6 +306,8 @@ jobs:
           (assets_root / f"{tag}.manifest.json").write_bytes(manifest_payload)
           PY
 
+          python -m hecavex_radar.release_context_history --tag "${RELEASE_TAG}"
+
           archive_name="${RELEASE_TAG}.tar.gz"
           manifest_name="${RELEASE_TAG}.manifest.json"
           tar --sort=name --format=gnu --mtime='UTC 1970-01-01' \
@@ -319,14 +322,25 @@ jobs:
           gzip --test "_release/assets/${archive_name}"
           tar -tzf "_release/assets/${archive_name}" |
             awk '/(^\/|(^|\/)\.\.($|\/))/ { bad=1 } END { exit bad }'
+          sbom_name="${RELEASE_TAG}.spdx.json"
+          python -m hecavex_radar.sbom \
+            --tag "${RELEASE_TAG}" \
+            --repository "${GITHUB_REPOSITORY}" \
+            --commit "${GITHUB_SHA}" \
+            --release-manifest "_release/assets/${manifest_name}" \
+            --file "_release/assets/${archive_name}" \
+            --file "_release/assets/${manifest_name}" \
+            --output "_release/assets/${sbom_name}"
           (
             cd _release/assets
-            sha256sum "${archive_name}" "${manifest_name}" > SHA256SUMS
+            sha256sum "${archive_name}" "${manifest_name}" "${sbom_name}" > SHA256SUMS
             sha256sum --check SHA256SUMS
           )
           {
             echo "archive_path=_release/assets/${archive_name}"
             echo "manifest_path=_release/assets/${manifest_name}"
+            echo "sbom_path=_release/assets/${sbom_name}"
+            echo "checksums_path=_release/assets/SHA256SUMS"
           } >> "${GITHUB_OUTPUT}"
 
       - name: Write release notes
@@ -338,11 +352,11 @@ jobs:
           cat > _release/notes.md <<EOF
           Weekly static export of the public HECAVEX Radar dataset at commit \`${GITHUB_SHA}\`.
 
-          The archive contains the manifest-declared publication artifacts and checksums, index-declared shards, and snapshot-declared signal sidecars as one point-in-time package. The independently replaced \`collection-health.json\` latest-attempt document is excluded. \`${RELEASE_TAG}.manifest.json\` records every included file and digest. \`SHA256SUMS\` covers the archive and standalone manifest.
+          The archive contains the manifest-declared publication artifacts and checksums, index-declared shards, snapshot-declared signal sidecars, and up to 90 validated date partitions of the passive context-change journal as one point-in-time package. URLScan-derived journal rows remain excluded unless redistribution is explicitly confirmed. The independently replaced \`collection-health.json\` latest-attempt document is excluded. \`${RELEASE_TAG}.manifest.json\` records every included file and digest. \`${RELEASE_TAG}.spdx.json\` is an SPDX 2.3 inventory generated from the pinned Python and pnpm repository inputs. \`SHA256SUMS\` covers the archive, standalone manifest, and SBOM.
 
           Radar publishes sampled research leads, not maliciousness verdicts or comprehensive monitoring. Review the [methodology](https://radar.hecavex.com/methodology/) and [data terms](https://github.com/Hecavex/hecavex-radar/blob/main/DATA-LICENSE.md) before use.
 
-          Verify downloads with \`sha256sum --check SHA256SUMS\`. Verify workflow provenance with \`gh attestation verify ${RELEASE_TAG}.tar.gz --repo ${GITHUB_REPOSITORY}\`.
+          Verify downloads with \`sha256sum --check SHA256SUMS\`. Verify workflow provenance with \`gh attestation verify ${RELEASE_TAG}.tar.gz --repo ${GITHUB_REPOSITORY}\`; the manifest, SBOM, and checksum list are attested as separate subjects by the same workflow.
           EOF
 
       - name: Create or refresh the draft release
@@ -376,11 +390,11 @@ jobs:
           test -n "${release_id}"
           gh api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" \
             --jq '.assets[].name' | sort > _release/actual-assets.txt
-          printf '%s\n' SHA256SUMS "${RELEASE_TAG}.manifest.json" "${RELEASE_TAG}.tar.gz" |
+          printf '%s\n' SHA256SUMS "${RELEASE_TAG}.manifest.json" "${RELEASE_TAG}.spdx.json" "${RELEASE_TAG}.tar.gz" |
             sort > _release/expected-assets.txt
           diff --unified _release/expected-assets.txt _release/actual-assets.txt
 
-      - name: Attest the archive and release manifest
+      - name: Attest every release asset
         if: steps.release.outputs.should_release == 'true'
         id: attest
         uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
@@ -388,6 +402,8 @@ jobs:
           subject-path: |
             ${{ steps.package.outputs.archive_path }}
             ${{ steps.package.outputs.manifest_path }}
+            ${{ steps.package.outputs.sbom_path }}
+            ${{ steps.package.outputs.checksums_path }}
 
       - name: Publish and verify the immutable release
         if: steps.release.outputs.should_release == 'true'

@@ -20,6 +20,10 @@ DEFANGED_URL_PATTERN: Final = (
     rf"^hxxps?://(?:{DOMAIN_LABEL_PATTERN}\[\.\])+(?:{DOMAIN_SUFFIX_PATTERN})"
     r"(?::[0-9]{1,5})?(?:/[A-Za-z0-9%:@!$&'()*+,;=._~\[\]/-]*)?$"
 )
+RAW_DOMAIN_PATTERN: Final = (
+    rf"^(?:{DOMAIN_LABEL_PATTERN}\.)+(?:{DOMAIN_SUFFIX_PATTERN})$"
+)
+UUID_PATTERN: Final = r"^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
 URLSCAN_SCREENSHOT_PATTERN: Final = (
     r"^https://urlscan\.io/screenshots/[A-Fa-f0-9]{8}(?:-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}\.png$"
 )
@@ -39,6 +43,9 @@ REASON_CODES: Final = (
     "punycode",
     "different-tld",
     "multiple-hyphens",
+    "unicode-confusable",
+    "mixed-script",
+    "restricted-identifier",
     "hecavex-public-export",
     "manual-review",
     "first-publication",
@@ -357,12 +364,24 @@ PIPELINE_HEALTH_SCHEMA: Final[dict[str, object]] = {
         "urlscanSummary": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["generatedAt", "configured", "lastOutcome", "lastAttemptAt"],
+            "required": ["generatedAt", "configured", "lastOutcome", "lastAttemptAt", "checkpointCoverage"],
             "properties": {
                 "generatedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
                 "configured": {"type": "boolean"},
                 "lastOutcome": {"enum": ["skipped-not-configured", "completed", "budget-limited", "failed"]},
                 "lastAttemptAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
+                "checkpointCoverage": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["queries", "complete", "partial", "backlog", "oldestBacklogProgressAt"],
+                    "properties": {
+                        "queries": {"type": "integer", "minimum": 0, "maximum": 256},
+                        "complete": {"type": "integer", "minimum": 0, "maximum": 256},
+                        "partial": {"type": "integer", "minimum": 0, "maximum": 256},
+                        "backlog": {"type": "integer", "minimum": 0, "maximum": 256},
+                        "oldestBacklogProgressAt": {"$ref": "#/$defs/timestampOrNull"},
+                    },
+                },
             },
         },
         "ctSearchSummary": {
@@ -378,11 +397,27 @@ PIPELINE_HEALTH_SCHEMA: Final[dict[str, object]] = {
                     "required": [
                         "startedAt", "endedAt", "outcome", "queriesAttempted", "queriesCompleted",
                         "queriesBacklogged", "rowsProcessed", "dnsNames", "matches", "newRecords",
+                        "failureCodes",
                     ],
                     "properties": {
                         "startedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
                         "endedAt": {"type": "string", "pattern": TIMESTAMP_PATTERN},
                         "outcome": {"enum": ["completed", "partial", "failed"]},
+                        "failureCodes": {
+                            "type": "array",
+                            "maxItems": 8,
+                            "uniqueItems": True,
+                            "items": {
+                                "enum": [
+                                    "provider-timeout",
+                                    "provider-http",
+                                    "provider-network",
+                                    "invalid-response",
+                                    "validation",
+                                    "internal",
+                                ]
+                            },
+                        },
                         **{
                             field: {"$ref": "#/$defs/counter"}
                             for field in (
@@ -528,6 +563,164 @@ PIPELINE_HEALTH_SCHEMA: Final[dict[str, object]] = {
                     },
                 },
             },
+        },
+    },
+}
+
+
+MISP_EVENT_SCHEMA: Final[dict[str, object]] = {
+    **_base("misp-event-v1.schema.json", "Reviewed-only MISP event"),
+    "additionalProperties": False,
+    "required": ["Event"],
+    "$defs": {
+        "tag": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["name"],
+            "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 120}},
+        },
+        "org": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["name", "uuid"],
+            "properties": {
+                "name": {"const": "HECAVEX"},
+                "uuid": {"type": "string", "pattern": UUID_PATTERN},
+            },
+        },
+        "attribute": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": [
+                "uuid",
+                "type",
+                "category",
+                "to_ids",
+                "distribution",
+                "value",
+                "comment",
+                "timestamp",
+                "Tag",
+            ],
+            "properties": {
+                "uuid": {"type": "string", "pattern": UUID_PATTERN},
+                "type": {"const": "domain"},
+                "category": {"const": "Network activity"},
+                "to_ids": {"const": False},
+                "distribution": {"const": "3"},
+                "value": {"type": "string", "pattern": RAW_DOMAIN_PATTERN, "maxLength": 253},
+                "comment": {"type": "string", "minLength": 1, "maxLength": 800},
+                "timestamp": {"type": "string", "pattern": r"^[0-9]{1,12}$"},
+                "deleted": {"const": True},
+                "Tag": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {"$ref": "#/$defs/tag"},
+                },
+            },
+        },
+    },
+    "properties": {
+        "Event": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": [
+                "uuid",
+                "info",
+                "date",
+                "timestamp",
+                "analysis",
+                "threat_level_id",
+                "published",
+                "distribution",
+                "Orgc",
+                "Tag",
+                "Attribute",
+            ],
+            "properties": {
+                "uuid": {"type": "string", "pattern": UUID_PATTERN},
+                "info": {"const": "HECAVEX Radar analyst-reviewed phishing domains"},
+                "date": {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}$"},
+                "timestamp": {"type": "string", "pattern": r"^[0-9]{1,12}$"},
+                "analysis": {"const": "2"},
+                "threat_level_id": {"const": "2"},
+                "published": {"type": "boolean"},
+                "distribution": {"const": "3"},
+                "Orgc": {"$ref": "#/$defs/org"},
+                "Tag": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {"$ref": "#/$defs/tag"},
+                },
+                "Attribute": {
+                    "type": "array",
+                    "maxItems": 2_500,
+                    "items": {"$ref": "#/$defs/attribute"},
+                },
+            },
+        }
+    },
+}
+
+
+MISP_MANIFEST_SCHEMA: Final[dict[str, object]] = {
+    **_base("misp-manifest-v1.schema.json", "Reviewed-only MISP feed manifest"),
+    "minProperties": 0,
+    "maxProperties": 1,
+    "propertyNames": {"pattern": UUID_PATTERN},
+    "additionalProperties": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "Orgc",
+            "date",
+            "info",
+            "analysis",
+            "threat_level_id",
+            "timestamp",
+            "integrity:sha256",
+        ],
+        "properties": {
+            "Orgc": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["name", "uuid"],
+                "properties": {
+                    "name": {"const": "HECAVEX"},
+                    "uuid": {"type": "string", "pattern": UUID_PATTERN},
+                },
+            },
+            "date": {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}$"},
+            "info": {"const": "HECAVEX Radar analyst-reviewed phishing domains"},
+            "analysis": {"const": "2"},
+            "threat_level_id": {"const": "2"},
+            "timestamp": {"type": "string", "pattern": r"^[0-9]{1,12}$"},
+            "integrity:sha256": {"type": "string", "pattern": r"^[0-9a-f]{64}$"},
+        },
+    },
+}
+
+
+MISP_WARNINGLIST_SCHEMA: Final[dict[str, object]] = {
+    **_base("misp-warninglist-v1.schema.json", "Reviewed official-domain MISP warning list"),
+    "additionalProperties": False,
+    "required": ["name", "version", "description", "type", "matching_attributes", "list"],
+    "properties": {
+        "name": {"const": "HECAVEX reviewed official domains for Lithuania-facing brands"},
+        "version": {"type": "integer", "minimum": 20_000_000, "maximum": 99_999_999},
+        "description": {"type": "string", "minLength": 1, "maxLength": 500},
+        "type": {"const": "hostname"},
+        "matching_attributes": {
+            "const": ["domain", "hostname", "url", "domain|ip"],
+        },
+        "list": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10_000,
+            "uniqueItems": True,
+            "items": {"type": "string", "pattern": RAW_DOMAIN_PATTERN, "maxLength": 253},
         },
     },
 }
@@ -1069,5 +1262,8 @@ PUBLIC_SCHEMAS: Final[dict[str, dict[str, object]]] = {
     "brand-feeds-v1.schema.json": BRAND_FEEDS_SCHEMA,
     "quality-metrics-v1.schema.json": QUALITY_METRICS_SCHEMA,
     "daily-trends-v1.schema.json": DAILY_TRENDS_SCHEMA,
+    "misp-event-v1.schema.json": MISP_EVENT_SCHEMA,
+    "misp-manifest-v1.schema.json": MISP_MANIFEST_SCHEMA,
+    "misp-warninglist-v1.schema.json": MISP_WARNINGLIST_SCHEMA,
     "feed-manifest-v1.schema.json": MANIFEST_SCHEMA,
 }

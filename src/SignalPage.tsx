@@ -1,7 +1,7 @@
 import { ExternalLink, Flag, GitCompareArrows, History, Link2, Network, ShieldAlert } from "lucide-react";
 
 import { SiteFooter } from "./components/SiteFooter.tsx";
-import { CopyableValue, DetailItem, DomainContext, ObservationDetail } from "./components/ScreenshotModal.tsx";
+import { ContextChanges, CopyableValue, DetailItem, DomainContext, ObservationDetail } from "./components/ScreenshotModal.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
 import { brandPath } from "./lib/brandRegistry.ts";
 import { evidenceTierLabel, explainReasons, signalEvidenceTier, signalMatchScore } from "./lib/dashboard.ts";
@@ -120,7 +120,7 @@ export function SignalPage({ data }: { data: SignalPageData }) {
             <section className="profile-section" aria-labelledby="context-title">
               <p className="eyebrow"><Network aria-hidden="true" /> 04 / {text.context}</p>
               <h2 id="context-title">{text.context}</h2>
-              {data.detail ? <div className="detail-observations">{data.detail.observations.map((observation) => <ObservationDetail observation={observation} key={observation.source} />)}{data.detail.domainContext ? <DomainContext context={data.detail.domainContext} /> : null}</div> : <p>{text.none}</p>}
+              {data.detail ? <div className="detail-observations">{data.detail.observations.map((observation) => <ObservationDetail observation={observation} key={observation.source} />)}{data.detail.domainContext ? <DomainContext context={data.detail.domainContext} language={language} /> : null}{data.detail.contextChanges?.length ? <ContextChanges changes={data.detail.contextChanges} language={language} /> : null}</div> : <p>{text.none}</p>}
             </section>
 
             <section className="profile-section" aria-labelledby="related-title">

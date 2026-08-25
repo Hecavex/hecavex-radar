@@ -1,0 +1,58 @@
+name: Ephemeral analyst provider check
+
+on:
+  workflow_dispatch:
+    inputs:
+      signal_id:
+        description: Existing 20-character Radar signal ID
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: radar-provider-check
+  queue: max
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate dispatch input
+        id: input
+        env:
+          SIGNAL_ID: ${{ inputs.signal_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "${SIGNAL_ID}" =~ ^[a-f0-9]{20}$ ]]; then
+            echo "::error::signal_id must be exactly 20 lowercase hexadecimal characters."
+            exit 1
+          fi
+          echo "signal_id=${SIGNAL_ID}" >> "${GITHUB_OUTPUT}"
+      - name: Check out the reviewed repository snapshot
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements/automation-runtime-py312.lock
+      - name: Install the pinned runtime
+        run: |
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
+          python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
+      - name: Query optional provider context without publishing the result
+        env:
+          VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+          SIGNAL_ID: ${{ steps.input.outputs.signal_id }}
+        # Public Actions logs and summaries are retained. Keep the provider
+        # response in process memory and emit only a generic completion line.
+        run: python -m hecavex_radar.provider_checks --signal-id "${SIGNAL_ID}" --summary ""

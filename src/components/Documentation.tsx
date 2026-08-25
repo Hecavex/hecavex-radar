@@ -30,13 +30,19 @@ const workflows = [
   ["CertStream collection", "08, 23, 38, and 53 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
   ["Checkpointed CT search", "43 minutes past each UTC hour", "Per-brand crt.sh cursors and deduplicated CT candidates"],
   ["URLScan hunt", "37 minutes past every second UTC hour", "Bounded hunt state and Vilnius-date validated archive"],
+  ["Official asset pivot", "03:47 and 15:47 UTC", "Collision-aware first-party hashes and independently qualified public reports"],
   ["DNS and RDAP context", "13 minutes past 01, 07, 13, and 19 UTC", "Bounded context for already-published candidates"],
-  ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated live snapshot and candidate history"],
+  ["Temporal passive context", "31 minutes past 01, 07, 13, and 19 UTC", "Bounded DNS/RDAP/routing baselines and context-change journal"],
+  ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated snapshots, sharing artifacts, history, quality, coverage, and review queue"],
   ["Pages deployment", "Verified code or changed public snapshot/health", "Static GitHub Pages artifact"],
+  ["Pipeline health evaluation", "11 minutes past every second UTC hour", "One deduplicated aggregate health issue that closes after recovery"],
+  ["Sanitized review proposal", "Maintainer-only manual dispatch", "Draft pull request; never a review decision"],
+  ["Weekly dataset release", "Monday at 06:29 UTC", "Gated archive, manifest, SPDX 2.3 inventory, checksums, and attestations"],
 ] as const;
 
 const settings = [
   ["URLSCAN_API_KEY", "Secret", "Required only for passive URLScan search and result retrieval."],
+  ["URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED", "Variable", "Exact true enables URLScan-derived temporal baselines and bounded change fields only after permission is confirmed."],
   ["URLSCAN_RADAR_SEEDS_ENABLED", "Variable", "Includes bounded recent snapshot rows in the rolling seven-day candidate set."],
   ["URLSCAN_SEED_ROTATION_SHARDS", "Variable", "Uses one complete bounded candidate slice by default; operators may lower the slice."],
   ["URLSCAN_SEEDS_PER_RUN", "Variable", "Selects no more than 250 exact-domain seeds per run by default."],
@@ -46,6 +52,11 @@ const settings = [
   ["CERTSTREAM_URL", "Secret or variable", "Optional monitored WSS endpoint; otherwise the scheduled workflow starts its pinned temporary source."],
   ["CT_SEARCH_*", "Variables", "Bound hourly query rotation, rows, seven-day bootstrap, and the default 50-row/1,000-ID late-index replay overlap."],
   ["DOMAIN_CONTEXT_*", "Variables", "Bound candidate rotation, 14-day DNS/RDAP retention, and the default 600-second monotonic run budget."],
+  ["PASSIVE_CONTEXT_*", "Variables", "Bound temporal rotation, RIPEstat cache, URLScan-derived age, 30–90 day journal retention, optional RPKI, and the run budget."],
+  ["RADAR_MISP_FEED_ENABLED", "Variable", "Exact true only after a current MISP importer and same-UUID deletion tombstones pass acceptance."],
+  ["RADAR_IMMUTABLE_RELEASES_CONFIRMED", "Variable", "Operator gate set only after repository release immutability is enabled."],
+  ["VIRUSTOTAL_API_KEY", "Secret", "Optional maintainer-only check for one already-published signal; never a collection or scoring source."],
+  ["GOOGLE_SAFE_BROWSING_API_KEY", "Private local environment", "Never configured in public Actions; cached locally until each provider-supplied expiry."],
   ["HECAVEX_ENABLED", "Variable", "Enables the optional configured public HECAVEX export."],
   ["HECAVEX_FEED_URL", "Secret", "Required with HECAVEX enabled; production endpoints must use HTTPS."],
   ["HECAVEX_FEED_TOKEN", "Secret", "Optional read-only bearer credential for the configured export."],
@@ -240,6 +251,35 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
             <a href="/data/radar-reviewed.stix.json" download>Download reviewed STIX</a>
           </article>
           <article>
+            <span>Reviewed decisions · MISP</span>
+            <h3>Gated static-feed manifest</h3>
+            <p>
+              The MISP manifest can advertise only active, unexpired confirmed-suspicious assessments. An empty object is
+              the valid output while no review qualifies. Feed activation remains disabled until importer and deletion-
+              tombstone acceptance tests pass.
+            </p>
+            <a href="/data/misp/manifest.json">Open reviewed MISP manifest</a>
+          </article>
+          <article>
+            <span>Registry safety · MISP warning list</span>
+            <h3>Official-domain warning list</h3>
+            <p>
+              Reviewed first-party domains are published separately for custom MISP warning-list installation. A match is
+              a false-positive warning, not proof that every page or subdomain is benign.
+            </p>
+            <a href="/data/misp-warninglists/hecavex-official-domains/list.json">Open warning list</a>
+          </article>
+          <article>
+            <span>Local workflow · no submission</span>
+            <h3>Reporting evidence utility</h3>
+            <p>
+              For one active, unexpired reviewed confirmation, the browser can validate public artifacts, hash selected
+              local files, and download a bounded evidence manifest. It cannot create a review, contact a candidate, or
+              send a report.
+            </p>
+            <a href="/reporting/">Open reporting utility</a>
+          </article>
+          <article>
             <span>Retained history · JSON</span>
             <h3>Candidate history</h3>
             <p>
@@ -283,6 +323,15 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               shards make the complete accepted corpus independently retrievable and verifiable.
             </p>
             <a href="/data/feed-manifest.json">Open feed manifest</a>
+          </article>
+          <article>
+            <span>Gated weekly package · GitHub Releases</span>
+            <h3>Archive and SPDX dependency inventory</h3>
+            <p>
+              A successful weekly workflow publishes a reproducible archive, standalone manifest, SPDX 2.3 inventory,
+              checksums, and attestations. The workflow schedule alone does not mean a release has occurred.
+            </p>
+            <a href="https://github.com/Hecavex/hecavex-radar/releases">Check published releases</a>
           </article>
           <article>
             <span>Aggregate operations · JSON</span>
@@ -424,6 +473,15 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
             </p>
           </article>
           <article>
+            <span>Provider checkpoint schema 1</span>
+            <h3>Hash-only URLScan pagination</h3>
+            <p>
+              <code>data/urlscan/search-checkpoints.json</code> stores only a query hash, provider cursor, bounded result
+              count, completion state, and progress time. A failed or budget-limited request cannot clear or advance it;
+              public health exposes aggregate backlog state without query text.
+            </p>
+          </article>
+          <article>
             <span>Optional input</span>
             <h3>HECAVEX JSON</h3>
             <p>
@@ -440,6 +498,33 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
             </p>
           </article>
           <article>
+            <span>Temporal context schema 1</span>
+            <h3>Passive baselines and change journal</h3>
+            <p>
+              <code>data/enrichment/passive-context.json</code> and <code>data/history/context/</code> retain bounded
+              DNS/RDAP/routing baselines and semantic changes. URLScan-derived components stay excluded unless the
+              redistribution confirmation variable is exactly true.
+            </p>
+          </article>
+          <article>
+            <span>Quality workflow · repository JSON</span>
+            <h3>Coverage, review queue, and matcher corpus</h3>
+            <p>
+              The brand-coverage ledger explains incomplete collection and review state; the balanced review queue is not
+              a random sample; and the synthetic/reserved/official-domain matcher corpus is a CI regression contract.
+              None is a verdict, public decision, or prevalence estimate.
+            </p>
+            <a href="https://github.com/Hecavex/hecavex-radar/tree/main/data/coverage">Review quality artifacts</a>
+          </article>
+          <article>
+            <span>Proposal schema 1</span>
+            <h3>Draft review proposal, not a decision</h3>
+            <p>
+              A maintainer-only workflow can place one validated, defanged proposal below <code>data/review/proposals/</code>
+              and open a draft pull request. Only a separately exported sanitized decision can affect synchronization.
+            </p>
+          </article>
+          <article>
             <span>Detail schema 1</span>
             <h3>Signal detail JSON</h3>
             <p>
@@ -449,6 +534,15 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               never attributed to the submitted candidate, and registrant identity data is never published.
             </p>
           </article>
+        </div>
+        <div className="docs-callout">
+          <strong>Pinned Unicode matching</strong>
+          <p>
+            Hostnames use UTS #46 nontransitional STD3 normalization through pinned <code>idna</code> data. Pinned UTS #39
+            confusable/script data can add <code>unicode-confusable</code>, <code>mixed-script</code>, or Radar&apos;s conservative
+            <code>restricted-identifier</code> reason. Internal skeletons are never published, Unicode evidence alone is
+            never a phishing verdict, and <code>restricted-identifier</code> is not Unicode&apos;s formal restriction-level algorithm.
+          </p>
         </div>
         <div className="docs-callout">
           <strong>Merge rules</strong>
@@ -582,6 +676,15 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="docs-callout docs-warning-callout">
+          <strong>External acceptance remains external</strong>
+          <p>
+            The current public review sample contains no completed assessment, so precision is unavailable and the reviewed
+            MISP manifest is expected to be empty. URLScan-derived temporal redistribution remains off until permission is
+            confirmed. MISP importer/tombstone acceptance and repository rules requiring CI and review must be verified by
+            the operator; CODEOWNERS and a passing local schema test do not establish those controls.
+          </p>
         </div>
         <div className="docs-operations-grid">
           <article>

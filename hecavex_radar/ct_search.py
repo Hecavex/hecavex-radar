@@ -38,15 +38,33 @@ MAXIMUM_QUERIES = 128
 MAXIMUM_QUERY_CHARACTERS = 48
 MAXIMUM_ROWS_PER_QUERY = 2_000
 MAXIMUM_DNS_NAMES_PER_ROW = 500
-MAXIMUM_ERROR_CHARACTERS = 160
 DEFAULT_REPLAY_ID_WINDOW = 1_000
 DEFAULT_REPLAY_ROWS = 50
 STATE_OUTCOMES = frozenset({"completed", "partial", "failed"})
+FAILURE_CODES = frozenset(
+    {"provider-timeout", "provider-http", "provider-network", "invalid-response", "validation", "internal"}
+)
 ROW_TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:?\d{2})?$")
 HEX = re.compile(r"^[a-f\d]+$")
 QUERY = re.compile(r"^[a-z\d][a-z\d-]{3,47}$")
 
 JsonRequester = Callable[[str], Any]
+FailureCode = Literal[
+    "provider-timeout",
+    "provider-http",
+    "provider-network",
+    "invalid-response",
+    "validation",
+    "internal",
+]
+
+
+class CTSearchRequestError(RuntimeError):
+    """A provider failure with a stable code safe for public health output."""
+
+    def __init__(self, code: FailureCode, message: str) -> None:
+        super().__init__(message)
+        self.code = code
 
 
 @dataclass(frozen=True, slots=True)
@@ -193,19 +211,28 @@ def request_json(url: str) -> Any:
     try:
         with opener.open(request, timeout=45) as response:  # noqa: S310 - scheme and host are enforced above
             content_length = response.headers.get("Content-Length")
-            if content_length and int(content_length) > MAXIMUM_RESPONSE_BYTES:
-                raise ValueError("CT search response exceeds 20 MiB.")
+            try:
+                oversized = content_length is not None and int(content_length) > MAXIMUM_RESPONSE_BYTES
+            except ValueError as error:
+                raise CTSearchRequestError(
+                    "invalid-response", "CT search returned an invalid content length."
+                ) from error
+            if oversized:
+                raise CTSearchRequestError("invalid-response", "CT search response exceeds 20 MiB.")
             body = response.read(MAXIMUM_RESPONSE_BYTES + 1)
     except HTTPError as error:
-        raise RuntimeError(f"CT search returned HTTP {error.code}.") from error
+        raise CTSearchRequestError("provider-http", f"CT search returned HTTP {error.code}.") from error
     except URLError as error:
-        raise RuntimeError("CT search request failed.") from error
+        code: FailureCode = "provider-timeout" if isinstance(error.reason, TimeoutError) else "provider-network"
+        raise CTSearchRequestError(code, "CT search request failed.") from error
+    except TimeoutError as error:
+        raise CTSearchRequestError("provider-timeout", "CT search request timed out.") from error
     if len(body) > MAXIMUM_RESPONSE_BYTES:
-        raise ValueError("CT search response exceeds 20 MiB.")
+        raise CTSearchRequestError("invalid-response", "CT search response exceeds 20 MiB.")
     try:
         return json.loads(body)
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ValueError("CT search returned invalid JSON.") from error
+        raise CTSearchRequestError("invalid-response", "CT search returned invalid JSON.") from error
 
 
 def _hex(value: object, maximum: int = 80) -> str | None:
@@ -322,15 +349,21 @@ def _valid_state(value: object) -> bool:
         return False
     if latest is None:
         return True
+    latest_fields = {
+        "startedAt", "endedAt", "outcome", "queriesAttempted", "queriesCompleted", "rowsProcessed",
+        "dnsNames", "matches", "newRecords", "queriesBacklogged",
+    }
+    failure_codes = latest.get("failureCodes", []) if isinstance(latest, dict) else []
     return (
         isinstance(latest, dict)
-        and set(latest) == {
-            "startedAt", "endedAt", "outcome", "queriesAttempted", "queriesCompleted", "rowsProcessed",
-            "dnsNames", "matches", "newRecords", "queriesBacklogged"
-        }
+        and frozenset(latest) in {frozenset(latest_fields), frozenset({*latest_fields, "failureCodes"})}
         and _parse_timestamp(latest["startedAt"]) is not None
         and _parse_timestamp(latest["endedAt"]) is not None
         and latest["outcome"] in STATE_OUTCOMES
+        and isinstance(failure_codes, list)
+        and len(failure_codes) <= len(FAILURE_CODES)
+        and all(isinstance(code, str) and code in FAILURE_CODES for code in failure_codes)
+        and failure_codes == sorted(set(cast(list[str], failure_codes)))
         and all(type(latest[field]) is int and 0 <= latest[field] <= 2_000_000_000 for field in (
             "queriesAttempted", "queriesCompleted", "rowsProcessed", "dnsNames", "matches", "newRecords",
             "queriesBacklogged"
@@ -385,10 +418,20 @@ def write_state(value: dict[str, Any], path: str | Path = DEFAULT_STATE_PATH) ->
     return target
 
 
-def _controlled_error(error: Exception) -> str:
-    text = " ".join(str(error).split()) or type(error).__name__
-    text = re.sub(r"https?://\S+", "[remote endpoint]", text)
-    return text[:MAXIMUM_ERROR_CHARACTERS]
+def _failure_code(error: Exception) -> FailureCode:
+    if isinstance(error, CTSearchRequestError):
+        return error.code
+    if isinstance(error, TimeoutError):
+        return "provider-timeout"
+    if isinstance(error, HTTPError):
+        return "provider-http"
+    if isinstance(error, URLError):
+        return "provider-network"
+    if isinstance(error, (UnicodeDecodeError, json.JSONDecodeError)):
+        return "invalid-response"
+    if isinstance(error, ValueError):
+        return "validation"
+    return "internal"
 
 
 def poll(
@@ -453,7 +496,7 @@ def poll(
         "newRecords": 0,
         "queriesBacklogged": 0,
     }
-    failures: list[str] = []
+    failure_codes: set[FailureCode] = set()
     backlog_keys: list[str] = []
     cutoff = started - timedelta(days=initial_days)
 
@@ -462,7 +505,7 @@ def poll(
         try:
             payload = requester(_request_url(definition.term))
             if not isinstance(payload, list):
-                raise ValueError("CT search response is not a JSON array.")
+                raise CTSearchRequestError("invalid-response", "CT search response is not a JSON array.")
             parsed = sorted(
                 (row for value in payload if (row := parse_row(value)) is not None),
                 key=lambda row: (row.identifier, row.observed_at),
@@ -521,7 +564,8 @@ def poll(
                 backlog_keys.append(definition.key)
         except Exception as error:
             query_state.update({"lastRunAt": _timestamp(started), "lastOutcome": "failed"})
-            failures.append(f"{definition.key}: {_controlled_error(error)}")
+            code = _failure_code(error)
+            failure_codes.add(code)
 
     ended = datetime.now(UTC) if now is None else started
     if backlog_keys:
@@ -541,13 +585,14 @@ def poll(
                 "startedAt": _timestamp(started),
                 "endedAt": _timestamp(ended),
                 "outcome": outcome,
+                "failureCodes": sorted(failure_codes),
                 **metrics,
             },
         }
     )
     write_state(state, state_path)
-    if failures:
-        print("CT search warnings: " + "; ".join(failures), flush=True)
+    if failure_codes:
+        print("CT search controlled failure codes: " + ", ".join(sorted(failure_codes)), flush=True)
     print(
         f"CT search {outcome}: {metrics['queriesCompleted']}/{metrics['queriesAttempted']} queries, "
         f"{metrics['rowsProcessed']} rows, {metrics['dnsNames']} DNS names, "
@@ -569,7 +614,7 @@ def main(arguments: list[str] | None = None) -> int:
     try:
         result = poll(state_path=options.state, archive_root=options.archive_root)
     except Exception as error:
-        print(f"CT search failed before state publication: {_controlled_error(error)}", flush=True)
+        print(f"CT search failed before state publication: {_failure_code(error)}", flush=True)
         return 1
     return 0 if result["outcome"] in {"completed", "partial"} else 1
 

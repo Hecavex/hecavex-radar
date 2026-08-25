@@ -11,6 +11,7 @@ permissions:
 concurrency:
   group: radar-certstream-writer
   cancel-in-progress: false
+  queue: max
 
 jobs:
   collect:

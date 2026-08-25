@@ -52,6 +52,13 @@ The twelve scheduled runs can therefore issue at most 300 searches and 1,200 res
 
 `data/urlscan/hunt-state.json` persists the numeric progress cursor, bounded candidate counts, UTC request counters, configuration state, timestamps, and latest outcome. It contains neither keys nor domains. The state distinguishes a completed attempt, local budget exhaustion, failure, and an unconfigured successful skip without rewriting historical observations.
 
+`data/urlscan/search-checkpoints.json` separately persists a SHA-256 query identifier, the provider `search_after`
+cursor, bounded results-seen count, completion state, and `lastProgressAt` for each active query. It never stores the query
+text. Continuation is based on the provider total, returned page length, and cursor progress; the provider's `has_more`
+flag is not treated as a page-completion flag. An unavailable request or exhausted local budget does not clear a cursor or
+mark a backlog complete. Snapshot synchronization exposes only aggregate complete, partial, and backlog counts plus the
+oldest backlog progress time in pipeline health.
+
 ### Official first-party asset pivots
 
 A separate passive URLScan job runs at 03:47 and 15:47 UTC. It rotates through the first reviewed `officialDomains` value for each registry brand, querying official sites one at a time so a high-volume brand cannot crowd other brands out of a combined result page. It retrieves only existing public URLScan reports and derives SHA-256 hashes only for successful first-party favicon and JavaScript responses. It never downloads an asset directly, submits a scan, or contacts a candidate host. Reports without a valid observation time, and observations older than 45 days, are not allowed to refresh the asset state.
@@ -80,6 +87,17 @@ DNS and registration are independent context families. A temporary IANA RDAP-boo
 
 Current records can appear as optional `domainContext` in the same-origin per-signal detail sidecar and as aggregate outcome/count metadata in `public/data/pipeline-health.json`. DNS values can also contribute to the bounded related-observation graph under its temporal, fan-out, and multi-family evidence rules. A shared address, nameserver, mail route, alias, registrar, or lifecycle date does not establish common control, a campaign, an actor, or maliciousness.
 
+A separate bounded temporal collector rotates over the retained DNS/RDAP rows and caches RIPEstat prefix and ASN context;
+optional RPKI validation is disabled unless explicitly enabled. It compares normalized components with the previous
+baseline and writes semantic change records to `data/history/context/YYYY-MM-DD/events.ndjson`, retained for 60 days by
+default and bounded from 30 to 90 days. The public signal-detail projection retains at most six recent changes per
+signal and exposes only component hashes, changed-field names, timestamps, and allowlisted source references.
+
+URLScan-derived baselines, change records, and public change projection are disabled by default. They are enabled only
+when the repository variable `URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED` is exactly `true`, which records an explicit
+operator confirmation that the intended redistribution is permitted. The API key alone does not provide that
+confirmation. DNS, RDAP, RIPEstat, and RPKI context remain independent of this gate.
+
 ## Transient discovery seeds
 
 Discovery lists are processed in memory, filtered through the Lithuania registry, and capped before they can trigger exact passive URLScan lookups. They are not copied into `data/`, do not create dashboard rows, and never appear as public source labels. The adapters use [PhishDestroy Primary Active](https://github.com/phishdestroy/destroylist) and CERT Polska's [active-domain text list](https://hole.cert.pl/domains/v2/domains.txt); their upstream license and processing conditions still apply.
@@ -91,6 +109,22 @@ The published observation source is URLScan, while discovery-input attribution r
 The optional HECAVEX service input must use a deliberately limited public-export endpoint following the [public data contract](DATA-CONTRACT.md). Records pass the same automated schema, safety, and brand-scope checks as other inputs. The production feed requires HTTPS; the HTTP loopback exception exists only for local maintainer validation. The export must not expose a private dashboard, database, collector API, detector output, credentials, or internal case history.
 
 The repository default is explicitly disabled (`HECAVEX_ENABLED=false`). Radar does not ship or infer an endpoint or token. Until HECAVEX provisions a deliberately public, read-only export and configures the documented variable and secret, the dashboard reports this source as not configured and continues with the other sources.
+
+## Optional analyst provider checks
+
+Google Safe Browsing and VirusTotal are not Radar discovery, publication, or scoring sources. A maintainer may manually dispatch the `Ephemeral analyst provider check` workflow with the 20-character identifier of a signal already present in `public/data/radar.json`. The public workflow derives the hostname from that repository snapshot, refuses arbitrary URLs and redirects, calls only VirusTotal's fixed API host, caps the response, and writes no result to Git or the public dataset.
+
+The VirusTotal result is reduced in process to the provider's last-analysis counters and timestamp. It never changes `matchScore`, lifecycle state, review disposition, or retention. Public Actions summaries, logs, and artifacts are retained and visible, so the workflow deliberately emits only a generic completion result. Inspect provider details only by running the bounded command in a private local environment.
+
+Google Safe Browsing v5 requires every queried URL result, including a no-match, to be cached until its individual `cacheDuration` expires. Radar therefore does not pass the Google key to public Actions. The private local command uses the git-ignored `.radar-local/provider-check-cache.json`, validates the provider duration, reuses unexpired entries, and atomically persists both match and no-match responses. A no-match or missing provider record remains unknown, not benign.
+
+The public workflow reads only the repository Actions secret `VIRUSTOTAL_API_KEY`. A Google Safe Browsing key belongs only in the private local process environment as `GOOGLE_SAFE_BROWSING_API_KEY`; it must not be stored in this public repository's Actions configuration. Neither credential belongs in repository variables, workflow inputs, artifacts, issue text, or Pages code. The operator remains responsible for the providers' current usage, attribution, commercial-use, and redistribution conditions.
+
+## Quality and review artifacts are not sources
+
+`data/coverage/brand-coverage.json`, `data/review/review-queue.json`, and `data/matcher/lithuanian-brands-v1.json` are derived governance and regression artifacts. They do not collect a domain, create a public source label, or establish a verdict. The coverage ledger makes zero-signal brands and incomplete collector/review state explicit; the balanced queue organizes public candidates for later review; and the matcher corpus exercises reserved-domain synthetic and reviewed official-domain cases in CI.
+
+Similarly, a file below `data/review/proposals/` is a sanitized draft proposal awaiting pull-request review, not a decision. Only an intentionally exported entry in `data/review/public-decisions.json` can affect synchronization, and the current public sample can legitimately contain no completed assessment.
 
 ## Screenshots
 

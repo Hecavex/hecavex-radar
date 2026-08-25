@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "dataset": "live",
+  "generatedAt": "2026-08-26T00:00:00.000Z",
+  "lastSuccessfulSyncAt": "2026-08-26T00:05:00.000Z",
+  "signals": [
+    {
+      "id": "634e49d160844cdcc2e6",
+      "url": "hxxps://support-vinted[.]example",
+      "domain": "support-vinted[.]example",
+      "firstSeen": "2026-08-25T23:00:00.000Z",
+      "lastSeen": "2026-08-25T23:30:00.000Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "discoveredVia": [
+        "certstream-live"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "name": "CertStream",
+      "homepage": "https://certstream.dev/",
+      "fetchedAt": "2026-08-26T00:04:00.000Z",
+      "records": 1,
+      "state": "healthy",
+      "note": "Synthetic contract fixture"
+    },
+    {
+      "name": "URLScan",
+      "homepage": "https://urlscan.io/",
+      "fetchedAt": null,
+      "records": 0,
+      "state": "skipped",
+      "note": "Synthetic contract fixture"
+    },
+    {
+      "name": "HECAVEX",
+      "homepage": "https://hecavex.com/",
+      "fetchedAt": null,
+      "records": 0,
+      "state": "skipped",
+      "note": "Synthetic contract fixture"
+    }
+  ]
+}

@@ -19,6 +19,37 @@ The dashboard reads `public/data/radar.json` with this top-level shape:
 
 `generatedAt` is the UTC time of the latest material snapshot change. `lastSuccessfulSyncAt` is the most recent successful publisher run, including a run that validated the same observations and made no material data change. It is never earlier than `generatedAt`. The dashboard uses `lastSuccessfulSyncAt` for publisher freshness and reports `generatedAt` separately as the data-change time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form.
 
+### Version compatibility and migration
+
+Contract versions are allowlisted, not interpreted as minimum versions. A consumer must reject a live snapshot whose
+`schemaVersion` is not listed below, even when the remaining fields happen to resemble the current shape.
+
+| Artifact | Produced version | Accepted versions | Migration behavior |
+| --- | ---: | --- | --- |
+| Live Radar snapshot (`radar.json`) | 2 | 2 only | No read migration. Versions 1, 3, and unknown versions are rejected. A future version must update the schema, every consumer, the minimal fixture, and both Python and browser contract gates in one change. |
+| Sanitized review decisions (`public-decisions.json`) | 2 | 1 and 2 | Version 1 is the one intentional read migration: missing `assessments` becomes an empty collection and a missing candidate `matchScore` is copied from the legacy `confidence` value. Writers always emit version 2. |
+
+The live-snapshot compatibility gate covers these readers:
+
+| Consumer | Boundary exercised by CI | Accepted live version |
+| --- | --- | ---: |
+| Browser dashboard | `src/lib/data.ts::parseSnapshot` | 2 |
+| HECAVEX analyst handoff | `hecavex_radar.hecavex::read_snapshot_signals` | 2 |
+| DNS/RDAP enrichment | `hecavex_radar.domain_context::_snapshot_signals` | 2 |
+| Synchronization retention and count guard | `hecavex_radar.sync::_load_existing_snapshot` and `_existing_signal_count` | 2 |
+| URLScan seed selection | `hecavex_radar.urlscan::_load_radar_snapshot_seeds` | 2 |
+| Publication event feeds | `hecavex_radar.event_feeds::build_event_feeds` | 2 |
+| Observation-only STIX projection | `hecavex_radar.stix::build_stix_bundle` | 2 |
+| Manual provider corroboration | `hecavex_radar.provider_checks::_load_signal` | 2 |
+| Stratified review queue | `hecavex_radar.review_queue::build_review_queue` | 2 |
+| Review brand-resolution fallback | `hecavex_radar.review::_current_brand` | 2 |
+| Aggregate pipeline-health sentinel | `hecavex_radar.health_sentinel::_evaluate_snapshot` | 2 |
+
+`tests/fixtures/radar-snapshot-v2-minimal.json` is the smallest checked-in positive fixture shared by the contract tests.
+`tests/test_snapshot_contracts.py` passes both that fixture and the checked-in generated snapshot through every Python
+reader above, checks the intentional review-v1 migration, and rejects live versions 1 and 3. The
+`pnpm verify:contracts` gate applies the same positive and negative cases to the browser loader.
+
 Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The dashboard snapshot is capped at 512 KiB. The publisher proves the largest newest-first prefix that fits even if every row had a detail sidecar; it therefore cannot fail later merely because valid enrichment adds `detailAvailable`. The complete accepted ordered set is written to deterministic 256 KiB shards and indexed by `radar.index.json`, which reports both complete and dashboard counts. This is a presentation boundary, not silent data loss.
 
 ### Signal fields
@@ -243,7 +274,27 @@ Each file uses this exact top-level shape:
       "expiresAt": "2027-08-20T08:00:00.000Z",
       "statuses": ["client-transfer-prohibited"]
     }
-  }
+  },
+  "contextChanges": [
+    {
+      "eventId": "0123456789abcdef0123456789abcdef",
+      "observedAt": "2026-08-21T09:12:00.000Z",
+      "component": "dns",
+      "changeType": "dns-a-changed",
+      "changedFields": ["a"],
+      "source": {
+        "name": "Cloudflare DNS",
+        "observedAt": "2026-08-21T09:10:00.000Z",
+        "referenceUrl": "https://cloudflare-dns.com/dns-query"
+      },
+      "evidence": {
+        "previousSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "currentSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "primaryHtmlSha256": [],
+        "certificateSha256": null
+      }
+    }
+  ]
 }
 ```
 
@@ -265,6 +316,34 @@ hostname. `registration` is either null or an exact allowlist containing an opti
 parent records the scope actually sent to the IANA-selected RDAP service; it does not assert that a candidate subdomain
 is separately registered. Null or missing context means unavailable or expired, not benign. Registrar text and
 lifecycle fields are registration context, not ownership or actor attribution.
+
+`contextChanges` is optional and contains at most six newest entries for the same signal from the retained 30-90 day
+temporal journal. The exact semantic types are:
+
+- DNS: `first-resolving`, `stopped-resolving`, `dns-a-changed`, `dns-aaaa-changed`, `dns-cname-changed`,
+  `dns-ns-changed`, and `dns-mx-changed`;
+- RDAP: `rdap-registrar-changed`, `rdap-status-changed`, and `rdap-expiry-changed`;
+- URLScan: `urlscan-title-changed`, `urlscan-redirect-changed`, `urlscan-http-status-changed`,
+  `urlscan-ip-changed`, `urlscan-asn-changed`, `urlscan-primary-html-sha256-changed`,
+  `urlscan-certificate-fingerprint-changed`, and `certificate-reissued`.
+
+The first complete DNS baseline emits `first-resolving` when at least one A, AAAA, or CNAME answer is already present;
+an initial non-resolving baseline emits no lifecycle event. A later transition to no A, AAAA, or CNAME answers emits
+`stopped-resolving`. TTL and collection-time drift do not create events. RIPEstat prefix, ASN, and optional RPKI values
+remain bounded cached context and do not create a public journal type.
+
+Each sidecar entry exposes the Radar journal timestamp in `observedAt`, the provider observation boundary and bounded
+provider reference in `source`, the exact semantic field names, and SHA-256 digests of the complete bounded before and
+after components. It never exposes those before/after components. URLScan entries may additionally expose at most two
+already-retained primary-document SHA-256 values and one primary-document certificate SHA-256 fingerprint. URLScan
+baselines, private journal rows, and sidecar entries are all omitted unless the repository variable
+`URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED` is exactly `true`; possession of an API key does not establish permission.
+
+The private version 2 NDJSON journal row persists the same signal/domain identity, `sourceObservedAt`,
+`sourceReference`, bounded `before` and `after` objects, their `previousHash` and `currentHash`, and a deterministic event
+ID. Existing rows are contract-checked and hash-verified before append, duplicate IDs fail closed, and a failed state
+write rolls back the same-run journal mutation. The public loader independently checks semantic field changes, both
+component hashes, and the deterministic event ID before projection.
 
 Each file is capped at 16 KiB. The complete sidecar set is capped at 3 MiB and selected in live-snapshot order, so the
 newest qualifying rows take priority if the aggregate boundary is reached. Unchanged observation content preserves the
@@ -375,7 +454,7 @@ IANA-bootstrapped RDAP lookups only, and it retains no registrant PII or raw pro
 
 ## Rolling pipeline health, changes, trends, and review quality
 
-`public/data/pipeline-health.json` provides bounded 24-hour and seven-day aggregate views across collection, screening, enrichment, and publication. It includes scheduled versus recorded CertStream attempts, actual listening time and listening coverage, messages, DNS names, matches, new archive rows, URLScan enrichment-section counts, history-event counts, and current source state. Its current section can also expose a sanitized `ctSearch` latest-run summary and a sanitized `domainContext` latest-run summary with retained record count. Those summaries omit per-query names, cursors, candidate IDs, domains, DNS answers, and RDAP values. Expected live-stream slots and the scheduled-listening ceiling come from the latest published collector interval and duration. Indexed CT search is reported separately and never added to live-listening coverage. Missing workflow history cannot be reconstructed; only successful attempt rows committed to the bounded public archive are counted.
+`public/data/pipeline-health.json` provides bounded 24-hour and seven-day aggregate views across collection, screening, enrichment, and publication. It includes scheduled versus recorded CertStream attempts, actual listening time and listening coverage, messages, DNS names, matches, new archive rows, URLScan enrichment-section counts, history-event counts, and current source state. Its current section can also expose a sanitized `ctSearch` latest-run summary and a sanitized `domainContext` latest-run summary with retained record count. The URLScan summary includes strict `checkpointCoverage` aggregate fields: query, complete, partial, and backlog counts plus nullable `oldestBacklogProgressAt`. Those summaries omit query text and hashes, cursors, candidate IDs, domains, DNS answers, and RDAP values. Expected live-stream slots and the scheduled-listening ceiling come from the latest published collector interval and duration. Indexed CT search is reported separately and never added to live-listening coverage. Missing workflow history cannot be reconstructed; only successful attempt rows committed to the bounded public archive are counted.
 
 `public/data/changes.json` separates first publication, actual status change, observation, and reobservation counts. It groups only bounded totals by source, status, controlled reason, and registry brand. It contains no domain, URL, signal ID, private review note, or detector payload; signal-level public chronology remains in `history.json`.
 

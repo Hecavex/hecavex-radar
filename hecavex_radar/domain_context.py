@@ -180,8 +180,13 @@ def _snapshot_signals(path: str | Path) -> list[tuple[str, str]]:
         return []
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError("Radar snapshot is unreadable.") from error
-    if not isinstance(payload, dict) or not isinstance(payload.get("signals"), list):
-        raise ValueError("Radar snapshot has an unexpected shape.")
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schemaVersion") != 2
+        or payload.get("dataset") != "live"
+        or not isinstance(payload.get("signals"), list)
+    ):
+        raise ValueError("Radar snapshot has an unsupported contract.")
     signals: list[tuple[str, str]] = []
     for item in payload["signals"][:MAXIMUM_RECORDS]:
         if not isinstance(item, dict):

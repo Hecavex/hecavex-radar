@@ -1,0 +1,66 @@
+name: Report a false positive
+description: Request review of a public Radar candidate that may be unrelated to the named brand.
+title: "[False positive] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is public. Submit only already-public, sanitized evidence. Defang every domain and URL. Do not include credentials, victim data, personal data, private scan output, or live clickable candidate links.
+  - type: input
+    id: signal
+    attributes:
+      label: Radar signal ID
+      description: The 20-character identifier shown in Radar, not the candidate URL.
+      placeholder: 0123456789abcdefabcd
+    validations:
+      required: true
+  - type: input
+    id: candidate
+    attributes:
+      label: Defanged candidate
+      description: Replace every dot with [.] and use hxxp/hxxps if a scheme is needed.
+      placeholder: example[.]com
+    validations:
+      required: true
+  - type: input
+    id: brand
+    attributes:
+      label: Current potential brand match
+      placeholder: Reviewed registry name
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Proposed disposition
+      options:
+        - unrelated-name-collision
+        - official-or-authorized-domain
+        - benign-brand-reference
+        - shared-hosting-or-platform
+        - incorrect-brand-mapping
+        - insufficient-evidence
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Public supporting reference
+      description: A safe HTTPS source that a maintainer can read without visiting the candidate.
+      placeholder: https://example.org/public-reference
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Sanitized explanation
+      description: Explain the mismatch without copying page source, credentials, victim information, or private evidence.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-data acknowledgement
+      options:
+        - label: I defanged all candidate indicators and included no secrets, victim data, personal data, or private evidence.
+          required: true

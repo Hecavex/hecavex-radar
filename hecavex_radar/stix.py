@@ -220,7 +220,7 @@ def build_stix_bundle(snapshot: object) -> dict[str, object]:
     if not isinstance(snapshot, dict):
         raise ValueError("Radar STIX export requires a snapshot object.")
     payload = cast(dict[str, object], snapshot)
-    if payload.get("schemaVersion") not in {1, 2} or payload.get("dataset") != "live":
+    if payload.get("schemaVersion") != 2 or payload.get("dataset") != "live":
         raise ValueError("Radar STIX export supports only the validated live snapshot schema.")
     generated_at, generated_at_value = _timestamp(payload.get("generatedAt"), "generatedAt")
     raw_signals = payload.get("signals")

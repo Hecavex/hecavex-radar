@@ -2,6 +2,7 @@ import type {
   RadarSignal,
   SignalAssessmentDetail,
   SignalCertificateDetail,
+  SignalContextChange,
   SignalDetail,
   SignalDomainContext,
   SignalDetailObservation,
@@ -16,6 +17,7 @@ const MAXIMUM_OBSERVATIONS = 2;
 const MAXIMUM_SUBJECT_ALT_NAMES = 12;
 const MAXIMUM_SUBJECT_ALT_NAME_COUNT = 500;
 const MAXIMUM_URLSCAN_CATEGORIES = 8;
+const MAXIMUM_CONTEXT_CHANGES = 6;
 const FUTURE_SKEW_MS = 5 * 60 * 1000;
 const ISO_UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const IDENTIFIER = /^[a-f\d]{20}$/;
@@ -52,6 +54,29 @@ const FINGERPRINT_FIELDS = ["md5", "sha1", "sha256"];
 const DOMAIN_CONTEXT_FIELDS = ["observedAt", "dns", "registration"];
 const DNS_CONTEXT_FIELDS = ["a", "aaaa", "cname", "ns", "mx", "minimumTtl", "queriesCompleted"];
 const REGISTRATION_CONTEXT_FIELDS = ["registrar", "registeredAt", "updatedAt", "expiresAt", "statuses"];
+const CONTEXT_CHANGE_FIELDS = ["eventId", "observedAt", "component", "changeType", "changedFields", "source", "evidence"];
+const CONTEXT_SOURCE_FIELDS = ["name", "observedAt", "referenceUrl"];
+const CONTEXT_EVIDENCE_FIELDS = ["previousSha256", "currentSha256", "primaryHtmlSha256", "certificateSha256"];
+const CONTEXT_CHANGED_FIELDS: Record<SignalContextChange["changeType"], readonly string[]> = {
+  "first-resolving": ["a", "aaaa", "cname"],
+  "stopped-resolving": ["a", "aaaa", "cname"],
+  "dns-a-changed": ["a"],
+  "dns-aaaa-changed": ["aaaa"],
+  "dns-cname-changed": ["cname"],
+  "dns-ns-changed": ["ns"],
+  "dns-mx-changed": ["mx"],
+  "rdap-registrar-changed": ["registrar"],
+  "rdap-status-changed": ["statuses"],
+  "rdap-expiry-changed": ["expiresAt"],
+  "urlscan-title-changed": ["pageTitle"],
+  "urlscan-redirect-changed": ["redirectedToDomain"],
+  "urlscan-http-status-changed": ["httpStatus"],
+  "urlscan-ip-changed": ["ipAddress"],
+  "urlscan-asn-changed": ["asn"],
+  "urlscan-primary-html-sha256-changed": ["primaryHtmlSha256"],
+  "urlscan-certificate-fingerprint-changed": ["certificateFingerprintSha256"],
+  "certificate-reissued": ["certificateFingerprintSha256", "certificateIssuer", "certificateNotBefore", "certificateNotAfter"],
+};
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -306,15 +331,80 @@ function isDomainContext(value: unknown, generatedAt: number): value is SignalDo
   );
 }
 
+function isContextReference(value: unknown, component: SignalContextChange["component"]): value is string {
+  if (typeof value !== "string" || value.length > 2048) return false;
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.search || parsed.hash) return false;
+    if (component === "dns") return parsed.href === "https://cloudflare-dns.com/dns-query";
+    if (component === "rdap") return parsed.href === "https://data.iana.org/rdap/dns.json";
+    return parsed.origin === "https://urlscan.io" && (parsed.pathname === "/" || /^\/result\/[a-f\d-]{36}\/$/iu.test(parsed.pathname));
+  } catch {
+    return false;
+  }
+}
+
+function isContextChange(value: unknown, generatedAt: number): value is SignalContextChange {
+  if (!isRecord(value) || !hasExactFields(value, CONTEXT_CHANGE_FIELDS)) return false;
+  const components = {
+    dns: {
+      types: ["first-resolving", "stopped-resolving", "dns-a-changed", "dns-aaaa-changed", "dns-cname-changed", "dns-ns-changed", "dns-mx-changed"],
+      source: "Cloudflare DNS",
+    },
+    rdap: {
+      types: ["rdap-registrar-changed", "rdap-status-changed", "rdap-expiry-changed"],
+      source: "RDAP",
+    },
+    urlscan: {
+      types: ["urlscan-title-changed", "urlscan-redirect-changed", "urlscan-http-status-changed", "urlscan-ip-changed", "urlscan-asn-changed", "urlscan-primary-html-sha256-changed", "urlscan-certificate-fingerprint-changed", "certificate-reissued"],
+      source: "URLScan",
+    },
+  } as const;
+  const component = value.component;
+  if (component !== "dns" && component !== "rdap" && component !== "urlscan") return false;
+  const observedAt = timestampValue(value.observedAt);
+  const source = value.source;
+  const evidence = value.evidence;
+  const sourceObservedAt = isRecord(source) ? timestampValue(source.observedAt) : null;
+  const allowedChangedFields = typeof value.changeType === "string" && Object.hasOwn(CONTEXT_CHANGED_FIELDS, value.changeType)
+    ? CONTEXT_CHANGED_FIELDS[value.changeType as SignalContextChange["changeType"]]
+    : [];
+  if (
+    typeof value.eventId !== "string" || !/^[a-f\d]{32}$/u.test(value.eventId) ||
+    observedAt === null || observedAt > generatedAt + FUTURE_SKEW_MS ||
+    typeof value.changeType !== "string" || !components[component].types.some((type) => type === value.changeType) ||
+    !Array.isArray(value.changedFields) || value.changedFields.length < 1 || value.changedFields.length > 32 ||
+    new Set(value.changedFields).size !== value.changedFields.length ||
+    !value.changedFields.every((field) => typeof field === "string" && /^[A-Za-z][A-Za-z0-9]{0,63}$/u.test(field)) ||
+    !value.changedFields.every((field) => allowedChangedFields.includes(field)) ||
+    !isRecord(source) || !hasExactFields(source, CONTEXT_SOURCE_FIELDS) ||
+    source.name !== components[component].source || sourceObservedAt === null ||
+    sourceObservedAt > observedAt + FUTURE_SKEW_MS || sourceObservedAt > generatedAt + FUTURE_SKEW_MS ||
+    !isContextReference(source.referenceUrl, component) ||
+    !isRecord(evidence) || !hasExactFields(evidence, CONTEXT_EVIDENCE_FIELDS) ||
+    typeof evidence.previousSha256 !== "string" || !/^[a-f\d]{64}$/u.test(evidence.previousSha256) ||
+    typeof evidence.currentSha256 !== "string" || !/^[a-f\d]{64}$/u.test(evidence.currentSha256) ||
+    !Array.isArray(evidence.primaryHtmlSha256) || evidence.primaryHtmlSha256.length > 2 ||
+    new Set(evidence.primaryHtmlSha256).size !== evidence.primaryHtmlSha256.length ||
+    !evidence.primaryHtmlSha256.every((digest) => typeof digest === "string" && /^[a-f\d]{64}$/u.test(digest)) ||
+    !(
+      evidence.certificateSha256 === null ||
+      (typeof evidence.certificateSha256 === "string" && /^[a-f\d]{64}$/u.test(evidence.certificateSha256))
+    )
+  ) return false;
+  return component === "urlscan" || (evidence.primaryHtmlSha256.length === 0 && evidence.certificateSha256 === null);
+}
+
 export function parseSignalDetail(
   value: unknown,
   expected?: Pick<RadarSignal, "id" | "domain">,
 ): SignalDetail {
-  if (!isRecord(value) || !hasRequiredAndOptionalFields(value, DETAIL_FIELDS, ["domainContext"])) {
+  if (!isRecord(value) || !hasRequiredAndOptionalFields(value, DETAIL_FIELDS, ["domainContext", "contextChanges"])) {
     throw new Error("The signal detail does not match schema version 1.");
   }
   const generatedAt = timestampValue(value.generatedAt);
   const observations = value.observations;
+  const contextChanges = value.contextChanges;
   if (
     value.schemaVersion !== 1 ||
     value.dataset !== "signal-detail" ||
@@ -327,7 +417,12 @@ export function parseSignalDetail(
     !observations.every((observation) => isObservation(observation, generatedAt)) ||
     new Set(observations.map((observation) => (observation as SignalDetailObservation).source)).size !== observations.length ||
     (value.domainContext !== undefined && !isDomainContext(value.domainContext, generatedAt)) ||
-    (observations.length === 0 && value.domainContext === undefined) ||
+    (contextChanges !== undefined && (
+      !Array.isArray(contextChanges) || contextChanges.length < 1 || contextChanges.length > MAXIMUM_CONTEXT_CHANGES ||
+      !contextChanges.every((change) => isContextChange(change, generatedAt)) ||
+      new Set(contextChanges.map((change) => (change as SignalContextChange).eventId)).size !== contextChanges.length
+    )) ||
+    (observations.length === 0 && value.domainContext === undefined && contextChanges === undefined) ||
     (expected !== undefined && (value.signalId !== expected.id || value.domain !== expected.domain))
   ) {
     throw new Error("The signal detail does not match schema version 1.");

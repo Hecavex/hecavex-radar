@@ -31,6 +31,7 @@ from .normalize import merge_signals, prepare_signal
 from .safety import parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
 from .seeds import IntelligenceSeed, load_intelligence_seeds
 from .signal_detail import archive_record, raw_from_archive_record
+from .urlscan_checkpoint import SearchCheckpointStore, SearchUnavailable
 
 API_ROOT = "https://urlscan.io"
 SEARCH_ENDPOINT = f"{API_ROOT}/api/v1/search/"
@@ -87,8 +88,10 @@ HUNT_STATE_FIELDS = frozenset(
         "lastOutcome",
         "lastRunSearchRequests",
         "lastRunResultRequests",
+        "checkpointCoverage",
     }
 )
+LEGACY_HUNT_STATE_FIELDS = HUNT_STATE_FIELDS - {"checkpointCoverage"}
 HUNT_OUTCOMES = frozenset({"skipped-not-configured", "completed", "budget-limited", "failed"})
 VILNIUS = ZoneInfo("Europe/Vilnius")
 
@@ -158,11 +161,13 @@ class _BudgetedRequester:
     def __call__(self, url: str, api_key: str) -> Any:
         kind = self._kind(url)
         if self.provider_exhausted:
-            return {"results": []} if kind == "search" else {}
+            if kind == "search":
+                raise SearchUnavailable("URLScan search was not performed after provider exhaustion.")
+            return {}
         if kind == "search":
             if self.search_used >= self.daily_search_cap or self.run_search_requests >= self.run_search_cap:
                 self.exhausted = True
-                return {"results": []}
+                raise SearchUnavailable("URLScan search was not performed after budget exhaustion.")
         elif self.result_used >= self.daily_result_cap or self.run_result_requests >= self.run_result_cap:
             self.exhausted = True
             return {}
@@ -176,7 +181,9 @@ class _BudgetedRequester:
             self.provider_exhausted = True
             if error.successful_response and error.payload is not None:
                 return error.payload
-            return {"results": []} if kind == "search" else {}
+            if kind == "search":
+                raise SearchUnavailable("URLScan search was not completed after rate limiting.") from error
+            return {}
         self._count(kind)
         return payload
 
@@ -403,11 +410,29 @@ def _is_public_scan(value: dict[str, Any]) -> bool:
     return _dictionary(value.get("task")).get("visibility") == "public"
 
 
-def _search(query: str, size: int, api_key: str, requester: JsonRequester) -> list[dict[str, Any]]:
+def _search(
+    query: str,
+    size: int,
+    api_key: str,
+    requester: JsonRequester,
+    checkpoints: SearchCheckpointStore | None = None,
+) -> list[dict[str, Any]]:
     if "task.visibility:public" not in query:
         raise ValueError("URLScan searches must be restricted to public scans.")
+    if checkpoints is not None:
+        backlog_pages = _bounded(os.environ.get("URLSCAN_BACKLOG_PAGES_PER_SEARCH"), 1, 0, 4)
+        return checkpoints.search(
+            query,
+            size,
+            api_key,
+            requester,
+            backlog_pages=backlog_pages,
+        )
     url = f"{SEARCH_ENDPOINT}?{urlencode({'q': query, 'size': size, 'datasource': 'scans'})}"
-    payload = requester(url, api_key)
+    try:
+        payload = requester(url, api_key)
+    except SearchUnavailable:
+        return []
     if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
         raise ValueError("URLScan search returned an unexpected payload.")
     return [
@@ -551,6 +576,34 @@ def _primary_hashes(detail: dict[str, Any], registry: BrandRegistry) -> list[str
     return list(dict.fromkeys(matches))[:2]
 
 
+def _primary_certificate_sha256(detail: dict[str, Any]) -> str | None:
+    """Return a bounded certificate identifier only for the primary document response."""
+
+    page_url = _string(_dictionary(detail.get("page")).get("url"))
+    requests = _dictionary(detail.get("data")).get("requests")
+    if not page_url or not isinstance(requests, list):
+        return None
+    for value in requests:
+        item = _dictionary(value)
+        request_container = _dictionary(item.get("request"))
+        request = _dictionary(request_container.get("request"))
+        response = _dictionary(item.get("response"))
+        metadata = _dictionary(response.get("response"))
+        response_url = _string(metadata.get("url")) or _string(request.get("url"))
+        resource_type = (
+            _string(item.get("type"))
+            or _string(request_container.get("type"))
+            or _string(request.get("type"))
+        )
+        if response_url != page_url or (resource_type and resource_type.lower() != "document"):
+            continue
+        security = _dictionary(response.get("securityDetails")) or _dictionary(metadata.get("securityDetails"))
+        raw = _string(security.get("certificateId")) or _string(security.get("sha256"))
+        compact = re.sub(r"[\s:]", "", raw).lower() if raw else ""
+        return compact if SHA256.fullmatch(compact) and compact != EMPTY_SHA256 else None
+    return None
+
+
 def _host_summary(page: dict[str, Any]) -> str | None:
     values = [_string(page.get("asn")), _string(page.get("asnname")), _string(page.get("ip"))]
     present = [value for value in values if value]
@@ -620,6 +673,7 @@ def _intelligence_from_scan(
         [value for value in raw_categories if isinstance(value, str)] if isinstance(raw_categories, list) else []
     )
     valid_from = _string(page.get("tlsValidFrom"))
+    certificate_sha256 = _primary_certificate_sha256(detail)
     return RawDomainIntelligence(
         domain=domain,
         source="URLScan",
@@ -645,6 +699,7 @@ def _intelligence_from_scan(
                 "issuer": page.get("tlsIssuer"),
                 "notBefore": valid_from,
                 "notAfter": _tls_not_after(valid_from, page.get("tlsValidDays")),
+                "fingerprints": {"sha256": certificate_sha256},
             }
             if same_page_host
             else None
@@ -845,7 +900,7 @@ def _load_radar_snapshot_seeds(
         raise ValueError("Radar snapshot contains invalid JSON.") from error
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") != 1
+        or payload.get("schemaVersion") != 2
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
     ):
@@ -978,6 +1033,7 @@ def hunt_urlscan(
     seeds_per_run: int = 1_000,
     progress: _HuntProgress | None = None,
     intelligence_sink: list[RawDomainIntelligence] | None = None,
+    search_checkpoints: SearchCheckpointStore | None = None,
 ) -> list[RadarSignal]:
     """Passively hunt existing URLScan results for reviewed Lithuanian targets."""
     if not api_key.strip():
@@ -1024,7 +1080,7 @@ def hunt_urlscan(
         seeds_by_domain = {seed.domain: seed for seed in batch}
         query = build_exact_domain_query(list(seeds_by_domain), lookback)
         requests_before = getattr(requester, "run_search_requests", None)
-        search_results = _search(query, seed_search_limit, api_key, requester)
+        search_results = _search(query, seed_search_limit, api_key, requester, search_checkpoints)
         requests_after = getattr(requester, "run_search_requests", None)
         request_performed = requests_before is None or requests_after is None or requests_after > requests_before
         if request_performed and seed_cursor is not None:
@@ -1074,7 +1130,13 @@ def hunt_urlscan(
 
     detail_count = 0
 
-    for result in _search(build_domain_query(brand_registry, lookback), search_limit, api_key, requester):
+    for result in _search(
+        build_domain_query(brand_registry, lookback),
+        search_limit,
+        api_key,
+        requester,
+        search_checkpoints,
+    ):
         if detail_count >= detail_limit:
             break
         uuid = _scan_uuid(result)
@@ -1115,7 +1177,13 @@ def hunt_urlscan(
 
     title_details = 0
     if title_limit:
-        for result in _search(build_title_query(brand_registry, lookback), search_limit, api_key, requester):
+        for result in _search(
+            build_title_query(brand_registry, lookback),
+            search_limit,
+            api_key,
+            requester,
+            search_checkpoints,
+        ):
             if title_details >= title_limit:
                 break
             uuid = _scan_uuid(result)
@@ -1165,7 +1233,7 @@ def hunt_urlscan(
         if pivot_details >= pivot_detail_limit:
             break
         query = _public_search_query(f"hash:{digest}", lookback)
-        for result in _search(query, pivot_results, api_key, requester):
+        for result in _search(query, pivot_results, api_key, requester, search_checkpoints):
             if pivot_details >= pivot_detail_limit:
                 break
             uuid = _scan_uuid(result)
@@ -1605,7 +1673,20 @@ def _hunt_state_path(root: str | Path) -> Path:
 
 
 def _validated_hunt_state(value: object) -> dict[str, Any] | None:
-    if not isinstance(value, dict) or set(value) != HUNT_STATE_FIELDS:
+    if not isinstance(value, dict):
+        return None
+    if set(value) == LEGACY_HUNT_STATE_FIELDS:
+        value = {
+            **value,
+            "checkpointCoverage": {
+                "queries": 0,
+                "complete": 0,
+                "partial": 0,
+                "backlog": 0,
+                "oldestBacklogProgressAt": None,
+            },
+        }
+    if set(value) != HUNT_STATE_FIELDS:
         return None
     integers = (
         "searchRequests",
@@ -1652,6 +1733,7 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
     last_result = value["lastRunResultRequests"]
     configured = value["configured"]
     outcome = value["lastOutcome"]
+    coverage = value["checkpointCoverage"]
     if (
         not 0 <= search_requests <= PROVIDER_DAILY_SEARCH_LIMIT
         or not 0 <= result_requests <= PROVIDER_DAILY_RESULT_LIMIT
@@ -1666,6 +1748,32 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
         or datetime.fromisoformat(generated.replace("Z", "+00:00")).date().isoformat() != budget_day
     ):
         return None
+    if not isinstance(coverage, dict) or set(coverage) != {
+        "queries",
+        "complete",
+        "partial",
+        "backlog",
+        "oldestBacklogProgressAt",
+    }:
+        return None
+    coverage_counts = [coverage.get(field) for field in ("queries", "complete", "partial", "backlog")]
+    if (
+        not all(type(item) is int and 0 <= item <= 256 for item in coverage_counts)
+        or coverage["complete"] + coverage["partial"] != coverage["queries"]
+        or coverage["backlog"] > coverage["partial"]
+    ):
+        return None
+    oldest_progress = coverage["oldestBacklogProgressAt"]
+    if (coverage["backlog"] == 0) != (oldest_progress is None):
+        return None
+    if oldest_progress is not None:
+        if not isinstance(oldest_progress, str) or not UTC_MILLISECOND_TIMESTAMP.fullmatch(oldest_progress):
+            return None
+        try:
+            if _timestamp(datetime.fromisoformat(oldest_progress.replace("Z", "+00:00"))) != oldest_progress:
+                return None
+        except ValueError:
+            return None
     return cast(dict[str, Any], value)
 
 
@@ -1719,6 +1827,7 @@ def _state_for_run(
     selected_candidates: int,
     last_search_requests: int,
     last_result_requests: int,
+    checkpoint_coverage: dict[str, object] | None = None,
 ) -> dict[str, Any]:
     timestamp = _timestamp(now)
     state = {
@@ -1736,6 +1845,14 @@ def _state_for_run(
         "lastOutcome": outcome,
         "lastRunSearchRequests": last_search_requests,
         "lastRunResultRequests": last_result_requests,
+        "checkpointCoverage": checkpoint_coverage
+        or {
+            "queries": 0,
+            "complete": 0,
+            "partial": 0,
+            "backlog": 0,
+            "oldestBacklogProgressAt": None,
+        },
     }
     if _validated_hunt_state(state) is None:
         raise ValueError("URLScan hunt state could not be constructed safely.")
@@ -1756,6 +1873,16 @@ def main() -> int:
         result_used = 0
     previous_cursor = cast(int, previous["candidateCursor"]) if previous else 0
     previous_count = cast(int, previous["candidateCount"]) if previous else 0
+    try:
+        checkpoints = SearchCheckpointStore.load(
+            _bounded_archive_root(root) / "search-checkpoints.json",
+            now=now,
+        )
+    except Exception as error:
+        message = str(error).splitlines()[0] if str(error) else type(error).__name__
+        print(f"URLScan checkpoint state failed: {message}")
+        return 1
+    initial_checkpoint_coverage = checkpoints.summary()
     api_key = os.environ.get("URLSCAN_API_KEY", "").strip()
     if not api_key:
         try:
@@ -1773,6 +1900,7 @@ def main() -> int:
                     selected_candidates=0,
                     last_search_requests=0,
                     last_result_requests=0,
+                    checkpoint_coverage=initial_checkpoint_coverage,
                 ),
             )
             print(
@@ -1813,9 +1941,12 @@ def main() -> int:
             seeds_per_run=seeds_per_run,
             progress=progress,
             intelligence_sink=intelligence,
+            search_checkpoints=checkpoints,
         )
         added = write_urlscan_archive(root, signals, now)
         detail_added = write_urlscan_intelligence_archive(root, intelligence, now)
+        if checkpoints.dirty:
+            checkpoints.commit()
         outcome = "budget-limited" if requester.exhausted else "completed"
         _write_hunt_state_if_changed(
             root,
@@ -1831,6 +1962,7 @@ def main() -> int:
                 selected_candidates=progress.selected_candidates,
                 last_search_requests=requester.run_search_requests,
                 last_result_requests=requester.run_result_requests,
+                checkpoint_coverage=checkpoints.summary(),
             ),
         )
         print(
@@ -1856,6 +1988,7 @@ def main() -> int:
                     selected_candidates=0,
                     last_search_requests=requester.run_search_requests,
                     last_result_requests=requester.run_result_requests,
+                    checkpoint_coverage=initial_checkpoint_coverage,
                 ),
             )
         except Exception as state_error:

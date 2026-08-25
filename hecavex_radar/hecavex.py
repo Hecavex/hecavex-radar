@@ -198,7 +198,7 @@ def read_snapshot_signals(value: str | Path) -> list[RadarSignal]:
         raise ValueError("Radar snapshot is invalid JSON.") from error
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") != 1
+        or payload.get("schemaVersion") != 2
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
         or len(payload["signals"]) > 25_000

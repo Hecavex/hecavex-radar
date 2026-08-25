@@ -318,4 +318,11 @@ def test_health_and_changes_publish_only_aggregate_rows(tmp_path: Path) -> None:
         "configured": True,
         "lastOutcome": "completed",
         "lastAttemptAt": NOW,
+        "checkpointCoverage": {
+            "queries": 0,
+            "complete": 0,
+            "partial": 0,
+            "backlog": 0,
+            "oldestBacklogProgressAt": None,
+        },
     }

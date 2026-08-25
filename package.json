@@ -23,10 +23,12 @@
     "typecheck:frontend": "tsc --noEmit",
     "typecheck:python": "python -m mypy hecavex_radar",
     "typecheck": "pnpm typecheck:python && pnpm typecheck:frontend",
+    "verify:contracts": "node scripts/verify-snapshot-contract.mjs",
+    "verify:quality": "python -m hecavex_radar.quality_artifacts --check",
     "verify:site": "node scripts/verify-site.mjs",
     "validate:publication": "python -m hecavex_radar.publication --stix",
-    "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm build && pnpm verify:site",
-    "check": "pnpm test:python && pnpm lint:python && pnpm typecheck:python && pnpm check:frontend && pnpm validate:publication"
+    "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm verify:contracts && pnpm build && pnpm verify:site",
+    "check": "pnpm test:python && pnpm lint:python && pnpm typecheck:python && pnpm verify:quality && pnpm check:frontend && pnpm validate:publication"
   },
   "dependencies": {
     "lucide-react": "1.33.0",

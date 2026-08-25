@@ -14,6 +14,7 @@ def _registry() -> BrandRegistry:
         entries=[
             BrandEntry(
                 brand="Swedbank",
+                last_reviewed_at="2026-08-25",
                 aliases=["swedbank"],
                 fuzzy_aliases=["swedbank"],
                 excluded_terms=["sberbank"],
@@ -95,6 +96,7 @@ def test_query_builder_avoids_short_global_brand_term() -> None:
         entries=[
             BrandEntry(
                 brand="BTA",
+                last_reviewed_at="2026-08-25",
                 aliases=["bta", "bta draudimas"],
                 fuzzy_aliases=[],
                 excluded_terms=[],
@@ -186,3 +188,66 @@ def test_live_and_checkpoint_discovery_lineage_can_share_one_day(tmp_path, monke
 
     assert result["newRecords"] == 1
     assert {item.get("collectionMethod") for item in archived} == {"certstream-live", "ct-search-api"}
+
+
+def test_provider_failures_are_persisted_as_controlled_codes(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    now = datetime(2026, 8, 25, 12, 0, tzinfo=UTC)
+
+    def timeout(_url: str) -> object:
+        raise TimeoutError("private provider detail")
+
+    result = poll(timeout, now=now, registry=_registry(), queries_per_run=1)
+    state = read_state()
+
+    assert result["outcome"] == "failed"
+    assert result["failureCodes"] == ["provider-timeout"]
+    assert state["latestRun"]["failureCodes"] == ["provider-timeout"]
+    assert "private provider detail" not in str(state)
+
+
+def test_non_array_provider_payload_is_an_invalid_response(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    now = datetime(2026, 8, 25, 12, 0, tzinfo=UTC)
+
+    result = poll(lambda _url: {"unexpected": True}, now=now, registry=_registry(), queries_per_run=1)
+
+    assert result["outcome"] == "failed"
+    assert result["failureCodes"] == ["invalid-response"]
+
+
+def test_legacy_state_without_failure_codes_is_migrated_on_write(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    now = datetime(2026, 8, 25, 12, 0, tzinfo=UTC)
+    state_path = tmp_path / "data/ct-search/state.json"
+    state_path.parent.mkdir(parents=True)
+    state_path.write_text(
+        """{
+  "dataset": "ct-search-state",
+  "generatedAt": "2026-08-25T12:00:00.000Z",
+  "latestRun": {
+    "dnsNames": 0,
+    "endedAt": "2026-08-25T12:00:00.000Z",
+    "matches": 0,
+    "newRecords": 0,
+    "outcome": "completed",
+    "queriesAttempted": 0,
+    "queriesBacklogged": 0,
+    "queriesCompleted": 0,
+    "rowsProcessed": 0,
+    "startedAt": "2026-08-25T12:00:00.000Z"
+  },
+  "provider": "crt.sh",
+  "queries": {},
+  "queryCursor": 0,
+  "schemaVersion": 1
+}
+""",
+        encoding="utf-8",
+    )
+
+    assert read_state()["latestRun"]["outcome"] == "completed"
+    result = poll(lambda _url: [], now=now, registry=_registry(), queries_per_run=1)
+
+    assert result["failureCodes"] == []
+    assert read_state()["latestRun"]["failureCodes"] == []

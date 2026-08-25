@@ -30,8 +30,23 @@ const operations = [
   ["CertStream rinkimas", "08, 23, 38 ir 53 minutę kiekvieną UTC valandą", "Kandidatų archyvas ir naujausio bandymo būklė"],
   ["Kontroliniais taškais paremta CT paieška", "43 minutę kiekvieną UTC valandą", "Peržiūrėtų terminų žymekliai ir CT kandidatai"],
   ["URLScan paieška", "37 minutę kas antrą UTC valandą", "Ribota paieškos būsena ir vieši rezultatai"],
+  ["Oficialių išteklių pivot", "03:47 ir 15:47 UTC", "Kolizijas atmetančios pirmosios šalies maišos ir savarankiškai pagrįsti vieši rezultatai"],
   ["DNS ir RDAP kontekstas", "01:13, 07:13, 13:13 ir 19:13 UTC", "Jau paskelbtų kandidatų ribotas kontekstas"],
-  ["Suvestinės sinchronizavimas", "17 minutę kiekvieną UTC valandą", "Dabartinė suvestinė, detalės ir istorija"],
+  ["Laikinio konteksto atnaujinimas", "01:31, 07:31, 13:31 ir 19:31 UTC", "Ribotos DNS, RDAP ir maršrutizavimo bazės bei pokyčių žurnalas"],
+  ["Suvestinės sinchronizavimas", "17 minutę kiekvieną UTC valandą", "Suvestinės, dalijimosi failai, istorija, kokybė, aprėptis ir peržiūros eilė"],
+  ["Duomenų srauto būklė", "11 minutę kas antrą UTC valandą", "Vienas deduplikuotas GitHub Issue, uždaromas sistemai atsistačius"],
+  ["Neutralizuotas peržiūros pasiūlymas", "Tik prižiūrėtojo rankinis paleidimas", "Juodraštinis pull request; ne analitiko sprendimas"],
+  ["Savaitinis duomenų paketas", "Pirmadienį 06:29 UTC", "Po išorinių vartų: archyvas, manifestas, SPDX 2.3, kontrolinės sumos ir atestacijos"],
+] as const;
+
+const settings = [
+  ["URLSCAN_API_KEY", "GitHub Secret", "Tik pasyviai esamų viešų URLScan rezultatų paieškai ir gavimui."],
+  ["URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED", "GitHub Variable", "Tiksli reikšmė true leidžia URLScan kilmės laikinį kontekstą tik patvirtinus platinimo teisę."],
+  ["PASSIVE_CONTEXT_*", "GitHub Variables", "Riboja rotaciją, RIPEstat podėlį, URLScan amžių, pokyčių saugojimą, RPKI ir vykdymo laiką."],
+  ["RADAR_MISP_FEED_ENABLED", "GitHub Variable", "Įjungiamas tik realiam MISP 2.5 importui ir trynimo tombstone elgsenai praėjus patikrą."],
+  ["RADAR_IMMUTABLE_RELEASES_CONFIRMED", "GitHub Variable", "Nustatomas tik įjungus GitHub Release immutability; pats kintamasis jos neįjungia."],
+  ["VIRUSTOTAL_API_KEY", "GitHub Secret", "Pasirinktinei vieno jau paskelbto signalo prižiūrėtojo patikrai; ne rinkimo ar balų šaltinis."],
+  ["GOOGLE_SAFE_BROWSING_API_KEY", "Tik privati vietinė aplinka", "Nenaudojamas viešuose Actions; rezultatai vietoje saugomi iki tiekėjo nurodyto galiojimo pabaigos."],
 ] as const;
 
 export function LtDocumentation() {
@@ -55,7 +70,14 @@ export function LtDocumentation() {
     </section>
 
     <section className="docs-section" id="viesi-duomenys"><div className="docs-section-heading"><p className="eyebrow">Vieši duomenys</p><h2>Vienas skelbimo rinkinys, keli vaizdai</h2><p>Skydelis, istorija, įvykių žurnalas, STIX ir atsisiunčiami JSON failai kuriami iš tos pačios patikrintos publikavimo ribos.</p></div>
-      <div className="docs-card-grid"><article><h3>Dabartinė suvestinė</h3><p>Ribotas naujausių priimtų kandidatų vaizdas. Eilutės neutralizuotos ir nėra automatinis blokavimo sąrašas.</p><a href="/data/radar.json">Atverti radar.json</a></article><article><h3>Išsaugota istorija</h3><p>Pirmo ir paskutinio stebėjimo laikas, stebėjimų skaičius ir tik aiškiai užfiksuoti būsenos pokyčiai.</p><a href="/history/">Atverti istoriją anglų kalba</a></article><article><h3>Įvykių žurnalas</h3><p>Pirmosios publikacijos, pakartotiniai stebėjimai, būsenos pokyčiai ir aiškūs atšaukimai.</p><a href="/lt/pokyciai/">Atverti pokyčius</a></article></div>
+      <div className="docs-card-grid">
+        <article><h3>Dabartinė suvestinė</h3><p>Ribotas naujausių priimtų kandidatų vaizdas. Eilutės neutralizuotos ir nėra automatinis blokavimo sąrašas.</p><a href="/data/radar.json">Atverti radar.json</a></article>
+        <article><h3>Išsaugota istorija</h3><p>Pirmo ir paskutinio stebėjimo laikas, stebėjimų skaičius ir tik aiškiai užfiksuoti būsenos pokyčiai.</p><a href="/history/">Atverti istoriją anglų kalba</a></article>
+        <article><h3>Įvykių žurnalas</h3><p>Pirmosios publikacijos, pakartotiniai stebėjimai, būsenos pokyčiai ir aiškūs atšaukimai.</p><a href="/lt/pokyciai/">Atverti pokyčius</a></article>
+        <article><h3>Peržiūrėto MISP manifestas</h3><p>Manifestas gali rodyti tik galiojantį analitiko patvirtinimą. Tuščias objektas yra teisingas rezultatas, kol tokio įrašo nėra; MISP importas dar nėra laikomas priimtu.</p><a href="/data/misp/manifest.json">Atverti MISP manifestą</a></article>
+        <article><h3>Oficialių domenų warning list</h3><p>Atskiras MISP sąrašas kuriamas iš peržiūrėto registro. Sutapimas perspėja apie galimą klaidingą teigiamą rezultatą, bet neįrodo, kad visas subdomenas yra saugus.</p><a href="/data/misp-warninglists/hecavex-official-domains/list.json">Atverti warning list</a></article>
+        <article><h3>Ataskaitos įrodymų įrankis</h3><p>Naršyklėje galima paruošti ribotą failą vienam galiojančiam peržiūrėtam signalui. Įrankis nekuria sprendimo, nesikreipia į kandidatą ir nieko neišsiunčia.</p><a href="/reporting/">Atverti įrankį</a></article>
+      </div>
     </section>
 
     <section className="docs-section" id="stix"><div className="docs-section-heading"><p className="eyebrow">STIX 2.1</p><h2>Stebėjimai atskirti nuo patvirtintų indikatorių</h2><p>Vieša projekcija nėra TAXII paslauga ir nėra skirta automatiniam blokavimui.</p></div>
@@ -64,14 +86,20 @@ export function LtDocumentation() {
 
     <section className="docs-section" id="duomenu-sutartis"><div className="docs-section-heading"><p className="eyebrow">Duomenų sutartis</p><h2>Stabilūs viešos suvestinės laukai</h2><p>Trūkstama pasirenkama reikšmė reiškia nežinomybę, o ne neigiamą išvadą.</p></div>
       <div className="docs-table-wrap" role="region" aria-label="Viešos suvestinės laukų žinynas" tabIndex={0}><table className="docs-table"><thead><tr><th>Laukas</th><th>Reikšmė</th></tr></thead><tbody>{fields.map(([term, description]) => <tr key={term}><th scope="row"><code>{term}</code></th><td>{description}</td></tr>)}</tbody></table></div>
+      <div className="docs-callout"><strong>Unicode ir atitikčių testai</strong><p>Domenai normalizuojami prisegtu UTS #46 nontransitional STD3 režimu, o UTS #39 duomenys naudojami tik ribotiems confusable ir rašto įrodymams. Vidinis skeleton neskelbiamas, Unicode sutapimas vienas pats nėra phishing nuosprendis, o <code>restricted-identifier</code> yra konservatyvi Radaro taisyklė, ne formalus Unicode restriction level. Versijuotas sintetinių, rezervuotų ir oficialių domenų korpusas tikrinamas CI.</p></div>
+      <div className="docs-card-grid"><article><h3>Prekių ženklų aprėpties žurnalas</h3><p>Rodo registro peržiūros datą, ribotą rinktuvų būklę, matcher korpuso aprėptį ir viešos peržiūros rezultatus. Tai nėra phishing paplitimo matas.</p></article><article><h3>Subalansuota peržiūros eilė</h3><p>Kandidatai deterministiškai paskirstomi pagal šaltinį, ženklą, balą, įrodymus, priežastį ir amžių. Tai nėra atsitiktinė imtis ar analitiko sprendimas.</p></article></div>
     </section>
 
     <section className="docs-section" id="istorija"><div className="docs-section-heading"><p className="eyebrow">Istorija ir peržiūra</p><h2>Įvykiai pridedami, o nebuvimas neinterpretuojamas</h2><p>Pakartotinai apdorojant tuos pačius archyvus deterministiniai įvykių ID neleidžia dirbtinai didinti skaičių.</p></div>
-      <div className="docs-card-grid"><article><h3>Detalus laikotarpis</h3><p>Pagal datą suskirstyti įvykiai numatytą laiką lieka detalūs, vėliau sutraukiami į ribotą signalo istoriją.</p></article><article><h3>Būsenos kilmė</h3><p>Dingimas iš naujausio lango nesukuria būsenos pokyčio. Aktyvi, nepasiekiama ar suvaldyta būsena reikalauja palaikomo aiškaus stebėjimo.</p></article><article><h3>Analitiko peržiūra</h3><p>Vidiniai užrašai ir tapatybės lieka už Git ribų. Viešai pateikiami tik sąmoningai eksportuoti ir neutralizuoti sprendimai.</p></article></div>
+      <div className="docs-card-grid"><article><h3>Detalus laikotarpis</h3><p>Pagal datą suskirstyti įvykiai numatytą laiką lieka detalūs, vėliau sutraukiami į ribotą signalo istoriją.</p></article><article><h3>Būsenos kilmė</h3><p>Dingimas iš naujausio lango nesukuria būsenos pokyčio. Aktyvi, nepasiekiama ar suvaldyta būsena reikalauja palaikomo aiškaus stebėjimo.</p></article><article><h3>Analitiko peržiūra</h3><p>Vidiniai užrašai ir tapatybės lieka už Git ribų. Viešai pateikiami tik sąmoningai eksportuoti ir neutralizuoti sprendimai.</p></article><article><h3>Sanitized pasiūlymas nėra sprendimas</h3><p>Prižiūrėtojo workflow gali sukurti tik ribotą proposal failą ir juodraštinį pull request. Sinchronizavimą veikia tik atskirai eksportuotas viešas sprendimas.</p></article></div>
     </section>
 
     <section className="docs-section" id="veikimas"><div className="docs-section-heading"><p className="eyebrow">Veikimas</p><h2>Suplanuoti darbai ir jų vieši rezultatai</h2><p>Grafikas aprašo numatytą pradžią, o ne garantuotą nenutrūkstamą aprėptį.</p></div>
       <div className="docs-table-wrap" role="region" aria-label="Suplanuoti Radaro darbai" tabIndex={0}><table className="docs-table"><thead><tr><th>Darbas</th><th>Grafikas</th><th>Viešas rezultatas</th></tr></thead><tbody>{operations.map(([name, schedule, result]) => <tr key={name}><th scope="row">{name}</th><td>{schedule}</td><td>{result}</td></tr>)}</tbody></table></div>
+      <div className="docs-callout"><strong>Kontroliniai taškai ir laikinas kontekstas</strong><p><code>data/urlscan/search-checkpoints.json</code> saugo tik užklausos maišą, tiekėjo žymeklį, ribotą rezultatų skaičių ir pažangos būseną; užklausos tekstas nesaugomas, o klaida ar išnaudotas biudžetas negali pažymėti eilės užbaigta. <code>data/enrichment/passive-context.json</code> ir <code>data/history/context/</code> saugo ribotas DNS, RDAP ir maršrutizavimo bazes bei semantinius pokyčius.</p></div>
+      <h3 className="docs-subheading">Repozitorijos nustatymai ir išoriniai vartai</h3>
+      <div className="docs-table-wrap" role="region" aria-label="Radaro repozitorijos nustatymai" tabIndex={0}><table className="docs-table"><thead><tr><th>Nustatymas</th><th>Tipas</th><th>Paskirtis</th></tr></thead><tbody>{settings.map(([name, kind, purpose]) => <tr key={name}><th scope="row"><code>{name}</code></th><td>{kind}</td><td>{purpose}</td></tr>)}</tbody></table></div>
+      <div className="docs-callout docs-warning-callout"><strong>Išorinės patikros dar nėra automatinis faktas</strong><p>Dabartinėje viešoje imtyje nėra užbaigtų analitiko vertinimų, todėl tikslumo rodiklis nerodomas, o peržiūrėtas MISP manifestas pagrįstai tuščias. URLScan kilmės laikiniai duomenys lieka išjungti iki platinimo teisės patvirtinimo. MISP importas, tombstone elgsena ir GitHub taisyklės, reikalaujančios CI bei peržiūros, turi būti patikrinti operatoriaus; CODEOWNERS ir vietinis schemos testas šių vartų nepakeičia.</p></div>
     </section>
 
     <section className="docs-section" id="saugumas"><div className="docs-section-heading"><p className="eyebrow">Saugumas</p><h2>Neutrali, tik skaitymui skirta vieša sąsaja</h2><p>Radaro puslapiai nevykdo kandidatų turinio ir nepaverčia neutralizuotų indikatorių tiesioginėmis nuorodomis.</p></div>

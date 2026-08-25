@@ -964,7 +964,12 @@ def _current_brand(domain: str, registry: BrandRegistry) -> str | None:
         payload: Any = json.loads((PROJECT_ROOT / "public/data/radar.json").read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError, OSError):
         return None
-    if not isinstance(payload, dict) or not isinstance(payload.get("signals"), list):
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schemaVersion") != 2
+        or payload.get("dataset") != "live"
+        or not isinstance(payload.get("signals"), list)
+    ):
         return None
     defanged = defang_host(domain)
     brands = {

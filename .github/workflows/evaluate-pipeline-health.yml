@@ -1,0 +1,85 @@
+name: Evaluate Radar pipeline health
+
+on:
+  schedule:
+    - cron: "11 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: radar-health-evaluator
+  queue: max
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Evaluate aggregate repository health
+        id: health
+        shell: bash
+        run: |
+          python -m hecavex_radar.health_sentinel \
+            --repository . \
+            --json-output "${RUNNER_TEMP}/radar-health.json" \
+            --markdown-output "${RUNNER_TEMP}/radar-health.md" \
+            --github-output "${GITHUB_OUTPUT}"
+          printf '\nLatest evaluation: https://github.com/%s/actions/runs/%s\n' \
+            "${GITHUB_REPOSITORY}" "${GITHUB_RUN_ID}" >> "${RUNNER_TEMP}/radar-health.md"
+      - name: Reconcile one health issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEALTH_UNHEALTHY: ${{ steps.health.outputs.unhealthy }}
+          TITLE: "Radar pipeline health"
+          LABEL: "radar-health"
+        shell: bash
+        run: |
+          gh label create "${LABEL}" \
+            --color D73A4A \
+            --description "Automated aggregate Radar pipeline health" \
+            --force
+
+          issues="$(gh issue list --state all --label "${LABEL}" --limit 100 \
+            --json number,title,state,updatedAt)"
+          matching="$(jq -c --arg title "${TITLE}" \
+            '[.[] | select(.title == $title)] | sort_by(.updatedAt) | reverse' \
+            <<<"${issues}")"
+          primary="$(jq -c '.[0] // {}' <<<"${matching}")"
+          issue_number="$(jq -r '.number // empty' <<<"${primary}")"
+          issue_state="$(jq -r '.state // empty' <<<"${primary}")"
+
+          if [[ "${HEALTH_UNHEALTHY}" == "true" ]]; then
+            while read -r duplicate; do
+              [[ -z "${duplicate}" ]] && continue
+              gh issue close "${duplicate}" --reason not_planned \
+                --comment "Closed as a duplicate of the canonical Radar pipeline health issue."
+            done < <(jq -r '.[1:][] | select(.state == "OPEN") | .number' <<<"${matching}")
+            if [[ -z "${issue_number}" ]]; then
+              gh issue create --title "${TITLE}" --label "${LABEL}" \
+                --body-file "${RUNNER_TEMP}/radar-health.md"
+            else
+              if [[ "${issue_state}" == "CLOSED" ]]; then
+                gh issue reopen "${issue_number}"
+              fi
+              gh issue edit "${issue_number}" --title "${TITLE}" --add-label "${LABEL}" \
+                --body-file "${RUNNER_TEMP}/radar-health.md"
+            fi
+          else
+            while read -r recovered; do
+              [[ -z "${recovered}" ]] && continue
+              gh issue close "${recovered}" --reason completed \
+                --comment "All aggregate Radar pipeline health checks recovered."
+            done < <(jq -r '.[] | select(.state == "OPEN") | .number' <<<"${matching}")
+          fi

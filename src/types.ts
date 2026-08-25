@@ -21,6 +21,9 @@ export const REASON_CODES = [
   "punycode",
   "different-tld",
   "multiple-hyphens",
+  "unicode-confusable",
+  "mixed-script",
+  "restricted-identifier",
   "hecavex-public-export",
   "manual-review",
   "first-publication",
@@ -170,6 +173,43 @@ export type SignalDomainContext = {
   registration: SignalRegistrationContext | null;
 };
 
+export type SignalContextChange = {
+  eventId: string;
+  observedAt: string;
+  component: "dns" | "rdap" | "urlscan";
+  changeType:
+    | "first-resolving"
+    | "stopped-resolving"
+    | "dns-a-changed"
+    | "dns-aaaa-changed"
+    | "dns-cname-changed"
+    | "dns-ns-changed"
+    | "dns-mx-changed"
+    | "rdap-registrar-changed"
+    | "rdap-status-changed"
+    | "rdap-expiry-changed"
+    | "urlscan-title-changed"
+    | "urlscan-redirect-changed"
+    | "urlscan-http-status-changed"
+    | "urlscan-ip-changed"
+    | "urlscan-asn-changed"
+    | "urlscan-primary-html-sha256-changed"
+    | "urlscan-certificate-fingerprint-changed"
+    | "certificate-reissued";
+  changedFields: string[];
+  source: {
+    name: "Cloudflare DNS" | "RDAP" | "URLScan";
+    observedAt: string;
+    referenceUrl: string;
+  };
+  evidence: {
+    previousSha256: string;
+    currentSha256: string;
+    primaryHtmlSha256: string[];
+    certificateSha256: string | null;
+  };
+};
+
 export type SignalDetail = {
   schemaVersion: 1;
   dataset: "signal-detail";
@@ -178,6 +218,7 @@ export type SignalDetail = {
   generatedAt: string;
   observations: SignalDetailObservation[];
   domainContext?: SignalDomainContext;
+  contextChanges?: SignalContextChange[];
 };
 
 export type SourceState = "healthy" | "partial" | "skipped";

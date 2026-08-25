@@ -17,7 +17,7 @@ def test_dns_and_rdap_context_is_bounded_and_repeatable(tmp_path, monkeypatch) -
     display = defang_host(domain)
     signal_id = stable_id(display.lower())
     snapshot = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "dataset": "live",
         "signals": [{"id": signal_id, "domain": display}],
     }
@@ -114,7 +114,7 @@ def test_rdap_bootstrap_failure_still_refreshes_independent_dns_context(tmp_path
     snapshot_path = tmp_path / "public" / "data" / "radar.json"
     snapshot_path.parent.mkdir(parents=True)
     snapshot_path.write_text(
-        json.dumps({"signals": [{"id": signal_id, "domain": display}]}),
+        json.dumps({"schemaVersion": 2, "dataset": "live", "signals": [{"id": signal_id, "domain": display}]}),
         encoding="utf-8",
     )
 
@@ -151,7 +151,10 @@ def test_all_dns_servfail_is_not_completed_context(tmp_path, monkeypatch) -> Non
     signal_id = stable_id(display.lower())
     snapshot_path = tmp_path / "public" / "data" / "radar.json"
     snapshot_path.parent.mkdir(parents=True)
-    snapshot_path.write_text(json.dumps({"signals": [{"id": signal_id, "domain": display}]}), encoding="utf-8")
+    snapshot_path.write_text(
+        json.dumps({"schemaVersion": 2, "dataset": "live", "signals": [{"id": signal_id, "domain": display}]}),
+        encoding="utf-8",
+    )
 
     def requester(url: str, host: str):
         if host == "data.iana.org":

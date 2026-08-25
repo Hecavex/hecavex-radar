@@ -9,7 +9,9 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
+import idna
 import tldextract
+from confusable_homoglyphs import categories, confusables  # type: ignore[import-untyped]
 
 from .models import CandidateMatch
 
@@ -82,38 +84,17 @@ KNOWN_CT_REWRITE_SUFFIXES = {
     "rs-mcas-df.ms",
     "rs-mcas.ms",
 }
-LOOKALIKES = str.maketrans(
-    {
-        "а": "a",
-        "с": "c",
-        "е": "e",
-        "і": "i",
-        "ј": "j",
-        "о": "o",
-        "р": "p",
-        "ѕ": "s",
-        "х": "x",
-        "у": "y",
-        "α": "a",
-        "β": "b",
-        "ε": "e",
-        "ζ": "z",
-        "η": "h",
-        "ι": "i",
-        "κ": "k",
-        "μ": "m",
-        "ν": "n",
-        "ο": "o",
-        "ρ": "p",
-        "τ": "t",
-        "χ": "x",
-    }
-)
+UNICODE_SECURITY_PROFILE = {
+    "uts46": "idna-3.19/nontransitional/std3",
+    "uts39": "confusable-homoglyphs-3.3.1",
+}
+IGNORED_SCRIPT_ALIASES = frozenset({"COMMON", "INHERITED"})
 
 
 @dataclass(frozen=True, slots=True)
 class BrandEntry:
     brand: str
+    last_reviewed_at: str
     aliases: list[str]
     fuzzy_aliases: list[str]
     excluded_terms: list[str]
@@ -147,8 +128,13 @@ def _optional_strings(value: object) -> list[str] | None:
 def normalize_domain(value: str) -> str | None:
     without_wildcard = re.sub(r"^\*\.", "", value.strip(), count=1).removesuffix(".").lower()
     try:
-        ascii_domain = without_wildcard.encode("idna").decode("ascii").lower()
-    except UnicodeError:
+        ascii_domain = idna.encode(
+            without_wildcard,
+            uts46=True,
+            transitional=False,
+            std3_rules=True,
+        ).decode("ascii").lower()
+    except idna.IDNAError:
         return None
     labels = ascii_domain.split(".")
     if not ascii_domain or len(ascii_domain) > 253 or ":" in ascii_domain or len(labels) < 2:
@@ -189,6 +175,7 @@ def load_brand_registry(path: Path | None = None) -> BrandRegistry:
         ):
             raise ValueError(f"Brand registry entry {index} is invalid.")
         aliases = _strings(raw.get("aliases"))
+        last_reviewed_at = raw.get("lastReviewedAt")
         fuzzy_aliases = _optional_strings(raw.get("fuzzyAliases"))
         excluded_terms = _optional_strings(raw.get("excludedTerms"))
         excluded_domains = _optional_strings(raw.get("excludedDomains"))
@@ -200,6 +187,7 @@ def load_brand_registry(path: Path | None = None) -> BrandRegistry:
         ]
         if (
             not aliases
+            or not isinstance(last_reviewed_at, str)
             or fuzzy_aliases is None
             or excluded_terms is None
             or excluded_domains is None
@@ -209,6 +197,11 @@ def load_brand_registry(path: Path | None = None) -> BrandRegistry:
             or not sources
         ):
             raise ValueError(f"Brand registry entry {index} is invalid.")
+        try:
+            if date.fromisoformat(last_reviewed_at).isoformat() != last_reviewed_at:
+                raise ValueError
+        except ValueError as error:
+            raise ValueError(f"Brand registry entry {index} has an invalid lastReviewedAt date.") from error
         if any(not _canonical(term) for term in excluded_terms):
             raise ValueError(f"Brand registry entry {index} has an invalid excluded term.")
         brand = raw["brand"].strip()
@@ -271,6 +264,7 @@ def load_brand_registry(path: Path | None = None) -> BrandRegistry:
         entries.append(
             BrandEntry(
                 brand=brand,
+                last_reviewed_at=last_reviewed_at,
                 aliases=aliases,
                 fuzzy_aliases=normalized_fuzzy,
                 excluded_terms=excluded_terms,
@@ -284,12 +278,66 @@ def load_brand_registry(path: Path | None = None) -> BrandRegistry:
 
 
 def _canonical(value: str) -> str:
-    translated = unicodedata.normalize("NFKD", value).translate(LOOKALIKES).lower()
+    translated = _uts39_skeleton(unicodedata.normalize("NFKD", value).casefold())
     return "".join(
         character
         for character in translated
         if not unicodedata.combining(character) and character.isascii() and character.isalnum()
     )
+
+
+def _ascii_confusable(value: str) -> str | None:
+    candidates = confusables.confusables_data.get(value, [])
+    ascii_candidates = sorted(
+        {
+            candidate["c"].casefold()
+            for candidate in candidates
+            if isinstance(candidate, dict)
+            and isinstance(candidate.get("c"), str)
+            and candidate["c"].isascii()
+            and candidate["c"].isalnum()
+        },
+        key=lambda candidate: (len(candidate), candidate),
+    )
+    return ascii_candidates[0] if ascii_candidates else None
+
+
+def _uts39_skeleton(value: str) -> str:
+    """Return an internal comparison skeleton derived from pinned UTS #39 data.
+
+    Skeletons are deliberately never included in public output. They are an
+    inexact comparison aid and cannot make a maliciousness determination.
+    """
+
+    pieces: list[str] = []
+    for character in unicodedata.normalize("NFD", value.casefold()):
+        if unicodedata.combining(character):
+            continue
+        if character.isascii():
+            pieces.append(character)
+            continue
+        pieces.append(_ascii_confusable(character) or character)
+    return unicodedata.normalize("NFD", "".join(pieces))
+
+
+def _unicode_evidence(label: str, aliases: list[str]) -> frozenset[str]:
+    if label.isascii():
+        return frozenset()
+    scripts = categories.unique_aliases(label) - IGNORED_SCRIPT_ALIASES
+    label_parts = [part for item in label.split("-") if (part := _canonical(item))]
+    label_skeleton = "".join(label_parts)
+    confusable_alias = any(
+        _canonical(alias) in {*label_parts, label_skeleton}
+        for alias in aliases
+    )
+    evidence: set[str] = set()
+    if confusable_alias:
+        evidence.add("unicode-confusable")
+    if len(scripts) > 1:
+        evidence.add("mixed-script")
+    if confusable_alias and (len(scripts) > 1 or scripts != {"LATIN"}):
+        evidence.add("restricted-identifier")
+    return frozenset(evidence)
 
 
 def _edit_distance(left: str, right: str) -> int:
@@ -362,24 +410,24 @@ def _alias_parts(value: str) -> list[str]:
     return [part for item in re.split(r"[\s._-]+", value) if (part := _canonical(item))]
 
 
-def _label_groups(domain: str) -> list[tuple[list[str], bool]]:
+def _label_groups(domain: str) -> list[tuple[list[str], bool, str]]:
     labels = domain.split(".")
     suffix = EXTRACT(domain).suffix
     suffix_labels = len(suffix.split(".")) if suffix else 1
     meaningful_labels = labels[:-suffix_labels] if len(labels) > suffix_labels else labels
-    groups: list[tuple[list[str], bool]] = []
+    groups: list[tuple[list[str], bool, str]] = []
     for label in meaningful_labels:
         try:
-            decoded_label = label.encode("ascii").decode("idna")
-        except UnicodeError:
+            decoded_label = idna.decode(label, uts46=True, std3_rules=True)
+        except idna.IDNAError:
             decoded_label = label
         parts = [part for item in decoded_label.split("-") if (part := _canonical(item))]
-        groups.append((parts, label.startswith("xn--")))
+        groups.append((parts, label.startswith("xn--"), decoded_label))
     return groups
 
 
 def _label_parts(domain: str) -> list[list[str]]:
-    return [parts for parts, _ in _label_groups(domain)]
+    return [parts for parts, _, _ in _label_groups(domain)]
 
 
 def _domain_hyphen_count(domain: str) -> int:
@@ -444,8 +492,9 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
 
     registrable_domain = _registrable_domain(domain)
     label_groups = _label_groups(domain)
-    grouped_parts = [parts for parts, _ in label_groups]
-    punycode_labels = [is_punycode for _, is_punycode in label_groups]
+    grouped_parts = [parts for parts, _, _ in label_groups]
+    punycode_labels = [is_punycode for _, is_punycode, _ in label_groups]
+    decoded_labels = [decoded for _, _, decoded in label_groups]
     canonical_parts = [part for group in grouped_parts for part in group]
     label_compacts = ["".join(group) for group in grouped_parts]
     suspicious = [part for part in canonical_parts if part in SUSPICIOUS_WORDS]
@@ -461,6 +510,7 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
         matched_alias_parts: list[str] = []
         attached_context: list[str] = []
         matched_punycode = False
+        matched_unicode_evidence: set[str] = set()
         for raw_alias in entry.aliases:
             alias_parts = _alias_parts(raw_alias)
             alias = "".join(alias_parts)
@@ -477,6 +527,11 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                     match_reason = f"exact short brand token: {raw_alias}"
                     matched_alias_parts = alias_parts
                     matched_punycode = local_punycode
+                    matched_unicode_evidence = {
+                        code
+                        for index in exact_groups
+                        for code in _unicode_evidence(decoded_labels[index], entry.aliases)
+                    }
                 continue
             if exact_groups:
                 exact_context = list(
@@ -493,6 +548,11 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                     matched_alias_parts = alias_parts
                     attached_context = exact_context
                     matched_punycode = local_punycode
+                    matched_unicode_evidence = {
+                        code
+                        for index in exact_groups
+                        for code in _unicode_evidence(decoded_labels[index], entry.aliases)
+                    }
                 continue
 
             affix = next(
@@ -511,6 +571,7 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                 matched_alias_parts = alias_parts
                 attached_context = [context]
                 matched_punycode = punycode_labels[group_index]
+                matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
 
             # Attackers frequently split a brand across hyphen-delimited pieces.
             # Fold only one DNS label and require the remaining prefix or suffix
@@ -532,6 +593,7 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                 matched_alias_parts = alias_parts
                 attached_context = [context]
                 matched_punycode = punycode_labels[group_index]
+                matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
 
             # Fuzzy evidence is intentionally narrow: one edit (including one
             # adjacent transposition) in a single-word alias, plus a threat word
@@ -562,6 +624,7 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                     matched_alias_parts = alias_parts
                     attached_context = fuzzy_context
                     matched_punycode = punycode_labels[group_index]
+                    matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
         if base == 0:
             continue
 
@@ -576,6 +639,13 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
         if matched_punycode:
             confidence += 10
             reasons.append("internationalized domain (punycode)")
+        for code, explanation in (
+            ("unicode-confusable", "Unicode confusable skeleton matched a reviewed alias"),
+            ("mixed-script", "mixed-script identifier"),
+            ("restricted-identifier", "restricted identifier profile"),
+        ):
+            if code in matched_unicode_evidence:
+                reasons.append(explanation)
         official_tlds = {official.rsplit(".", 1)[-1] for official in entry.official_domains}
         if registrable_domain.rsplit(".", 1)[-1] not in official_tlds:
             confidence += 5

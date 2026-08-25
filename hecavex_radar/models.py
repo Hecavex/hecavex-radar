@@ -49,6 +49,9 @@ ReasonCode = Literal[
     "punycode",
     "different-tld",
     "multiple-hyphens",
+    "unicode-confusable",
+    "mixed-script",
+    "restricted-identifier",
     "hecavex-public-export",
     "manual-review",
     "first-publication",
@@ -206,6 +209,48 @@ class SignalDomainContextRecord(SignalDomainContext):
     domain: str
 
 
+class SignalContextChangeSource(TypedDict):
+    name: Literal["Cloudflare DNS", "RDAP", "URLScan"]
+    observedAt: str
+    referenceUrl: str
+
+
+class SignalContextChangeEvidence(TypedDict):
+    previousSha256: str
+    currentSha256: str
+    primaryHtmlSha256: list[str]
+    certificateSha256: str | None
+
+
+class SignalContextChange(TypedDict):
+    eventId: str
+    observedAt: str
+    component: Literal["dns", "rdap", "urlscan"]
+    changeType: Literal[
+        "first-resolving",
+        "stopped-resolving",
+        "dns-a-changed",
+        "dns-aaaa-changed",
+        "dns-cname-changed",
+        "dns-ns-changed",
+        "dns-mx-changed",
+        "rdap-registrar-changed",
+        "rdap-status-changed",
+        "rdap-expiry-changed",
+        "urlscan-title-changed",
+        "urlscan-redirect-changed",
+        "urlscan-http-status-changed",
+        "urlscan-ip-changed",
+        "urlscan-asn-changed",
+        "urlscan-primary-html-sha256-changed",
+        "urlscan-certificate-fingerprint-changed",
+        "certificate-reissued",
+    ]
+    changedFields: list[str]
+    source: SignalContextChangeSource
+    evidence: SignalContextChangeEvidence
+
+
 class SignalDetail(TypedDict):
     schemaVersion: Literal[1]
     dataset: Literal["signal-detail"]
@@ -214,6 +259,7 @@ class SignalDetail(TypedDict):
     generatedAt: str
     observations: list[SignalObservation]
     domainContext: NotRequired[SignalDomainContext]
+    contextChanges: NotRequired[list[SignalContextChange]]
 
 
 @dataclass(frozen=True, slots=True)

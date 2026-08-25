@@ -1,0 +1,56 @@
+name: Report a missed candidate
+description: Suggest a public Lithuanian phishing or impersonation candidate that Radar did not publish.
+title: "[Missed candidate] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is public and does not trigger scanning. Submit only sanitized public evidence. Defang every domain and URL. Do not include credentials, victim data, private evidence, or a live clickable candidate.
+  - type: input
+    id: candidate
+    attributes:
+      label: Defanged candidate
+      placeholder: hxxps://example[.]com/path
+    validations:
+      required: true
+  - type: input
+    id: brand
+    attributes:
+      label: Potential Lithuanian brand match
+      placeholder: Reviewed registry name
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence
+    attributes:
+      label: Public evidence type
+      options:
+        - certificate-transparency-record
+        - public-urlscan-report
+        - public-provider-advisory
+        - public-brand-advisory
+        - other-public-passive-source
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Public supporting reference
+      description: Use a safe HTTPS source. Do not link directly to the candidate.
+      placeholder: https://example.org/public-reference
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Why it may belong in Radar
+      description: Describe Lithuanian relevance and observable evidence without unredacted personal data.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-data acknowledgement
+      options:
+        - label: I defanged all candidate indicators and included no secrets, victim data, personal data, or private evidence.
+          required: true

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "dataset": "radar-matcher-regression-corpus",
+  "reviewedAt": "2026-08-26",
+  "safety": "Synthetic reserved-domain examples and reviewed official domains only; no active victim URLs.",
+  "unicodeProfile": {
+    "uts46": "idna-3.19/nontransitional/std3",
+    "uts39": "confusable-homoglyphs-3.3.1",
+    "skeletonsPublished": false,
+    "semantics": "Unicode evidence is an inexact comparison signal, never a maliciousness verdict.",
+    "compatibilityNote": "restricted-identifier is a conservative Radar heuristic derived from pinned UTS #39 script and confusable data; it is not Unicode's formal restriction-level algorithm."
+  },
+  "cases": [
+    {
+      "id": "official-domain-suppressed",
+      "brand": "Swedbank",
+      "domain": "swedbank.lt",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "reviewed-official-domain"
+      }
+    },
+    {
+      "id": "official-subdomain-suppressed",
+      "brand": "Swedbank",
+      "domain": "login.swedbank.lt",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "reviewed-official-domain-subtree"
+      }
+    },
+    {
+      "id": "official-international-domain-suppressed",
+      "brand": "BTA",
+      "domain": "bta.lv",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "reviewed-official-international-domain"
+      }
+    },
+    {
+      "id": "known-collision-sberbank",
+      "brand": "Swedbank",
+      "domain": "sberbank-login.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "reviewed-name-collision"
+      }
+    },
+    {
+      "id": "legitimate-lithuanian-idn",
+      "domain": "žalias-namas.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "no-reviewed-brand-match"
+      }
+    },
+    {
+      "id": "unrelated-brand-substring",
+      "brand": "Revolut",
+      "domain": "revolutbusiness.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "unqualified-substring"
+      }
+    },
+    {
+      "id": "exact-brand-with-context",
+      "brand": "Swedbank",
+      "domain": "secure-swedbank-login.example",
+      "expected": {
+        "matched": true,
+        "brand": "Swedbank",
+        "scoreBand": [90, 100],
+        "reasonCodes": ["brand-exact-token", "suspicious-context", "different-tld"]
+      }
+    },
+    {
+      "id": "multi-token-with-context",
+      "brand": "Vinted",
+      "domain": "secure-vinted-login.example",
+      "expected": {
+        "matched": true,
+        "brand": "Vinted",
+        "scoreBand": [90, 100],
+        "reasonCodes": ["brand-exact-token", "suspicious-context", "different-tld"]
+      }
+    },
+    {
+      "id": "short-brand-requires-context",
+      "brand": "ESO",
+      "domain": "eso-online.example",
+      "expected": {
+        "matched": true,
+        "brand": "ESO",
+        "scoreBand": [85, 100],
+        "reasonCodes": ["brand-exact-token", "suspicious-context", "different-tld"]
+      }
+    },
+    {
+      "id": "short-brand-without-context-rejected",
+      "brand": "ESO",
+      "domain": "eso.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "short-token-lacks-reviewed-context"
+      }
+    },
+    {
+      "id": "brand-split-across-label",
+      "brand": "Vinted",
+      "domain": "vin-ted-login.example",
+      "expected": {
+        "matched": true,
+        "brand": "Vinted",
+        "scoreBand": [90, 100],
+        "reasonCodes": ["brand-split-token", "suspicious-context", "different-tld"]
+      }
+    },
+    {
+      "id": "one-edit-with-context",
+      "brand": "Swedbank",
+      "domain": "secure-swedback.example",
+      "expected": {
+        "matched": true,
+        "brand": "Swedbank",
+        "scoreBand": [80, 100],
+        "reasonCodes": ["brand-lookalike-edit", "suspicious-context", "different-tld"]
+      }
+    },
+    {
+      "id": "mixed-script-cyrillic-a",
+      "brand": "Swedbank",
+      "domain": "secure-swedbаnk-login.example",
+      "expected": {
+        "matched": true,
+        "brand": "Swedbank",
+        "scoreBand": [95, 100],
+        "reasonCodes": [
+          "brand-exact-token",
+          "suspicious-context",
+          "punycode",
+          "unicode-confusable",
+          "mixed-script",
+          "restricted-identifier",
+          "different-tld"
+        ]
+      }
+    },
+    {
+      "id": "mixed-script-cyrillic-s",
+      "brand": "Paysera",
+      "domain": "payѕera-secure.example",
+      "expected": {
+        "matched": true,
+        "brand": "Paysera",
+        "scoreBand": [95, 100],
+        "reasonCodes": [
+          "brand-exact-token",
+          "suspicious-context",
+          "punycode",
+          "unicode-confusable",
+          "mixed-script",
+          "restricted-identifier",
+          "different-tld"
+        ]
+      }
+    },
+    {
+      "id": "ascii-transposition-without-context",
+      "brand": "Swedbank",
+      "domain": "swedbnak.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "fuzzy-match-lacks-reviewed-context"
+      }
+    }
+  ]
+}

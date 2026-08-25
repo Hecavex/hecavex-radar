@@ -20,6 +20,28 @@ hecavex-review init
 
 This command creates only the schema and append-only triggers at the private path. It does not add a decision or modify a public artifact.
 
+## Public intake and proposal boundary
+
+Four public Issue Forms accept sanitized false-positive, missed-candidate, registry-correction, and removal requests. Issue text is untrusted public input. It must never be passed to a shell, scanner, collector, or publication command.
+
+The maintainer-only `Prepare sanitized review proposal` workflow accepts a small set of controlled fields, verifies that the initiating actor has `maintain` or `admin` permission, requires a fully defanged domain, and opens a draft pull request below `data/review/proposals/`. It links the issue by number but never reads or executes its title or body. A proposal is not a decision. CODEOWNERS review and the private ledger remain required.
+
+Generate the current stratified review worklist without a network request:
+
+```sh
+hecavex-review-queue --generated-at 2026-08-26T12:00:00.000Z
+```
+
+The queue balances public, unassessed candidates across source, brand, score band, evidence tier, reason code, and candidate age. It is a worklist, not a statistically random sample. Generate the corresponding per-brand coverage ledger with:
+
+```sh
+hecavex-coverage-ledger --generated-at 2026-08-26T12:00:00.000Z
+```
+
+The ledger explains bounded collection and review coverage for every registry entry. A zero-signal value never means zero phishing.
+
+The normal snapshot synchronization regenerates both artifacts using the snapshot's own canonical timestamp, then immediately verifies a byte-for-byte deterministic rebuild. CI runs the same verification. Per-brand CT state distinguishes completed, backlogged, failed, and never-attempted queries from their persisted query outcome and result cursor. URLScan's candidate cursor is scheduler-wide and therefore appears only under `globalCollectorState`; it is never repeated as if it described an individual brand.
+
 ## Commands
 
 Create a private pivot queue from the current published snapshot without performing any network request:

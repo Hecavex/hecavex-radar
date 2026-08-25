@@ -1,0 +1,51 @@
+name: Request removal or retraction
+description: Request removal of a public record or retraction of a published assessment.
+title: "[Removal request] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This public form is for sanitized requests only. If explaining the request would disclose personal data, victim data, credentials, private evidence, or a security weakness, use the private security-report link instead.
+  - type: dropdown
+    id: request
+    attributes:
+      label: Request type
+      options:
+        - remove-current-candidate
+        - retract-reviewed-assessment
+        - remove-screenshot-or-derived-artifact
+        - correct-public-metadata
+    validations:
+      required: true
+  - type: input
+    id: signal
+    attributes:
+      label: Radar signal ID
+      description: Use the 20-character public signal identifier instead of repeating the candidate.
+    validations:
+      required: true
+  - type: input
+    id: candidate
+    attributes:
+      label: Defanged candidate, if needed
+      placeholder: example[.]com
+  - type: input
+    id: reference
+    attributes:
+      label: Public supporting reference
+      placeholder: https://example.org/public-reference
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Sanitized reason
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-data acknowledgement
+      options:
+        - label: I defanged all candidate indicators and included no secrets, victim data, personal data, or private evidence.
+          required: true

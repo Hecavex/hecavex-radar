@@ -88,6 +88,35 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function verifyReportingEvidencePack() {
+  const reportingRoot = join(output, "reporting");
+  const htmlPath = join(reportingRoot, "index.html");
+  const scriptPath = join(reportingRoot, "app.js");
+  const stylePath = join(reportingRoot, "styles.css");
+  assert(existsSync(htmlPath) && existsSync(scriptPath) && existsSync(stylePath), "Local reporting pack files are missing.");
+  const html = readFileSync(htmlPath, "utf8");
+  const script = readFileSync(scriptPath, "utf8");
+  assert(
+    html.includes("connect-src 'none'") &&
+      html.includes("form-action 'none'") &&
+      html.includes("object-src 'none'") &&
+      html.includes('id="pack-form"') &&
+      !/<form[^>]+action=/iu.test(html),
+    "Local reporting pack no longer enforces its non-sending browser boundary.",
+  );
+  for (const forbidden of ["fetch(", "XMLHttpRequest", "WebSocket", "sendBeacon", "EventSource"] ) {
+    assert(!script.includes(forbidden), `Local reporting pack contains forbidden network primitive ${forbidden}.`);
+  }
+  assert(
+    script.includes('crypto.subtle.digest("SHA-256"') &&
+      script.includes("MAX_FILES = 20") &&
+      script.includes("MAX_TOTAL_BYTES = 25 * 1024 * 1024") &&
+      script.includes("preview.textContent") &&
+      !script.includes("innerHTML"),
+    "Local reporting pack hashing, size caps, or safe text rendering drifted.",
+  );
+}
+
 function verifyDeploymentTopology() {
   const deploy = readFileSync(join(root, ".github", "workflows", "deploy-pages.yml"), "utf8");
   const ci = readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8");
@@ -96,6 +125,7 @@ function verifyDeploymentTopology() {
   const assetHunter = readFileSync(join(root, ".github", "workflows", "hunt-brand-assets.yml"), "utf8");
   const ctSearch = readFileSync(join(root, ".github", "workflows", "poll-ct-search.yml"), "utf8");
   const domainContext = readFileSync(join(root, ".github", "workflows", "enrich-domain-context.yml"), "utf8");
+  const healthEvaluator = readFileSync(join(root, ".github", "workflows", "evaluate-pipeline-health.yml"), "utf8");
   const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
   const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
@@ -158,6 +188,25 @@ function verifyDeploymentTopology() {
   assert(
     hunter.includes("group: radar-archive-writer") && sync.includes("group: radar-archive-writer"),
     "URLScan archive and snapshot writers are no longer serialized.",
+  );
+  for (const [name, workflow] of [
+    ["CertStream collection", collector],
+    ["URLScan hunt", hunter],
+    ["official asset hunt", assetHunter],
+    ["checkpointed CT search", ctSearch],
+    ["DNS/RDAP context", domainContext],
+    ["snapshot synchronization", sync],
+  ]) {
+    assert(workflow.includes("queue: max"), `${name} no longer retains pending shared-writer runs.`);
+  }
+  assert(
+    healthEvaluator.includes('cron: "11 */2 * * *"') &&
+      healthEvaluator.includes("issues: write") &&
+      healthEvaluator.includes("python -m hecavex_radar.health_sentinel") &&
+      healthEvaluator.includes('TITLE: "Radar pipeline health"') &&
+      healthEvaluator.includes("gh issue list --state all") &&
+      healthEvaluator.includes("gh issue close"),
+    "The deduplicated aggregate pipeline-health issue evaluator drifted.",
   );
   assert(
     ctSearch.includes('cron: "43 * * * *"') &&
@@ -238,6 +287,9 @@ function verifyDeploymentTopology() {
       sync.includes("public/data/signals") &&
       sync.includes("public/data/*.sha256") &&
       sync.includes("data/history") &&
+      sync.includes("python -m hecavex_radar.quality_artifacts") &&
+      sync.includes("data/coverage/brand-coverage.json") &&
+      sync.includes("data/review/review-queue.json") &&
       sync.includes("RADAR_STIX_OUTPUT: public/data/radar.stix.json"),
     "Snapshot synchronization does not stage the STIX projection, sidecars, history, and live snapshot atomically.",
   );
@@ -373,7 +425,11 @@ function verifyBuiltHtml() {
   assert(robots.includes("Disallow: /data/radar.stix.json") && robots.includes("Disallow: /data/radar-reviewed.stix.json"), "Built robots.txt no longer excludes raw STIX observables from crawler discovery.");
   assert(llms.includes("must not be made clickable or visited automatically"), "Built llms.txt lost the candidate-handling safety boundary.");
 
-  const htmlFiles = walk(output).filter((path) => path.endsWith(".html"));
+  // The reviewed-evidence pack is an intentionally isolated, non-hydrated utility
+  // with its own CSP and verifier. It is not a portfolio-shell route.
+  const htmlFiles = walk(output).filter(
+    (path) => path.endsWith(".html") && !relative(output, path).startsWith(`reporting${sep}`),
+  );
   const snapshot = JSON.parse(readFileSync(join(output, "data", "radar.json"), "utf8"));
   const history = JSON.parse(readFileSync(join(output, "data", "history.json"), "utf8"));
   const brands = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
@@ -697,6 +753,9 @@ const certificateFields = [
   "fingerprints",
 ];
 const fingerprintFields = ["md5", "sha1", "sha256"];
+const contextChangeFields = ["eventId", "observedAt", "component", "changeType", "changedFields", "source", "evidence"];
+const contextSourceFields = ["name", "observedAt", "referenceUrl"];
+const contextEvidenceFields = ["previousSha256", "currentSha256", "primaryHtmlSha256", "certificateSha256"];
 const utcTimestamp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u;
 const signalIdentifier = /^[a-f\d]{20}$/u;
 const lowerHex = /^[a-f\d]+$/u;
@@ -837,6 +896,86 @@ function verifyDomainContext(context, generatedAt, label) {
     uniqueList(registration.statuses, (value) => typeof value === "string" && /^[a-z\d-]{1,64}$/u.test(value)),
     `${label} has invalid registration statuses.`,
   );
+}
+
+function verifyContextChange(change, generatedAt, label) {
+  assert(hasExactFields(change, contextChangeFields), `${label} has unexpected fields.`);
+  const changedFieldSemantics = {
+    "first-resolving": ["a", "aaaa", "cname"],
+    "stopped-resolving": ["a", "aaaa", "cname"],
+    "dns-a-changed": ["a"],
+    "dns-aaaa-changed": ["aaaa"],
+    "dns-cname-changed": ["cname"],
+    "dns-ns-changed": ["ns"],
+    "dns-mx-changed": ["mx"],
+    "rdap-registrar-changed": ["registrar"],
+    "rdap-status-changed": ["statuses"],
+    "rdap-expiry-changed": ["expiresAt"],
+    "urlscan-title-changed": ["pageTitle"],
+    "urlscan-redirect-changed": ["redirectedToDomain"],
+    "urlscan-http-status-changed": ["httpStatus"],
+    "urlscan-ip-changed": ["ipAddress"],
+    "urlscan-asn-changed": ["asn"],
+    "urlscan-primary-html-sha256-changed": ["primaryHtmlSha256"],
+    "urlscan-certificate-fingerprint-changed": ["certificateFingerprintSha256"],
+    "certificate-reissued": ["certificateFingerprintSha256", "certificateIssuer", "certificateNotBefore", "certificateNotAfter"],
+  };
+  const semantics = {
+    dns: {
+      types: ["first-resolving", "stopped-resolving", "dns-a-changed", "dns-aaaa-changed", "dns-cname-changed", "dns-ns-changed", "dns-mx-changed"],
+      source: "Cloudflare DNS",
+      reference: "https://cloudflare-dns.com/dns-query",
+    },
+    rdap: {
+      types: ["rdap-registrar-changed", "rdap-status-changed", "rdap-expiry-changed"],
+      source: "RDAP",
+      reference: "https://data.iana.org/rdap/dns.json",
+    },
+    urlscan: {
+      types: ["urlscan-title-changed", "urlscan-redirect-changed", "urlscan-http-status-changed", "urlscan-ip-changed", "urlscan-asn-changed", "urlscan-primary-html-sha256-changed", "urlscan-certificate-fingerprint-changed", "certificate-reissued"],
+      source: "URLScan",
+      reference: null,
+    },
+  };
+  assert(Object.hasOwn(semantics, change.component), `${label} component is unsupported.`);
+  assert(semantics[change.component].types.includes(change.changeType), `${label} semantic type is inconsistent.`);
+  assert(/^[a-f\d]{32}$/u.test(change.eventId), `${label} event ID is malformed.`);
+  const observedAt = timestampValue(change.observedAt);
+  assert(observedAt !== null && observedAt <= generatedAt + 5 * 60 * 1000, `${label} timestamp is malformed.`);
+  assert(
+    Array.isArray(change.changedFields) && change.changedFields.length >= 1 && change.changedFields.length <= 32 &&
+      new Set(change.changedFields).size === change.changedFields.length &&
+      change.changedFields.every((field) =>
+        typeof field === "string" &&
+        /^[A-Za-z][A-Za-z0-9]{0,63}$/u.test(field) &&
+        changedFieldSemantics[change.changeType].includes(field),
+      ),
+    `${label} changed-field list is malformed.`,
+  );
+  assert(hasExactFields(change.source, contextSourceFields), `${label} source has unexpected fields.`);
+  const sourceObservedAt = timestampValue(change.source.observedAt);
+  assert(
+    change.source.name === semantics[change.component].source &&
+      sourceObservedAt !== null && sourceObservedAt <= observedAt + 5 * 60 * 1000,
+    `${label} source identity or provider timestamp drifted.`,
+  );
+  if (change.component === "urlscan") {
+    assert(/^https:\/\/urlscan\.io\/(?:|result\/[a-f\d-]{36}\/)$/u.test(change.source.referenceUrl), `${label} URLScan reference is unsafe.`);
+  } else {
+    assert(change.source.referenceUrl === semantics[change.component].reference, `${label} source reference is unsafe.`);
+  }
+  assert(hasExactFields(change.evidence, contextEvidenceFields), `${label} evidence has unexpected fields.`);
+  assert(/^[a-f\d]{64}$/u.test(change.evidence.previousSha256) && /^[a-f\d]{64}$/u.test(change.evidence.currentSha256), `${label} component digests are malformed.`);
+  assert(
+    Array.isArray(change.evidence.primaryHtmlSha256) && change.evidence.primaryHtmlSha256.length <= 2 &&
+      new Set(change.evidence.primaryHtmlSha256).size === change.evidence.primaryHtmlSha256.length &&
+      change.evidence.primaryHtmlSha256.every((digest) => /^[a-f\d]{64}$/u.test(digest)),
+    `${label} HTML hashes are malformed.`,
+  );
+  assert(isNullableHex(change.evidence.certificateSha256, 64), `${label} certificate hash is malformed.`);
+  if (change.component !== "urlscan") {
+    assert(change.evidence.primaryHtmlSha256.length === 0 && change.evidence.certificateSha256 === null, `${label} leaks URLScan evidence into another source.`);
+  }
 }
 
 function verifyStixBundle() {
@@ -1178,7 +1317,7 @@ function verifySignalDetails() {
       throw new Error(`${relativePath} is not valid UTF-8 JSON.`);
     }
     assert(
-      hasRequiredAndOptionalFields(detail, detailFields, ["domainContext"]),
+      hasRequiredAndOptionalFields(detail, detailFields, ["domainContext", "contextChanges"]),
       `${relativePath} does not use the allowed version-1 top-level fields.`,
     );
     assert(detail.schemaVersion === 1 && detail.dataset === "signal-detail", `${relativePath} has the wrong schema identity.`);
@@ -1199,9 +1338,17 @@ function verifySignalDetails() {
     if (Object.hasOwn(detail, "domainContext")) {
       verifyDomainContext(detail.domainContext, generatedAt, `${relativePath} domain context`);
     }
+    if (Object.hasOwn(detail, "contextChanges")) {
+      assert(
+        Array.isArray(detail.contextChanges) && detail.contextChanges.length >= 1 && detail.contextChanges.length <= 6 &&
+          new Set(detail.contextChanges.map((change) => change.eventId)).size === detail.contextChanges.length,
+        `${relativePath} context-change list is malformed.`,
+      );
+      detail.contextChanges.forEach((change, index) => verifyContextChange(change, generatedAt, `${relativePath} context change ${index + 1}`));
+    }
     assert(
-      detail.observations.length > 0 || Object.hasOwn(detail, "domainContext"),
-      `${relativePath} has neither a source observation nor DNS/RDAP context.`,
+      detail.observations.length > 0 || Object.hasOwn(detail, "domainContext") || Object.hasOwn(detail, "contextChanges"),
+      `${relativePath} has neither a source observation nor passive context.`,
     );
     expected.delete(relativePath);
   }
@@ -1870,6 +2017,7 @@ verifyDeploymentTopology();
 verifyPythonAutomationLocks();
 verifyBuiltHtml();
 verifyIdentityArtwork();
+verifyReportingEvidencePack();
 const signalDetails = verifySignalDetails();
 const stixBundle = verifyStixBundle();
 verifySyndicationFeeds();

@@ -17,6 +17,7 @@ permissions:
 concurrency:
   group: radar-archive-writer
   cancel-in-progress: false
+  queue: max
 
 jobs:
   sync:
@@ -64,10 +65,18 @@ jobs:
           RADAR_HISTORY_DETAIL_DAYS: ${{ vars.RADAR_HISTORY_DETAIL_DAYS || '30' }}
           RADAR_HISTORY_SUMMARY_DAYS: ${{ vars.RADAR_HISTORY_SUMMARY_DAYS || '730' }}
           RADAR_HISTORY_MAX_SIGNALS: ${{ vars.RADAR_HISTORY_MAX_SIGNALS || '5000' }}
+          PASSIVE_CONTEXT_JOURNAL: data/history/context
+          PASSIVE_CONTEXT_JOURNAL_DAYS: ${{ vars.PASSIVE_CONTEXT_JOURNAL_DAYS || '60' }}
+          URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED: ${{ vars.URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED || 'false' }}
+          RADAR_MISP_FEED_ENABLED: ${{ vars.RADAR_MISP_FEED_ENABLED || 'false' }}
           RADAR_ALLOW_SMALL_SNAPSHOT: ${{ inputs.allow_small_snapshot || 'false' }}
         run: python -m hecavex_radar.sync
       - name: Validate the atomic publication
         run: python -m hecavex_radar.publication
+      - name: Refresh deterministic quality artifacts
+        run: |
+          python -m hecavex_radar.quality_artifacts
+          python -m hecavex_radar.quality_artifacts --check
       - name: Commit a changed snapshot
         env:
           GH_TOKEN: ${{ github.token }}
@@ -90,12 +99,16 @@ jobs:
             public/data/quality-metrics.json \
             public/data/pipeline-health.json \
             public/data/related-observations.json \
+            public/data/misp \
+            public/data/misp-warninglists \
             public/data/feed-manifest.json \
             public/data/schemas \
             public/data/*.sha256 \
             public/data/history.json \
             public/data/signals \
-            data/history
+            data/history \
+            data/coverage/brand-coverage.json \
+            data/review/review-queue.json
           if git diff --cached --quiet; then
             echo "Snapshot is unchanged."
             exit 0

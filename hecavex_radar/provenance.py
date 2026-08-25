@@ -19,6 +19,9 @@ REASON_CODES = frozenset(
         "punycode",
         "different-tld",
         "multiple-hyphens",
+        "unicode-confusable",
+        "mixed-script",
+        "restricted-identifier",
         "hecavex-public-export",
         "manual-review",
         "first-publication",
@@ -64,6 +67,12 @@ def reason_codes_from_match(reasons: Iterable[str]) -> list[ReasonCode]:
             codes.append("different-tld")
         elif lowered == "multiple hyphens":
             codes.append("multiple-hyphens")
+        elif lowered == "unicode confusable skeleton matched a reviewed alias":
+            codes.append("unicode-confusable")
+        elif lowered == "mixed-script identifier":
+            codes.append("mixed-script")
+        elif lowered == "restricted identifier profile":
+            codes.append("restricted-identifier")
     return normalize_reason_codes(codes)
 
 

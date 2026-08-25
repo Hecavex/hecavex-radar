@@ -31,6 +31,7 @@ def registry() -> BrandRegistry:
         entries=[
             BrandEntry(
                 brand="Vinted",
+                last_reviewed_at="2026-08-25",
                 aliases=["vinted"],
                 fuzzy_aliases=["vinted"],
                 excluded_terms=[],

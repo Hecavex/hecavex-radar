@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; worker-src 'none'">
+    <meta name="referrer" content="no-referrer">
+    <title>Reviewed reporting evidence pack | HECAVEX Radar</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">HECAVEX RADAR / LOCAL TOOL</p>
+        <h1>Prepare a reviewed-candidate evidence pack</h1>
+        <p class="lede">Load generated Radar JSON files. The page accepts only an active analyst-confirmed assessment, builds a bounded report manifest, and never sends it.</p>
+      </header>
+      <section aria-labelledby="boundary-title" class="boundary">
+        <h2 id="boundary-title">Local-only boundary</h2>
+        <ul>
+          <li>No network API, report submission, candidate request, cookie, or browser storage is used.</li>
+          <li>Free-form notes and original filenames are excluded to reduce accidental PII disclosure.</li>
+          <li>Optional evidence stays local; only ordinal labels, sizes, media types, and SHA-256 enter the pack.</li>
+        </ul>
+      </section>
+      <form id="pack-form" novalidate>
+        <div class="field-grid">
+          <label>Public Radar snapshot<input id="radar-file" type="file" accept="application/json,.json" required></label>
+          <label>Sanitized review decisions<input id="review-file" type="file" accept="application/json,.json" required></label>
+        </div>
+        <label>Matching public signal-detail sidecar<input id="detail-file" type="file" accept="application/json,.json" required></label>
+        <label>Active reviewed candidate<select id="candidate" disabled required><option value="">Load and validate the three public artifacts first</option></select></label>
+        <label class="file-field">Optional local evidence files<input id="evidence-files" type="file" multiple aria-describedby="file-limits"></label>
+        <p id="file-limits" class="hint">Maximum 20 files, 10 MiB per file and 25 MiB combined.</p>
+        <p id="status" role="status" aria-live="polite">Waiting for generated public artifacts.</p>
+        <div class="actions">
+          <button id="load" type="button">Load reviewed candidates</button>
+          <button type="submit">Build JSON pack</button>
+          <button id="clear" type="button" class="secondary">Clear local form</button>
+        </div>
+      </form>
+      <section aria-labelledby="channels-title" class="channels">
+        <h2 id="channels-title">Reporting channels</h2>
+        <p>The pack is not transmitted automatically. Review it first, then use the relevant provider or registrar abuse channel. Lithuanian phishing websites can be reported through the <a href="https://www.nksc.lt/pranesti-svetaine.html" rel="noopener noreferrer">official NKSC form</a>.</p>
+      </section>
+      <section aria-labelledby="manifest-title">
+        <div class="section-heading"><h2 id="manifest-title">Local manifest preview</h2><button id="download" type="button" disabled>Download JSON</button></div>
+        <pre id="preview" tabindex="0">A manifest has not been built.</pre>
+      </section>
+    </main>
+  </body>
+</html>

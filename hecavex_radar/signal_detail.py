@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import ipaddress
 import json
 import os
@@ -12,7 +13,7 @@ from contextlib import suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
 import tldextract
 
@@ -25,12 +26,20 @@ from .models import (
     PageDetail,
     RadarSignal,
     RawDomainIntelligence,
+    SignalContextChange,
     SignalDetail,
     SignalDomainContext,
     SignalDomainContextRecord,
     SignalObservation,
 )
-from .safety import clean_text, defang_domains_in_text, defang_host, refang, stable_id
+from .safety import (
+    clean_text,
+    defang_domains_in_text,
+    defang_host,
+    refang,
+    safe_reference_url,
+    stable_id,
+)
 
 DETAIL_SOURCES = frozenset({"CertStream", "URLScan"})
 MAXIMUM_DETAIL_BYTES = 16 * 1024
@@ -38,12 +47,67 @@ MAXIMUM_DETAIL_SET_BYTES = 3 * 1024 * 1024
 MAXIMUM_OBSERVATIONS = 2
 MAXIMUM_SAN_SAMPLES = 12
 MAXIMUM_SAN_COUNT = 500
+MAXIMUM_CONTEXT_CHANGES = 6
+MAXIMUM_CONTEXT_JOURNAL_BYTES = 10 * 1024 * 1024
+MAXIMUM_CONTEXT_EVENTS_READ = 5_000
 EMAIL = re.compile(r"(?<![\w.+-])[\w.+-]{1,64}@[a-z\d.-]{1,253}", re.IGNORECASE)
 SCHEME = re.compile(r"\bhttps?://", re.IGNORECASE)
 SLUG = re.compile(r"^[a-z\d]+(?:-[a-z\d]+)*$")
 DETAIL_ID = re.compile(r"^[a-f\d]{20}$")
 DETAIL_PREFIX = re.compile(r"^[a-f\d]{2}$")
 EXTRACT = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None, include_psl_private_domains=True)
+CONTEXT_CHANGE_COMPONENTS = {
+    "first-resolving": "dns",
+    "stopped-resolving": "dns",
+    "dns-a-changed": "dns",
+    "dns-aaaa-changed": "dns",
+    "dns-cname-changed": "dns",
+    "dns-ns-changed": "dns",
+    "dns-mx-changed": "dns",
+    "rdap-registrar-changed": "rdap",
+    "rdap-status-changed": "rdap",
+    "rdap-expiry-changed": "rdap",
+    "urlscan-title-changed": "urlscan",
+    "urlscan-redirect-changed": "urlscan",
+    "urlscan-http-status-changed": "urlscan",
+    "urlscan-ip-changed": "urlscan",
+    "urlscan-asn-changed": "urlscan",
+    "urlscan-primary-html-sha256-changed": "urlscan",
+    "urlscan-certificate-fingerprint-changed": "urlscan",
+    "certificate-reissued": "urlscan",
+}
+CONTEXT_CHANGE_FIELDS = {
+    "first-resolving": frozenset({"a", "aaaa", "cname"}),
+    "stopped-resolving": frozenset({"a", "aaaa", "cname"}),
+    "dns-a-changed": frozenset({"a"}),
+    "dns-aaaa-changed": frozenset({"aaaa"}),
+    "dns-cname-changed": frozenset({"cname"}),
+    "dns-ns-changed": frozenset({"ns"}),
+    "dns-mx-changed": frozenset({"mx"}),
+    "rdap-registrar-changed": frozenset({"registrar"}),
+    "rdap-status-changed": frozenset({"statuses"}),
+    "rdap-expiry-changed": frozenset({"expiresAt"}),
+    "urlscan-title-changed": frozenset({"pageTitle"}),
+    "urlscan-redirect-changed": frozenset({"redirectedToDomain"}),
+    "urlscan-http-status-changed": frozenset({"httpStatus"}),
+    "urlscan-ip-changed": frozenset({"ipAddress"}),
+    "urlscan-asn-changed": frozenset({"asn"}),
+    "urlscan-primary-html-sha256-changed": frozenset({"primaryHtmlSha256"}),
+    "urlscan-certificate-fingerprint-changed": frozenset({"certificateFingerprintSha256"}),
+    "certificate-reissued": frozenset(
+        {
+            "certificateFingerprintSha256",
+            "certificateIssuer",
+            "certificateNotBefore",
+            "certificateNotAfter",
+        }
+    ),
+}
+CONTEXT_SOURCES = {
+    "dns": ("Cloudflare DNS", "https://cloudflare-dns.com/dns-query"),
+    "rdap": ("RDAP", "https://data.iana.org/rdap/dns.json"),
+    "urlscan": ("URLScan", "https://urlscan.io/"),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -341,11 +405,327 @@ def _encoded(detail: SignalDetail) -> bytes:
     return (json.dumps(detail, ensure_ascii=False, separators=(",", ":")) + "\n").encode("utf-8")
 
 
+def _context_component_sha256(value: object) -> str:
+    body = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    if len(body) > 16 * 1024:
+        raise ValueError("Context journal component exceeds 16 KiB.")
+    return hashlib.sha256(body).hexdigest()
+
+
+def _context_event_id(
+    signal_id: str,
+    observed_at: str,
+    component: str,
+    change_type: str,
+    changed_fields: list[str],
+    previous_hash: str,
+    current_hash: str,
+) -> str:
+    material = (
+        f"{signal_id}\n{observed_at}\n{component}\n{change_type}\n"
+        f"{','.join(changed_fields)}\n{previous_hash}\n{current_hash}"
+    )
+    return hashlib.sha256(material.encode("utf-8")).hexdigest()[:32]
+
+
+def _context_resolves(value: Mapping[str, object]) -> bool:
+    return any(isinstance(value.get(field), list) and bool(value[field]) for field in ("a", "aaaa", "cname"))
+
+
+def _context_dns_values(value: Mapping[str, object], field: str) -> list[object]:
+    answers = value.get(field)
+    return cast(list[object], answers) if isinstance(answers, list) else []
+
+
+def _expected_context_changes(
+    component: str,
+    before: Mapping[str, object],
+    after: Mapping[str, object],
+) -> list[tuple[str, list[str]]]:
+    changes: list[tuple[str, list[str]]] = []
+    if component == "dns":
+        resolution_fields = [
+            field
+            for field in ("a", "aaaa", "cname")
+            if _context_dns_values(before, field) != _context_dns_values(after, field)
+        ]
+        before_resolves = _context_resolves(before)
+        after_resolves = _context_resolves(after)
+        if resolution_fields and before_resolves != after_resolves:
+            changes.append(("first-resolving" if after_resolves else "stopped-resolving", resolution_fields))
+        else:
+            for field in resolution_fields:
+                changes.append((f"dns-{field}-changed", [field]))
+        for field in ("ns", "mx"):
+            if _context_dns_values(before, field) != _context_dns_values(after, field):
+                changes.append((f"dns-{field}-changed", [field]))
+    elif component == "rdap":
+        for field, change_type in (
+            ("registrar", "rdap-registrar-changed"),
+            ("statuses", "rdap-status-changed"),
+            ("expiresAt", "rdap-expiry-changed"),
+        ):
+            if before.get(field) != after.get(field):
+                changes.append((change_type, [field]))
+    elif component == "urlscan":
+        for field, change_type in (
+            ("pageTitle", "urlscan-title-changed"),
+            ("redirectedToDomain", "urlscan-redirect-changed"),
+            ("httpStatus", "urlscan-http-status-changed"),
+            ("ipAddress", "urlscan-ip-changed"),
+            ("asn", "urlscan-asn-changed"),
+            ("primaryHtmlSha256", "urlscan-primary-html-sha256-changed"),
+            ("certificateFingerprintSha256", "urlscan-certificate-fingerprint-changed"),
+        ):
+            if before.get(field) != after.get(field):
+                changes.append((change_type, [field]))
+        certificate_fields = [
+            field
+            for field in (
+                "certificateFingerprintSha256",
+                "certificateIssuer",
+                "certificateNotBefore",
+                "certificateNotAfter",
+            )
+            if before.get(field) != after.get(field)
+        ]
+        before_has_certificate = any(before.get(field) is not None for field in certificate_fields)
+        after_has_certificate = any(after.get(field) is not None for field in certificate_fields)
+        if certificate_fields and before_has_certificate and after_has_certificate:
+            changes.append(("certificate-reissued", certificate_fields))
+    return changes
+
+
+def _is_linklike(path: Path) -> bool:
+    return path.is_symlink() or path.is_junction()
+
+
+def _reject_context_journal_links(target: Path, repository: Path) -> None:
+    if _is_linklike(repository):
+        raise ValueError("Context journal refuses a symlinked repository root.")
+    if not target.is_relative_to(repository):
+        raise ValueError("Context journal path escapes the repository.")
+    current = repository
+    for part in target.relative_to(repository).parts:
+        current /= part
+        if _is_linklike(current):
+            raise ValueError(f"Context journal refuses symlinked path component {current.name}.")
+
+
+def load_recent_context_changes(
+    root: str | Path,
+    generated_at: str,
+    *,
+    retention_days: int = 60,
+    allow_urlscan_redistribution: bool = False,
+) -> dict[str, list[dict[str, object]]]:
+    """Load a bounded, public-safe projection of the private change journal."""
+
+    repository = Path(os.path.abspath(Path.cwd()))
+    allowed = Path(os.path.abspath(repository / "data/history/context"))
+    requested = Path(root)
+    journal_root = Path(os.path.abspath(requested if requested.is_absolute() else repository / requested))
+    if journal_root != allowed:
+        raise ValueError("Context journal must be data/history/context.")
+    _reject_context_journal_links(journal_root, repository)
+    generated = _timestamp(generated_at)
+    if generated is None:
+        raise ValueError("Context journal generation time is invalid.")
+    generated_time = datetime.fromisoformat(generated.replace("Z", "+00:00"))
+    retention = min(90, max(30, retention_days))
+    cutoff = generated_time - timedelta(days=retention)
+    grouped: dict[str, list[dict[str, object]]] = {}
+    observed = 0
+    seen_event_ids: set[str] = set()
+    for offset in range(retention):
+        partition = (generated_time.date() - timedelta(days=offset)).isoformat()
+        path = journal_root / partition / "events.ndjson"
+        _reject_context_journal_links(path, repository)
+        try:
+            if path.stat().st_size > MAXIMUM_CONTEXT_JOURNAL_BYTES:
+                raise ValueError("Context journal partition exceeds 10 MiB.")
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except FileNotFoundError:
+            continue
+        if observed + len(lines) > MAXIMUM_CONTEXT_EVENTS_READ:
+            raise ValueError("Context journal exceeds the bounded event-read limit.")
+        for line_number, line in enumerate(lines, start=1):
+            observed += 1
+            try:
+                row: Any = json.loads(
+                    line,
+                    parse_constant=lambda value: (_ for _ in ()).throw(
+                        ValueError(f"Non-finite JSON value {value}.")
+                    ),
+                )
+            except (json.JSONDecodeError, ValueError) as error:
+                raise ValueError(
+                    f"Context journal {partition} line {line_number} is malformed."
+                ) from error
+            if not isinstance(row, dict):
+                raise ValueError(f"Context journal {partition} line {line_number} is not an object.")
+            event_id = row.get("eventId")
+            signal_id = row.get("signalId")
+            domain = row.get("domain")
+            observed_at = _timestamp(row.get("observedAt"))
+            source_observed_at = _timestamp(row.get("sourceObservedAt"))
+            source_reference = row.get("sourceReference")
+            component = row.get("component")
+            change_type = row.get("changeType")
+            fields = row.get("changedFields")
+            previous_hash = row.get("previousHash")
+            current_hash = row.get("currentHash")
+            before = row.get("before")
+            after = row.get("after")
+            if (
+                set(row) != {
+                    "schemaVersion",
+                    "dataset",
+                    "eventId",
+                    "signalId",
+                    "domain",
+                    "observedAt",
+                    "sourceObservedAt",
+                    "sourceReference",
+                    "component",
+                    "changeType",
+                    "changedFields",
+                    "previousHash",
+                    "currentHash",
+                    "before",
+                    "after",
+                }
+                or row.get("schemaVersion") != 2
+                or row.get("dataset") != "radar-context-change"
+                or not isinstance(event_id, str)
+                or not re.fullmatch(r"[a-f\d]{32}", event_id)
+                or not isinstance(signal_id, str)
+                or not DETAIL_ID.fullmatch(signal_id)
+                or not isinstance(domain, str)
+                or stable_id(domain.lower()) != signal_id
+                or observed_at is None
+                or row.get("observedAt") != observed_at
+                or not cutoff
+                <= datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+                <= generated_time + timedelta(minutes=5)
+                or source_observed_at is None
+                or row.get("sourceObservedAt") != source_observed_at
+                or not cutoff
+                <= datetime.fromisoformat(source_observed_at.replace("Z", "+00:00"))
+                <= datetime.fromisoformat(observed_at.replace("Z", "+00:00")) + timedelta(minutes=5)
+                or not isinstance(change_type, str)
+                or CONTEXT_CHANGE_COMPONENTS.get(change_type) != component
+                or not isinstance(fields, list)
+                or not 1 <= len(fields) <= 32
+                or len(fields) != len(set(cast(list[object], fields)))
+                or not all(
+                    isinstance(field, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9]{0,63}", field)
+                    for field in fields
+                )
+                or not set(cast(list[str], fields)).issubset(CONTEXT_CHANGE_FIELDS.get(change_type, frozenset()))
+                or not isinstance(previous_hash, str)
+                or not re.fullmatch(r"[a-f\d]{64}", previous_hash)
+                or not isinstance(current_hash, str)
+                or not re.fullmatch(r"[a-f\d]{64}", current_hash)
+                or not isinstance(before, dict)
+                or not isinstance(after, dict)
+            ):
+                raise ValueError(f"Context journal {partition} line {line_number} violates its contract.")
+            try:
+                computed_previous_hash = _context_component_sha256(before)
+                computed_current_hash = _context_component_sha256(after)
+            except (TypeError, ValueError) as error:
+                raise ValueError(
+                    f"Context journal {partition} line {line_number} has an invalid bounded component."
+                ) from error
+            if previous_hash != computed_previous_hash or current_hash != computed_current_hash:
+                raise ValueError(f"Context journal {partition} line {line_number} has a hash mismatch.")
+            if (
+                change_type,
+                cast(list[str], fields),
+            ) not in _expected_context_changes(cast(str, component), before, after):
+                raise ValueError(f"Context journal {partition} line {line_number} has invalid change semantics.")
+            expected_event_id = _context_event_id(
+                signal_id,
+                observed_at,
+                cast(str, component),
+                change_type,
+                cast(list[str], fields),
+                previous_hash,
+                current_hash,
+            )
+            if event_id != expected_event_id:
+                raise ValueError(f"Context journal {partition} line {line_number} has an invalid event ID.")
+            if event_id in seen_event_ids:
+                raise ValueError("Context journal contains a duplicate event ID.")
+            seen_event_ids.add(event_id)
+            expected_source, expected_reference = CONTEXT_SOURCES[cast(str, component)]
+            if not isinstance(source_reference, str) or (
+                source_reference != expected_reference
+                and not (
+                    component == "urlscan"
+                    and safe_reference_url(source_reference) == source_reference
+                )
+            ):
+                raise ValueError(f"Context journal {partition} line {line_number} has an unsafe source reference.")
+            raw_primary_hashes = after.get("primaryHtmlSha256") if component == "urlscan" else []
+            primary_hashes = (
+                raw_primary_hashes
+                if isinstance(raw_primary_hashes, list)
+                and len(raw_primary_hashes) <= 2
+                and len(raw_primary_hashes) == len(set(cast(list[object], raw_primary_hashes)))
+                and all(
+                    isinstance(digest, str) and re.fullmatch(r"[a-f\d]{64}", digest)
+                    for digest in raw_primary_hashes
+                )
+                else None
+            )
+            certificate_sha256 = after.get("certificateFingerprintSha256") if component == "urlscan" else None
+            if primary_hashes is None or not (
+                certificate_sha256 is None
+                or (isinstance(certificate_sha256, str) and re.fullmatch(r"[a-f\d]{64}", certificate_sha256))
+            ):
+                raise ValueError(f"Context journal {partition} line {line_number} has invalid evidence hashes.")
+            if component == "urlscan" and not allow_urlscan_redistribution:
+                continue
+            grouped.setdefault(signal_id, []).append(
+                {
+                    "eventId": event_id,
+                    "domain": domain,
+                    "observedAt": observed_at,
+                    "sourceObservedAt": source_observed_at,
+                    "sourceReference": source_reference,
+                    "component": component,
+                    "changeType": change_type,
+                    "changedFields": sorted(cast(list[str], fields)),
+                    "previousSha256": previous_hash,
+                    "currentSha256": current_hash,
+                    "primaryHtmlSha256": primary_hashes,
+                    "certificateSha256": certificate_sha256,
+                    "sourceName": expected_source,
+                }
+            )
+    for signal_id, rows in grouped.items():
+        grouped[signal_id] = sorted(
+            rows,
+            key=lambda row: (cast(str, row["observedAt"]), cast(str, row["eventId"])),
+            reverse=True,
+        )[:MAXIMUM_CONTEXT_CHANGES]
+    return grouped
+
+
 def build_signal_details(
     signals: list[RadarSignal],
     intelligence: Iterable[RawDomainIntelligence],
     generated_at: str,
     domain_context: Mapping[str, SignalDomainContextRecord] | None = None,
+    context_changes: Mapping[str, list[dict[str, object]]] | None = None,
 ) -> dict[str, SignalDetail]:
     live = {signal["id"]: signal for signal in signals}
     grouped: dict[str, dict[str, SignalObservation]] = {}
@@ -373,9 +753,10 @@ def build_signal_details(
         signal_id = signal["id"]
         by_source = grouped.get(signal_id)
         context_record = (domain_context or {}).get(signal_id)
+        raw_changes = (context_changes or {}).get(signal_id, [])
         if context_record is not None and context_record["domain"] != signal["domain"]:
             context_record = None
-        if by_source is None and context_record is None:
+        if by_source is None and context_record is None and not raw_changes:
             continue
         observations = sorted(
             by_source.values() if by_source is not None else [],
@@ -397,6 +778,31 @@ def build_signal_details(
                 "registration": context_record["registration"],
             }
             detail["domainContext"] = context
+        changes: list[SignalContextChange] = []
+        for raw_change in raw_changes[:MAXIMUM_CONTEXT_CHANGES]:
+            component = cast(Literal["dns", "rdap", "urlscan"], raw_change["component"])
+            changes.append(
+                {
+                    "eventId": cast(str, raw_change["eventId"]),
+                    "observedAt": cast(str, raw_change["observedAt"]),
+                    "component": component,
+                    "changeType": cast(Any, raw_change["changeType"]),
+                    "changedFields": cast(list[str], raw_change["changedFields"]),
+                    "source": {
+                        "name": cast(Any, raw_change["sourceName"]),
+                        "observedAt": cast(str, raw_change["sourceObservedAt"]),
+                        "referenceUrl": cast(str, raw_change["sourceReference"]),
+                    },
+                    "evidence": {
+                        "previousSha256": cast(str, raw_change["previousSha256"]),
+                        "currentSha256": cast(str, raw_change["currentSha256"]),
+                        "primaryHtmlSha256": cast(list[str], raw_change["primaryHtmlSha256"]),
+                        "certificateSha256": cast(str | None, raw_change["certificateSha256"]),
+                    },
+                }
+            )
+        if changes:
+            detail["contextChanges"] = changes
         detail_bytes = len(_encoded(detail))
         if detail_bytes <= MAXIMUM_DETAIL_BYTES and published_bytes + detail_bytes <= MAXIMUM_DETAIL_SET_BYTES:
             details[signal_id] = detail
@@ -452,6 +858,7 @@ def write_signal_details(root: str | Path, details: dict[str, SignalDetail]) -> 
                             "generatedAt",
                             "observations",
                             "domainContext",
+                            "contextChanges",
                         }
                     )
                     and {
@@ -470,6 +877,7 @@ def write_signal_details(root: str | Path, details: dict[str, SignalDetail]) -> 
                     and existing.get("domain") == detail["domain"]
                     and existing.get("observations") == detail["observations"]
                     and existing.get("domainContext") == detail.get("domainContext")
+                    and existing.get("contextChanges") == detail.get("contextChanges")
                 ):
                     continue
         except FileNotFoundError:

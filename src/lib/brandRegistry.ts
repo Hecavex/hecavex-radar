@@ -2,6 +2,7 @@ import brandRegistry from "../../data/brands-lt.json" with { type: "json" };
 
 export type BrandEntry = {
   brand: string;
+  lastReviewedAt: string;
   aliases: string[];
   fuzzyAliases?: string[];
   excludedTerms?: string[];

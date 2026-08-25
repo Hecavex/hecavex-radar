@@ -1,0 +1,53 @@
+name: Correct an official brand domain
+description: Propose an addition, correction, or removal in the reviewed Lithuanian brand registry.
+title: "[Registry correction] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Registry changes require an authoritative first-party source and maintainer review. This public form never changes the registry automatically. Do not submit private ownership documents or personal data.
+  - type: input
+    id: brand
+    attributes:
+      label: Registry brand name
+    validations:
+      required: true
+  - type: dropdown
+    id: change
+    attributes:
+      label: Requested change
+      options:
+        - add-official-domain
+        - remove-official-domain
+        - add-reviewed-exclusion
+    validations:
+      required: true
+  - type: input
+    id: domain
+    attributes:
+      label: Defanged official domain or exclusion
+      description: Defang every domain name with [.].
+      placeholder: example[.]lt
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Authoritative HTTPS source
+      description: A first-party page that demonstrates brand ownership or official use.
+      placeholder: https://brand.example/official-page
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Sanitized explanation
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-data acknowledgement
+      options:
+        - label: I included no credentials, victim data, personal data, private evidence, or live clickable candidate links.
+          required: true

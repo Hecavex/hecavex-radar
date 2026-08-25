@@ -38,6 +38,9 @@ from .public_schemas import (
     EVENTS_SCHEMA,
     JSON_FEED_SCHEMA,
     MANIFEST_SCHEMA,
+    MISP_EVENT_SCHEMA,
+    MISP_MANIFEST_SCHEMA,
+    MISP_WARNINGLIST_SCHEMA,
     PIPELINE_HEALTH_SCHEMA,
     PUBLIC_SCHEMAS,
     QUALITY_METRICS_SCHEMA,
@@ -48,6 +51,7 @@ from .public_schemas import (
     SCHEMA_BASE,
 )
 from .quality_metrics import build_quality_metrics
+from .sharing import MISP_EVENT_UUID, build_misp_feed, build_official_domain_warninglist
 
 MAXIMUM_DASHBOARD_BYTES = 512 * 1024
 MAXIMUM_SHARD_BYTES = 256 * 1024
@@ -58,6 +62,8 @@ MAXIMUM_AGGREGATE_BYTES = 128 * 1024
 MAXIMUM_BRAND_FEED_DIRECTORY_BYTES = 256 * 1024
 MAXIMUM_QUALITY_BYTES = 256 * 1024
 MAXIMUM_TRENDS_BYTES = 512 * 1024
+MAXIMUM_MISP_BYTES = 2 * 1024 * 1024
+MAXIMUM_WARNINGLIST_BYTES = 512 * 1024
 PUBLIC_DATA = Path("public/data")
 CHECKSUM_SUFFIX = ".sha256"
 RELATION_WINDOW = timedelta(days=7)
@@ -570,6 +576,15 @@ def _public_urlscan_summary(value: object) -> dict[str, object] | None:
     last_attempt_time = _parse_timestamp(last_attempt_at)
     configured = value.get("configured")
     outcome = value.get("lastOutcome")
+    raw_coverage = value.get("checkpointCoverage")
+    if raw_coverage is None:
+        raw_coverage = {
+            "queries": 0,
+            "complete": 0,
+            "partial": 0,
+            "backlog": 0,
+            "oldestBacklogProgressAt": None,
+        }
     if (
         generated_at is None
         or last_attempt_at is None
@@ -578,6 +593,18 @@ def _public_urlscan_summary(value: object) -> dict[str, object] | None:
         or last_attempt_time > generated_time
         or not isinstance(configured, bool)
         or outcome not in {"skipped-not-configured", "completed", "budget-limited", "failed"}
+        or not isinstance(raw_coverage, dict)
+        or set(raw_coverage) != {"queries", "complete", "partial", "backlog", "oldestBacklogProgressAt"}
+    ):
+        return None
+    counts = [raw_coverage.get(field) for field in ("queries", "complete", "partial", "backlog")]
+    oldest = raw_coverage.get("oldestBacklogProgressAt")
+    if (
+        not all(type(item) is int and 0 <= item <= 256 for item in counts)
+        or raw_coverage["complete"] + raw_coverage["partial"] != raw_coverage["queries"]
+        or raw_coverage["backlog"] > raw_coverage["partial"]
+        or (raw_coverage["backlog"] == 0) != (oldest is None)
+        or (oldest is not None and _canonical_public_timestamp(oldest) is None)
     ):
         return None
     return {
@@ -585,6 +612,7 @@ def _public_urlscan_summary(value: object) -> dict[str, object] | None:
         "configured": configured,
         "lastOutcome": outcome,
         "lastAttemptAt": last_attempt_at,
+        "checkpointCoverage": dict(raw_coverage),
     }
 
 
@@ -714,6 +742,7 @@ def build_pipeline_health(
                     "newRecords",
                 ),
                 allowed_outcomes=frozenset({"completed", "partial", "failed"}),
+                failure_codes=True,
             ),
             "domainContext": _public_state_summary(
                 latest_domain_context,
@@ -732,6 +761,7 @@ def _public_state_summary(
     counters: Sequence[str],
     *,
     record_count: bool = False,
+    failure_codes: bool = False,
     allowed_outcomes: frozenset[str] = frozenset({"completed", "partial", "failed", "empty"}),
 ) -> dict[str, object] | None:
     """Expose only bounded operational counters from a private collector state."""
@@ -768,6 +798,24 @@ def _public_state_summary(
         if type(value) is not int or not 0 <= value <= 2_000_000_000:
             return None
         run[field] = value
+    if failure_codes:
+        raw_codes = latest.get("failureCodes", [])
+        allowed_codes = {
+            "provider-timeout",
+            "provider-http",
+            "provider-network",
+            "invalid-response",
+            "validation",
+            "internal",
+        }
+        if (
+            not isinstance(raw_codes, list)
+            or len(raw_codes) > 8
+            or len(raw_codes) != len(set(cast(list[object], raw_codes)))
+            or not all(isinstance(code, str) and code in allowed_codes for code in raw_codes)
+        ):
+            return None
+        run["failureCodes"] = list(raw_codes)
     summary: dict[str, object] = {"generatedAt": generated_at, "latestRun": run}
     if record_count:
         records = state.get("records")
@@ -1064,6 +1112,7 @@ def publish_supplemental_artifacts(
     *,
     history: Mapping[str, object] | None = None,
     review_export: Mapping[str, object] | None = None,
+    misp_enabled: bool = False,
 ) -> list[Path]:
     repository = Path.cwd().resolve()
     generated_at = snapshot.get("lastSuccessfulSyncAt")
@@ -1171,6 +1220,31 @@ def publish_supplemental_artifacts(
         pretty=True,
     )
 
+    assessments = effective_review.get("assessments")
+    misp_manifest, misp_event = build_misp_feed(assessments if misp_enabled else [], generated_at)
+    _validate(misp_manifest, MISP_MANIFEST_SCHEMA, "reviewed MISP manifest")
+    _validate(misp_event, MISP_EVENT_SCHEMA, "reviewed MISP event")
+    misp_manifest_path = _write_json(
+        PUBLIC_DATA / "misp" / "manifest.json",
+        misp_manifest,
+        MAXIMUM_MISP_BYTES,
+        pretty=True,
+    )
+    misp_event_path = _write_json(
+        PUBLIC_DATA / "misp" / f"{MISP_EVENT_UUID}.json",
+        misp_event,
+        MAXIMUM_MISP_BYTES,
+        pretty=True,
+    )
+    warninglist = build_official_domain_warninglist(registry)
+    _validate(warninglist, MISP_WARNINGLIST_SCHEMA, "official-domain MISP warning list")
+    warninglist_path = _write_json(
+        PUBLIC_DATA / "misp-warninglists" / "hecavex-official-domains" / "list.json",
+        warninglist,
+        MAXIMUM_WARNINGLIST_BYTES,
+        pretty=True,
+    )
+
     quality = build_quality_metrics(effective_review, effective_history, generated_at)
     _validate(quality, QUALITY_METRICS_SCHEMA, "quality metrics")
     quality_path = _write_json(
@@ -1203,6 +1277,11 @@ def publish_supplemental_artifacts(
         PUBLIC_DATA / "brand-feeds.json": f"{SCHEMA_BASE}brand-feeds-v1.schema.json",
         PUBLIC_DATA / "quality-metrics.json": f"{SCHEMA_BASE}quality-metrics-v1.schema.json",
         PUBLIC_DATA / "daily-trends.json": f"{SCHEMA_BASE}daily-trends-v1.schema.json",
+        PUBLIC_DATA / "misp" / "manifest.json": f"{SCHEMA_BASE}misp-manifest-v1.schema.json",
+        PUBLIC_DATA / "misp" / f"{MISP_EVENT_UUID}.json": f"{SCHEMA_BASE}misp-event-v1.schema.json",
+        PUBLIC_DATA / "misp-warninglists" / "hecavex-official-domains" / "list.json": (
+            f"{SCHEMA_BASE}misp-warninglist-v1.schema.json"
+        ),
     }
     for path in brand_paths:
         relative = path.relative_to(repository)
@@ -1232,6 +1311,9 @@ def publish_supplemental_artifacts(
         brand_directory_path,
         quality_path,
         trends_path,
+        misp_manifest_path,
+        misp_event_path,
+        warninglist_path,
         *brand_paths,
         manifest_path,
         *schema_paths,
@@ -1259,10 +1341,36 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         PUBLIC_DATA / "brand-feeds.json": (BRAND_FEEDS_SCHEMA, MAXIMUM_BRAND_FEED_DIRECTORY_BYTES),
         PUBLIC_DATA / "quality-metrics.json": (QUALITY_METRICS_SCHEMA, MAXIMUM_QUALITY_BYTES),
         PUBLIC_DATA / "daily-trends.json": (DAILY_TRENDS_SCHEMA, MAXIMUM_TRENDS_BYTES),
+        PUBLIC_DATA / "misp" / "manifest.json": (MISP_MANIFEST_SCHEMA, MAXIMUM_MISP_BYTES),
+        PUBLIC_DATA / "misp" / f"{MISP_EVENT_UUID}.json": (MISP_EVENT_SCHEMA, MAXIMUM_MISP_BYTES),
+        PUBLIC_DATA / "misp-warninglists" / "hecavex-official-domains" / "list.json": (
+            MISP_WARNINGLIST_SCHEMA,
+            MAXIMUM_WARNINGLIST_BYTES,
+        ),
         PUBLIC_DATA / "feed-manifest.json": (MANIFEST_SCHEMA, 256 * 1024),
     }
     for relative, (schema, maximum) in schema_targets.items():
         _validate(_load_required_json(repository / relative, maximum), schema, relative.as_posix())
+    misp_manifest = cast(
+        dict[str, object],
+        _load_required_json(repository / PUBLIC_DATA / "misp" / "manifest.json", MAXIMUM_MISP_BYTES),
+    )
+    misp_event_path = repository / PUBLIC_DATA / "misp" / f"{MISP_EVENT_UUID}.json"
+    misp_event = cast(dict[str, object], _load_required_json(misp_event_path, MAXIMUM_MISP_BYTES))
+    misp_event_row = cast(dict[str, object], misp_event["Event"])
+    misp_attributes = cast(list[object], misp_event_row["Attribute"])
+    if misp_attributes:
+        if set(misp_manifest) != {MISP_EVENT_UUID} or misp_event_row["published"] is not True:
+            raise ValueError("A non-empty reviewed MISP event must be published and indexed exactly once.")
+        misp_manifest_row = cast(dict[str, object], misp_manifest[MISP_EVENT_UUID])
+        if (
+            misp_event_row["uuid"] != MISP_EVENT_UUID
+            or misp_manifest_row["Orgc"] != misp_event_row["Orgc"]
+            or misp_manifest_row["integrity:sha256"] != _sha256(misp_event_path)
+        ):
+            raise ValueError("Reviewed MISP manifest metadata or event integrity does not match its event file.")
+    elif misp_manifest or misp_event_row["published"] is not False:
+        raise ValueError("An empty reviewed MISP event must remain unpublished and absent from its manifest.")
     for name, expected_schema in PUBLIC_SCHEMAS.items():
         Draft202012Validator.check_schema(expected_schema)
         published_schema = _load_required_json(repository / PUBLIC_DATA / "schemas" / name, 128 * 1024)
@@ -1389,6 +1497,11 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         "/data/brand-feeds.json": f"{SCHEMA_BASE}brand-feeds-v1.schema.json",
         "/data/quality-metrics.json": f"{SCHEMA_BASE}quality-metrics-v1.schema.json",
         "/data/daily-trends.json": f"{SCHEMA_BASE}daily-trends-v1.schema.json",
+        "/data/misp/manifest.json": f"{SCHEMA_BASE}misp-manifest-v1.schema.json",
+        f"/data/misp/{MISP_EVENT_UUID}.json": f"{SCHEMA_BASE}misp-event-v1.schema.json",
+        "/data/misp-warninglists/hecavex-official-domains/list.json": (
+            f"{SCHEMA_BASE}misp-warninglist-v1.schema.json"
+        ),
         **{f"/data/schemas/{name}": None for name in PUBLIC_SCHEMAS},
     }
     brand_directory = cast(

@@ -13,6 +13,18 @@ These are the public matching rules used by the HECAVEX-operated [radar.hecavex.
 
 A different top-level domain or repeated hyphens can increase a score only after valid brand evidence exists. The default minimum for CertStream collection and URLScan domain hunts is 80. Confidence is a ranking score from the public rules, not a probability.
 
+## Unicode handling
+
+Internationalized hostnames are normalized with the pinned `idna==3.19` implementation of UTS #46 in nontransitional mode with STD3 rules. Confusable and script evidence is derived from the pinned `confusable-homoglyphs==3.3.1` UTS #39 data. This makes Unicode behavior reviewable and repeatable across the collectors, archive revalidation, and synchronization.
+
+The public matcher can emit three bounded Unicode-related reason codes after a reviewed brand alias is identified:
+
+- `unicode-confusable` means an internal confusable skeleton matched a reviewed alias;
+- `mixed-script` means the relevant identifier combines scripts; and
+- `restricted-identifier` means Radar's conservative alias-confusable heuristic observed an identifier outside the expected Latin-only profile.
+
+The confusable skeleton is internal comparison material and is never displayed or published. `restricted-identifier` is not an implementation of Unicode's formal restriction-level algorithm and must not be described as one. Unicode evidence can strengthen a qualifying same-brand match, but it never establishes phishing, malicious intent, or a review disposition by itself.
+
 CertStream and URLScan observations remain `suspected`. A CertStream candidate does not need a corresponding URLScan report: after it passes the current brand rules and CertStream match-score threshold, it is eligible for the public candidate list with evidence fields left empty. A later URLScan observation can enrich and merge with that row. A URLScan phishing verdict can raise `matchScore` and `evidenceTier` but cannot establish current liveness or replace same-brand evidence. Only a configured HECAVEX export can publish lifecycle states such as `active`, `offline`, or `mitigated`; only an explicitly exported analyst assessment can set review disposition.
 
 ## Archive revalidation
@@ -37,5 +49,15 @@ An operator-added candidate is not a verdict override. It must independently pro
 - Add `excludedTerms` only for demonstrated lexical collisions, and validate the full false-positive hostname before publication.
 - Enable `fuzzyAliases` only after reviewed positive and negative validation cases succeed.
 - Do not globally allowlist shared hosting services such as `pages.dev` or `workers.dev`; attackers can obtain subdomains there.
+
+Every registry entry carries `lastReviewedAt`, making the age of the official-domain and alias review explicit. The deterministic ledger at `data/coverage/brand-coverage.json` combines that registry state with bounded CT/CertStream activity, URLScan asset support, matcher-corpus coverage, and public review outcomes. It makes a zero-signal brand interpretable; it does not measure phishing prevalence or prove complete source coverage.
+
+The deterministic worklist at `data/review/review-queue.json` balances current public candidates across source, brand, score band, evidence tier, reason code, and age. It is not a random sample and does not become a decision until an analyst separately records and intentionally exports an assessment.
+
+## Matcher regression corpus
+
+`data/matcher/lithuanian-brands-v1.json` is the versioned CI contract for the public matcher. It contains only reserved-domain synthetic examples and reviewed official domains, never active victim URLs. Each case declares the expected brand, score range, reason codes, or an explicit rejection reason. CI executes the corpus through the same matcher used by collection and synchronization, including collision, fuzzy, Unicode, and official-domain suppression cases.
+
+The corpus is a bounded regression set, not proof that every Lithuanian brand, spelling variation, script combination, or future false positive is covered. New matcher behavior should add both positive and negative cases before it is accepted.
 
 Microsoft documents the suppressed rewrite zones in [Defender for Cloud Apps proxy troubleshooting](https://learn.microsoft.com/en-us/defender-cloud-apps/troubleshooting-proxy-url).
