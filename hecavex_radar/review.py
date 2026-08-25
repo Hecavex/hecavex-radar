@@ -9,7 +9,7 @@ import secrets
 import sqlite3
 import sys
 import tempfile
-from contextlib import suppress
+from contextlib import closing, suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -23,7 +23,7 @@ from .brands import (
     resolve_brand_name,
     score_domain,
 )
-from .models import RawSignal
+from .models import LithuanianRelevance, RadarSignal, RawSignal, ReviewState
 from .provenance import normalize_reason_codes, reason_codes_from_match
 from .safety import defang_host, parse_and_defang_url, refang, stable_id
 
@@ -32,7 +32,20 @@ MAXIMUM_PUBLIC_RECORDS = 2_500
 MAXIMUM_NOTE_CHARACTERS = 2_000
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 DECISION_ID = re.compile(r"^[a-f\d]{24}$")
-LOCAL_ACTIONS = frozenset({"false-positive", "restore", "allowlist", "unallowlist", "add", "remove"})
+LOCAL_ACTIONS = frozenset(
+    {
+        "false-positive",
+        "restore",
+        "allowlist",
+        "unallowlist",
+        "add",
+        "remove",
+        "confirm",
+        "correct",
+        "retract",
+        "inconclusive",
+    }
+)
 SUPPRESSION_REASONS = frozenset(
     {
         "legitimate-domain",
@@ -44,6 +57,51 @@ SUPPRESSION_REASONS = frozenset(
     }
 )
 ADD_REASON = "manual-observation"
+REVIEW_STATES = frozenset(
+    {
+        "unreviewed",
+        "needs-review",
+        "confirmed-suspicious",
+        "false-positive",
+        "benign-brand-reference",
+        "inconclusive",
+    }
+)
+LT_RELEVANCE = frozenset(
+    {
+        "lithuanian-targeting",
+        "lithuanian-brand-relevance",
+        "global-brand-reference",
+        "unknown",
+    }
+)
+CONFIRMATION_REASONS = frozenset(
+    {
+        "credential-phishing",
+        "brand-impersonation",
+        "malicious-redirect",
+        "phishing-infrastructure",
+        "analyst-confirmed",
+    }
+)
+INCONCLUSIVE_REASONS = frozenset({"insufficient-evidence", "conflicting-evidence", "review-expired"})
+RETRACTION_REASONS = frozenset({"incorrect-assessment", "superseded-evidence", "benign-after-review"})
+ASSESSMENT_REASONS = CONFIRMATION_REASONS | INCONCLUSIVE_REASONS | RETRACTION_REASONS
+EVIDENCE_CODES = frozenset(
+    {
+        "certificate-transparency",
+        "urlscan-page",
+        "provider-verdict",
+        "screenshot",
+        "primary-html-hash",
+        "favicon-hash",
+        "javascript-hash",
+        "certificate",
+        "dns",
+        "rdap",
+        "manual-observation",
+    }
+)
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -62,16 +120,34 @@ class PublicCandidate(TypedDict):
     domain: str
     observedAt: str
     brand: str
+    matchScore: int
     confidence: int
     reasonCodes: list[str]
 
 
+class PublicAssessment(TypedDict):
+    id: str
+    signalId: str
+    domain: str
+    brand: str
+    reviewState: ReviewState
+    dispositionReason: str
+    evidenceCodes: list[str]
+    ltRelevance: LithuanianRelevance
+    reviewedAt: str
+    modifiedAt: str
+    expiresAt: str | None
+    analystConfidence: int | None
+    revoked: bool
+
+
 class PublicReviewExport(TypedDict):
-    schemaVersion: Literal[1]
+    schemaVersion: Literal[2]
     dataset: Literal["radar-review-decisions"]
     generatedAt: str
     suppressions: list[PublicSuppression]
     candidates: list[PublicCandidate]
+    assessments: list[PublicAssessment]
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,6 +163,12 @@ class LocalReviewEvent:
     reason_code: str | None
     confidence: int | None
     note: str | None
+    review_state: str | None
+    evidence_codes: tuple[str, ...]
+    expires_at: str | None
+    lt_relevance: str | None
+    analyst_confidence: int | None
+    reviewed_at: str | None
 
 
 @dataclass(slots=True)
@@ -94,12 +176,15 @@ class LocalReviewState:
     false_positives: dict[str, LocalReviewEvent]
     allowlists: dict[str, LocalReviewEvent]
     candidates: dict[str, LocalReviewEvent]
+    assessments: dict[str, LocalReviewEvent]
+    assessment_lifecycles: dict[tuple[str, str], LocalReviewEvent]
 
 
 @dataclass(frozen=True, slots=True)
 class PublicReviewPolicy:
     suppressions: tuple[PublicSuppression, ...]
     candidates: tuple[PublicCandidate, ...]
+    assessments: tuple[PublicAssessment, ...] = ()
 
     def suppresses(self, domain: str, brand: str | None) -> bool:
         normalized = normalize_domain(refang(domain))
@@ -127,10 +212,45 @@ class PublicReviewPolicy:
                 brand=candidate["brand"],
                 confidence=float(candidate["confidence"]),
                 reason_codes=candidate["reasonCodes"],
+                discovered_via=["hecavex-review"],
             )
             for candidate in self.candidates
             if not self.suppresses(candidate["domain"], candidate["brand"])
         ]
+
+    def apply_assessments(self, signals: list[RadarSignal], now: datetime) -> None:
+        """Attach sanitized analyst state to rows without changing source status."""
+
+        # The public export retains the terminal version of every lifecycle so a
+        # revoked STIX object cannot disappear after a later confirmation.  The
+        # dashboard needs only the newest lifecycle for each current signal.
+        by_signal: dict[str, PublicAssessment] = {}
+        for lifecycle in self.assessments:
+            current = by_signal.get(lifecycle["signalId"])
+            assessment_order = (lifecycle["modifiedAt"], lifecycle["reviewedAt"], lifecycle["id"])
+            current_order = (
+                (current["modifiedAt"], current["reviewedAt"], current["id"])
+                if current is not None
+                else ("", "", "")
+            )
+            if assessment_order > current_order:
+                by_signal[lifecycle["signalId"]] = lifecycle
+        for signal in signals:
+            selected = by_signal.get(signal["id"])
+            if selected is None or selected["domain"] != signal["domain"] or selected["brand"] != signal["brand"]:
+                continue
+            expires_at = _timestamp(selected["expiresAt"])
+            state: ReviewState = selected["reviewState"]
+            if selected["revoked"]:
+                state = "inconclusive"
+            elif state == "confirmed-suspicious" and expires_at is not None and expires_at <= now.astimezone(UTC):
+                state = "needs-review"
+            signal["reviewState"] = state
+            signal["evidenceTier"] = "reviewed"
+            signal["ltRelevance"] = selected["ltRelevance"]
+            methods = signal.get("corroboratedBy", [])
+            if "analyst-review" not in methods:
+                signal["corroboratedBy"] = [*methods, "analyst-review"]
 
 
 def _now() -> str:
@@ -162,7 +282,7 @@ def _default_database_path() -> Path:
 
 
 def _database_path(value: str | Path | None) -> Path:
-    target = (Path(value).expanduser().resolve() if value is not None else _default_database_path())
+    target = Path(value).expanduser().resolve() if value is not None else _default_database_path()
     repository = PROJECT_ROOT
     if target == repository or target.is_relative_to(repository):
         raise ValueError("The private review database must be stored outside the Git repository.")
@@ -192,6 +312,21 @@ def _connect(path: Path) -> sqlite3.Connection:
         )
         """
     )
+    # SQLite has no portable ADD COLUMN IF NOT EXISTS. This bounded migration
+    # keeps existing private ledgers readable while preserving their event rows.
+    existing_columns = {
+        cast(str, row["name"]) for row in connection.execute("PRAGMA table_info(review_events)").fetchall()
+    }
+    for name, declaration in (
+        ("review_state", "TEXT"),
+        ("evidence_codes", "TEXT"),
+        ("expires_at", "TEXT"),
+        ("lt_relevance", "TEXT"),
+        ("analyst_confidence", "INTEGER"),
+        ("reviewed_at", "TEXT"),
+    ):
+        if name not in existing_columns:
+            connection.execute(f"ALTER TABLE review_events ADD COLUMN {name} {declaration}")  # noqa: S608
     connection.execute(
         """
         CREATE TRIGGER IF NOT EXISTS review_events_no_update
@@ -231,6 +366,12 @@ def record_review_event(
     confidence: int | None = None,
     note: str | None = None,
     recorded_at: str | None = None,
+    review_state: str | None = None,
+    evidence_codes: tuple[str, ...] | list[str] = (),
+    expires_at: str | None = None,
+    lt_relevance: str | None = None,
+    analyst_confidence: int | None = None,
+    reviewed_at: str | None = None,
 ) -> LocalReviewEvent:
     if action not in LOCAL_ACTIONS:
         raise ValueError("Unknown review action.")
@@ -242,6 +383,19 @@ def record_review_event(
         raise ValueError("Review scope must be exact or subdomains.")
     if confidence is not None and (type(confidence) is not int or not 0 <= confidence <= 100):
         raise ValueError("Review confidence must be an integer from 0 to 100.")
+    canonical_evidence = tuple(sorted(set(evidence_codes)))
+    if review_state is not None and review_state not in REVIEW_STATES:
+        raise ValueError("Review state is not supported.")
+    if any(code not in EVIDENCE_CODES for code in canonical_evidence):
+        raise ValueError("Review evidence contains an unsupported code.")
+    if expires_at is not None and _timestamp(expires_at) is None:
+        raise ValueError("Review expiry must be a canonical UTC timestamp.")
+    if lt_relevance is not None and lt_relevance not in LT_RELEVANCE:
+        raise ValueError("Lithuanian relevance is not supported.")
+    if analyst_confidence is not None and (type(analyst_confidence) is not int or not 0 <= analyst_confidence <= 100):
+        raise ValueError("Analyst confidence must be an integer from 0 to 100.")
+    if reviewed_at is not None and _timestamp(reviewed_at) is None:
+        raise ValueError("Review origin must be a canonical UTC timestamp.")
     canonical = json.dumps(
         {
             "recordedAt": timestamp,
@@ -252,6 +406,12 @@ def record_review_event(
             "scope": scope,
             "reasonCode": reason_code,
             "confidence": confidence,
+            "reviewState": review_state,
+            "evidenceCodes": canonical_evidence,
+            "expiresAt": expires_at,
+            "ltRelevance": lt_relevance,
+            "analystConfidence": analyst_confidence,
+            "reviewedAt": reviewed_at,
             "nonce": secrets.token_hex(8),
         },
         ensure_ascii=False,
@@ -260,12 +420,13 @@ def record_review_event(
     )
     event_id = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     path = _database_path(database)
-    with _connect(path) as connection:
+    with closing(_connect(path)) as connection, connection:
         cursor = connection.execute(
             """
             INSERT INTO review_events (
-                event_id, recorded_at, action, domain, url, brand, scope, reason_code, confidence, note
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                event_id, recorded_at, action, domain, url, brand, scope, reason_code, confidence, note,
+                review_state, evidence_codes, expires_at, lt_relevance, analyst_confidence, reviewed_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 event_id,
@@ -278,6 +439,12 @@ def record_review_event(
                 reason_code,
                 confidence,
                 _clean_note(note),
+                review_state,
+                json.dumps(canonical_evidence, separators=(",", ":")),
+                expires_at,
+                lt_relevance,
+                analyst_confidence,
+                reviewed_at,
             ),
         )
         if cursor.lastrowid is None:
@@ -295,6 +462,12 @@ def record_review_event(
         reason_code=reason_code,
         confidence=confidence,
         note=_clean_note(note),
+        review_state=review_state,
+        evidence_codes=canonical_evidence,
+        expires_at=expires_at,
+        lt_relevance=lt_relevance,
+        analyst_confidence=analyst_confidence,
+        reviewed_at=reviewed_at,
     )
 
 
@@ -302,11 +475,12 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
     path = _database_path(database)
     if not path.exists():
         return []
-    with _connect(path) as connection:
+    with closing(_connect(path)) as connection, connection:
         rows = connection.execute(
             """
             SELECT sequence, event_id, recorded_at, action, domain, url, brand, scope,
-                   reason_code, confidence, note
+                   reason_code, confidence, note, review_state, evidence_codes,
+                   expires_at, lt_relevance, analyst_confidence, reviewed_at
             FROM review_events ORDER BY sequence ASC
             """
         ).fetchall()
@@ -314,6 +488,19 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
     for row in rows:
         if row["action"] not in LOCAL_ACTIONS or normalize_domain(row["domain"]) != row["domain"]:
             raise ValueError("Private review database contains an invalid event.")
+        try:
+            raw_evidence: Any = json.loads(row["evidence_codes"] or "[]")
+        except json.JSONDecodeError as error:
+            raise ValueError("Private review database contains invalid evidence metadata.") from error
+        evidence_codes = (
+            tuple(raw_evidence)
+            if isinstance(raw_evidence, list) and all(isinstance(item, str) for item in raw_evidence)
+            else ()
+        )
+        if tuple(sorted(set(evidence_codes))) != evidence_codes or any(
+            code not in EVIDENCE_CODES for code in evidence_codes
+        ):
+            raise ValueError("Private review database contains unsupported evidence metadata.")
         events.append(
             LocalReviewEvent(
                 sequence=row["sequence"],
@@ -327,13 +514,25 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
                 reason_code=row["reason_code"],
                 confidence=row["confidence"],
                 note=row["note"],
+                review_state=row["review_state"],
+                evidence_codes=evidence_codes,
+                expires_at=row["expires_at"],
+                lt_relevance=row["lt_relevance"],
+                analyst_confidence=row["analyst_confidence"],
+                reviewed_at=row["reviewed_at"],
             )
         )
     return events
 
 
 def review_state(events: list[LocalReviewEvent]) -> LocalReviewState:
-    state = LocalReviewState(false_positives={}, allowlists={}, candidates={})
+    state = LocalReviewState(
+        false_positives={},
+        allowlists={},
+        candidates={},
+        assessments={},
+        assessment_lifecycles={},
+    )
     for event in events:
         if event.action == "false-positive":
             state.false_positives[event.domain] = event
@@ -347,6 +546,10 @@ def review_state(events: list[LocalReviewEvent]) -> LocalReviewState:
             state.candidates[event.domain] = event
         elif event.action == "remove":
             state.candidates.pop(event.domain, None)
+        elif event.action in {"confirm", "correct", "retract", "inconclusive"}:
+            state.assessments[event.domain] = event
+            if event.reviewed_at is not None:
+                state.assessment_lifecycles[(event.domain, event.reviewed_at)] = event
     return state
 
 
@@ -385,10 +588,59 @@ def _candidate(event: LocalReviewEvent, registry: BrandRegistry) -> PublicCandid
         "domain": safe_url.display_domain,
         "observedAt": event.recorded_at,
         "brand": match.brand,
+        "matchScore": event.confidence,
         "confidence": event.confidence,
         "reasonCodes": reasons,
     }
     return cast(PublicCandidate, {"id": _decision_identifier(payload), **payload})
+
+
+def _assessment(event: LocalReviewEvent, registry: BrandRegistry) -> PublicAssessment | None:
+    match = score_domain(event.domain, registry)
+    reviewed_at = _timestamp(event.reviewed_at)
+    modified_at = _timestamp(event.recorded_at)
+    expires_at = _timestamp(event.expires_at) if event.expires_at is not None else None
+    if (
+        match is None
+        or event.brand != match.brand
+        or event.review_state not in REVIEW_STATES
+        or event.review_state in {"unreviewed", "false-positive", "benign-brand-reference"}
+        or event.reason_code not in ASSESSMENT_REASONS
+        or event.lt_relevance not in LT_RELEVANCE
+        or reviewed_at is None
+        or modified_at is None
+        or reviewed_at > modified_at
+        or (expires_at is not None and expires_at <= reviewed_at)
+        or (event.action in {"confirm", "correct", "retract"} and expires_at is None)
+        or (event.action in {"confirm", "correct", "retract"} and not event.evidence_codes)
+        or (event.action in {"confirm", "correct"} and event.review_state != "confirmed-suspicious")
+        or (event.action in {"retract", "inconclusive"} and event.review_state != "inconclusive")
+    ):
+        return None
+    signal_id = stable_id(defang_host(event.domain).lower())
+    identity: dict[str, object] = {
+        "signalId": signal_id,
+        "domain": defang_host(event.domain),
+        "reviewedAt": event.reviewed_at,
+    }
+    return cast(
+        PublicAssessment,
+        {
+            "id": _decision_identifier(identity),
+            "signalId": signal_id,
+            "domain": defang_host(event.domain),
+            "brand": match.brand,
+            "reviewState": cast(ReviewState, event.review_state),
+            "dispositionReason": event.reason_code,
+            "evidenceCodes": list(event.evidence_codes),
+            "ltRelevance": cast(LithuanianRelevance, event.lt_relevance),
+            "reviewedAt": cast(str, event.reviewed_at),
+            "modifiedAt": event.recorded_at,
+            "expiresAt": event.expires_at,
+            "analystConfidence": event.analyst_confidence,
+            "revoked": event.action == "retract",
+        },
+    )
 
 
 def build_public_export(
@@ -397,7 +649,8 @@ def build_public_export(
     generated_at: str | None = None,
 ) -> PublicReviewExport:
     timestamp = generated_at or _now()
-    if _timestamp(timestamp) is None:
+    timestamp_value = _timestamp(timestamp)
+    if timestamp_value is None:
         raise ValueError("Public review export timestamp is invalid.")
     suppression_by_id = {
         suppression["id"]: suppression
@@ -420,12 +673,25 @@ def build_public_export(
     candidates.sort(key=lambda item: (item["domain"], item["id"]))
     if len(candidates) > MAXIMUM_PUBLIC_RECORDS:
         raise ValueError("Sanitized review export contains too many manual candidates.")
+    assessments: list[PublicAssessment] = []
+    for event in state.assessment_lifecycles.values():
+        assessment = _assessment(event, registry)
+        if assessment is None:
+            raise ValueError("A private assessment cannot be represented by the sanitized public contract.")
+        modified = _timestamp(assessment["modifiedAt"])
+        if modified is None or modified > timestamp_value + timedelta(minutes=5):
+            raise ValueError("A private assessment is future-dated relative to the public export.")
+        assessments.append(assessment)
+    assessments.sort(key=lambda item: (item["domain"], item["reviewedAt"], item["id"]))
+    if len(assessments) > MAXIMUM_PUBLIC_RECORDS:
+        raise ValueError("Sanitized review export contains too many assessments.")
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "dataset": "radar-review-decisions",
         "generatedAt": timestamp,
         "suppressions": suppressions,
         "candidates": candidates,
+        "assessments": assessments,
     }
 
 
@@ -517,7 +783,7 @@ def _valid_suppression(value: object, registry: BrandRegistry) -> bool:
 
 
 def _valid_candidate(value: object, registry: BrandRegistry, now: datetime) -> bool:
-    if not isinstance(value, dict) or set(value) != {
+    legacy_fields = {
         "id",
         "signalId",
         "url",
@@ -526,13 +792,16 @@ def _valid_candidate(value: object, registry: BrandRegistry, now: datetime) -> b
         "brand",
         "confidence",
         "reasonCodes",
-    }:
+    }
+    current_fields = legacy_fields | {"matchScore"}
+    if not isinstance(value, dict) or frozenset(value) not in {frozenset(legacy_fields), frozenset(current_fields)}:
         return False
     safe_url = parse_and_defang_url(refang(value.get("url", ""))) if isinstance(value.get("url"), str) else None
     observed = _timestamp(value.get("observedAt"))
     match = score_domain(refang(value.get("domain", "")), registry) if isinstance(value.get("domain"), str) else None
     reasons = value.get("reasonCodes")
-    fields = ("signalId", "url", "domain", "observedAt", "brand", "confidence", "reasonCodes")
+    score = value.get("matchScore", value.get("confidence"))
+    fields = tuple(key for key in value if key != "id")
     payload = {key: value[key] for key in fields}
     return bool(
         safe_url
@@ -543,14 +812,74 @@ def _valid_candidate(value: object, registry: BrandRegistry, now: datetime) -> b
         and observed <= now.astimezone(UTC) + timedelta(minutes=5)
         and match is not None
         and value.get("brand") == match.brand
-        and type(value.get("confidence")) is int
-        and 0 <= value["confidence"] <= match.confidence
+        and type(score) is int
+        and 0 <= score <= match.confidence
+        and value.get("confidence") == score
         and isinstance(reasons, list)
         and "manual-review" in reasons
         and reasons == normalize_reason_codes(reasons)
         and isinstance(value.get("id"), str)
         and DECISION_ID.fullmatch(value["id"])
         and value["id"] == _decision_identifier(payload)
+    )
+
+
+def _valid_assessment(value: object, registry: BrandRegistry, now: datetime) -> bool:
+    fields = {
+        "id",
+        "signalId",
+        "domain",
+        "brand",
+        "reviewState",
+        "dispositionReason",
+        "evidenceCodes",
+        "ltRelevance",
+        "reviewedAt",
+        "modifiedAt",
+        "expiresAt",
+        "analystConfidence",
+        "revoked",
+    }
+    if not isinstance(value, dict) or set(value) != fields:
+        return False
+    domain_value = value.get("domain")
+    normalized = normalize_domain(refang(domain_value)) if isinstance(domain_value, str) else None
+    match = score_domain(normalized, registry) if normalized else None
+    reviewed_at = _timestamp(value.get("reviewedAt"))
+    modified_at = _timestamp(value.get("modifiedAt"))
+    expires_at = _timestamp(value.get("expiresAt")) if value.get("expiresAt") is not None else None
+    evidence = value.get("evidenceCodes")
+    analyst_confidence = value.get("analystConfidence")
+    identity = {
+        "signalId": value.get("signalId"),
+        "domain": value.get("domain"),
+        "reviewedAt": value.get("reviewedAt"),
+    }
+    return bool(
+        normalized
+        and domain_value == defang_host(normalized)
+        and value.get("signalId") == stable_id(domain_value.lower())
+        and match is not None
+        and value.get("brand") == match.brand
+        and value.get("reviewState") in REVIEW_STATES
+        and value.get("reviewState") not in {"unreviewed", "false-positive", "benign-brand-reference"}
+        and value.get("dispositionReason") in ASSESSMENT_REASONS
+        and isinstance(evidence, list)
+        and evidence == sorted(set(evidence))
+        and all(isinstance(item, str) and item in EVIDENCE_CODES for item in evidence)
+        and (value.get("reviewState") == "inconclusive" or bool(evidence))
+        and value.get("ltRelevance") in LT_RELEVANCE
+        and reviewed_at is not None
+        and modified_at is not None
+        and reviewed_at <= modified_at <= now.astimezone(UTC) + timedelta(minutes=5)
+        and (expires_at is None or expires_at > reviewed_at)
+        and (analyst_confidence is None or (type(analyst_confidence) is int and 0 <= analyst_confidence <= 100))
+        and type(value.get("revoked")) is bool
+        and (not value["revoked"] or value.get("reviewState") == "inconclusive")
+        and (value.get("reviewState") == "inconclusive" and not value["revoked"] or expires_at is not None)
+        and isinstance(value.get("id"), str)
+        and DECISION_ID.fullmatch(value["id"])
+        and value["id"] == _decision_identifier(identity)
     )
 
 
@@ -571,27 +900,48 @@ def load_public_review(
         raise ValueError("Sanitized review export is invalid JSON.") from error
     brand_registry = registry or load_brand_registry(PROJECT_ROOT / "data/brands-lt.json")
     reference = now or datetime.now(UTC)
+    schema_version = value.get("schemaVersion") if isinstance(value, dict) else None
+    expected_keys = (
+        {"schemaVersion", "dataset", "generatedAt", "suppressions", "candidates"}
+        if schema_version == 1
+        else {"schemaVersion", "dataset", "generatedAt", "suppressions", "candidates", "assessments"}
+    )
     if (
         not isinstance(value, dict)
-        or set(value) != {"schemaVersion", "dataset", "generatedAt", "suppressions", "candidates"}
-        or value.get("schemaVersion") != 1
+        or set(value) != expected_keys
+        or schema_version not in {1, 2}
         or value.get("dataset") != "radar-review-decisions"
         or _timestamp(value.get("generatedAt")) is None
         or not isinstance(value.get("suppressions"), list)
         or not isinstance(value.get("candidates"), list)
+        or (schema_version == 2 and not isinstance(value.get("assessments"), list))
         or len(value["suppressions"]) > MAXIMUM_PUBLIC_RECORDS
         or len(value["candidates"]) > MAXIMUM_PUBLIC_RECORDS
+        or (schema_version == 2 and len(value["assessments"]) > MAXIMUM_PUBLIC_RECORDS)
         or not all(_valid_suppression(item, brand_registry) for item in value["suppressions"])
         or not all(_valid_candidate(item, brand_registry, reference) for item in value["candidates"])
+        or (
+            schema_version == 2
+            and not all(_valid_assessment(item, brand_registry, reference) for item in value["assessments"])
+        )
     ):
-        raise ValueError("Sanitized review export does not match schema version 1.")
+        raise ValueError("Sanitized review export does not match a supported schema version.")
     suppressions = cast(tuple[PublicSuppression, ...], tuple(value["suppressions"]))
-    candidates = cast(tuple[PublicCandidate, ...], tuple(value["candidates"]))
+    candidates = cast(
+        tuple[PublicCandidate, ...],
+        tuple(
+            {**candidate, "matchScore": candidate.get("matchScore", candidate["confidence"])}
+            for candidate in value["candidates"]
+        ),
+    )
+    assessments = cast(tuple[PublicAssessment, ...], tuple(value.get("assessments", ())))
     if len({item["id"] for item in suppressions}) != len(suppressions) or len(
         {item["id"] for item in candidates}
     ) != len(candidates):
         raise ValueError("Sanitized review export contains duplicate decisions.")
-    return PublicReviewPolicy(suppressions, candidates)
+    if len({item["id"] for item in assessments}) != len(assessments):
+        raise ValueError("Sanitized review export contains duplicate assessments.")
+    return PublicReviewPolicy(suppressions, candidates, assessments)
 
 
 def _indicator(value: str) -> tuple[str, str]:
@@ -662,9 +1012,38 @@ def _parser() -> argparse.ArgumentParser:
     add = decision("add", "Add a currently matching candidate for sanitized export.", reason=False)
     add.add_argument("--confidence", type=int)
     decision("remove", "Remove a locally added candidate.", reason=False, brand=False)
+
+    def assessment(name: str, help_text: str) -> argparse.ArgumentParser:
+        command = subparsers.add_parser(name, help=help_text)
+        command.add_argument("indicator")
+        command.add_argument("--brand")
+        command.add_argument("--note", help="Private note; never included in the sanitized export.")
+        return command
+
+    confirm = assessment("confirm", "Confirm a suspicious candidate with bounded analyst evidence.")
+    confirm.add_argument("--reason", choices=sorted(CONFIRMATION_REASONS), required=True)
+    confirm.add_argument("--evidence", action="append", choices=sorted(EVIDENCE_CODES), required=True)
+    confirm.add_argument("--expires-at", required=True, help="Canonical UTC timestamp with milliseconds.")
+    confirm.add_argument("--lt-relevance", choices=sorted(LT_RELEVANCE), default="lithuanian-brand-relevance")
+    confirm.add_argument("--analyst-confidence", type=int)
+
+    correct = assessment("correct", "Correct metadata for an active confirmed assessment.")
+    correct.add_argument("--reason", choices=sorted(CONFIRMATION_REASONS))
+    correct.add_argument("--evidence", action="append", choices=sorted(EVIDENCE_CODES))
+    correct.add_argument("--expires-at", help="Replacement canonical UTC expiry timestamp.")
+    correct.add_argument("--lt-relevance", choices=sorted(LT_RELEVANCE))
+    correct.add_argument("--analyst-confidence", type=int)
+
+    retract = assessment("retract", "Revoke a previously confirmed assessment without erasing history.")
+    retract.add_argument("--reason", choices=sorted(RETRACTION_REASONS), required=True)
+
+    inconclusive = assessment("inconclusive", "Record a bounded review that did not support confirmation.")
+    inconclusive.add_argument("--reason", choices=sorted(INCONCLUSIVE_REASONS), required=True)
+    inconclusive.add_argument("--evidence", action="append", choices=sorted(EVIDENCE_CODES))
+    inconclusive.add_argument("--lt-relevance", choices=sorted(LT_RELEVANCE), default="unknown")
     list_command = subparsers.add_parser("list", help="List active local review state without private notes.")
     list_command.add_argument("--events", action="store_true", help="List event metadata instead of active state.")
-    export = subparsers.add_parser("export", help="Write only sanitized active decisions to Git data/review/.")
+    export = subparsers.add_parser("export", help="Write sanitized public review state to Git data/review/.")
     export.add_argument("--output", default="data/review/public-decisions.json")
     return parser
 
@@ -675,7 +1054,7 @@ def main(argv: list[str] | None = None) -> int:
         database = _database_path(args.database)
         registry = load_brand_registry(PROJECT_ROOT / "data/brands-lt.json")
         if args.command == "init":
-            with _connect(database):
+            with closing(_connect(database)):
                 pass
             print(f"Private review database is ready: {database}")
             return 0
@@ -690,6 +1069,7 @@ def main(argv: list[str] | None = None) -> int:
                     ("false-positive", state.false_positives),
                     ("allowlist", state.allowlists),
                     ("candidate", state.candidates),
+                    ("assessment", state.assessments),
                 ):
                     for event in values.values():
                         print(f"{label:14s} {defang_host(event.domain)} {event.brand or '-'}")
@@ -699,7 +1079,8 @@ def main(argv: list[str] | None = None) -> int:
             target, payload, changed = export_public_review(database, args.output, registry=registry)
             print(
                 f"{'Wrote' if changed else 'Preserved'} {target.relative_to(PROJECT_ROOT)}: "
-                f"{len(payload['suppressions'])} suppressions, {len(payload['candidates'])} candidates."
+                f"{len(payload['suppressions'])} suppressions, {len(payload['candidates'])} candidates, "
+                f"{len(payload['assessments'])} assessments."
             )
             return 0
 
@@ -765,6 +1146,122 @@ def main(argv: list[str] | None = None) -> int:
             if domain not in state.candidates:
                 raise ValueError("No active locally added candidate exists for this domain.")
             record_review_event(database, action=action, domain=domain, note=args.note)
+        elif action in {"confirm", "correct", "retract", "inconclusive"}:
+            inferred = _current_brand(domain, registry)
+            brand = _resolved_requested_brand(args.brand, inferred, registry)
+            if brand is None:
+                raise ValueError("Assessment targets must match the registry or current public snapshot.")
+            current = state.assessments.get(domain)
+            event_time = _now()
+            event_value = _timestamp(event_time)
+            if event_value is None:  # pragma: no cover - generated internally
+                raise ValueError("Could not create a canonical review timestamp.")
+            current_expiry = _timestamp(current.expires_at) if current and current.expires_at else None
+            current_expired = current_expiry is not None and current_expiry <= event_value
+            if action == "confirm":
+                if (
+                    current is not None
+                    and current.review_state == "confirmed-suspicious"
+                    and current.action != "retract"
+                    and not current_expired
+                ):
+                    raise ValueError("A confirmed assessment already exists; use correct or retract.")
+                expires = _timestamp(args.expires_at)
+                if expires is None or expires <= event_value:
+                    raise ValueError("Confirmation expiry must be a future canonical UTC timestamp.")
+                record_review_event(
+                    database,
+                    action=action,
+                    domain=domain,
+                    brand=brand,
+                    reason_code=args.reason,
+                    note=args.note,
+                    recorded_at=event_time,
+                    review_state="confirmed-suspicious",
+                    evidence_codes=args.evidence,
+                    expires_at=args.expires_at,
+                    lt_relevance=args.lt_relevance,
+                    analyst_confidence=args.analyst_confidence,
+                    reviewed_at=event_time,
+                )
+            elif action == "correct":
+                if (
+                    current is None
+                    or current.review_state != "confirmed-suspicious"
+                    or current.action == "retract"
+                    or current_expired
+                ):
+                    raise ValueError("Only an active confirmed assessment can be corrected.")
+                if not any(
+                    value is not None
+                    for value in (
+                        args.reason,
+                        args.evidence,
+                        args.expires_at,
+                        args.lt_relevance,
+                        args.analyst_confidence,
+                    )
+                ):
+                    raise ValueError("A correction must replace at least one public assessment field.")
+                expires_at = args.expires_at or current.expires_at
+                expires = _timestamp(expires_at) if expires_at is not None else None
+                if expires is None or expires <= event_value:
+                    raise ValueError("Corrected expiry must be a future canonical UTC timestamp.")
+                record_review_event(
+                    database,
+                    action=action,
+                    domain=domain,
+                    brand=brand,
+                    reason_code=args.reason or current.reason_code,
+                    note=args.note,
+                    recorded_at=event_time,
+                    review_state="confirmed-suspicious",
+                    evidence_codes=args.evidence or current.evidence_codes,
+                    expires_at=expires_at,
+                    lt_relevance=args.lt_relevance or current.lt_relevance,
+                    analyst_confidence=(
+                        args.analyst_confidence if args.analyst_confidence is not None else current.analyst_confidence
+                    ),
+                    reviewed_at=current.reviewed_at,
+                )
+            elif action == "retract":
+                if current is None or current.review_state != "confirmed-suspicious" or current.action == "retract":
+                    raise ValueError("Only an active confirmed assessment can be retracted.")
+                record_review_event(
+                    database,
+                    action=action,
+                    domain=domain,
+                    brand=brand,
+                    reason_code=args.reason,
+                    note=args.note,
+                    recorded_at=event_time,
+                    review_state="inconclusive",
+                    evidence_codes=current.evidence_codes,
+                    expires_at=current.expires_at,
+                    lt_relevance=current.lt_relevance,
+                    analyst_confidence=current.analyst_confidence,
+                    reviewed_at=current.reviewed_at,
+                )
+            else:
+                if (
+                    current is not None
+                    and current.review_state == "confirmed-suspicious"
+                    and current.action != "retract"
+                ):
+                    raise ValueError("Use retract to downgrade an active confirmed assessment.")
+                record_review_event(
+                    database,
+                    action=action,
+                    domain=domain,
+                    brand=brand,
+                    reason_code=args.reason,
+                    note=args.note,
+                    recorded_at=event_time,
+                    review_state="inconclusive",
+                    evidence_codes=args.evidence or (),
+                    lt_relevance=args.lt_relevance,
+                    reviewed_at=event_time,
+                )
         else:
             raise ValueError("Unknown review command.")
         print(f"Recorded {action} for {defang_host(domain)} in private database {database}.")

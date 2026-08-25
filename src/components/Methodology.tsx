@@ -2,7 +2,7 @@ const steps = [
   {
     number: "01",
     title: "Observe",
-    body: "Read passive public observations from Certificate Transparency, existing public URLScan reports, and an optional configured HECAVEX export.",
+    body: "Read passive public observations from Certificate Transparency, existing public URLScan reports, and deliberately sanitized HECAVEX inputs.",
   },
   {
     number: "02",
@@ -12,7 +12,7 @@ const steps = [
   {
     number: "03",
     title: "Validate",
-    body: "Require one unambiguous brand, current evidence, safe fields, and the relevant confidence threshold before publication.",
+    body: "Require one unambiguous brand, current evidence, safe fields, and the relevant match-score threshold before publication.",
   },
   {
     number: "04",
@@ -32,11 +32,12 @@ const matchingRules = [
 const publicFields = [
   ["Indicator", "A normalized, defanged domain or URL. Credentials, query strings, fragments, and unsafe path data are removed."],
   ["Timeline", "First-seen and last-seen timestamps from accepted observations, normalized to UTC."],
-  ["Source", "CertStream, URLScan, or a configured HECAVEX public export. Multiple observations can merge into one host row."],
+  ["Source", "CertStream, URLScan, or HECAVEX. Controlled discovery lineage distinguishes configured service exports from explicit sanitized review candidates."],
   ["Status", "CertStream and URLScan rows remain suspected. Active, offline, or mitigated lifecycle states require a configured HECAVEX observation."],
   ["Target", "Exactly one brand resolved through the current reviewed registry and collision checks."],
-  ["Evidence", "Optional URLScan report, screenshot, primary-document SHA-256 hashes, host summary, and country metadata."],
-  ["Confidence", "An integer ranking score from 0 to 100. It orders evidence strength; it is not a probability or verdict."],
+  ["Evidence", "Separate name-only, corroborated, and analyst-reviewed tiers, with controlled discovery and corroboration lineage."],
+  ["Context", "Optional public URLScan evidence plus bounded point-in-time DNS and RDAP registration context. Missing context remains unknown."],
+  ["Match score", "An integer rule score from 0 to 100. It ranks matcher strength; it is not probability, analyst confidence, or a verdict."],
 ] as const;
 
 export function Methodology() {
@@ -103,6 +104,19 @@ export function Methodology() {
             </p>
           </article>
           <article>
+            <span>Checkpointed CT search</span>
+            <h3>Bounded keyword replay</h3>
+            <p>
+              An hourly crt.sh search rotates across reviewed brand terms and persists one numeric cursor per query. It
+              bootstraps only a bounded recent window, rechecks a limited overlap for late indexing, resumes an explicit
+              backlog before rotation, re-applies the same matcher, and retains discovery lineage in the CT archive.
+            </p>
+            <p>
+              This can recover indexed results missed by a live sample, but it is not an enumeration of every CT log.
+              Provider availability, indexing, result limits, and the deliberately bounded query set remain coverage limits.
+            </p>
+          </article>
+          <article>
             <span>Existing public reports</span>
             <h3>URLScan</h3>
             <p>
@@ -115,15 +129,29 @@ export function Methodology() {
             </p>
           </article>
           <article>
-            <span>Optional configured input</span>
-            <h3>HECAVEX export</h3>
+            <span>Deliberately sanitized input</span>
+            <h3>HECAVEX</h3>
             <p>
               A deployment may configure a bounded HTTPS JSON export. Supplied source labels are ignored; accepted rows
               are attributed to HECAVEX and must pass the same brand, URL, timestamp, and evidence validation.
             </p>
             <p>
-              Internal collectors, proprietary detection logic, analyst notes, credentials, and private historical data
-              are outside this public project and its data contract.
+              An operator can also deliberately export one sanitized local review candidate. The public
+              <code> discoveredVia</code> value distinguishes that path from the service export. Internal collectors,
+              proprietary detection logic, analyst notes, credentials, and private historical data remain outside this project.
+            </p>
+          </article>
+          <article>
+            <span>Published-candidate context</span>
+            <h3>DNS and RDAP</h3>
+            <p>
+              Four times daily, Radar rotates through already-published candidates using DNS-over-HTTPS and the IANA RDAP
+              bootstrap. RDAP is requested for the registrable parent and that defanged scope remains visible. It never
+              requests the candidate webpage or executes its content.
+            </p>
+            <p>
+              Sidecars may expose defanged DNS answers, minimum TTL, registrar, lifecycle dates, and statuses. Registrant
+              identities are excluded, records expire after a bounded retention window, and shared infrastructure is association, not attribution.
             </p>
           </article>
         </div>
@@ -177,13 +205,15 @@ export function Methodology() {
           <strong>Merge behavior</strong>
           <p>
             One row represents one observed host. Merging keeps the earliest first-seen value, latest last-seen value,
-            union of sources and hashes, most specific safe path, and highest confidence. Conflicting non-null brands
+            union of sources and hashes, most specific safe path, and highest match score. Conflicting non-null brands
             invalidate the merged row.
           </p>
         </div>
         <p className="methodology-report">
           The static <a href="/data/radar.stix.json">STIX 2.1 pull feed</a> contains raw domain-name observables for
-          potential or suspected candidates. It is not a TAXII endpoint, blocklist, maliciousness verdict, or attribution claim.
+          potential or suspected candidates. The separate <a href="/data/radar-reviewed.stix.json">reviewed feed</a> can
+          contain only explicit, expiring analyst confirmations. Neither feed is a TAXII endpoint, automatic blocklist,
+          maliciousness verdict for unreviewed rows, or attribution claim.
         </p>
       </section>
 
@@ -243,8 +273,9 @@ export function Methodology() {
             <p className="eyebrow">Coverage</p>
             <h3>Intentionally incomplete</h3>
             <p>
-              CertStream is sampled rather than continuous, URLScan exposes only existing public reports, and some metadata
-              is optional. Missing URLScan evidence does not make a candidate safe or prevent a CertStream candidate from appearing.
+              Live CertStream is sampled, the checkpointed CT search is provider-indexed and bounded, URLScan exposes only
+              existing public reports, and context is optional. Missing evidence does not make a candidate safe or prevent
+              an independently qualifying CT candidate from appearing.
             </p>
           </article>
           <article>
@@ -286,7 +317,8 @@ export function Methodology() {
             <p>
               Source timestamps show archive reads performed by the publisher. The separate public collection-health
               document reports actual timing, aggregate counts, late starts, outcome, last success, and freshness for only
-              the latest CertStream attempt; it is not evidence of continuous or replayable coverage.
+              the latest CertStream attempt. Rolling pipeline health also reports sanitized CT-search and DNS/RDAP run
+              summaries; none of these artifacts proves complete global coverage.
             </p>
           </article>
         </div>

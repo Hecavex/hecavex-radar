@@ -2,7 +2,7 @@
 
 These are the sources and provenance boundaries of the HECAVEX-operated [radar.hecavex.com](https://radar.hecavex.com) service. Source operators define their own access, attribution, rate, and redistribution terms. Apache-2.0 licenses original Radar software, not third-party data or HECAVEX operation.
 
-## CertStream and Certificate Transparency
+## Certificate Transparency
 
 CertStream emits Certificate Transparency log updates over a websocket. The collector reads certificate DNS names, rejects official domains, applies the public Lithuanian-brand heuristic, and archives only matching defanged domains. It does not retrieve or browse those domains.
 
@@ -18,6 +18,16 @@ For a qualifying hostname, Radar may retain only the leaf subject country and no
 The interim GitHub Actions sampler is scheduled at 08, 23, 38, and 53 minutes past each UTC hour for an eight-minute window. If all 96 daily runs start and complete, that is at most 768 listening minutes, or 53.3% of a day. GitHub Actions can delay or drop scheduled events, so the configured ceiling is not observed coverage.
 
 Each scheduled attempt replaces [`public/data/collection-health.json`](../public/data/collection-health.json) with its actual start, end, websocket listening seconds, messages, DNS names, matches, newly archived records, outcome, scheduling delay, and last successful window. The file retains only the latest attempt and aggregate counters. Every successful window is also recorded in the day's bounded `attempts.ndjson`, so a zero-match window has an explicit dated partition. Neither artifact exposes certificate names, and neither can establish coverage between sampled windows.
+
+### Checkpointed `crt.sh` keyword search
+
+Radar also queries the public [`crt.sh`](https://crt.sh/) JSON search index once per hour at minute 43. This is a second CT discovery path, not a replacement name in the public source list: accepted rows remain `CertStream` source observations for compatibility, while `discoveredVia` distinguishes `ct-search-api` from `certstream-live`.
+
+The poller derives one conservative search term from each reviewed registry brand, avoids unsafe short or ambiguous aliases, and rotates through six brand queries per run by default. Each query has an independent persisted result-ID cursor in `data/ct-search/state.json`. A first query bootstraps at most seven days of indexed results. Later runs process at most 500 rows by default while replaying up to 50 previously seen rows inside a 1,000-ID overlap. The overlap catches bounded late-indexing reorder; it is not an unlimited rewind. At least one slot remains available for a new row when one exists. If more new rows remain, the query reports `partial`, increments `queriesBacklogged`, and resumes before ordinary rotation advances. Runtime settings are bounded to 24 queries per run, 2,000 rows per query, a 30-day bootstrap, 10,000 replay IDs, and 250 replay rows. Results still pass the current official-domain suppression, brand matcher, score threshold, archive schema, and deduplication used for live CertStream candidates.
+
+This is replayable coverage only for the declared keyword queries and for records available from the provider's search index. It does not enumerate CT logs, checkpoint a log tree size, guarantee `crt.sh` availability or indexing completeness, recover names that do not contain a selected term, or support a claim of complete global CT coverage. The live eight-minute samples and the indexed search therefore remain complementary bounded discovery mechanisms.
+
+`data/ct-search/state.json` is capped at 128 KiB. It contains the provider name, rotating query position, reviewed brand/query labels, per-query result ID and timestamps, and aggregate latest-run counters including the number of backlogged queries. It contains no unpublished certificate name or candidate domain. The workflow writes `completed`, `partial`, or `failed` state and stages the state plus any accepted CT archive rows before its final step reports a polling failure. Archive-cap failures do not advance a query checkpoint. A hard cancellation, checkout outage, or exhausted Git push retry remains outside what the stopped workflow can record.
 
 The public registry is [`data/brands-lt.json`](../data/brands-lt.json). Official domains, subdomains, and reviewed `excludedDomains` are suppressed before scoring. See [Detection rules](DETECTION.md) for matching and archive revalidation.
 
@@ -53,6 +63,22 @@ An exact hash match is discovery evidence only. Before publication, the candidat
 The twice-daily job has its own conservative UTC ledger: at most 40 searches and 100 result retrievals per run, and 80 searches and 400 result retrievals per day. By default, it rotates 20 official domains and up to 12 eligible hashes per run. With the registry's maximum 598 per-brand pivot slots, two daily runs complete a hash-search rotation in less than 25 days, inside the default 30-day public-report lookback. Request exhaustion advances only work actually attempted. These counters do not contain an API key and remain below the separate provider-wide account quota; operators must still consider the request use of the two-hour URLScan hunt.
 
 The state records whether the optional key was configured and the latest completed, budget-limited, failed, or safely skipped outcome. Snapshot synchronization folds this credential-free status into the existing URLScan source note; it does not create another public source label.
+
+## Passive DNS and RDAP context
+
+At 01:13, 07:13, 13:13, and 19:13 UTC, Radar rotates through up to 20 candidates already present in the current published snapshot. For each selected hostname it sends only A, AAAA, CNAME, NS, and MX questions to Cloudflare's DNS-over-HTTPS endpoint and uses the [IANA RDAP bootstrap registry](https://data.iana.org/rdap/dns.json) to select the authoritative domain-registration service. The collector never sends HTTP traffic to the candidate hostname, follows page redirects, executes content, submits a form, or asks a third party to scan the page.
+
+The bounded state at `data/enrichment/domain-context.json` can retain:
+
+- up to 12 defanged answers for each supported DNS record type, the minimum TTL observed across successful answers, and the number of DNS question types completed;
+- the defanged registrable parent actually queried, registrar name, registration, update, and expiry timestamps, and normalized RDAP status codes; and
+- the public signal ID, defanged domain, collection time, rotating cursor, and aggregate latest-run outcome.
+
+Registrant names, organizations, email addresses, telephone numbers, postal addresses, RDAP entity handles, remarks, raw responses, and candidate page content are not retained. A missing registration section can mean that no usable bootstrap service or public RDAP record was available; it is unknown, not evidence of benign status. Stored rows are capped at 2,500 and 4 MiB, are discarded after 14 days by default, and are removed sooner when the candidate leaves the current snapshot.
+
+DNS and registration are independent context families. A temporary IANA RDAP-bootstrap failure still permits the selected DNS questions to refresh, publishes null registration for that point-in-time row, and marks the run partial. A total DNS failure does not replace the previous retained context. Only NOERROR and NXDOMAIN responses count as completed DNS questions.
+
+Current records can appear as optional `domainContext` in the same-origin per-signal detail sidecar and as aggregate outcome/count metadata in `public/data/pipeline-health.json`. DNS values can also contribute to the bounded related-observation graph under its temporal, fan-out, and multi-family evidence rules. A shared address, nameserver, mail route, alias, registrar, or lifecycle date does not establish common control, a campaign, an actor, or maliciousness.
 
 ## Transient discovery seeds
 

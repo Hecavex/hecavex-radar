@@ -17,6 +17,7 @@ export function SiteFooter() {
           <a href="https://labs.hecavex.com/">Labs</a>
           <a href="https://labs.hecavex.com/data/">Data</a>
           <a href="/history/">History</a>
+          <a href="/brands/">Scope</a>
           <a href="/methodology/">Methodology</a>
           <a href="/docs/">Docs</a>
           <a href="/.well-known/security.txt">Security</a>

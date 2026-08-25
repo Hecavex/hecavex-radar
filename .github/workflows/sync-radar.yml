@@ -59,18 +59,35 @@ jobs:
           RADAR_RETAIN_EXISTING_SIGNALS: ${{ vars.RADAR_RETAIN_EXISTING_SIGNALS || 'true' }}
           RADAR_RETAIN_DAYS: ${{ vars.RADAR_RETAIN_DAYS || '7' }}
           RADAR_STIX_OUTPUT: public/data/radar.stix.json
+          RADAR_REVIEWED_STIX_OUTPUT: public/data/radar-reviewed.stix.json
           RADAR_DETAIL_ROOT: public/data/signals
           RADAR_HISTORY_DETAIL_DAYS: ${{ vars.RADAR_HISTORY_DETAIL_DAYS || '30' }}
           RADAR_HISTORY_SUMMARY_DAYS: ${{ vars.RADAR_HISTORY_SUMMARY_DAYS || '730' }}
           RADAR_HISTORY_MAX_SIGNALS: ${{ vars.RADAR_HISTORY_MAX_SIGNALS || '5000' }}
           RADAR_ALLOW_SMALL_SNAPSHOT: ${{ inputs.allow_small_snapshot || 'false' }}
         run: python -m hecavex_radar.sync
+      - name: Validate the atomic publication
+        run: python -m hecavex_radar.publication
       - name: Commit a changed snapshot
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          git add -- public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals data/history
+          git add -- \
+            public/data/radar.json \
+            public/data/radar.stix.json \
+            public/data/radar-reviewed.stix.json \
+            public/data/radar.index.json \
+            public/data/radar-shards \
+            public/data/changes.json \
+            public/data/pipeline-health.json \
+            public/data/related-observations.json \
+            public/data/feed-manifest.json \
+            public/data/schemas \
+            public/data/*.sha256 \
+            public/data/history.json \
+            public/data/signals \
+            data/history
           if git diff --cached --quiet; then
             echo "Snapshot is unchanged."
             exit 0
@@ -79,8 +96,28 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data: refresh public radar snapshot"
           gh auth setup-git
+          base_sha="$(git rev-parse HEAD^)"
           for attempt in 1 2 3 4; do
-            git pull --rebase origin main
+            git fetch --no-tags origin main
+            upstream_sha="$(git rev-parse origin/main)"
+            if [[ "${upstream_sha}" != "${base_sha}" ]]; then
+              invalidating_paths="$(git diff --name-only "${base_sha}..${upstream_sha}" | grep -E \
+                '^(data/(certstream|ct-search|enrichment|urlscan|review)/)' || true)"
+              if [[ -n "${invalidating_paths}" ]]; then
+                echo "Source inputs changed while this snapshot was being built; refusing stale output:" >&2
+                echo "${invalidating_paths}" >&2
+                exit 1
+              fi
+              unexpected_paths="$(git diff --name-only "${base_sha}..${upstream_sha}" | grep -Ev \
+                '^(public/data/collection-health\.json)$' || true)"
+              if [[ -n "${unexpected_paths}" ]]; then
+                echo "Code or configuration changed after checkout; refusing older-revision output:" >&2
+                echo "${unexpected_paths}" >&2
+                exit 1
+              fi
+              git rebase origin/main
+              base_sha="${upstream_sha}"
+            fi
             if git push origin HEAD:main; then
               exit 0
             fi

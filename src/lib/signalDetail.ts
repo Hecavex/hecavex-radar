@@ -3,10 +3,12 @@ import type {
   SignalAssessmentDetail,
   SignalCertificateDetail,
   SignalDetail,
+  SignalDomainContext,
   SignalDetailObservation,
   SignalNetworkDetail,
   SignalPageDetail,
 } from "../types.ts";
+import { readBoundedJson } from "./boundedJson.ts";
 
 export const MAXIMUM_SIGNAL_DETAIL_BYTES = 16 * 1024;
 
@@ -47,6 +49,9 @@ const CERTIFICATE_FIELDS = [
   "fingerprints",
 ];
 const FINGERPRINT_FIELDS = ["md5", "sha1", "sha256"];
+const DOMAIN_CONTEXT_FIELDS = ["observedAt", "dns", "registration"];
+const DNS_CONTEXT_FIELDS = ["a", "aaaa", "cname", "ns", "mx", "minimumTtl", "queriesCompleted"];
+const REGISTRATION_CONTEXT_FIELDS = ["registrar", "registeredAt", "updatedAt", "expiresAt", "statuses"];
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -54,6 +59,11 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 function hasExactFields(value: Record<string, unknown>, expected: string[]): boolean {
   const actual = Object.keys(value);
   return actual.length === expected.length && expected.every((field) => Object.hasOwn(value, field));
+}
+
+function hasRequiredAndOptionalFields(value: Record<string, unknown>, required: string[], optional: string[]): boolean {
+  const allowed = new Set([...required, ...optional]);
+  return required.every((field) => Object.hasOwn(value, field)) && Object.keys(value).every((field) => allowed.has(field));
 }
 
 function timestampValue(value: unknown): number | null {
@@ -253,11 +263,54 @@ function isObservation(value: unknown, generatedAt: number): value is SignalDeta
   return value.page !== null || value.network !== null || value.assessment !== null || value.certificate !== null;
 }
 
+function isBoundedUniqueList(value: unknown, maximum: number, validator: (item: unknown) => boolean): value is string[] {
+  return Array.isArray(value) && value.length <= maximum && new Set(value).size === value.length && value.every(validator);
+}
+
+function isDomainContext(value: unknown, generatedAt: number): value is SignalDomainContext {
+  if (!isRecord(value) || !hasExactFields(value, DOMAIN_CONTEXT_FIELDS)) return false;
+  const observedAt = timestampValue(value.observedAt);
+  const dns = value.dns;
+  const registration = value.registration;
+  if (!isRecord(dns) || !hasExactFields(dns, DNS_CONTEXT_FIELDS)) return false;
+  const validMailExchange = (item: unknown) => {
+    if (typeof item !== "string") return false;
+    const separator = item.indexOf(" ");
+    return separator > 0 && /^\d{1,5}$/u.test(item.slice(0, separator)) && isDefangedDomain(item.slice(separator + 1));
+  };
+  if (
+    observedAt === null ||
+    observedAt > generatedAt + FUTURE_SKEW_MS ||
+    !isBoundedUniqueList(dns.a, 16, (item) => typeof item === "string" && isDefangedIp(item)) ||
+    !isBoundedUniqueList(dns.aaaa, 16, (item) => typeof item === "string" && isDefangedIp(item)) ||
+    !isBoundedUniqueList(dns.cname, 16, (item) => typeof item === "string" && isDefangedDomain(item)) ||
+    !isBoundedUniqueList(dns.ns, 16, (item) => typeof item === "string" && isDefangedDomain(item)) ||
+    !isBoundedUniqueList(dns.mx, 16, validMailExchange) ||
+    !(dns.minimumTtl === null || (typeof dns.minimumTtl === "number" && Number.isInteger(dns.minimumTtl) && dns.minimumTtl >= 0)) ||
+    typeof dns.queriesCompleted !== "number" ||
+    !Number.isInteger(dns.queriesCompleted) ||
+    dns.queriesCompleted < 0 ||
+    dns.queriesCompleted > 5
+  ) {
+    return false;
+  }
+  if (registration === null) return true;
+  if (!isRecord(registration) || !hasRequiredAndOptionalFields(registration, REGISTRATION_CONTEXT_FIELDS, ["domain"])) return false;
+  return (
+    (registration.domain === undefined || isDefangedDomain(registration.domain)) &&
+    isSafeText(registration.registrar, 160) &&
+    isNullableTimestamp(registration.registeredAt) &&
+    isNullableTimestamp(registration.updatedAt) &&
+    isNullableTimestamp(registration.expiresAt) &&
+    isBoundedUniqueList(registration.statuses, 16, (item) => typeof item === "string" && /^[a-z\d-]{1,64}$/u.test(item))
+  );
+}
+
 export function parseSignalDetail(
   value: unknown,
   expected?: Pick<RadarSignal, "id" | "domain">,
 ): SignalDetail {
-  if (!isRecord(value) || !hasExactFields(value, DETAIL_FIELDS)) {
+  if (!isRecord(value) || !hasRequiredAndOptionalFields(value, DETAIL_FIELDS, ["domainContext"])) {
     throw new Error("The signal detail does not match schema version 1.");
   }
   const generatedAt = timestampValue(value.generatedAt);
@@ -270,10 +323,11 @@ export function parseSignalDetail(
     !isDefangedDomain(value.domain) ||
     generatedAt === null ||
     !Array.isArray(observations) ||
-    observations.length < 1 ||
     observations.length > MAXIMUM_OBSERVATIONS ||
     !observations.every((observation) => isObservation(observation, generatedAt)) ||
     new Set(observations.map((observation) => (observation as SignalDetailObservation).source)).size !== observations.length ||
+    (value.domainContext !== undefined && !isDomainContext(value.domainContext, generatedAt)) ||
+    (observations.length === 0 && value.domainContext === undefined) ||
     (expected !== undefined && (value.signalId !== expected.id || value.domain !== expected.domain))
   ) {
     throw new Error("The signal detail does not match schema version 1.");
@@ -296,19 +350,6 @@ export async function loadSignalDetail(
     signal: abortSignal,
   });
   if (!response.ok) throw new Error(`Signal detail request failed with HTTP ${response.status}.`);
-  const declaredLength = response.headers.get("Content-Length");
-  if (declaredLength !== null && Number(declaredLength) > MAXIMUM_SIGNAL_DETAIL_BYTES) {
-    throw new Error("The signal detail exceeds the public size limit.");
-  }
-  const body = await response.text();
-  if (new TextEncoder().encode(body).byteLength > MAXIMUM_SIGNAL_DETAIL_BYTES) {
-    throw new Error("The signal detail exceeds the public size limit.");
-  }
-  let decoded: unknown;
-  try {
-    decoded = JSON.parse(body);
-  } catch {
-    throw new Error("The signal detail is invalid JSON.");
-  }
+  const decoded = await readBoundedJson(response, MAXIMUM_SIGNAL_DETAIL_BYTES);
   return parseSignalDetail(decoded, signal);
 }

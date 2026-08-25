@@ -9,7 +9,7 @@ from collections.abc import Callable
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 from urllib.parse import urlsplit
 
 from .brands import (
@@ -20,11 +20,13 @@ from .brands import (
     load_brand_registry,
     resolve_brand_name,
 )
+from .domain_context import public_records as load_domain_context
 from .hecavex import write_hecavex_candidates
 from .history import build_history_events, previous_statuses, update_history
 from .models import RadarSignal, RadarSource, RawSignal, SignalStatus, SourceResult
 from .normalize import merge_signals, prepare_signal
 from .provenance import normalize_reason_codes
+from .publication import apply_source_counts, fit_dashboard_signals, publish_supplemental_artifacts
 from .review import load_public_review
 from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
 from .signal_detail import build_signal_details, write_signal_details
@@ -35,9 +37,38 @@ from .sources import (
     load_urlscan,
     skipped_sources,
 )
-from .stix import write_stix_bundle
+from .stix import write_reviewed_stix_bundle, write_stix_bundle
 
 SIGNAL_STATUSES = {"active", "suspected", "offline", "mitigated", "unknown"}
+EVIDENCE_TIERS = {"name-only", "corroborated", "reviewed"}
+REVIEW_STATES = {
+    "unreviewed",
+    "needs-review",
+    "confirmed-suspicious",
+    "false-positive",
+    "benign-brand-reference",
+    "inconclusive",
+}
+LT_RELEVANCE = {
+    "lithuanian-targeting",
+    "lithuanian-brand-relevance",
+    "global-brand-reference",
+    "unknown",
+}
+DISCOVERY_METHODS = {
+    "certstream-live",
+    "ct-search-api",
+    "urlscan-public-report",
+    "hecavex-public-export",
+    "hecavex-review",
+}
+CORROBORATION_METHODS = {
+    "urlscan-public-report",
+    "urlscan-page-title",
+    "urlscan-provider-verdict",
+    "urlscan-primary-html-sha256",
+    "analyst-review",
+}
 MAXIMUM_RETAINED_SIGNALS = 25_000
 MAXIMUM_SNAPSHOT_BYTES = 512 * 1024
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
@@ -72,17 +103,11 @@ def _output_path() -> Path:
 def _stable_snapshot_view(payload: object) -> object:
     if not isinstance(payload, dict):
         return payload
-    stable = {
-        key: value
-        for key, value in payload.items()
-        if key not in {"generatedAt", "lastSuccessfulSyncAt"}
-    }
+    stable = {key: value for key, value in payload.items() if key not in {"generatedAt", "lastSuccessfulSyncAt"}}
     raw_sources = stable.get("sources")
     if isinstance(raw_sources, list):
         stable["sources"] = [
-            {key: value for key, value in source.items() if key != "fetchedAt"}
-            if isinstance(source, dict)
-            else source
+            {key: value for key, value in source.items() if key != "fetchedAt"} if isinstance(source, dict) else source
             for source in raw_sources
         ]
     return stable
@@ -122,7 +147,7 @@ def _existing_signal_count(target: Path, recent_since: datetime | None = None) -
         return None
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") != 1
+        or payload.get("schemaVersion") not in {1, 2}
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
     ):
@@ -161,7 +186,7 @@ def _load_existing_snapshot(
         return [], {}
     if (
         not isinstance(payload, dict)
-        or payload.get("schemaVersion") != 1
+        or payload.get("schemaVersion") not in {1, 2}
         or payload.get("dataset") != "live"
         or not isinstance(payload.get("signals"), list)
     ):
@@ -182,7 +207,11 @@ def _load_existing_snapshot(
         last_seen = raw.get("lastSeen")
         sources = raw.get("sources")
         status = raw.get("status")
-        confidence = raw.get("confidence")
+        legacy_score = raw.get("confidence")
+        match_score = raw.get("matchScore", legacy_score)
+        evidence_tier = raw.get("evidenceTier", "name-only")
+        review_state = raw.get("reviewState", "unreviewed")
+        lt_relevance = raw.get("ltRelevance", "lithuanian-brand-relevance")
         parsed_url = parse_and_defang_url(refang(url)) if isinstance(url, str) else None
         first_value = _public_timestamp(first_seen)
         last_value = _public_timestamp(last_seen)
@@ -219,9 +248,13 @@ def _load_existing_snapshot(
             or not all(isinstance(source, str) and 0 < len(source) <= 80 for source in sources)
             or not known_sources
             or status not in SIGNAL_STATUSES
-            or isinstance(confidence, bool)
-            or not isinstance(confidence, int)
-            or not 0 <= confidence <= 100
+            or isinstance(match_score, bool)
+            or not isinstance(match_score, int)
+            or not 0 <= match_score <= 100
+            or (legacy_score is not None and legacy_score != match_score)
+            or evidence_tier not in EVIDENCE_TIERS
+            or review_state not in REVIEW_STATES
+            or lt_relevance not in LT_RELEVANCE
         ):
             continue
 
@@ -242,6 +275,8 @@ def _load_existing_snapshot(
             continue
         hashes = raw.get("hashes", [])
         reason_codes = raw.get("reasonCodes", [])
+        discovered_via = raw.get("discoveredVia", [])
+        corroborated_by = raw.get("corroboratedBy", [])
         if (
             not isinstance(hashes, list)
             or len(hashes) > 8
@@ -257,6 +292,17 @@ def _load_existing_snapshot(
             not isinstance(reason_codes, list)
             or len(reason_codes) > 16
             or reason_codes != normalize_reason_codes(reason_codes)
+        ):
+            continue
+        if (
+            not isinstance(discovered_via, list)
+            or len(discovered_via) > 5
+            or not all(isinstance(method, str) and method in DISCOVERY_METHODS for method in discovered_via)
+            or len(discovered_via) != len(set(cast(list[str], discovered_via)))
+            or not isinstance(corroborated_by, list)
+            or len(corroborated_by) > 5
+            or not all(isinstance(method, str) and method in CORROBORATION_METHODS for method in corroborated_by)
+            or len(corroborated_by) != len(set(cast(list[str], corroborated_by)))
         ):
             continue
         retained_signal: RadarSignal = {
@@ -275,13 +321,19 @@ def _load_existing_snapshot(
             # Snapshot v1 does not carry hash provenance. Never retain old
             # untyped values across a source outage or schema migration.
             "hashes": [],
-            "confidence": confidence,
+            "matchScore": match_score,
+            "evidenceTier": cast(Any, evidence_tier),
+            "reviewState": cast(Any, review_state),
+            "ltRelevance": cast(Any, lt_relevance),
+            "confidence": match_score,
         }
         if reason_codes:
             retained_signal["reasonCodes"] = normalize_reason_codes(reason_codes)
-        retained.append(
-            retained_signal
-        )
+        if discovered_via:
+            retained_signal["discoveredVia"] = cast(Any, discovered_via)
+        if corroborated_by:
+            retained_signal["corroboratedBy"] = cast(Any, corroborated_by)
+        retained.append(retained_signal)
 
     source_fetches: dict[str, str | None] = {}
     raw_sources = payload.get("sources")
@@ -321,12 +373,43 @@ def _retain_only_unrefreshed_sources(
     carried: list[RadarSignal] = []
     for signal in signals:
         remaining_sources = [
-            source
-            for source in signal["sources"]
-            if source in retainable_sources and source not in completed_sources
+            source for source in signal["sources"] if source in retainable_sources and source not in completed_sources
         ]
         if remaining_sources:
-            carried.append(cast(RadarSignal, {**signal, "sources": remaining_sources}))
+            retained_signal = cast(RadarSignal, {**signal, "sources": remaining_sources})
+            discovery = [
+                method
+                for method in retained_signal.get("discoveredVia", [])
+                if (
+                    (method in {"certstream-live", "ct-search-api"} and "CertStream" in remaining_sources)
+                    or (method == "urlscan-public-report" and "URLScan" in remaining_sources)
+                    or (method in {"hecavex-public-export", "hecavex-review"} and "HECAVEX" in remaining_sources)
+                )
+            ]
+            corroboration = [
+                method
+                for method in retained_signal.get("corroboratedBy", [])
+                if (
+                    (method.startswith("urlscan-") and "URLScan" in remaining_sources)
+                    or (method == "analyst-review" and "HECAVEX" in remaining_sources)
+                )
+            ]
+            if discovery:
+                retained_signal["discoveredVia"] = discovery
+            else:
+                retained_signal.pop("discoveredVia", None)
+            if corroboration:
+                retained_signal["corroboratedBy"] = corroboration
+            else:
+                retained_signal.pop("corroboratedBy", None)
+            retained_signal["evidenceTier"] = (
+                "reviewed"
+                if retained_signal["reviewState"] == "confirmed-suspicious"
+                else "corroborated"
+                if corroboration
+                else "name-only"
+            )
+            carried.append(retained_signal)
     return carried
 
 
@@ -391,7 +474,8 @@ def _run_source(label: str, operation: Callable[[], SourceResult]) -> SourceResu
 
 
 def synchronize() -> Path:
-    now = datetime.now(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+    sync_time = datetime.now(UTC)
+    now = sync_time.isoformat(timespec="milliseconds").replace("+00:00", "Z")
     target = _output_path()
     registry = load_brand_registry()
     review_path = os.environ.get("RADAR_REVIEW_DECISIONS_PATH", "").strip() or "data/review/public-decisions.json"
@@ -467,9 +551,7 @@ def synchronize() -> Path:
             retention_days,
         )
         retained = [scoped for signal in retained if (scoped := _scope_retained_signal(signal, registry))]
-        retained = [
-            signal for signal in retained if not review_policy.suppresses(signal["domain"], signal["brand"])
-        ]
+        retained = [signal for signal in retained if not review_policy.suppresses(signal["domain"], signal["brand"])]
         print(f"Existing snapshot: retained {len(retained)} recent signals", flush=True)
 
     prepared: list[RadarSignal] = []
@@ -489,9 +571,7 @@ def synchronize() -> Path:
         result.source["records"] = accepted_records
         if excluded:
             scope_note = f"{excluded} non-registry target{'s' if excluded != 1 else ''} excluded"
-            result.source["note"] = (
-                f"{result.source['note']}; {scope_note}" if result.source["note"] else scope_note
-            )
+            result.source["note"] = f"{result.source['note']}; {scope_note}" if result.source["note"] else scope_note
 
     sources: list[RadarSource] = []
     for source in source_states:
@@ -513,18 +593,15 @@ def synchronize() -> Path:
     completed_sources = {result.source["name"] for result in results}
     retained = _retain_only_unrefreshed_sources(retained, completed_sources, attempted_sources)
     maximum = _bounded_integer(os.environ.get("RADAR_MAX_SIGNALS"), 2500, 1, 25_000)
-    merged = merge_signals(prepared + retained, maximum)
-    intelligence = [item for result in results for item in result.intelligence]
-    detail_root = os.environ.get("RADAR_DETAIL_ROOT", "").strip() or "public/data/signals"
-    details = build_signal_details(merged, intelligence, now)
-    detail_ids = write_signal_details(detail_root, details)
-    for signal in merged:
-        if signal["id"] in detail_ids:
-            signal["detailAvailable"] = True
+    complete_merged = merge_signals(prepared + retained, maximum)
+    review_policy.apply_assessments(
+        complete_merged,
+        datetime.fromisoformat(now.replace("Z", "+00:00")),
+    )
     for source in sources:
         if source["name"] in completed_sources:
             continue
-        carried = sum(source["name"] in signal["sources"] for signal in merged)
+        carried = sum(source["name"] in signal["sources"] for signal in complete_merged)
         if carried:
             previous_note = source["note"]
             source["records"] = carried
@@ -536,7 +613,24 @@ def synchronize() -> Path:
                 else f"Not refreshed; {carried} recent records retained"
             )
     for source in sources:
-        source["records"] = _represented_records(merged, source["name"])
+        source["records"] = _represented_records(complete_merged, source["name"])
+    merged = fit_dashboard_signals(complete_merged, sources, now)
+    apply_source_counts(merged, sources)
+    if len(merged) < len(complete_merged):
+        print(
+            f"Dashboard byte budget selected {len(merged)} of {len(complete_merged)} signals; "
+            "the complete ordered set remains available through radar.index.json.",
+            flush=True,
+        )
+    intelligence = [item for result in results for item in result.intelligence]
+    detail_root = os.environ.get("RADAR_DETAIL_ROOT", "").strip() or "public/data/signals"
+    domain_context_path = os.environ.get("DOMAIN_CONTEXT_PATH", "").strip() or "data/enrichment/domain-context.json"
+    domain_context = load_domain_context(domain_context_path, now=sync_time)
+    details = build_signal_details(merged, intelligence, now, domain_context)
+    detail_ids = write_signal_details(detail_root, details)
+    for signal in merged:
+        if signal["id"] in detail_ids:
+            signal["detailAvailable"] = True
     _validate_snapshot_size(
         len(merged),
         target,
@@ -572,7 +666,7 @@ def synchronize() -> Path:
             flush=True,
         )
     snapshot = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "dataset": "live",
         "generatedAt": now,
         "lastSuccessfulSyncAt": now,
@@ -606,6 +700,22 @@ def synchronize() -> Path:
     stix_path = write_stix_bundle(snapshot, stix_output)
     print(
         f"Published an observational STIX 2.1 bundle to {stix_path.relative_to(Path.cwd())}.",
+        flush=True,
+    )
+    reviewed_stix_output = (
+        os.environ.get("RADAR_REVIEWED_STIX_OUTPUT", "").strip() or "public/data/radar-reviewed.stix.json"
+    )
+    reviewed_stix_target = (Path.cwd().resolve() / reviewed_stix_output).resolve()
+    if reviewed_stix_target in {target, stix_target}:
+        raise ValueError("RADAR_REVIEWED_STIX_OUTPUT must be a separate publication file.")
+    reviewed_stix_path = write_reviewed_stix_bundle(review_policy.assessments, now, reviewed_stix_output)
+    print(
+        f"Published analyst-reviewed STIX 2.1 indicators to {reviewed_stix_path.relative_to(Path.cwd())}.",
+        flush=True,
+    )
+    supplemental_paths = publish_supplemental_artifacts(snapshot, complete_merged, details)
+    print(
+        f"Published {len(supplemental_paths)} schema, integrity, health, change, shard, and relationship artifacts.",
         flush=True,
     )
     print(f"Published {len(detail_ids)} bounded signal-detail sidecars.", flush=True)

@@ -16,7 +16,7 @@ const cloudflareAnalyticsLoader =
   `const token=document.currentScript?.dataset.hecavexAnalyticsToken;if(!token)return;` +
   `const beacon=document.createElement("script");beacon.type="module";beacon.src="${cloudflareAnalyticsScript}";` +
   `beacon.dataset.cfBeacon=JSON.stringify({token});document.head.appendChild(beacon)})();`;
-type PrerenderPage = "radar" | "history" | "methodology" | "documentation";
+type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation";
 
 function cloudflareWebAnalyticsPlugin() {
   return {
@@ -46,6 +46,8 @@ function staticPagePlugin() {
           "/": "radar",
           "/history/index.html": "history",
           "/history/": "history",
+          "/brands/index.html": "brands",
+          "/brands/": "brands",
           "/methodology/index.html": "methodology",
           "/methodology/": "methodology",
           "/docs/index.html": "documentation",
@@ -91,6 +93,7 @@ export default defineConfig({
       input: {
         radar: fileURLToPath(new URL("./index.html", import.meta.url)),
         history: fileURLToPath(new URL("./history/index.html", import.meta.url)),
+        brands: fileURLToPath(new URL("./brands/index.html", import.meta.url)),
         methodology: fileURLToPath(new URL("./methodology/index.html", import.meta.url)),
         documentation: fileURLToPath(new URL("./docs/index.html", import.meta.url)),
       },

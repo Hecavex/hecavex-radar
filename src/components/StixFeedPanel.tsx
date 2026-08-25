@@ -2,6 +2,7 @@ import { Check, Copy, Download, FileJson2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const STIX_FEED_URL = "https://radar.hecavex.com/data/radar.stix.json";
+const REVIEWED_STIX_FEED_URL = "https://radar.hecavex.com/data/radar-reviewed.stix.json";
 
 type CopyState = "idle" | "copied" | "failed";
 
@@ -26,24 +27,27 @@ export function StixFeedPanel() {
   return (
     <section className="stix-feed-panel" aria-labelledby="stix-feed-title">
       <div className="stix-feed-copy">
-        <p className="eyebrow"><FileJson2 aria-hidden="true" /> Machine-readable intelligence</p>
-        <h2 id="stix-feed-title">Current Radar candidates, also published as STIX 2.1</h2>
-        <p>
-          Whenever Radar successfully publishes a material snapshot, the static pull feed republishes its current
-          potential and suspected observations. The UI stays defanged; STIX uses raw domain-name observables. It is not
-          a blocklist, maliciousness verdict, or claim of attribution.
-        </p>
+        <FileJson2 aria-hidden="true" />
+        <div>
+          <p className="eyebrow">Machine-readable distribution</p>
+          <h2 id="stix-feed-title">STIX 2.1 observations</h2>
+          <p>
+            The observation feed contains current automated candidates. The separate reviewed Indicator feed remains
+            empty until an analyst confirms eligible evidence. Neither feed is a blocklist.
+          </p>
+        </div>
       </div>
       <div className="stix-feed-access">
-        <span>Stable feed URL</span>
-        <code>{STIX_FEED_URL}</code>
         <div className="stix-feed-actions">
           <a href="/data/radar.stix.json" download>
-            <Download aria-hidden="true" /> Download STIX 2.1
+            <Download aria-hidden="true" /> Observations
+          </a>
+          <a className="reviewed-feed-link" href="/data/radar-reviewed.stix.json" download title={REVIEWED_STIX_FEED_URL}>
+            <Download aria-hidden="true" /> Reviewed
           </a>
           <button type="button" onClick={() => void copyFeedUrl()}>
             {copyState === "copied" ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-            {copyState === "copied" ? "URL copied" : copyState === "failed" ? "Copy unavailable" : "Copy feed URL"}
+            {copyState === "copied" ? "URL copied" : copyState === "failed" ? "Copy unavailable" : "Copy URL"}
           </button>
         </div>
         <span className="sr-only" aria-live="polite">

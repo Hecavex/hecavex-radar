@@ -7,7 +7,7 @@ import json
 import os
 import re
 import tempfile
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from contextlib import suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -26,6 +26,8 @@ from .models import (
     RadarSignal,
     RawDomainIntelligence,
     SignalDetail,
+    SignalDomainContext,
+    SignalDomainContextRecord,
     SignalObservation,
 )
 from .safety import clean_text, defang_domains_in_text, defang_host, refang, stable_id
@@ -343,6 +345,7 @@ def build_signal_details(
     signals: list[RadarSignal],
     intelligence: Iterable[RawDomainIntelligence],
     generated_at: str,
+    domain_context: Mapping[str, SignalDomainContextRecord] | None = None,
 ) -> dict[str, SignalDetail]:
     live = {signal["id"]: signal for signal in signals}
     grouped: dict[str, dict[str, SignalObservation]] = {}
@@ -369,17 +372,31 @@ def build_signal_details(
     for signal in signals:
         signal_id = signal["id"]
         by_source = grouped.get(signal_id)
-        if by_source is None:
+        context_record = (domain_context or {}).get(signal_id)
+        if context_record is not None and context_record["domain"] != signal["domain"]:
+            context_record = None
+        if by_source is None and context_record is None:
             continue
-        observations = sorted(by_source.values(), key=lambda item: (item["observedAt"], item["source"]), reverse=True)
+        observations = sorted(
+            by_source.values() if by_source is not None else [],
+            key=lambda item: (item["observedAt"], item["source"]),
+            reverse=True,
+        )
         detail: SignalDetail = {
             "schemaVersion": 1,
             "dataset": "signal-detail",
             "signalId": signal_id,
-            "domain": domains[signal_id],
+            "domain": domains.get(signal_id, signal["domain"]),
             "generatedAt": generated_at,
             "observations": observations[:MAXIMUM_OBSERVATIONS],
         }
+        if context_record is not None:
+            context: SignalDomainContext = {
+                "observedAt": context_record["observedAt"],
+                "dns": context_record["dns"],
+                "registration": context_record["registration"],
+            }
+            detail["domainContext"] = context
         detail_bytes = len(_encoded(detail))
         if detail_bytes <= MAXIMUM_DETAIL_BYTES and published_bytes + detail_bytes <= MAXIMUM_DETAIL_SET_BYTES:
             details[signal_id] = detail
@@ -426,8 +443,25 @@ def write_signal_details(root: str | Path, details: dict[str, SignalDetail]) -> 
                 existing: object = json.loads(existing_body)
                 if (
                     isinstance(existing, dict)
-                    and set(existing)
-                    == {"schemaVersion", "dataset", "signalId", "domain", "generatedAt", "observations"}
+                    and set(existing).issubset(
+                        {
+                            "schemaVersion",
+                            "dataset",
+                            "signalId",
+                            "domain",
+                            "generatedAt",
+                            "observations",
+                            "domainContext",
+                        }
+                    )
+                    and {
+                        "schemaVersion",
+                        "dataset",
+                        "signalId",
+                        "domain",
+                        "generatedAt",
+                        "observations",
+                    }.issubset(existing)
                     and _timestamp(existing.get("generatedAt")) == existing.get("generatedAt")
                     and cast(str, existing.get("generatedAt")) <= detail["generatedAt"]
                     and existing.get("schemaVersion") == detail["schemaVersion"]
@@ -435,6 +469,7 @@ def write_signal_details(root: str | Path, details: dict[str, SignalDetail]) -> 
                     and existing.get("signalId") == detail["signalId"]
                     and existing.get("domain") == detail["domain"]
                     and existing.get("observations") == detail["observations"]
+                    and existing.get("domainContext") == detail.get("domainContext")
                 ):
                     continue
         except FileNotFoundError:

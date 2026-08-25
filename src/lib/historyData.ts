@@ -6,6 +6,9 @@ import {
   type ReasonCode,
   type SignalStatus,
 } from "../types.ts";
+import { readBoundedJson } from "./boundedJson.ts";
+
+const MAXIMUM_HISTORY_BYTES = 512 * 1024;
 
 const ISO_UTC_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const SOURCES = ["CertStream", "URLScan", "HECAVEX"];
@@ -159,5 +162,5 @@ export async function loadHistory(signal?: AbortSignal): Promise<RadarHistory> {
     signal,
   });
   if (!response.ok) throw new Error(`History request failed with HTTP ${response.status}.`);
-  return parseHistory(await response.json());
+  return parseHistory(await readBoundedJson(response, MAXIMUM_HISTORY_BYTES));
 }

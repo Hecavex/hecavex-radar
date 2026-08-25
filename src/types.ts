@@ -29,6 +29,48 @@ export const REASON_CODES = [
 
 export type ReasonCode = (typeof REASON_CODES)[number];
 
+export const EVIDENCE_TIERS = ["name-only", "corroborated", "reviewed"] as const;
+export type EvidenceTier = (typeof EVIDENCE_TIERS)[number];
+
+export const REVIEW_STATES = [
+  "unreviewed",
+  "needs-review",
+  "confirmed-suspicious",
+  "false-positive",
+  "benign-brand-reference",
+  "inconclusive",
+] as const;
+export type ReviewState = (typeof REVIEW_STATES)[number];
+
+export const LT_RELEVANCE_VALUES = [
+  "lithuanian-targeting",
+  "lithuanian-brand-relevance",
+  "global-brand-reference",
+  "unknown",
+] as const;
+export type LithuanianRelevance = (typeof LT_RELEVANCE_VALUES)[number];
+
+export const DISCOVERY_METHODS = [
+  "certstream-live",
+  "ct-search-api",
+  "urlscan-public-report",
+  "hecavex-public-export",
+  "hecavex-review",
+] as const;
+export type DiscoveryMethod = (typeof DISCOVERY_METHODS)[number];
+
+export const CORROBORATION_METHODS = [
+  "urlscan-public-report",
+  "urlscan-page-title",
+  "urlscan-provider-verdict",
+  "urlscan-primary-html-sha256",
+  "analyst-review",
+] as const;
+export type CorroborationMethod = (typeof CORROBORATION_METHODS)[number];
+
+export const BRAND_EVIDENCE_VALUES = ["domain", "title", "verdict", "primary-html-sha256"] as const;
+export type BrandEvidence = (typeof BRAND_EVIDENCE_VALUES)[number];
+
 export type RadarSignal = {
   id: string;
   url: string;
@@ -43,9 +85,17 @@ export type RadarSignal = {
   screenshotUrl: string | null;
   referenceUrl?: string | null;
   hashes?: string[];
+  brandEvidence?: BrandEvidence[];
   reasonCodes?: ReasonCode[];
   detailAvailable?: true;
-  confidence: number;
+  /** Legacy name retained while the public contract migrates to matchScore. */
+  confidence?: number;
+  matchScore?: number;
+  evidenceTier?: EvidenceTier;
+  reviewState?: ReviewState;
+  ltRelevance?: LithuanianRelevance;
+  discoveredVia?: DiscoveryMethod[];
+  corroboratedBy?: CorroborationMethod[];
 };
 
 export type SignalDetailSource = "URLScan" | "CertStream";
@@ -95,6 +145,31 @@ export type SignalDetailObservation = {
   certificate: SignalCertificateDetail | null;
 };
 
+export type SignalDnsContext = {
+  a: string[];
+  aaaa: string[];
+  cname: string[];
+  ns: string[];
+  mx: string[];
+  minimumTtl: number | null;
+  queriesCompleted: number;
+};
+
+export type SignalRegistrationContext = {
+  domain?: string;
+  registrar: string | null;
+  registeredAt: string | null;
+  updatedAt: string | null;
+  expiresAt: string | null;
+  statuses: string[];
+};
+
+export type SignalDomainContext = {
+  observedAt: string;
+  dns: SignalDnsContext;
+  registration: SignalRegistrationContext | null;
+};
+
 export type SignalDetail = {
   schemaVersion: 1;
   dataset: "signal-detail";
@@ -102,6 +177,7 @@ export type SignalDetail = {
   domain: string;
   generatedAt: string;
   observations: SignalDetailObservation[];
+  domainContext?: SignalDomainContext;
 };
 
 export type SourceState = "healthy" | "partial" | "skipped";
@@ -116,7 +192,7 @@ export type RadarSource = {
 };
 
 export type RadarSnapshot = {
-  schemaVersion: 1;
+  schemaVersion: 1 | 2;
   dataset: "live";
   generatedAt: string;
   lastSuccessfulSyncAt: string;
@@ -130,7 +206,10 @@ export type Filters = {
   source: string;
   brand: string;
   country: string;
-  minimumConfidence: number;
+  minimumMatchScore: number;
+  timeRange: "all" | "24h" | "3d" | "7d";
+  evidence: "all" | "name-only" | "corroborated" | "reviewed" | "screenshot" | "urlscan" | "hashes" | "certstream-only";
+  sort: "last-seen-desc" | "first-seen-desc" | "match-score-desc" | "brand-asc";
 };
 
 export type HistoryTransition = {

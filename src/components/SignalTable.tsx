@@ -1,33 +1,63 @@
-import { Camera, Check, ChevronLeft, ChevronRight, Copy, FileSearch, SearchX } from "lucide-react";
+import { Camera, Check, ChevronLeft, ChevronRight, Copy, FileSearch, Link2, SearchX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { evidenceTierLabel, signalEvidenceTier, signalMatchScore } from "../lib/dashboard.ts";
 import { formatDateTime, formatRelativeTime, sentenceCase } from "../lib/format.ts";
 import type { RadarSignal } from "../types.ts";
 import { ScreenshotModal } from "./ScreenshotModal.tsx";
 
 const PAGE_SIZE = 25;
+const SIGNAL_FRAGMENT = /^#signal-([a-f\d]{20})$/u;
 
 interface CaptureState {
   signal: RadarSignal;
   trigger: HTMLButtonElement;
 }
 
-function Confidence({ value }: { value: number }) {
+function MatchScore({ signal }: { signal: RadarSignal }) {
+  const value = signalMatchScore(signal);
   const level = value >= 80 ? "high" : value >= 50 ? "medium" : "low";
   return (
-    <span className={`confidence ${level}`} aria-label={`${value} confidence score out of 100`}>
-      <span>{value}</span><small>/100</small>
+    <span className={`confidence ${level}`} aria-label={`${value} match score out of 100`}>
+      <span>{value}</span><small>/100 match</small>
     </span>
   );
 }
 
-export function SignalTable({ signals, now = Date.now() }: { signals: RadarSignal[]; now?: number }) {
+export function SignalTable({
+  signals,
+  now = Date.now(),
+  snapshotGeneratedAt,
+  onFacet,
+}: {
+  signals: RadarSignal[];
+  now?: number;
+  snapshotGeneratedAt: string;
+  onFacet: (key: "brand" | "source" | "country", value: string) => void;
+}) {
   const [page, setPage] = useState(1);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [capture, setCapture] = useState<CaptureState | null>(null);
   const pages = Math.max(1, Math.ceil(signals.length / PAGE_SIZE));
 
-  useEffect(() => setPage(1), [signals]);
+  useEffect(() => {
+    const focusFragment = () => {
+      const signalId = window.location.hash.match(SIGNAL_FRAGMENT)?.[1];
+      if (!signalId) return;
+      const index = signals.findIndex((signal) => signal.id === signalId);
+      if (index < 0) return;
+      setPage(Math.floor(index / PAGE_SIZE) + 1);
+      window.setTimeout(() => document.getElementById(`signal-${signalId}`)?.scrollIntoView({ block: "center" }), 0);
+    };
+    focusFragment();
+    window.addEventListener("hashchange", focusFragment);
+    return () => window.removeEventListener("hashchange", focusFragment);
+  }, [signals]);
+
+  useEffect(() => {
+    setPage((current) => Math.min(current, pages));
+  }, [pages]);
+
   const pageSignals = useMemo(() => signals.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [signals, page]);
 
   const copy = async (signal: RadarSignal) => {
@@ -41,77 +71,101 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
     return (
       <div className="empty-state">
         <SearchX aria-hidden="true" />
-        <h3>No matching signals</h3>
-        <p>Adjust the search or filters to widen the result set.</p>
+        <h3>No matching candidates</h3>
+        <p>Adjust the search or controlled filters to widen the result set.</p>
       </div>
     );
   }
 
   return (
     <div className="table-panel">
-      <div className="table-scroll" role="region" aria-label="Potential phishing signals" tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label="Potential phishing candidates" tabIndex={0}>
         <table>
           <thead>
             <tr>
-              <th scope="col">Indicator</th>
-              <th scope="col">Target</th>
+              <th scope="col">Candidate</th>
+              <th scope="col">Potential brand match</th>
               <th scope="col">Source</th>
-              <th scope="col">State</th>
-              <th scope="col">Host</th>
+              <th scope="col">Evidence</th>
+              <th scope="col">Hosting observed</th>
               <th scope="col">Timeline</th>
               <th scope="col"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody>
-            {pageSignals.map((signal) => (
-              <tr key={signal.id}>
-                <td className="indicator-cell" data-label="Indicator">
-                  <div>
-                    <code title={signal.url}>{signal.url}</code>
-                    <button type="button" onClick={() => void copy(signal)} aria-label={`Copy defanged URL ${signal.url}`}>
-                      {copiedId === signal.id ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-                    </button>
-                  </div>
-                  <span>{signal.domain}</span>
-                </td>
-                <td data-label="Target">{signal.brand ? <strong className="brand-target">{signal.brand}</strong> : <span className="unknown">Unclassified</span>}</td>
-                <td data-label="Source">
-                  <div className="source-chips">
-                    {signal.sources.map((source) => <span key={source}>{source}</span>)}
-                  </div>
-                </td>
-                <td data-label="State">
-                  <span className={`status-pill ${signal.status}`}><i aria-hidden="true" />{sentenceCase(signal.status)}</span>
-                  <Confidence value={signal.confidence} />
-                </td>
-                <td data-label="Host">
-                  <strong className="host-name">{signal.host ?? "Unknown host"}</strong>
-                  <span className="country">{signal.country ?? "Unknown country"}</span>
-                </td>
-                <td data-label="Timeline">
-                  <time dateTime={signal.lastSeen} title={formatDateTime(signal.lastSeen)}>{formatRelativeTime(signal.lastSeen, now)}</time>
-                  <span className="first-seen">First {formatRelativeTime(signal.firstSeen, now)}</span>
-                </td>
-                <td className="capture-cell" data-label="Evidence">
-                  {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length || signal.reasonCodes?.length || signal.detailAvailable ? (
+            {pageSignals.map((signal) => {
+              const tier = signalEvidenceTier(signal);
+              return (
+                <tr key={signal.id} id={`signal-${signal.id}`}>
+                  <td className="indicator-cell" data-label="Candidate">
+                    <div>
+                      <code title={signal.url}>{signal.url}</code>
+                      <button type="button" onClick={() => void copy(signal)} aria-label={`Copy defanged URL ${signal.url}`}>
+                        {copiedId === signal.id ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                      </button>
+                      <a className="signal-deep-link" href={`#signal-${signal.id}`} aria-label={`Permanent link to signal ${signal.id}`}>
+                        <Link2 aria-hidden="true" />
+                      </a>
+                    </div>
+                    <span>{signal.domain}</span>
+                  </td>
+                  <td data-label="Potential brand match">
+                    {signal.brand ? (
+                      <button className="facet-button brand-target" type="button" onClick={() => onFacet("brand", signal.brand!)}>
+                        {signal.brand}
+                      </button>
+                    ) : <span className="unknown">Unclassified</span>}
+                  </td>
+                  <td data-label="Source">
+                    <div className="source-chips">
+                      {signal.sources.map((source) => (
+                        <button type="button" key={source} onClick={() => onFacet("source", source)}>{source}</button>
+                      ))}
+                    </div>
+                  </td>
+                  <td data-label="Evidence">
+                    <span className={`status-pill ${signal.status}`}><i aria-hidden="true" />{sentenceCase(signal.status)}</span>
+                    <MatchScore signal={signal} />
+                    <span className={`evidence-tier ${tier}`}>{evidenceTierLabel(tier)}</span>
+                    {signal.reviewState && signal.reviewState !== "unreviewed" ? (
+                      <span className="review-state">{sentenceCase(signal.reviewState.replaceAll("-", " "))}</span>
+                    ) : null}
+                  </td>
+                  <td data-label="Hosting observed">
+                    <strong className="host-name">{signal.host ?? "Unknown host"}</strong>
+                    {signal.country ? (
+                      <button className="facet-button country" type="button" onClick={() => onFacet("country", signal.country!)}>
+                        {signal.country}
+                      </button>
+                    ) : <span className="country">Unknown country</span>}
+                  </td>
+                  <td data-label="Timeline">
+                    <time dateTime={signal.lastSeen} title={`${formatDateTime(signal.lastSeen)} UTC`}>
+                      Last {formatRelativeTime(signal.lastSeen, now)}
+                    </time>
+                    <span className="first-seen" title={`${formatDateTime(signal.firstSeen)} UTC`}>
+                      First {formatRelativeTime(signal.firstSeen, now)}
+                    </span>
+                  </td>
+                  <td className="capture-cell" data-label="Details">
                     <button
                       type="button"
                       aria-haspopup="dialog"
                       onClick={(event) => setCapture({ signal, trigger: event.currentTarget })}
-                      aria-label={`View evidence and domain intelligence for ${signal.domain}`}
+                      aria-label={`View explanation, evidence and provenance for ${signal.domain}`}
                     >
                       {signal.screenshotUrl ? <Camera aria-hidden="true" /> : <FileSearch aria-hidden="true" />}
                     </button>
-                  ) : <span aria-label="No evidence available">—</span>}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
       <div className="pagination">
         <p>
-          Showing <strong>{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, signals.length)}</strong> of {signals.length}
+          Showing <strong>{(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, signals.length)}</strong> of {signals.length}
         </p>
         <div>
           <button type="button" disabled={page === 1} onClick={() => setPage((value) => value - 1)}>
@@ -124,7 +178,12 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
         </div>
       </div>
       {capture && (
-        <ScreenshotModal signal={capture.signal} returnFocus={capture.trigger} onClose={closeCapture} />
+        <ScreenshotModal
+          signal={capture.signal}
+          snapshotGeneratedAt={snapshotGeneratedAt}
+          returnFocus={capture.trigger}
+          onClose={closeCapture}
+        />
       )}
     </div>
   );

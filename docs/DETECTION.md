@@ -13,7 +13,7 @@ These are the public matching rules used by the HECAVEX-operated [radar.hecavex.
 
 A different top-level domain or repeated hyphens can increase a score only after valid brand evidence exists. The default minimum for CertStream collection and URLScan domain hunts is 80. Confidence is a ranking score from the public rules, not a probability.
 
-CertStream and URLScan observations remain `suspected`. A CertStream candidate does not need a corresponding URLScan report: after it passes the current brand rules and CertStream confidence threshold, it is eligible for the public candidate list with evidence fields left empty. A later URLScan observation can enrich and merge with that row. A URLScan phishing verdict can raise confidence but cannot establish current liveness or replace same-brand evidence. Only a configured HECAVEX export can publish lifecycle states such as `active`, `offline`, or `mitigated`.
+CertStream and URLScan observations remain `suspected`. A CertStream candidate does not need a corresponding URLScan report: after it passes the current brand rules and CertStream match-score threshold, it is eligible for the public candidate list with evidence fields left empty. A later URLScan observation can enrich and merge with that row. A URLScan phishing verdict can raise `matchScore` and `evidenceTier` but cannot establish current liveness or replace same-brand evidence. Only a configured HECAVEX export can publish lifecycle states such as `active`, `offline`, or `mitigated`; only an explicitly exported analyst assessment can set review disposition.
 
 ## Archive revalidation
 
@@ -29,7 +29,7 @@ If the current hostname matcher selects a brand, it must select the row's declar
 
 The public review export can suppress an exact host or a deliberately approved domain subtree. A brand-scoped suppression applies only when the current row resolves to that same brand, which prevents a correction for one target from hiding another target on shared infrastructure. Subtree allowlists require an explicit CLI confirmation and should not be used for shared hosting platforms.
 
-An operator-added candidate is not a verdict override. It must independently produce exactly one current domain match, is published as `HECAVEX` and `suspected`, and cannot receive a confidence score above the current matcher result. An operator addition therefore cannot bypass the registry, establish a lifecycle state, or turn missing URLScan evidence into confirmation.
+An operator-added candidate is not a verdict override. It must independently produce exactly one current domain match, is published as `HECAVEX` and `suspected`, and cannot receive a `matchScore` above the current matcher result. An operator addition therefore cannot bypass the registry, establish a lifecycle state, or turn missing URLScan evidence into confirmation. Confirmation is a separate, expiring append-only review action with controlled evidence metadata.
 
 ## Maintaining precision
 

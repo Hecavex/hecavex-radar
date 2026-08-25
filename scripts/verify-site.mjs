@@ -18,11 +18,12 @@ const widths = [320, 360, 390, 768, 1024, 1280, 1440];
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
   { path: "/history/", marker: "Candidate history" },
+  { path: "/brands/", marker: "Reviewed Lithuanian brand registry" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
 ];
 const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
-const productNavigation = ["Overview", "History", "Methodology", "Docs"];
+const productNavigation = ["Overview", "History", "Scope", "Methodology", "Docs"];
 const mobileNavigation = [...productNavigation, "Source", ...portfolioNavigation];
 const publicArtifactRawBytes = 512 * 1024;
 const stixBundleRawBytes = 2 * 1024 * 1024;
@@ -67,6 +68,8 @@ function verifyDeploymentTopology() {
   const collector = readFileSync(join(root, ".github", "workflows", "collect-certstream.yml"), "utf8");
   const hunter = readFileSync(join(root, ".github", "workflows", "hunt-urlscan.yml"), "utf8");
   const assetHunter = readFileSync(join(root, ".github", "workflows", "hunt-brand-assets.yml"), "utf8");
+  const ctSearch = readFileSync(join(root, ".github", "workflows", "poll-ct-search.yml"), "utf8");
+  const domainContext = readFileSync(join(root, ".github", "workflows", "enrich-domain-context.yml"), "utf8");
   const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
   const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
@@ -87,12 +90,16 @@ function verifyDeploymentTopology() {
     "Pages deployment no longer limits each upstream workflow to its approved trigger semantics.",
   );
   assert(
-    deploy.includes("public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals") &&
+    deploy.includes('git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/') &&
       deploy.includes("public/data/collection-health.json") &&
       deploy.includes("test -f dist/data/radar.stix.json") &&
+      deploy.includes("test -f dist/data/feed-manifest.json") &&
+      deploy.includes("test -f dist/data/pipeline-health.json") &&
+      deploy.includes("test -f dist/data/related-observations.json") &&
+      deploy.includes("test -f dist/data/schemas/radar-v2.schema.json") &&
       deploy.includes("! grep -Fq 'Allow: /data/radar.stix.json' dist/robots.txt") &&
       deploy.includes("git merge-base --is-ancestor") &&
-      deploy.includes("data/(certstream|urlscan|history)/|public/data/"),
+      deploy.includes("data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/"),
     "Pages deployment freshness checks no longer cover every staged public-data boundary.",
   );
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
@@ -126,11 +133,76 @@ function verifyDeploymentTopology() {
     "URLScan archive and snapshot writers are no longer serialized.",
   );
   assert(
-    ci.includes('- "data/certstream/**"') && ci.includes('- "data/urlscan/**"') && !ci.includes('- "public/data/**"'),
+    ctSearch.includes('cron: "43 * * * *"') &&
+      ctSearch.includes("group: radar-certstream-writer") &&
+      ctSearch.includes("git add -- data/ct-search data/certstream") &&
+      ctSearch.includes("CT_SEARCH_REPLAY_IDS") &&
+      ctSearch.includes("CT_SEARCH_REPLAY_ROWS") &&
+      ctSearch.includes("if: always()"),
+    "Checkpointed CT search schedule, serialization, replay boundary, or durable state publication drifted.",
+  );
+  assert(
+    domainContext.includes('cron: "13 1,7,13,19 * * *"') &&
+      domainContext.includes("group: radar-archive-writer") &&
+      domainContext.includes("vars.DOMAIN_CONTEXT_RUN_BUDGET_SECONDS") &&
+      domainContext.includes("git add -- data/enrichment/domain-context.json") &&
+      domainContext.includes("if: always()"),
+    "DNS/RDAP context schedule, serialization, or durable state publication drifted.",
+  );
+  for (const [name, workflow] of [
+    ["CertStream collection", collector],
+    ["URLScan hunt", hunter],
+    ["official asset hunt", assetHunter],
+    ["checkpointed CT search", ctSearch],
+    ["DNS/RDAP context", domainContext],
+  ]) {
+    assert(
+      workflow.includes('base_sha="$(git rev-parse HEAD^)"') &&
+        workflow.includes("git fetch --no-tags origin main") &&
+        workflow.includes('[[ "${upstream_sha}" != "${base_sha}" ]]') &&
+        workflow.includes("data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/") &&
+        workflow.includes("Code or configuration changed after checkout") &&
+        workflow.includes("git rebase origin/main") &&
+        !workflow.includes("git pull --rebase origin main"),
+      `${name} does not restrict generated-output rebases to reviewed data-only paths.`,
+    );
+  }
+  assert(
+    sync.includes('base_sha="$(git rev-parse HEAD^)"') &&
+      sync.includes("python -m hecavex_radar.publication") &&
+      sync.includes("git fetch --no-tags origin main") &&
+      sync.includes('[[ "${upstream_sha}" != "${base_sha}" ]]') &&
+      sync.includes("data/(certstream|ct-search|enrichment|urlscan|review)/") &&
+      sync.includes("Source inputs changed while this snapshot was being built") &&
+      sync.includes("public/data/collection-health\\.json") &&
+      sync.includes("Code or configuration changed after checkout") &&
+      sync.includes("git rebase origin/main") &&
+      !sync.includes("git pull --rebase origin main"),
+    "snapshot synchronization does not invalidate stale source inputs while allowing only volatile health rebases.",
+  );
+  assert(
+    ci.includes('- "data/certstream/**"') &&
+      ci.includes('- "data/ct-search/**"') &&
+      ci.includes('- "data/enrichment/**"') &&
+      ci.includes('- "data/urlscan/**"') &&
+      !ci.includes('- "public/data/**"'),
     "CI path filters no longer ignore only archive-only collection changes.",
   );
   assert(
-    sync.includes("git add -- public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals data/history") &&
+    sync.includes("public/data/radar.json") &&
+      sync.includes("public/data/radar.stix.json") &&
+      sync.includes("public/data/radar-reviewed.stix.json") &&
+      sync.includes("public/data/radar.index.json") &&
+      sync.includes("public/data/radar-shards") &&
+      sync.includes("public/data/history.json") &&
+      sync.includes("public/data/changes.json") &&
+      sync.includes("public/data/pipeline-health.json") &&
+      sync.includes("public/data/related-observations.json") &&
+      sync.includes("public/data/feed-manifest.json") &&
+      sync.includes("public/data/schemas") &&
+      sync.includes("public/data/signals") &&
+      sync.includes("public/data/*.sha256") &&
+      sync.includes("data/history") &&
       sync.includes("RADAR_STIX_OUTPUT: public/data/radar.stix.json"),
     "Snapshot synchronization does not stage the STIX projection, sidecars, history, and live snapshot atomically.",
   );
@@ -191,6 +263,8 @@ function verifyPythonAutomationLocks() {
     ["collect-certstream.yml", runtimeLock],
     ["hunt-urlscan.yml", runtimeLock],
     ["hunt-brand-assets.yml", runtimeLock],
+    ["poll-ct-search.yml", runtimeLock],
+    ["enrich-domain-context.yml", runtimeLock],
     ["sync-radar.yml", runtimeLock],
   ]);
   for (const [name, lock] of workflowLocks) {
@@ -251,7 +325,7 @@ function verifyBuiltHtml() {
     assert(document.querySelector('.brand[href="https://hecavex.com/en/"]'), `${route} does not link the HECAVEX brand to Research.`);
     assert(document.querySelector('.product-identity[href="/"]'), `${route} does not link the Radar identity to its overview.`);
     assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
-    assert(document.querySelectorAll(".product-navigation a").length === 4, `${route} does not expose four Radar links.`);
+    assert(document.querySelectorAll(".product-navigation a").length === 5, `${route} does not expose five Radar links.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
     const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
       script.textContent.includes("https://static.cloudflareinsights.com/beacon.min.js"),
@@ -275,6 +349,7 @@ function verifyBuiltHtml() {
     const expectedLocalPage = new Map([
       ["/", "Overview"],
       ["/history/", "History"],
+      ["/brands/", "Scope"],
       ["/methodology/", "Methodology"],
       ["/docs/", "Docs"],
     ]).get(route);
@@ -304,12 +379,39 @@ function verifyBuiltHtml() {
         document.querySelector('link[rel="alternate"][type="application/stix+json;version=2.1"][href="https://radar.hecavex.com/data/radar.stix.json"]'),
         "Radar overview does not advertise the STIX 2.1 alternate distribution.",
       );
+      assert(
+        document.querySelector('link[rel="alternate"][type="application/stix+json;version=2.1"][href="https://radar.hecavex.com/data/radar-reviewed.stix.json"]'),
+        "Radar overview does not advertise the reviewed STIX 2.1 alternate distribution.",
+      );
       const serializedStructuredData = JSON.stringify(structuredData);
       assert(
         serializedStructuredData.includes("application/stix+json;version=2.1") &&
-          serializedStructuredData.includes("https://radar.hecavex.com/data/radar.stix.json"),
-        "Radar Dataset metadata omits the STIX 2.1 distribution.",
+          serializedStructuredData.includes("https://radar.hecavex.com/data/radar.stix.json") &&
+          serializedStructuredData.includes("https://radar.hecavex.com/data/radar-reviewed.stix.json") &&
+          serializedStructuredData.includes("https://radar.hecavex.com/data/radar.index.json") &&
+          serializedStructuredData.includes("https://radar.hecavex.com/data/feed-manifest.json") &&
+          serializedStructuredData.includes("checkpointed crt.sh keyword search") &&
+          serializedStructuredData.includes("DNS-over-HTTPS and RDAP context"),
+        "Radar Dataset metadata omits a declared collection method or machine-readable distribution.",
       );
+      assert(document.querySelector(".change-panel"), "Radar overview omits the bounded What changed view.");
+      assert(document.querySelector(".export-actions"), "Radar overview omits defanged filtered-view exports.");
+      assert(document.querySelector(".filter-privacy-note")?.textContent?.includes("never added to the shared URL"), "Radar overview does not disclose local-only free-text search.");
+      assert(document.querySelector('tbody tr[id^="signal-"] .signal-deep-link'), "Radar overview omits stable per-signal fragment links.");
+      const relationPanel = document.querySelector(".relation-panel");
+      assert(relationPanel, "Radar overview omits its bounded related-observation view.");
+      assert(
+        relationPanel.textContent.includes("Automated associations") &&
+          relationPanel.textContent.includes("not campaign") &&
+          relationPanel.textContent.includes("threat-actor attribution"),
+        "Radar related-observation view does not state its non-attribution boundary.",
+      );
+      assert(document.querySelector(".stix-feed-panel"), "Radar overview omits its compact STIX distribution control.");
+      assert(document.querySelector(".pipeline-health-panel"), "Radar overview omits its bounded pipeline-health view.");
+    }
+    if (route === "/brands/") {
+      assert(document.querySelectorAll(".brand-table tbody tr").length >= 40, "Detection scope does not prerender the reviewed brand registry.");
+      assert(document.querySelector(".scope-boundaries"), "Detection scope omits registry interpretation boundaries.");
     }
 
     const root = document.getElementById("root");
@@ -395,6 +497,9 @@ function verifyIdentityArtwork() {
 }
 
 const detailFields = ["schemaVersion", "dataset", "signalId", "domain", "generatedAt", "observations"];
+const domainContextFields = ["observedAt", "dns", "registration"];
+const dnsContextFields = ["a", "aaaa", "cname", "ns", "mx", "minimumTtl", "queriesCompleted"];
+const registrationContextFields = ["registrar", "registeredAt", "updatedAt", "expiresAt", "statuses"];
 const observationFields = ["source", "observedAt", "page", "network", "assessment", "certificate"];
 const pageFields = ["title", "httpStatus"];
 const networkFields = ["ipAddress", "asn", "asnDescription", "asnRegistry"];
@@ -431,6 +536,9 @@ const stixObservedRequiredFields = [
   "x_hecavex_com_sources",
   "x_hecavex_com_status",
   "x_hecavex_com_matching_score",
+  "x_hecavex_com_evidence_tier",
+  "x_hecavex_com_review_state",
+  "x_hecavex_com_lt_relevance",
   "x_hecavex_com_observation_only",
   "x_hecavex_com_radar_first_seen",
   "x_hecavex_com_radar_last_seen",
@@ -446,6 +554,15 @@ function isRecord(value) {
 
 function hasExactFields(value, fields) {
   return isRecord(value) && Object.keys(value).length === fields.length && fields.every((field) => Object.hasOwn(value, field));
+}
+
+function hasRequiredAndOptionalFields(value, required, optional) {
+  const allowed = new Set([...required, ...optional]);
+  return (
+    isRecord(value) &&
+    required.every((field) => Object.hasOwn(value, field)) &&
+    Object.keys(value).every((field) => allowed.has(field))
+  );
 }
 
 function timestampValue(value) {
@@ -475,6 +592,68 @@ function refangedRadarDomain(value) {
   const labels = domain.split(".");
   if (labels.length < 2) return null;
   return labels.every((label) => /^[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?$/u.test(label)) ? domain : null;
+}
+
+function isDefangedIp(value) {
+  if (typeof value !== "string" || /[@/?#]/u.test(value)) return false;
+  if (value.includes("[.]")) {
+    if (value.includes(":") || value.replaceAll("[.]", "").includes(".")) return false;
+    const octets = value.split("[.]");
+    return octets.length === 4 && octets.every((octet) => /^\d{1,3}$/u.test(octet) && Number(octet) <= 255);
+  }
+  const refanged = value.replaceAll("[:]", ":");
+  return value.includes("[:]") && !refanged.includes("[") && !refanged.includes("]") && /^[a-f\d:]+$/u.test(refanged);
+}
+
+function verifyDomainContext(context, generatedAt, label) {
+  assert(hasExactFields(context, domainContextFields), `${label} has unexpected fields.`);
+  const observedAt = timestampValue(context.observedAt);
+  assert(observedAt !== null && observedAt <= generatedAt + 5 * 60 * 1000, `${label} has an invalid observedAt.`);
+  assert(hasExactFields(context.dns, dnsContextFields), `${label} has invalid DNS fields.`);
+  const dns = context.dns;
+  const uniqueList = (value, validator) =>
+    Array.isArray(value) && value.length <= 12 && new Set(value).size === value.length && value.every(validator);
+  assert(uniqueList(dns.a, isDefangedIp) && uniqueList(dns.aaaa, isDefangedIp), `${label} has invalid IP answers.`);
+  for (const field of ["cname", "ns"]) {
+    assert(uniqueList(dns[field], (value) => refangedRadarDomain(value) !== null), `${label} has invalid ${field} answers.`);
+  }
+  assert(
+    uniqueList(dns.mx, (value) => {
+      if (typeof value !== "string") return false;
+      const separator = value.indexOf(" ");
+      return separator > 0 && /^\d{1,5}$/u.test(value.slice(0, separator)) && refangedRadarDomain(value.slice(separator + 1)) !== null;
+    }),
+    `${label} has invalid MX answers.`,
+  );
+  assert(
+    (dns.minimumTtl === null || (Number.isInteger(dns.minimumTtl) && dns.minimumTtl >= 0)) &&
+      Number.isInteger(dns.queriesCompleted) &&
+      dns.queriesCompleted >= 0 &&
+      dns.queriesCompleted <= 5,
+    `${label} has invalid DNS counters.`,
+  );
+  if (context.registration === null) return;
+  const registration = context.registration;
+  assert(
+    hasRequiredAndOptionalFields(registration, registrationContextFields, ["domain"]),
+    `${label} has invalid registration fields.`,
+  );
+  assert(
+    registration.domain === undefined || refangedRadarDomain(registration.domain) !== null,
+    `${label} has an invalid registration scope.`,
+  );
+  assert(
+    registration.registrar === null ||
+      (typeof registration.registrar === "string" && registration.registrar.length > 0 && registration.registrar.length <= 160),
+    `${label} has an invalid registrar.`,
+  );
+  for (const field of ["registeredAt", "updatedAt", "expiresAt"]) {
+    assert(registration[field] === null || timestampValue(registration[field]) !== null, `${label} has an invalid ${field}.`);
+  }
+  assert(
+    uniqueList(registration.statuses, (value) => typeof value === "string" && /^[a-z\d-]{1,64}$/u.test(value)),
+    `${label} has invalid registration statuses.`,
+  );
 }
 
 function verifyStixBundle() {
@@ -554,6 +733,9 @@ function verifyStixBundle() {
     assert(JSON.stringify(observed.x_hecavex_com_sources) === JSON.stringify(expectedSources), `${label} source metadata drifted.`);
     assert(observed.x_hecavex_com_status === signal.status, `${label} status metadata drifted.`);
     assert(observed.x_hecavex_com_matching_score === signal.confidence, `${label} matching score metadata drifted.`);
+    assert(observed.x_hecavex_com_evidence_tier === signal.evidenceTier, `${label} evidence tier metadata drifted.`);
+    assert(observed.x_hecavex_com_review_state === signal.reviewState, `${label} review state metadata drifted.`);
+    assert(observed.x_hecavex_com_lt_relevance === signal.ltRelevance, `${label} Lithuanian-relevance metadata drifted.`);
     assert(observed.x_hecavex_com_observation_only === true, `${label} lost its observation-only boundary.`);
     assert(
       observed.x_hecavex_com_radar_first_seen === signal.firstSeen && observed.x_hecavex_com_radar_last_seen === signal.lastSeen,
@@ -812,14 +994,17 @@ function verifySignalDetails() {
     } catch {
       throw new Error(`${relativePath} is not valid UTF-8 JSON.`);
     }
-    assert(hasExactFields(detail, detailFields), `${relativePath} does not use the exact version-1 top-level fields.`);
+    assert(
+      hasRequiredAndOptionalFields(detail, detailFields, ["domainContext"]),
+      `${relativePath} does not use the allowed version-1 top-level fields.`,
+    );
     assert(detail.schemaVersion === 1 && detail.dataset === "signal-detail", `${relativePath} has the wrong schema identity.`);
     assert(detail.signalId === signal.id && detail.domain === signal.domain, `${relativePath} does not match its live signal.`);
     const generatedAt = timestampValue(detail.generatedAt);
     assert(generatedAt !== null, `${relativePath} has an invalid generatedAt timestamp.`);
     assert(
-      Array.isArray(detail.observations) && detail.observations.length >= 1 && detail.observations.length <= 2,
-      `${relativePath} must contain one or two observations.`,
+      Array.isArray(detail.observations) && detail.observations.length <= 2,
+      `${relativePath} must contain at most two observations.`,
     );
     detail.observations.forEach((observation, index) =>
       verifyObservation(observation, signal, generatedAt, `${relativePath} observation ${index + 1}`),
@@ -827,6 +1012,13 @@ function verifySignalDetails() {
     assert(
       new Set(detail.observations.map((observation) => observation.source)).size === detail.observations.length,
       `${relativePath} contains duplicate observation sources.`,
+    );
+    if (Object.hasOwn(detail, "domainContext")) {
+      verifyDomainContext(detail.domainContext, generatedAt, `${relativePath} domain context`);
+    }
+    assert(
+      detail.observations.length > 0 || Object.hasOwn(detail, "domainContext"),
+      `${relativePath} has neither a source observation nor DNS/RDAP context.`,
     );
     expected.delete(relativePath);
   }
@@ -865,7 +1057,13 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     `Scripts and styles total ${executableBytes} gzip bytes; budget is ${performanceBudgets.scriptAndStyleGzip}.`,
   );
   const dataSizes = compressedSizes([
-    ...["radar.json", "radar.stix.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
+    ...[
+      "radar.json",
+      "radar.stix.json",
+      "history.json",
+      "collection-health.json",
+      "related-observations.json",
+    ].map((name) => join(output, "data", name)),
     ...signalDetails.files,
   ]);
   for (const { path, size } of dataSizes) {
@@ -1045,6 +1243,7 @@ async function verifyInBrowser() {
           const methodologyFields = methodologyFieldList ? [...methodologyFieldList.children] : [];
           const methodologyFieldListRect = methodologyFieldList?.getBoundingClientRect();
           const finalMethodologyFieldRect = methodologyFields.at(-1)?.getBoundingClientRect();
+          const penultimateMethodologyFieldRect = methodologyFields.at(-2)?.getBoundingClientRect();
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
@@ -1067,6 +1266,8 @@ async function verifyInBrowser() {
             methodologyFieldListRight: methodologyFieldListRect?.right ?? 0,
             finalMethodologyFieldLeft: finalMethodologyFieldRect?.left ?? 0,
             finalMethodologyFieldRight: finalMethodologyFieldRect?.right ?? 0,
+            penultimateMethodologyFieldLeft: penultimateMethodologyFieldRect?.left ?? 0,
+            penultimateMethodologyFieldRight: penultimateMethodologyFieldRect?.right ?? 0,
           };
         });
         assert(
@@ -1103,12 +1304,21 @@ async function verifyInBrowser() {
           }
         }
         if (entry.path === "/methodology/") {
-          assert(layout.methodologyFieldCount === 7, `Methodology field reference has ${layout.methodologyFieldCount} entries instead of 7.`);
-          assert(
-            Math.abs(layout.finalMethodologyFieldLeft - (layout.methodologyFieldListLeft + 1)) <= 1 &&
-              Math.abs(layout.finalMethodologyFieldRight - (layout.methodologyFieldListRight - 1)) <= 1,
-            `Methodology field grid exposes an empty final cell at ${width}px.`,
-          );
+          assert(layout.methodologyFieldCount === 8, `Methodology field reference has ${layout.methodologyFieldCount} entries instead of 8.`);
+          if (width <= 760) {
+            assert(
+              Math.abs(layout.finalMethodologyFieldLeft - (layout.methodologyFieldListLeft + 1)) <= 1 &&
+                Math.abs(layout.finalMethodologyFieldRight - (layout.methodologyFieldListRight - 1)) <= 1,
+              `Methodology field grid exposes an empty final cell at ${width}px.`,
+            );
+          } else {
+            assert(
+              Math.abs(layout.penultimateMethodologyFieldLeft - (layout.methodologyFieldListLeft + 1)) <= 1 &&
+                Math.abs(layout.finalMethodologyFieldRight - (layout.methodologyFieldListRight - 1)) <= 1 &&
+                Math.abs(layout.finalMethodologyFieldLeft - layout.penultimateMethodologyFieldRight) <= 2,
+              `Methodology field grid does not fill its final two-column row at ${width}px.`,
+            );
+          }
         }
 
         await page.keyboard.press("Tab");
@@ -1155,6 +1365,14 @@ async function verifyInBrowser() {
             );
           }
           assert(await page.locator(".header-utility .source-link").isVisible(), `${entry.path} desktop Source utility is hidden at ${width}px.`);
+        }
+
+        if (width === 1440 && entry.path === "/") {
+          await page.locator("#signal-search").fill("private local search");
+          assert(!page.url().includes("private") && !page.url().includes("query="), "Free-text signal search leaked into the URL.");
+          await page.locator('select[aria-label="Source"]').selectOption("CertStream");
+          assert(page.url().includes("source=CertStream") && !page.url().includes("private"), "Controlled source filter did not produce a safe shareable URL.");
+          assert(await page.locator('.export-actions button', { hasText: "CSV" }).isVisible(), "Defanged CSV export is not visible.");
         }
 
         assert(browserErrors.length === 0, `${entry.path} failed its CSP-enforced browser smoke check at ${width}px: ${browserErrors.join(" | ")}`);

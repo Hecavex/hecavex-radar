@@ -3,10 +3,11 @@ from __future__ import annotations
 import ipaddress
 import math
 import re
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
 from urllib.parse import urlsplit
 
-from .models import RadarSignal, RawSignal, SignalStatus
+from .models import CorroborationMethod, DiscoveryMethod, EvidenceTier, RadarSignal, RawSignal, SignalStatus
 from .provenance import normalize_reason_codes
 from .safety import (
     clean_text,
@@ -23,6 +24,24 @@ IPV4 = re.compile(r"(?<![\d.])(\d{1,3}(?:\.\d{1,3}){3})(?![\d.])")
 IPV6_CANDIDATE = re.compile(r"(?<![\da-f:])\[?[\da-f:]*:[\da-f:]+\]?(?![\da-f:])", re.IGNORECASE)
 SHA256 = re.compile(r"^[a-f\d]{64}$", re.IGNORECASE)
 EMPTY_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+DISCOVERY_METHODS: frozenset[DiscoveryMethod] = frozenset(
+    {
+        "certstream-live",
+        "ct-search-api",
+        "urlscan-public-report",
+        "hecavex-public-export",
+        "hecavex-review",
+    }
+)
+CORROBORATION_METHODS: frozenset[CorroborationMethod] = frozenset(
+    {
+        "urlscan-public-report",
+        "urlscan-page-title",
+        "urlscan-provider-verdict",
+        "urlscan-primary-html-sha256",
+        "analyst-review",
+    }
+)
 
 
 def _parse_date(value: str | None, fallback: str) -> str:
@@ -81,12 +100,66 @@ def _safe_hashes(values: list[str] | None) -> list[str]:
     if not values:
         return []
     return list(
-        dict.fromkeys(
-            value.lower()
-            for value in values
-            if SHA256.fullmatch(value) and value.lower() != EMPTY_SHA256
-        )
+        dict.fromkeys(value.lower() for value in values if SHA256.fullmatch(value) and value.lower() != EMPTY_SHA256)
     )[:8]
+
+
+def _discovery_methods(values: object, source: str) -> list[DiscoveryMethod]:
+    methods: list[DiscoveryMethod] = []
+    if isinstance(values, (list, tuple)):
+        for value in values:
+            if value in DISCOVERY_METHODS and value not in methods:
+                methods.append(value)
+    if not methods:
+        fallback: dict[str, DiscoveryMethod] = {
+            "CertStream": "certstream-live",
+            "URLScan": "urlscan-public-report",
+            "HECAVEX": "hecavex-public-export",
+        }
+        if source in fallback:
+            methods.append(fallback[source])
+    return methods
+
+
+def _corroboration_methods(values: object, reasons: Sequence[str]) -> list[CorroborationMethod]:
+    methods: list[CorroborationMethod] = []
+    if isinstance(values, (list, tuple)):
+        for value in values:
+            if value in CORROBORATION_METHODS and value not in methods:
+                methods.append(value)
+    inferred: tuple[tuple[str, CorroborationMethod], ...] = (
+        ("brand-title-match", "urlscan-page-title"),
+        ("provider-verdict", "urlscan-provider-verdict"),
+        ("primary-html-hash-pivot", "urlscan-primary-html-sha256"),
+    )
+    for reason, method in inferred:
+        if reason in reasons and method not in methods:
+            methods.append(method)
+    return methods
+
+
+def _evidence_tier(signal: RadarSignal) -> EvidenceTier:
+    """Describe evidence strength without turning it into a verdict.
+
+    A second source, a bounded provider assessment/title match, or a reusable
+    asset is corroboration. Analyst review is applied later by the private
+    review policy because it is not source evidence.
+    """
+
+    evidence = set(signal.get("brandEvidence", []))
+    reasons = set(signal.get("reasonCodes", []))
+    if (
+        len(signal["sources"]) > 1
+        or "title" in evidence
+        or "verdict" in evidence
+        or "primary-html-sha256" in evidence
+        or bool(signal.get("hashes"))
+        or "brand-title-match" in reasons
+        or "provider-verdict" in reasons
+        or "primary-html-hash-pivot" in reasons
+    ):
+        return "corroborated"
+    return "name-only"
 
 
 def prepare_signal(raw: RawSignal, now: str) -> RadarSignal | None:
@@ -101,6 +174,8 @@ def prepare_signal(raw: RawSignal, now: str) -> RadarSignal | None:
     first_seen = _parse_date(raw.first_seen, last_seen)
     if _date_value(first_seen) > _date_value(last_seen):
         first_seen = last_seen
+    score = _confidence(raw.confidence)
+    reason_codes = normalize_reason_codes(raw.reason_codes)
     signal: RadarSignal = {
         # One public row represents one observed host. This correlates CT names,
         # URLScan paths, and HECAVEX observations without duplicating schemes or paths.
@@ -117,11 +192,23 @@ def prepare_signal(raw: RawSignal, now: str) -> RadarSignal | None:
         "screenshotUrl": safe_screenshot_url(raw.screenshot_url),
         "referenceUrl": safe_reference_url(raw.reference_url),
         "hashes": _safe_hashes(raw.hashes),
-        "confidence": _confidence(raw.confidence),
+        "matchScore": score,
+        "evidenceTier": "name-only",
+        "reviewState": "needs-review" if raw.reason_codes and "manual-review" in raw.reason_codes else "unreviewed",
+        "ltRelevance": "lithuanian-brand-relevance",
+        # Deprecated snapshot alias retained while external consumers move to
+        # matchScore. It must always equal matchScore.
+        "confidence": score,
     }
-    reason_codes = normalize_reason_codes(raw.reason_codes)
+    discovered_via = _discovery_methods(raw.discovered_via, source)
+    corroborated_by = _corroboration_methods(raw.corroborated_by, reason_codes)
+    if discovered_via:
+        signal["discoveredVia"] = discovered_via
+    if corroborated_by:
+        signal["corroboratedBy"] = corroborated_by
     if reason_codes:
         signal["reasonCodes"] = reason_codes
+    signal["evidenceTier"] = _evidence_tier(signal)
     return signal
 
 
@@ -193,7 +280,23 @@ def merge_signals(signals: list[RadarSignal], maximum: int) -> list[RadarSignal]
         reason_codes = current.get("reasonCodes", []) + signal.get("reasonCodes", [])
         if reason_codes:
             current["reasonCodes"] = normalize_reason_codes(reason_codes)
-        current["confidence"] = max(current["confidence"], signal["confidence"])
+        discovered_via = current.get("discoveredVia", []) + signal.get("discoveredVia", [])
+        if discovered_via:
+            current["discoveredVia"] = list(dict.fromkeys(discovered_via))
+        corroborated_by = current.get("corroboratedBy", []) + signal.get("corroboratedBy", [])
+        if "URLScan" in current["sources"] and len(current["sources"]) > 1:
+            corroborated_by.append("urlscan-public-report")
+        if corroborated_by:
+            current["corroboratedBy"] = list(dict.fromkeys(corroborated_by))
+        current["matchScore"] = max(current["matchScore"], signal["matchScore"])
+        current["confidence"] = current["matchScore"]
+        if signal["reviewState"] == "needs-review":
+            current["reviewState"] = "needs-review"
+        current["evidenceTier"] = _evidence_tier(current)
+
+    for signal in merged.values():
+        signal["evidenceTier"] = _evidence_tier(signal)
+        signal["confidence"] = signal["matchScore"]
 
     ordered = sorted(
         merged.values(),

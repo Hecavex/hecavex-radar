@@ -15,6 +15,9 @@ from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url
 
 STIX_CYBER_OBSERVABLE_NAMESPACE = UUID("00abedb4-aa42-466c-9c01-fed23315a9b7")
 RADAR_STIX_NAMESPACE = uuid5(NAMESPACE_URL, "https://radar.hecavex.com/data/radar.stix.json")
+RADAR_REVIEWED_STIX_NAMESPACE = uuid5(NAMESPACE_URL, "https://radar.hecavex.com/data/radar-reviewed.stix.json")
+RADAR_IDENTITY_ID = f"identity--{uuid5(NAMESPACE_URL, 'https://radar.hecavex.com/#publisher')}"
+TLP_CLEAR_MARKING_ID = "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 DNS_LABEL = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
 SIGNAL_ID = re.compile(r"^[a-f0-9]{20}$")
@@ -23,6 +26,18 @@ ALLOWED_SOURCES = frozenset({"CertStream", "URLScan", "HECAVEX"})
 MAXIMUM_STIX_SIGNALS = 25_000
 MAXIMUM_STIX_OBJECTS = MAXIMUM_STIX_SIGNALS * 2
 MAXIMUM_STIX_BUNDLE_BYTES = 2 * 1024 * 1024
+EVIDENCE_TIERS = frozenset({"name-only", "corroborated", "reviewed"})
+REVIEW_STATES = frozenset(
+    {
+        "unreviewed",
+        "needs-review",
+        "confirmed-suspicious",
+        "false-positive",
+        "benign-brand-reference",
+        "inconclusive",
+    }
+)
+LT_RELEVANCE = frozenset({"lithuanian-targeting", "lithuanian-brand-relevance", "global-brand-reference", "unknown"})
 
 
 def _timestamp(value: object, field: str) -> tuple[str, datetime]:
@@ -134,9 +149,17 @@ def _observed_data(
     status = signal.get("status")
     if not isinstance(status, str) or status not in SIGNAL_STATUSES:
         raise ValueError("Radar STIX export rejected an invalid status.")
-    score = signal.get("confidence")
+    legacy_score = signal.get("confidence")
+    score = signal.get("matchScore", legacy_score)
     if isinstance(score, bool) or not isinstance(score, int) or not 0 <= score <= 100:
         raise ValueError("Radar STIX export rejected an invalid matching score.")
+    if legacy_score is not None and legacy_score != score:
+        raise ValueError("Radar STIX export rejected conflicting legacy and current matching scores.")
+    evidence_tier = signal.get("evidenceTier", "name-only")
+    review_state = signal.get("reviewState", "unreviewed")
+    lt_relevance = signal.get("ltRelevance", "lithuanian-brand-relevance")
+    if evidence_tier not in EVIDENCE_TIERS or review_state not in REVIEW_STATES or lt_relevance not in LT_RELEVANCE:
+        raise ValueError("Radar STIX export rejected invalid semantic state.")
     brand = signal.get("brand")
     if brand is not None and (not isinstance(brand, str) or clean_text(brand, 120) != brand):
         raise ValueError("Radar STIX export rejected an invalid brand name.")
@@ -161,6 +184,9 @@ def _observed_data(
         # Radar confidence is a matching/ranking score, not STIX confidence,
         # probability, attribution, or a maliciousness verdict.
         "x_hecavex_com_matching_score": score,
+        "x_hecavex_com_evidence_tier": evidence_tier,
+        "x_hecavex_com_review_state": review_state,
+        "x_hecavex_com_lt_relevance": lt_relevance,
         "x_hecavex_com_observation_only": True,
         "x_hecavex_com_radar_first_seen": first_seen,
         "x_hecavex_com_radar_last_seen": last_seen,
@@ -192,7 +218,7 @@ def build_stix_bundle(snapshot: object) -> dict[str, object]:
     if not isinstance(snapshot, dict):
         raise ValueError("Radar STIX export requires a snapshot object.")
     payload = cast(dict[str, object], snapshot)
-    if payload.get("schemaVersion") != 1 or payload.get("dataset") != "live":
+    if payload.get("schemaVersion") not in {1, 2} or payload.get("dataset") != "live":
         raise ValueError("Radar STIX export supports only the validated live snapshot schema.")
     generated_at, generated_at_value = _timestamp(payload.get("generatedAt"), "generatedAt")
     raw_signals = payload.get("signals")
@@ -260,6 +286,152 @@ def write_stix_bundle(snapshot: object, output: str | Path) -> Path:
     if len(body.encode("utf-8")) > MAXIMUM_STIX_BUNDLE_BYTES:
         raise RuntimeError("Refusing to publish a STIX bundle larger than 2 MiB.")
 
+    temporary = target.with_name(f"{target.name}.tmp")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        temporary.write_text(body, encoding="utf-8", newline="\n")
+        temporary.chmod(0o600)
+        os.replace(temporary, target)
+    except Exception:
+        temporary.unlink(missing_ok=True)
+        raise
+    return target
+
+
+def _indicator_id(signal_id: str, reviewed_at: str) -> str:
+    # Corrections and retractions keep reviewedAt and therefore version the
+    # same object. A later fresh confirmation starts a new lifecycle.
+    return f"indicator--{uuid5(RADAR_REVIEWED_STIX_NAMESPACE, f'indicator:{signal_id}:{reviewed_at}')}"
+
+
+def _radar_identity() -> dict[str, object]:
+    return {
+        "type": "identity",
+        "spec_version": "2.1",
+        "id": RADAR_IDENTITY_ID,
+        "created": "2026-08-25T00:00:00.000Z",
+        "modified": "2026-08-25T00:00:00.000Z",
+        "name": "HECAVEX Radar",
+        "identity_class": "organization",
+    }
+
+
+def _reviewed_indicator(assessment: dict[str, object]) -> dict[str, object] | None:
+    state = assessment.get("reviewState")
+    revoked = assessment.get("revoked")
+    if state != "confirmed-suspicious" and revoked is not True:
+        return None
+    signal_id = assessment.get("signalId")
+    display_domain = assessment.get("domain")
+    brand = assessment.get("brand")
+    if (
+        not isinstance(signal_id, str)
+        or not SIGNAL_ID.fullmatch(signal_id)
+        or not isinstance(display_domain, str)
+        or signal_id != stable_id(display_domain.lower())
+        or not isinstance(brand, str)
+        or clean_text(brand, 120) != brand
+    ):
+        raise ValueError("Reviewed STIX export rejected invalid assessment identity.")
+    parsed = parse_and_defang_url(f"https://{refang(display_domain)}")
+    if parsed is None or parsed.display_domain != display_domain:
+        raise ValueError("Reviewed STIX export rejected a non-canonical domain.")
+    domain = urlsplit(parsed.key).hostname
+    if domain is None or len(domain.split(".")) < 2:
+        raise ValueError("Reviewed STIX export rejected an invalid domain.")
+    reviewed_at, reviewed_value = _timestamp(assessment.get("reviewedAt"), "reviewedAt")
+    modified_at, modified_value = _timestamp(assessment.get("modifiedAt"), "modifiedAt")
+    if reviewed_value > modified_value:
+        raise ValueError("Reviewed STIX export rejected an impossible review interval.")
+    expires_at, expires_value = _timestamp(assessment.get("expiresAt"), "expiresAt")
+    if expires_value <= reviewed_value:
+        raise ValueError("Reviewed STIX export requires expiry after first confirmation.")
+    evidence = assessment.get("evidenceCodes")
+    reason = assessment.get("dispositionReason")
+    lt_relevance = assessment.get("ltRelevance")
+    confidence = assessment.get("analystConfidence")
+    if (
+        not isinstance(evidence, list)
+        or not evidence
+        or evidence != sorted(set(evidence))
+        or not all(isinstance(item, str) and clean_text(item, 80) == item for item in evidence)
+        or not isinstance(reason, str)
+        or clean_text(reason, 80) != reason
+        or lt_relevance not in LT_RELEVANCE
+        or type(revoked) is not bool
+        or (confidence is not None and (type(confidence) is not int or not 0 <= confidence <= 100))
+    ):
+        raise ValueError("Reviewed STIX export rejected invalid assessment metadata.")
+    indicator: dict[str, object] = {
+        "type": "indicator",
+        "spec_version": "2.1",
+        "id": _indicator_id(signal_id, reviewed_at),
+        "created_by_ref": RADAR_IDENTITY_ID,
+        "created": reviewed_at,
+        "modified": modified_at,
+        "revoked": revoked,
+        "name": f"HECAVEX Radar reviewed phishing domain: {domain}",
+        "indicator_types": ["malicious-activity"],
+        "pattern": f"[domain-name:value = '{domain}']",
+        "pattern_type": "stix",
+        "pattern_version": "2.1",
+        "valid_from": reviewed_at,
+        "valid_until": expires_at,
+        "object_marking_refs": [TLP_CLEAR_MARKING_ID],
+        "x_hecavex_com_signal_id": signal_id,
+        "x_hecavex_com_brand": brand,
+        "x_hecavex_com_review_state": state,
+        "x_hecavex_com_disposition_reason": reason,
+        "x_hecavex_com_evidence_codes": evidence,
+        "x_hecavex_com_lt_relevance": lt_relevance,
+    }
+    if confidence is not None:
+        indicator["confidence"] = confidence
+    return indicator
+
+
+def build_reviewed_stix_bundle(assessments: object, generated_at: str) -> dict[str, object]:
+    _timestamp(generated_at, "generatedAt")
+    if not isinstance(assessments, (list, tuple)) or len(assessments) > MAXIMUM_STIX_SIGNALS:
+        raise ValueError("Reviewed STIX export exceeded its bounded assessment count.")
+    indicators: list[dict[str, object]] = []
+    seen_ids: set[str] = set()
+    for raw in assessments:
+        if not isinstance(raw, dict):
+            raise ValueError("Reviewed STIX export rejected a non-object assessment.")
+        indicator = _reviewed_indicator(cast(dict[str, object], raw))
+        if indicator is None:
+            continue
+        identifier = cast(str, indicator["id"])
+        if identifier in seen_ids:
+            raise ValueError("Reviewed STIX export rejected a duplicate indicator.")
+        seen_ids.add(identifier)
+        indicators.append(indicator)
+    indicators.sort(key=lambda item: cast(str, item["id"]))
+    objects = [_radar_identity(), *indicators]
+    bundle_key = json.dumps(
+        {"generated_at": generated_at, "object_ids": [item["id"] for item in objects]},
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return {
+        "type": "bundle",
+        "id": f"bundle--{uuid5(RADAR_REVIEWED_STIX_NAMESPACE, bundle_key)}",
+        "objects": objects,
+    }
+
+
+def write_reviewed_stix_bundle(assessments: object, generated_at: str, output: str | Path) -> Path:
+    repository = Path.cwd().resolve()
+    public_data = (repository / "public" / "data").resolve()
+    target = (repository / output).resolve()
+    if target.parent != public_data or target.suffix.lower() != ".json":
+        raise ValueError("RADAR_REVIEWED_STIX_OUTPUT must be a JSON file directly under public/data/.")
+    bundle = build_reviewed_stix_bundle(assessments, generated_at)
+    body = json.dumps(bundle, ensure_ascii=False, indent=2) + "\n"
+    if len(body.encode("utf-8")) > MAXIMUM_STIX_BUNDLE_BYTES:
+        raise RuntimeError("Refusing to publish a reviewed STIX bundle larger than 2 MiB.")
     temporary = target.with_name(f"{target.name}.tmp")
     target.parent.mkdir(parents=True, exist_ok=True)
     try:

@@ -7,6 +7,35 @@ from typing import Literal, NotRequired, TypedDict
 SignalStatus = Literal["active", "suspected", "offline", "mitigated", "unknown"]
 SourceState = Literal["healthy", "partial", "skipped"]
 BrandEvidence = Literal["domain", "title", "verdict", "primary-html-sha256"]
+EvidenceTier = Literal["name-only", "corroborated", "reviewed"]
+ReviewState = Literal[
+    "unreviewed",
+    "needs-review",
+    "confirmed-suspicious",
+    "false-positive",
+    "benign-brand-reference",
+    "inconclusive",
+]
+LithuanianRelevance = Literal[
+    "lithuanian-targeting",
+    "lithuanian-brand-relevance",
+    "global-brand-reference",
+    "unknown",
+]
+DiscoveryMethod = Literal[
+    "certstream-live",
+    "ct-search-api",
+    "urlscan-public-report",
+    "hecavex-public-export",
+    "hecavex-review",
+]
+CorroborationMethod = Literal[
+    "urlscan-public-report",
+    "urlscan-page-title",
+    "urlscan-provider-verdict",
+    "urlscan-primary-html-sha256",
+    "analyst-review",
+]
 ReasonCode = Literal[
     "brand-domain-match",
     "brand-title-match",
@@ -42,6 +71,8 @@ class RawSignal:
     hashes: list[str] | None = None
     confidence: float | None = None
     reason_codes: Sequence[str] | None = None
+    discovered_via: Sequence[str] | None = None
+    corroborated_by: Sequence[str] | None = None
 
 
 class RadarSource(TypedDict):
@@ -69,7 +100,14 @@ class RadarSignal(TypedDict):
     hashes: NotRequired[list[str]]
     brandEvidence: NotRequired[list[BrandEvidence]]
     reasonCodes: NotRequired[list[ReasonCode]]
+    discoveredVia: NotRequired[list[DiscoveryMethod]]
+    corroboratedBy: NotRequired[list[CorroborationMethod]]
     detailAvailable: NotRequired[Literal[True]]
+    matchScore: int
+    evidenceTier: EvidenceTier
+    reviewState: ReviewState
+    ltRelevance: LithuanianRelevance
+    # Deprecated compatibility alias. New consumers must use matchScore.
     confidence: int
 
 
@@ -138,6 +176,36 @@ class SignalObservation(TypedDict):
     certificate: CertificateDetail | None
 
 
+class SignalDnsContext(TypedDict):
+    a: list[str]
+    aaaa: list[str]
+    cname: list[str]
+    ns: list[str]
+    mx: list[str]
+    minimumTtl: int | None
+    queriesCompleted: int
+
+
+class SignalRegistrationContext(TypedDict):
+    domain: NotRequired[str]
+    registrar: str | None
+    registeredAt: str | None
+    updatedAt: str | None
+    expiresAt: str | None
+    statuses: list[str]
+
+
+class SignalDomainContext(TypedDict):
+    observedAt: str
+    dns: SignalDnsContext
+    registration: SignalRegistrationContext | None
+
+
+class SignalDomainContextRecord(SignalDomainContext):
+    signalId: str
+    domain: str
+
+
 class SignalDetail(TypedDict):
     schemaVersion: Literal[1]
     dataset: Literal["signal-detail"]
@@ -145,6 +213,7 @@ class SignalDetail(TypedDict):
     domain: str
     generatedAt: str
     observations: list[SignalObservation]
+    domainContext: NotRequired[SignalDomainContext]
 
 
 @dataclass(frozen=True, slots=True)
@@ -174,4 +243,5 @@ class CertStreamCandidate(TypedDict):
     brand: str
     confidence: int
     reasons: list[str]
+    collectionMethod: NotRequired[Literal["certstream-live", "ct-search-api"]]
     certificate: NotRequired[CertificateDetail]

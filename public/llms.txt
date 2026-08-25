@@ -2,12 +2,13 @@
 
 > A public, read-only view of potential phishing and impersonation infrastructure relevant to Lithuania.
 
-Radar publishes candidates, not maliciousness verdicts. Dashboard and history domains and URLs are defanged and must not be made clickable or visited automatically. The advertised STIX 2.1 exception contains raw `domain-name` observables for interoperability; treat them as untrusted data and do not browse, resolve, scan, or block them without independent review. A confidence value is a deterministic matching score, not a probability. Preserve source, first-seen, last-seen, status, freshness, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
+Radar publishes automated candidates, not automatic maliciousness verdicts. Dashboard and history domains and URLs are defanged and must not be made clickable or visited automatically. The observation STIX 2.1 feed contains raw `domain-name` observables for interoperability; treat them as untrusted data and do not browse, resolve, scan, or block them without independent review. `matchScore` is a deterministic ranking score, not a probability or analyst confidence. A separate reviewed STIX feed contains only explicitly confirmed, expiring analyst Indicators and preserves correction/revocation history; it is still not an automated blocklist. Preserve source, first-seen, last-seen, status, freshness, review state, and collection-limit context when citing a row. Missing URLScan evidence is unknown, not benign. Coverage is sampled and best effort, not continuous monitoring.
 
 ## Interface
 
 - [Current snapshot](https://radar.hecavex.com/): Searchable, paginated view of recent signals and source state.
 - [Candidate history](https://radar.hecavex.com/history/): Bounded observation and status history.
+- [Detection scope](https://radar.hecavex.com/brands/): Reviewed Lithuanian brands, aliases, official domains, exclusions, and first-party references.
 - [Methodology](https://radar.hecavex.com/methodology/): Collection, normalization, brand matching, publication, history, and safety limits.
 - [Technical reference](https://radar.hecavex.com/docs/): Architecture, schemas, operations, security, and data terms.
 
@@ -15,7 +16,12 @@ Radar publishes candidates, not maliciousness verdicts. Dashboard and history do
 
 - [Live signals](https://radar.hecavex.com/data/radar.json): Current defanged public snapshot and source state.
 - [STIX 2.1 observations](https://radar.hecavex.com/data/radar.stix.json): Static pull/download projection of the current signal set. It contains raw domain-name observables for interoperability; this is not a blocklist, verdict, or TAXII endpoint.
+- [STIX 2.1 reviewed Indicators](https://radar.hecavex.com/data/radar-reviewed.stix.json): Static pull/download projection of explicit time-bounded analyst confirmations and retractions. It may contain no Indicators when none are currently exported; it is not an automated blocklist or TAXII endpoint.
 - [History](https://radar.hecavex.com/data/history.json): Bounded, defanged public candidate history.
 - [Collection health](https://radar.hecavex.com/data/collection-health.json): Aggregate latest sampled CertStream attempt; contains no candidate domains.
+- [Complete-set index](https://radar.hecavex.com/data/radar.index.json): Hashed index for the accepted signal shards beyond the dashboard presentation prefix.
+- [Pipeline health](https://radar.hecavex.com/data/pipeline-health.json): Sanitized rolling collection and publication aggregates; contains no candidate domains.
+- [Related observations](https://radar.hecavex.com/data/related-observations.json): Bounded shared-evidence associations. These are not campaign or actor attribution.
+- [Release manifest](https://radar.hecavex.com/data/feed-manifest.json): Artifact counts, lengths, source cut-offs, schemas, and SHA-256 digests.
 
-Only these four `/data/` files are deliberately advertised. Do not infer access to other paths, private review records, detector features, or unpublished candidates.
+Only the `/data/` files advertised above are intended as primary machine-readable entry points. Do not infer access to private review records, detector features, credentials, or unpublished candidates.

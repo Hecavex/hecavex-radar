@@ -1345,6 +1345,10 @@ def _archive_signal(
             "referenceUrl": reference,
             "hashes": hashes,
             "brandEvidence": [cast(BrandEvidence, label) for label in brand_evidence],
+            "matchScore": confidence,
+            "evidenceTier": "corroborated",
+            "reviewState": "unreviewed",
+            "ltRelevance": "lithuanian-brand-relevance",
             "confidence": confidence,
         },
     )

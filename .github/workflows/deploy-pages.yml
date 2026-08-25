@@ -55,7 +55,7 @@ jobs:
             should_deploy=false
           elif [[ "${actual_sha}" != "${EXPECTED_SHA}" ]]; then
             unexpected_paths="$(git diff --name-only "${EXPECTED_SHA}..${actual_sha}" | grep -Ev \
-              '^(data/(certstream|urlscan|history)/|public/data/)' || true)"
+              '^(data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/)' || true)"
             if [[ -n "${unexpected_paths}" ]]; then
               echo "Newer main contains code or configuration that this upstream run did not validate:"
               echo "${unexpected_paths}"
@@ -64,8 +64,7 @@ jobs:
           fi
           if [[ "${should_deploy}" == "true" && "${TRIGGER_WORKFLOW}" == "Sync radar snapshot" ]]; then
             if [[ "${actual_sha}" == "${EXPECTED_SHA}" ]] ||
-              git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- \
-                public/data/radar.json public/data/radar.stix.json public/data/history.json public/data/signals; then
+              git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/; then
               echo "The sync completed without changing public Radar data; deployment is unnecessary."
               should_deploy=false
             fi
@@ -104,6 +103,15 @@ jobs:
           test -f dist/.well-known/security.txt
           test -f dist/llms.txt
           test -f dist/data/radar.stix.json
+          test -f dist/data/radar-reviewed.stix.json
+          test -f dist/data/radar.index.json
+          test -f dist/data/radar-shards/0001.json
+          test -f dist/data/feed-manifest.json
+          test -f dist/data/feed-manifest.json.sha256
+          test -f dist/data/pipeline-health.json
+          test -f dist/data/changes.json
+          test -f dist/data/related-observations.json
+          test -f dist/data/schemas/radar-v2.schema.json
           cmp --silent dist/security.txt dist/.well-known/security.txt
           grep -Fqx "Canonical: https://radar.hecavex.com/.well-known/security.txt" dist/.well-known/security.txt
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/"' dist/index.html
@@ -112,13 +120,16 @@ jobs:
           test -f dist/history/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/history/"' dist/history/index.html
           grep -Fq 'Candidate history' dist/history/index.html
+          test -f dist/brands/index.html
+          grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/brands/"' dist/brands/index.html
+          grep -Fq 'Reviewed Lithuanian brand registry' dist/brands/index.html
           test -f dist/methodology/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/methodology/"' dist/methodology/index.html
           grep -Fq 'How a signal reaches Radar' dist/methodology/index.html
           test -f dist/docs/index.html
           grep -Fq '<link rel="canonical" href="https://radar.hecavex.com/docs/"' dist/docs/index.html
           grep -Fq 'HECAVEX Radar technical reference' dist/docs/index.html
-          for page in dist/index.html dist/history/index.html dist/methodology/index.html dist/docs/index.html; do
+          for page in dist/index.html dist/history/index.html dist/brands/index.html dist/methodology/index.html dist/docs/index.html; do
             loader_count="$(grep -Fo 'data-hecavex-analytics-token=' "${page}" | wc -l)"
             token_count="$(grep -Fo "${HECAVEX_ANALYTICS_TOKEN}" "${page}" | wc -l)"
             test "${loader_count}" -eq 1
@@ -133,6 +144,7 @@ jobs:
           grep -Fqx 'Content-Signal: search=yes, ai-input=yes, ai-train=no' dist/robots.txt
           grep -Fq 'must not be made clickable or visited automatically' dist/llms.txt
           grep -Fq 'https://radar.hecavex.com/history/' dist/sitemap.xml
+          grep -Fq 'https://radar.hecavex.com/brands/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/methodology/' dist/sitemap.xml
           grep -Fq 'https://radar.hecavex.com/docs/' dist/sitemap.xml
       - name: Configure GitHub Pages

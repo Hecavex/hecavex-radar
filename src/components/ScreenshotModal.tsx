@@ -1,9 +1,10 @@
-import { Check, Copy, ExternalLink, X } from "lucide-react";
+import { Check, Copy, ExternalLink, Flag, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { formatDateTime } from "../lib/format.ts";
+import { evidenceTierLabel, explainReasons, signalEvidenceTier, signalMatchScore } from "../lib/dashboard.ts";
 import { loadSignalDetail } from "../lib/signalDetail.ts";
-import type { RadarSignal, SignalCertificateDetail, SignalDetail, SignalDetailObservation } from "../types.ts";
+import type { RadarSignal, SignalCertificateDetail, SignalDetail, SignalDetailObservation, SignalDomainContext } from "../types.ts";
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -60,6 +61,7 @@ function isolateBackground(modalBackdrop: HTMLElement) {
 
 interface ScreenshotModalProps {
   signal: RadarSignal;
+  snapshotGeneratedAt: string;
   returnFocus: HTMLElement;
   onClose: () => void;
 }
@@ -231,7 +233,7 @@ function ObservationDetail({ observation }: { observation: SignalDetailObservati
             ) : null}
           </dl>
           <p className="detail-note">
-            Provider assessment is separate from Radar confidence. A redirect is observed behavior, not a benign verdict;
+            Provider assessment is separate from the Radar match score. A redirect is observed behavior, not a benign verdict;
             destination and content can vary by visitor, time, or cloaking rules.
           </p>
         </section>
@@ -241,7 +243,57 @@ function ObservationDetail({ observation }: { observation: SignalDetailObservati
   );
 }
 
-export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModalProps) {
+function DomainContext({ context }: { context: SignalDomainContext }) {
+  const recordGroups = [
+    ["A", context.dns.a],
+    ["AAAA", context.dns.aaaa],
+    ["CNAME", context.dns.cname],
+    ["NS", context.dns.ns],
+    ["MX", context.dns.mx],
+  ] as const;
+  const registration = context.registration;
+  return (
+    <article className="detail-observation domain-context">
+      <header>
+        <div>
+          <span className="source-chip">DNS / RDAP</span>
+          <h4>Bounded context observed {formatDateTime(context.observedAt)} UTC</h4>
+        </div>
+      </header>
+      <section className="detail-group" aria-label="DNS context">
+        <h5>DNS records observed</h5>
+        <dl className="detail-grid">
+          <DetailItem label="Queries completed"><span>{context.dns.queriesCompleted} / 5</span></DetailItem>
+          {context.dns.minimumTtl !== null ? <DetailItem label="Minimum TTL"><span>{context.dns.minimumTtl} seconds</span></DetailItem> : null}
+        </dl>
+        <div className="detail-list">
+          <ul>
+            {recordGroups.flatMap(([recordType, values]) => values.map((value) => (
+              <li key={`${recordType}-${value}`}><span>{recordType}</span><CopyableValue value={value} label={`${recordType} record`} /></li>
+            )))}
+          </ul>
+          {recordGroups.every(([, values]) => values.length === 0) ? <p>No answer records were retained. Missing data is unknown.</p> : null}
+        </div>
+      </section>
+      <section className="detail-group" aria-label="Registration context">
+        <h5>Registration context</h5>
+        {registration ? (
+          <dl className="detail-grid">
+            {registration.domain ? <DetailItem label="Registered domain"><CopyableValue value={registration.domain} label="registered domain" /></DetailItem> : null}
+            {registration.registrar ? <DetailItem label="Registrar"><span>{registration.registrar}</span></DetailItem> : null}
+            {registration.registeredAt ? <DetailItem label="Registered"><time dateTime={registration.registeredAt}>{formatDateTime(registration.registeredAt)} UTC</time></DetailItem> : null}
+            {registration.updatedAt ? <DetailItem label="Updated"><time dateTime={registration.updatedAt}>{formatDateTime(registration.updatedAt)} UTC</time></DetailItem> : null}
+            {registration.expiresAt ? <DetailItem label="Expires"><time dateTime={registration.expiresAt}>{formatDateTime(registration.expiresAt)} UTC</time></DetailItem> : null}
+            {registration.statuses.length ? <DetailItem label="Statuses"><span>{registration.statuses.join(", ")}</span></DetailItem> : null}
+          </dl>
+        ) : <p className="detail-note">No registration record was retained. Missing RDAP context is unknown.</p>}
+        <p className="detail-note">DNS and registration values are point-in-time context, not ownership or maliciousness evidence.</p>
+      </section>
+    </article>
+  );
+}
+
+export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onClose }: ScreenshotModalProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -249,6 +301,14 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
     status: signal.detailAvailable ? "loading" : "idle",
   });
   const [detailAttempt, setDetailAttempt] = useState(0);
+  const evidenceTier = signalEvidenceTier(signal);
+  const reasonExplanations = explainReasons(signal);
+  const correctionBody = [
+    `Signal ID: ${signal.id}`,
+    `Defanged indicator: ${signal.url}`,
+    `Snapshot: ${snapshotGeneratedAt}`,
+  ].join("\n");
+  const correctionHref = `mailto:info@hecavex.com?subject=${encodeURIComponent(`HECAVEX Radar correction ${signal.id}`)}&body=${encodeURIComponent(correctionBody)}`;
 
   useEffect(() => {
     if (!signal.detailAvailable) {
@@ -334,6 +394,41 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
             <X aria-hidden="true" />
           </button>
         </div>
+        <section className="candidate-summary" aria-labelledby="candidate-summary-title">
+          <div className="candidate-summary-heading">
+            <div>
+              <p className="eyebrow">Why Radar included this</p>
+              <h3 id="candidate-summary-title">Automated candidate explanation</h3>
+            </div>
+            <div className="evidence-badges" aria-label="Candidate evidence state">
+              <span className={`evidence-tier ${evidenceTier}`}>{evidenceTierLabel(evidenceTier)}</span>
+              <span>Match score {signalMatchScore(signal)}/100</span>
+              {signal.reviewState && signal.reviewState !== "unreviewed" ? <span>{signal.reviewState.replaceAll("-", " ")}</span> : null}
+            </div>
+          </div>
+          {reasonExplanations.length ? (
+            <ul className="reason-explanations">
+              {reasonExplanations.map((reason, index) => <li key={`${signal.id}-${index}`}>{reason}</li>)}
+            </ul>
+          ) : (
+            <p className="candidate-explanation-empty">No granular public reason was retained for this candidate.</p>
+          )}
+          <dl className="candidate-provenance">
+            <DetailItem label="Signal ID"><CopyableValue value={signal.id} label="signal ID" /></DetailItem>
+            <DetailItem label="Potential brand match"><span>{signal.brand ?? "Unclassified"}</span></DetailItem>
+            <DetailItem label="Source-reported state"><span>{signal.status}</span></DetailItem>
+            <DetailItem label="Sources"><span>{signal.sources.join(", ")}</span></DetailItem>
+            {signal.discoveredVia?.length ? <DetailItem label="Discovered via"><span>{signal.discoveredVia.join(", ")}</span></DetailItem> : null}
+            {signal.corroboratedBy?.length ? <DetailItem label="Corroborated by"><span>{signal.corroboratedBy.join(", ")}</span></DetailItem> : null}
+            <DetailItem label="First seen"><time dateTime={signal.firstSeen}>{formatDateTime(signal.firstSeen)} UTC</time></DetailItem>
+            <DetailItem label="Last seen"><time dateTime={signal.lastSeen}>{formatDateTime(signal.lastSeen)} UTC</time></DetailItem>
+            <DetailItem label="Snapshot generated"><time dateTime={snapshotGeneratedAt}>{formatDateTime(snapshotGeneratedAt)} UTC</time></DetailItem>
+            {signal.ltRelevance ? <DetailItem label="Lithuanian relevance"><span>{signal.ltRelevance.replaceAll("-", " ")}</span></DetailItem> : null}
+          </dl>
+          <p className="candidate-boundary">
+            The match score ranks rule strength. It is not a probability, maliciousness verdict, or block recommendation.
+          </p>
+        </section>
         {signal.detailAvailable ? (
           <section className="signal-intelligence" aria-labelledby="signal-intelligence-title">
             <div className="signal-intelligence-heading">
@@ -341,7 +436,7 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
                 <p className="eyebrow">Domain intelligence</p>
                 <h3 id="signal-intelligence-title">Passive context</h3>
               </div>
-              <span>Radar score {signal.confidence}/100</span>
+              <span>Match score {signalMatchScore(signal)}/100</span>
             </div>
             {detailState.status === "loading" ? (
               <div className="detail-state" role="status" aria-live="polite">
@@ -359,6 +454,9 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
                 {detailState.detail.observations.map((observation) => (
                   <ObservationDetail key={observation.source} observation={observation} />
                 ))}
+                {detailState.detail.domainContext ? <DomainContext context={detailState.detail.domainContext} /> : (
+                  <p className="detail-context-missing">No bounded DNS/RDAP context is published for this candidate. Missing context is unknown.</p>
+                )}
               </div>
             ) : null}
           </section>
@@ -387,6 +485,9 @@ export function ScreenshotModal({ signal, returnFocus, onClose }: ScreenshotModa
         <div className="capture-footer">
           <p>Viewing a screenshot or report contacts urlscan.io. The suspicious website is not contacted.</p>
           <div className="capture-links">
+            <a href={correctionHref}>
+              Request correction <Flag aria-hidden="true" />
+            </a>
             {signal.screenshotUrl ? (
               <a href={signal.screenshotUrl} target="_blank" rel="noreferrer noopener">
                 Open image <ExternalLink aria-hidden="true" />

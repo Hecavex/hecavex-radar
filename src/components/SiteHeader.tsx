@@ -1,7 +1,7 @@
 import { Code2, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export type SitePage = "radar" | "history" | "methodology" | "documentation";
+export type SitePage = "radar" | "history" | "brands" | "methodology" | "documentation";
 
 const portfolioNavigation = [
   { label: "Research", href: "https://hecavex.com/en/research/", current: false },
@@ -14,6 +14,7 @@ const portfolioNavigation = [
 const productNavigation = [
   { label: "Overview", href: "/", page: "radar" },
   { label: "History", href: "/history/", page: "history" },
+  { label: "Scope", href: "/brands/", page: "brands" },
   { label: "Methodology", href: "/methodology/", page: "methodology" },
   { label: "Docs", href: "/docs/", page: "documentation" },
 ] as const;

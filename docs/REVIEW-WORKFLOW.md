@@ -54,6 +54,48 @@ hecavex-review remove secure-swedbank-login.example
 
 An addition must independently pass the current public matcher. The CLI infers the matching brand, clamps confidence to the public score, and fixes status to `suspected`. Missing URLScan evidence is allowed; it is not converted into either benign or malicious evidence.
 
+Record a time-bounded positive assessment only after examining evidence outside the public dashboard:
+
+```sh
+hecavex-review confirm support-vinted.ph \
+  --reason credential-phishing \
+  --evidence certificate-transparency \
+  --evidence urlscan-page \
+  --lt-relevance lithuanian-targeting \
+  --analyst-confidence 85 \
+  --expires-at 2026-09-25T12:00:00.000Z \
+  --note "private evidence references"
+```
+
+`confirm` is the only action that can create an active `confirmed-suspicious` assessment and make the row eligible for the separate reviewed STIX Indicator feed. It requires a future expiry, a controlled disposition reason, and at least one controlled evidence code. The evidence code states what the analyst used; raw screenshots, case notes, identities, and evidence values stay private. `--analyst-confidence`, when supplied, is separate from the automated domain `matchScore`.
+
+Correct public assessment metadata without changing its stable Indicator identity:
+
+```sh
+hecavex-review correct support-vinted.ph \
+  --reason brand-impersonation \
+  --evidence certificate-transparency \
+  --evidence screenshot \
+  --evidence urlscan-page \
+  --expires-at 2026-10-25T12:00:00.000Z
+```
+
+A correction preserves the first confirmation time and advances the public modification time. It must replace at least one public field. When evidence no longer supports the Indicator, append a retraction instead of deleting history:
+
+```sh
+hecavex-review retract support-vinted.ph --reason incorrect-assessment --note "private correction context"
+```
+
+Retraction produces the same STIX Indicator ID with `revoked: true`. That terminal lifecycle remains in the sanitized export. A later `confirm` starts a new lifecycle with a new Indicator ID; it does not remove or un-revoke the earlier object. If a review never supported confirmation, record it as inconclusive:
+
+```sh
+hecavex-review inconclusive support-vinted.ph \
+  --reason insufficient-evidence \
+  --evidence certificate-transparency
+```
+
+After a confirmation expires, the dashboard presents it as `needs-review`; expiry is not silently represented as a false positive or STIX revocation. Renew an active assessment before expiry with `correct --expires-at ...`. An already expired assessment must be confirmed again so the new explicit review boundary is recorded.
+
 Inspect active state, then export:
 
 ```sh
@@ -74,4 +116,4 @@ Before committing an export:
 4. Search the diff for private notes, names, credentials, tokens, email addresses, and case references.
 5. Run `pnpm check`.
 
-The public file contains only deterministic decision IDs, defanged domains and URLs, scope, resolved brand, controlled reason code, observation time, bounded confidence, and controlled publication-reason codes. Synchronization fails closed if the file is malformed, cross-brand, future-dated, oversized, duplicated, or inconsistent with the current matcher.
+The public file contains only deterministic decision IDs, defanged domains and URLs, scope, resolved brand, controlled reason and evidence codes, observation/review/expiry times, matcher and optional analyst scores, Lithuanian relevance, and explicit review/revocation state. Synchronization fails closed if the file is malformed, cross-brand, future-dated, oversized, duplicated, or inconsistent with the current matcher. Inspect `public/data/radar-reviewed.stix.json` as part of the publication diff whenever an assessment changes.

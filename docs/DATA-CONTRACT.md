@@ -8,7 +8,7 @@ The dashboard reads `public/data/radar.json` with this top-level shape:
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "dataset": "live",
   "generatedAt": "2026-08-21T09:15:00.000Z",
   "lastSuccessfulSyncAt": "2026-08-21T10:17:00.000Z",
@@ -19,7 +19,7 @@ The dashboard reads `public/data/radar.json` with this top-level shape:
 
 `generatedAt` is the UTC time of the latest material snapshot change. `lastSuccessfulSyncAt` is the most recent successful publisher run, including a run that validated the same observations and made no material data change. It is never earlier than `generatedAt`. The dashboard uses `lastSuccessfulSyncAt` for publisher freshness and reports `generatedAt` separately as the data-change time. Public timestamps use canonical `YYYY-MM-DDTHH:mm:ss.sssZ` form.
 
-Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The complete public snapshot is capped at 512 KiB; the publisher fails instead of truncating when the cap is exceeded.
+Before publication, observations and retained rows are checked against the current Lithuanian brand registry. Official or suppressed hosts, observations without a resolved registry brand, reviewed exclusions, and conflicting brand/domain mappings are dropped. The dashboard snapshot is capped at 512 KiB. The publisher proves the largest newest-first prefix that fits even if every row had a detail sidecar; it therefore cannot fail later merely because valid enrichment adds `detailAvailable`. The complete accepted ordered set is written to deterministic 256 KiB shards and indexed by `radar.index.json`, which reports both complete and dashboard counts. This is a presentation boundary, not silent data loss.
 
 ### Signal fields
 
@@ -41,10 +41,16 @@ Each signal represents one normalized host. Observations of different paths on t
 | `referenceUrl` | string or null | Optional canonical `https://urlscan.io/result/<uuid>/` report URL. |
 | `hashes` | string[] | Up to eight unique, lowercase, non-empty SHA-256 hashes of primary HTML response bodies. |
 | `reasonCodes` | string[] (optional) | Up to 16 controlled public provenance labels. They explain automated acceptance inputs; they are not verdicts or private detector features. |
+| `discoveredVia` | string[] (optional) | Controlled collection lineage such as live CertStream, checkpointed CT search, public URLScan report, HECAVEX export, or review export. |
+| `corroboratedBy` | string[] (optional) | Controlled supporting-evidence lineage. Discovery and corroboration remain separate; a second label is not analyst confirmation. |
 | `detailAvailable` | `true` (optional) | Declares that one validated same-origin detail sidecar exists for this signal. Absence means no sidecar; `false` is invalid. |
-| `confidence` | integer | Rounded and clamped to 0-100. The viewer displays it as a score out of 100, never as a percentage or probability. |
+| `matchScore` | integer | Rounded 0-100 matcher/ranking score. It is not a probability, maliciousness verdict, or analyst confidence. |
+| `evidenceTier` | enum | `name-only`, `corroborated`, or `reviewed`. Corroboration means an additional bounded source/evidence input, not confirmation. |
+| `reviewState` | enum | `unreviewed`, `needs-review`, `confirmed-suspicious`, `false-positive`, `benign-brand-reference`, or `inconclusive`. Only an explicit sanitized analyst assessment can set a reviewed disposition. Suppressed rows normally do not remain in the snapshot. |
+| `ltRelevance` | enum | `lithuanian-targeting`, `lithuanian-brand-relevance`, `global-brand-reference`, or `unknown`. Registry scope alone produces `lithuanian-brand-relevance`; it is not evidence that a page targeted Lithuania. |
+| `confidence` | integer | Deprecated transition alias. It is always identical to `matchScore`; new consumers must use `matchScore`. |
 
-When signals merge, the publisher unions sources and hashes, keeps the earliest `firstSeen` and latest `lastSeen`, selects the most specific safe path, and keeps the highest confidence. Conflicting non-null brands for one host invalidate the merged row. Status comes from the observation with the newest `lastSeen`; only observations at the same time use the tie-break order `active`, `suspected`, `unknown`, `offline`, then `mitigated`. The newest non-null country, host, screenshot, and reference metadata wins. The final list is newest-first and capped by `RADAR_MAX_SIGNALS`.
+When signals merge, the publisher unions sources and hashes, keeps the earliest `firstSeen` and latest `lastSeen`, selects the most specific safe path, and keeps the highest `matchScore`. Conflicting non-null brands for one host invalidate the merged row. Status comes from the observation with the newest `lastSeen`; only observations at the same time use the tie-break order `active`, `suspected`, `unknown`, `offline`, then `mitigated`. The newest non-null country, host, screenshot, and reference metadata wins. The final list is newest-first and capped by `RADAR_MAX_SIGNALS`.
 
 ### Source fields
 
@@ -61,6 +67,16 @@ The top-level `sources` array reports the state of each supported public source.
 
 `partial` means an attempted source was unavailable or only retained recent rows remain. `skipped` means the source was not configured for that publication.
 For archive-backed inputs, `healthy` confirms that the publisher loaded and validated the available archive; it is not an upstream collector-uptime or freshness guarantee.
+
+## Complete signal distribution and integrity
+
+`public/data/radar.index.json` indexes the complete accepted signal set in the same deterministic newest-first order used by the dashboard. Each row identifies a numbered file below `public/data/radar-shards/`, its signal count, byte length, SHA-256 digest, and first/last signal IDs. Every shard is independently capped at 256 KiB and validated against `radar-shard-v1.schema.json`. Stale numbered shards are removed during the same synchronization.
+
+`public/data/feed-manifest.json` records the publisher name/version, checked-out generator Git revision, an exact copy of each snapshot source's `fetchedAt` value under `sourceFetchedAt`, complete and dashboard counts, and the length and SHA-256 digest of every atomic hourly release artifact. A source timestamp is source-specific archive-read or provider-state evidence; it is not a proven observation or coverage cut-off. Each listed artifact also has a conventional adjacent `.sha256` file. The manifest deliberately does not digest itself; `feed-manifest.json.sha256` provides that outer integrity value without creating a recursive document.
+
+`public/data/collection-health.json` is replaced and deployed independently four times per hour, so it is deliberately excluded from the hourly manifest and adjacent checksum set. Its latest available bounded values are copied into the next synchronized `pipeline-health.json` release. This keeps the manifest atomic instead of making it stale every time the independent health path advances.
+
+Versioned Draft 2020-12 JSON Schemas are published below `public/data/schemas/`. Synchronization validates generated JSON before publication, CI revalidates the checked-in artifacts and all index/manifest digests, and the observation and reviewed STIX files additionally pass the standard STIX 2.1 validator. A digest proves byte integrity and release consistency, not that a candidate is malicious.
 
 ## STIX 2.1 projection
 
@@ -93,6 +109,9 @@ Radar context is carried only in source-unique custom properties:
 | `x_hecavex_com_sources` | Sorted supported public source labels. |
 | `x_hecavex_com_status` | Current Radar status; it is not STIX revocation. |
 | `x_hecavex_com_matching_score` | Radar's 0-100 matching/ranking score; it is deliberately not mapped to standard STIX `confidence`. |
+| `x_hecavex_com_evidence_tier` | Snapshot evidence tier; it does not assert maliciousness. |
+| `x_hecavex_com_review_state` | Snapshot review state. The observation feed remains non-indicator data even for a reviewed row. |
+| `x_hecavex_com_lt_relevance` | Explicit Lithuanian relevance classification. |
 | `x_hecavex_com_observation_only` | Always `true`; inclusion is an observation, not a verdict. |
 | `x_hecavex_com_radar_first_seen`, `x_hecavex_com_radar_last_seen` | Full merged Radar observation interval. |
 | `x_hecavex_com_brand` | Optional registry-resolved claimed target, not attribution. |
@@ -108,6 +127,14 @@ The producer rejects duplicate or mismatched domains and IDs, malformed timestam
 URLs, non-canonical fields, unexpected object counts, and output above 2 MiB. The production build independently verifies
 an exact one-to-one correspondence with `radar.json` before deployment. STIX consumers must treat every raw domain value as
 untrusted data and must not browse, resolve, scan, or block it without independent review.
+
+### Analyst-reviewed Indicator projection
+
+`public/data/radar-reviewed.stix.json` is a separate static STIX 2.1 Bundle. It never promotes an automated observation merely because its matcher score is high. An Indicator appears only after an operator records an explicit `confirmed-suspicious` assessment and intentionally exports the sanitized review ledger. Inconclusive reviews and unreviewed candidates are omitted.
+
+Each published Indicator has a deterministic ID derived from the public signal ID and first confirmation boundary, a STIX domain-name pattern, `valid_from` equal to that confirmation time, and the bounded analyst expiry as `valid_until`. A correction keeps the same Indicator ID and `created` value while advancing `modified`. A retraction preserves the Indicator and ID with `revoked: true`; it does not erase previously distributed intelligence. A later fresh confirmation starts a new Indicator lifecycle and ID. Expiry does not silently become revocation: after expiry the dashboard state returns to `needs-review`, while the Indicator retains its past `valid_until` boundary.
+
+Indicators use the HECAVEX Radar Identity through `created_by_ref` and the standard TLP:CLEAR marking reference. Standard STIX `confidence` is emitted only when the analyst explicitly records a bounded analyst-confidence value. It is separate from the automated `matchScore`. Controlled custom properties carry the public signal ID, brand, review disposition and reason, evidence-code list, and Lithuanian relevance. The feed is a static download, not TAXII, an automated blocklist, or a direction to visit the listed host.
 
 ## Per-signal detail sidecars
 
@@ -153,18 +180,48 @@ Each file uses this exact top-level shape:
         "fingerprints": {"md5": null, "sha1": null, "sha256": null}
       }
     }
-  ]
+  ],
+  "domainContext": {
+    "observedAt": "2026-08-21T09:10:00.000Z",
+    "dns": {
+      "a": ["192[.]0[.]2[.]10"],
+      "aaaa": [],
+      "cname": [],
+      "ns": ["ns1[.]example"],
+      "mx": [],
+      "minimumTtl": 300,
+      "queriesCompleted": 5
+    },
+    "registration": {
+      "domain": "example[.]com",
+      "registrar": "Example Registrar",
+      "registeredAt": "2026-08-20T08:00:00.000Z",
+      "updatedAt": null,
+      "expiresAt": "2027-08-20T08:00:00.000Z",
+      "statuses": ["client-transfer-prohibited"]
+    }
+  }
 }
 ```
 
 A sidecar contains at most one latest retained observation for each of `CertStream` and `URLScan`, and therefore at most
-two observations. A CertStream observation has only certificate context; its page, network, and assessment fields are
-null. A URLScan observation can contain page, network, provider assessment, and TLS context. Page, network, and TLS fields
-are retained only when URLScan's final page hostname equals the signal hostname, preventing redirect destinations from
-being attributed to the candidate. A different final hostname is retained only as the defanged
+two observations. It may also contain exactly one optional `domainContext` object for the same current signal. A
+CertStream observation has only certificate context; its page, network, and assessment fields are null. A URLScan
+observation can contain page, network, provider assessment, and TLS context. Page, network, and TLS fields are retained
+only when URLScan's final page hostname equals the signal hostname, preventing redirect destinations from being
+attributed to the candidate. A different final hostname is retained only as the defanged
 `assessment.redirectedToDomain`; it documents observed redirect behavior and is neither a benign verdict nor proof that
 every visitor received the same destination. `urlscanVerdictScore` is URLScan's integer score from -100 to 100 and is
 separate from Radar confidence.
+
+`domainContext.observedAt` is the point-in-time lookup boundary and cannot be later than the sidecar's `generatedAt`.
+`dns` contains duplicate-free defanged A, AAAA, CNAME, NS, and MX answers, at most 12 of each, the lowest TTL found in
+successful answers, and a 0-5 `queriesCompleted` count. An MX item retains its numeric preference before the defanged
+hostname. `registration` is either null or an exact allowlist containing an optional defanged registrable-parent
+`domain`, nullable registrar, registration, update, and expiry fields, plus at most 16 normalized RDAP status codes. The
+parent records the scope actually sent to the IANA-selected RDAP service; it does not assert that a candidate subdomain
+is separately registered. Null or missing context means unavailable or expired, not benign. Registrar text and
+lifecycle fields are registration context, not ownership or actor attribution.
 
 Each file is capped at 16 KiB. The complete sidecar set is capped at 3 MiB and selected in live-snapshot order, so the
 newest qualifying rows take priority if the aggregate boundary is reached. Unchanged observation content preserves the
@@ -174,8 +231,10 @@ orphan sidecar paths and sets `detailAvailable` only after the corresponding fil
 Certificate names, IP addresses, and indicator-like text are defanged. Text is bounded, control/format characters are
 removed, email addresses are redacted, and live HTTP(S) schemes are neutralized. Certificate SAN samples are limited to
 12 names under the candidate's registrable domain; `subjectAltNameCount` counts only related names, not every DNS name on
-the original certificate. Missing hashes are not calculated. The viewer treats every field as text and provides copy
-controls only; it never turns an observed indicator into a link.
+the original certificate. Domain context never contains registrant names, organizations, email addresses, telephone
+numbers, postal addresses, RDAP entity handles, raw DNS/RDAP documents, or candidate page content. Missing hashes are not
+calculated. The viewer treats every field as text and provides copy controls only; it never turns an observed indicator
+into a link.
 
 ## CertStream collection health
 
@@ -234,6 +293,55 @@ Collection outcomes are independent of scheduling timeliness:
 
 Before the first instrumented workflow completes, the checked-in bootstrap document uses `latestAttempt: null`, `lastSuccessAt: null`, and unavailable freshness. This is intentionally different from synthesizing metrics from an older configured duration or incomplete logs. Normal workflow output always replaces `latestAttempt` with the complete fixed-field object above.
 
+## Checkpointed CT-search state
+
+`data/ct-search/state.json` is the bounded operational contract for the hourly `crt.sh` keyword poller. It is not a
+public signal distribution or a CT-log checkpoint. The version 1 document has the exact top-level fields
+`schemaVersion`, `dataset`, `provider`, `generatedAt`, `queryCursor`, `queries`, and `latestRun`.
+
+- `dataset` is `ct-search-state` and `provider` is `crt.sh`.
+- `queryCursor` rotates the bounded brand-query set. `queries` contains at most 128 entries keyed by stable `brand:`
+  identifiers. Each exact entry holds the reviewed search `term`, resolved `brand`, monotonic `lastId`, nullable
+  `lastEntryAt` and `lastRunAt`, and nullable `completed`, `partial`, or `failed` `lastOutcome`.
+- `latestRun` is null before the first run or contains `startedAt`, `endedAt`, `outcome`, `queriesAttempted`,
+  `queriesCompleted`, `rowsProcessed`, `dnsNames`, `matches`, `newRecords`, and `queriesBacklogged`. Outcome is
+  `completed`, `partial`, or `failed`; counters are non-negative aggregate integers.
+
+The file is capped at 128 KiB and contains no certificate name, unpublished domain, URL, or credential. A first query is
+bounded to the configured seven-day default bootstrap. Subsequent runs process up to 500 rows per query by default and
+replay at most 50 prior rows inside a 1,000-ID overlap. A backlog is marked partial and resumed before query rotation;
+an archive-cap failure does not advance the checkpoint. This makes the declared provider query resumable after ordinary
+downtime and catches a bounded late-indexing reorder. It does not
+assert that `crt.sh` indexed every certificate, that a keyword finds every relevant name, or that the cursor corresponds
+to an RFC 9162 log tree position. The workflow commits this state and accepted shared CT archive rows before propagating
+a failed polling result when execution can still reach the finalizer.
+
+## DNS and RDAP context state
+
+`data/enrichment/domain-context.json` is the credential-free version 1 state consumed by synchronization. Its exact
+top-level fields are `schemaVersion`, `dataset`, `generatedAt`, `cursor`, `latestRun`, and `records`; `dataset` is
+`domain-context`. `latestRun` is null or contains `startedAt`, `endedAt`, `outcome`, `attempted`, and `completed`, where
+outcome is `completed`, `partial`, `failed`, or `empty`.
+
+Each record contains the current public `signalId`, matching defanged `domain`, `observedAt`, the exact DNS fields
+documented for a sidecar, and the nullable registration allowlist including the optional defanged registrable-parent
+scope actually queried. The state is capped at 2,500 records and 4 MiB.
+Synchronization accepts only rows no older than 14 days by default and only while the ID/domain pair remains in the live
+snapshot. The collector sends no HTTP request to the candidate webpage. It performs DNS-over-HTTPS questions and
+IANA-bootstrapped RDAP lookups only, and it retains no registrant PII or raw provider response.
+
+## Rolling pipeline health and change aggregates
+
+`public/data/pipeline-health.json` provides bounded 24-hour and seven-day aggregate views across collection, screening, enrichment, and publication. It includes scheduled versus recorded CertStream attempts, actual listening time and listening coverage, messages, DNS names, matches, new archive rows, URLScan enrichment-section counts, history-event counts, and current source state. Its current section can also expose a sanitized `ctSearch` latest-run summary and a sanitized `domainContext` latest-run summary with retained record count. Those summaries omit per-query names, cursors, candidate IDs, domains, DNS answers, and RDAP values. Expected live-stream slots and the scheduled-listening ceiling come from the latest published collector interval and duration. Indexed CT search is reported separately and never added to live-listening coverage. Missing workflow history cannot be reconstructed; only successful attempt rows committed to the bounded public archive are counted.
+
+`public/data/changes.json` separates first publication, actual status change, observation, and reobservation counts. It groups only bounded totals by source, status, controlled reason, and registry brand. It contains no domain, URL, signal ID, private review note, or detector payload; signal-level public chronology remains in `history.json`.
+
+## Related observations
+
+`public/data/related-observations.json` publishes a bounded association graph over current dashboard rows. Strong edges require an exact primary-HTML SHA-256 or certificate SHA-256. Supporting edges require evidence from at least two independent families. Eligible bounded families include network location, DNS A/AAAA/CNAME/NS/MX context, redirect destination, and certificate SAN; mechanically related values within one family do not satisfy the requirement alone. Evidence values seen on more than 12 current signals are suppressed, candidate observations must be within seven days, and at most 2,000 strongest deterministic edges are retained.
+
+The graph says only that two observations share public evidence. It does not identify a campaign, operator, malware family, infrastructure owner, or threat actor. ASN alone and the mechanically related IP-plus-ASN pair never create an edge. Cluster IDs are stable hashes of connected public signal IDs and carry no attribution semantics.
+
 ## Archive formats
 
 Archive files are newline-delimited JSON and use the Europe/Vilnius calendar date.
@@ -255,6 +363,7 @@ The attempt file makes a successful zero-match window explicit without claiming 
   "domain": "secure-brand[.]example",
   "registrableDomain": "secure-brand[.]example",
   "source": "CertStream",
+  "collectionMethod": "ct-search-api",
   "brand": "Example Brand",
   "confidence": 95,
   "reasons": ["brand text match: example brand", "suspicious token: secure"],
@@ -277,7 +386,11 @@ The attempt file makes a successful zero-match window explicit without claiming 
 issuer text is sanitized before this public Git archive is written. DER, chains, extensions, certificate URLs, and unrelated
 SANs are never retained.
 
-The archive `id` hashes the normalized refanged domain, unlike the public snapshot ID, which hashes the defanged hostname. IDs from different artifact types are therefore not join keys. A daily CertStream file is capped at 25,000 valid records and 25 MiB. Reasons contain only contributions from the open heuristic.
+`collectionMethod` is optional on legacy rows and otherwise is `certstream-live` or `ct-search-api`. It preserves discovery
+lineage while both paths retain the compatible public source label `CertStream`; it is not corroboration or a verdict.
+The archive `id` hashes the normalized refanged domain, unlike the public snapshot ID, which hashes the defanged hostname.
+IDs from different artifact types are therefore not join keys. A daily CertStream file is capped at 25,000 valid records
+and 25 MiB. Reasons contain only contributions from the open heuristic.
 
 ### URLScan
 
@@ -376,19 +489,20 @@ The handoff is limited to 2,500 signals and 20 MiB. It includes only defanged pu
 
 ## Sanitized review decisions
 
-`data/review/public-decisions.json` is the only operator-review artifact accepted by synchronization. It has `schemaVersion: 1`, dataset `radar-review-decisions`, a canonical UTC `generatedAt`, and two bounded arrays:
+`data/review/public-decisions.json` is the only operator-review artifact accepted by synchronization. New exports use `schemaVersion: 2`, dataset `radar-review-decisions`, a canonical UTC `generatedAt`, and three bounded arrays. The loader accepts the previous version 1 shape during migration and treats it as containing no assessments.
 
 - `suppressions` contain a deterministic decision ID, defanged domain, `exact` or `subdomains` scope, optional resolved brand, and one controlled correction reason.
-- `candidates` contain a deterministic decision ID, public signal ID, defanged URL and domain, observation time, current matcher-resolved brand, confidence no greater than the matcher score, and controlled reason codes including `manual-review`.
+- `candidates` contain a deterministic decision ID, public signal ID, defanged URL and domain, observation time, current matcher-resolved brand, `matchScore` no greater than the matcher result, the deprecated equal `confidence` alias, and controlled reason codes including `manual-review`.
+- `assessments` contain one sanitized terminal record per review lifecycle: a stable lifecycle assessment and signal ID, defanged domain, resolved brand, controlled review disposition/reason/evidence codes, Lithuanian relevance, first-review and modified times, required bounded expiry for confirmations, optional analyst confidence, and an explicit revocation flag. Corrections and retractions replace the exported terminal version of their original lifecycle; a later fresh confirmation adds a new lifecycle record without deleting the older revoked or expired record. The dashboard applies only the lifecycle with the latest modification boundary.
 
-Both arrays are capped at 2,500 records and the file is capped at 2 MiB. Duplicate IDs, unsafe values, future timestamps, cross-brand candidates, unrecognized reasons, or candidates that no longer pass the current matcher make synchronization fail. A manual candidate is always attributed to `HECAVEX` and normalized to `suspected`. The private SQLite event ledger and its notes are outside this contract and must never be committed.
+Each array is capped at 2,500 records and the file is capped at 2 MiB. Duplicate IDs, unsafe values, future timestamps, cross-brand decisions, unrecognized controlled values, or records that no longer pass the current matcher make synchronization fail. A manual candidate is always attributed to `HECAVEX` and normalized to `suspected`. Private notes and raw evidence are never exported; evidence codes describe the classes of evidence used, not their contents. The private SQLite event ledger and its notes are outside this contract and must never be committed.
 
 ## Deliberately excluded
 
 - Userinfo, query parameters, fragments, cookies, page bodies/response content, and credentials. A bounded page title may be retained in a sidecar.
 - Extracted email addresses and Google Safe Browsing classifications.
 - Private observation IDs, analyst identities, internal endpoints, and unbounded or event-level collection telemetry. The aggregate latest-attempt health fields documented above are deliberately public.
-- Detector features, model versions, proprietary rules, evidence graphs, and case data.
+- Detector features, proprietary rules, private evidence graphs, analyst working notes, and case data. The bounded public related-observation artifact contains only already published, typed association evidence and carries an explicit non-attribution boundary.
 - Discovery-seed provider names and raw seed records.
 - Internal HECAVEX case history.
 

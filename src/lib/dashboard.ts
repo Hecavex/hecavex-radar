@@ -1,4 +1,4 @@
-import type { Filters, RadarSignal, RadarSnapshot } from "../types.ts";
+import type { EvidenceTier, Filters, RadarSignal, RadarSnapshot, ReasonCode } from "../types.ts";
 
 export const DEFAULT_FILTERS: Filters = {
   query: "",
@@ -6,15 +6,101 @@ export const DEFAULT_FILTERS: Filters = {
   source: "all",
   brand: "all",
   country: "all",
-  minimumConfidence: 0,
+  minimumMatchScore: 0,
+  timeRange: "all",
+  evidence: "all",
+  sort: "last-seen-desc",
+};
+
+const CONTROLLED_FILTER_KEYS = ["status", "source", "brand", "country", "score", "time", "evidence", "sort"] as const;
+const TIME_RANGES = new Set<Filters["timeRange"]>(["all", "24h", "3d", "7d"]);
+const EVIDENCE_FILTERS = new Set<Filters["evidence"]>([
+  "all",
+  "name-only",
+  "corroborated",
+  "reviewed",
+  "screenshot",
+  "urlscan",
+  "hashes",
+  "certstream-only",
+]);
+const SORTS = new Set<Filters["sort"]>(["last-seen-desc", "first-seen-desc", "match-score-desc", "brand-asc"]);
+
+const REASON_EXPLANATIONS: Record<ReasonCode, string> = {
+  "brand-domain-match": "The observed hostname matched a reviewed brand-domain rule.",
+  "brand-title-match": "A public page title independently referenced the same brand.",
+  "provider-verdict": "A public URLScan result supplied a phishing-related provider assessment.",
+  "primary-html-hash-pivot": "The primary HTML hash matched independently observed infrastructure.",
+  "brand-exact-token": "The certificate name contained an exact reviewed brand token.",
+  "brand-joined-affix": "A reviewed brand token was joined to another hostname term.",
+  "brand-split-token": "Separated hostname labels reconstructed a reviewed brand token.",
+  "brand-lookalike-edit": "The hostname was within the reviewed edit-distance boundary for the brand.",
+  "suspicious-context": "The brand-like term appeared with a reviewed phishing-context word.",
+  punycode: "The observed hostname used an internationalized punycode label.",
+  "different-tld": "The brand-like hostname used a top-level domain outside the reviewed official set.",
+  "multiple-hyphens": "The hostname used repeated separators around brand-like terms.",
+  "hecavex-public-export": "A sanitized HECAVEX review export supplied this candidate.",
+  "manual-review": "A local analyst review record contributed bounded public provenance.",
+  "first-publication": "This is the first retained publication event for the candidate.",
+  "source-status-change": "A configured source reported a lifecycle-state change.",
 };
 
 function includes(value: string | null, query: string): boolean {
   return value?.toLocaleLowerCase().includes(query) ?? false;
 }
 
-export function filterSignals(signals: RadarSignal[], filters: Filters): RadarSignal[] {
+function validChoice<Value extends string>(value: string | null, choices: ReadonlySet<Value>, fallback: Value): Value {
+  return value && choices.has(value as Value) ? value as Value : fallback;
+}
+
+export function signalMatchScore(signal: RadarSignal): number {
+  return signal.matchScore ?? signal.confidence ?? 0;
+}
+
+export function signalEvidenceTier(signal: RadarSignal): EvidenceTier {
+  if (signal.evidenceTier) return signal.evidenceTier;
+  if (signal.reviewState === "confirmed-suspicious") return "reviewed";
+  const reasonCodes = signal.reasonCodes ?? [];
+  const corroborated =
+    signal.sources.length > 1 ||
+    Boolean(signal.referenceUrl || signal.screenshotUrl || signal.hashes?.length) ||
+    reasonCodes.some((reason) =>
+      reason === "brand-title-match" || reason === "provider-verdict" || reason === "primary-html-hash-pivot",
+    );
+  return corroborated ? "corroborated" : "name-only";
+}
+
+export function evidenceTierLabel(tier: EvidenceTier): string {
+  if (tier === "name-only") return "Observed";
+  if (tier === "reviewed") return "Reviewed";
+  return "Corroborated";
+}
+
+export function explainReasons(signal: RadarSignal): string[] {
+  return (signal.reasonCodes ?? []).map((reason) => REASON_EXPLANATIONS[reason]);
+}
+
+function cutoffForRange(range: Filters["timeRange"], now: number): number | null {
+  const durations: Record<Exclude<Filters["timeRange"], "all">, number> = {
+    "24h": 24 * 60 * 60 * 1000,
+    "3d": 3 * 24 * 60 * 60 * 1000,
+    "7d": 7 * 24 * 60 * 60 * 1000,
+  };
+  return range === "all" ? null : now - durations[range];
+}
+
+function matchesEvidence(signal: RadarSignal, evidence: Filters["evidence"]): boolean {
+  if (evidence === "all") return true;
+  if (evidence === "screenshot") return Boolean(signal.screenshotUrl);
+  if (evidence === "urlscan") return signal.sources.includes("URLScan") || Boolean(signal.referenceUrl);
+  if (evidence === "hashes") return Boolean(signal.hashes?.length);
+  if (evidence === "certstream-only") return signal.sources.length === 1 && signal.sources[0] === "CertStream";
+  return signalEvidenceTier(signal) === evidence;
+}
+
+export function filterSignals(signals: RadarSignal[], filters: Filters, now = Date.now()): RadarSignal[] {
   const query = filters.query.trim().toLocaleLowerCase();
+  const cutoff = cutoffForRange(filters.timeRange, now);
   return signals.filter((signal) => {
     const queryMatches =
       query.length === 0 ||
@@ -31,9 +117,64 @@ export function filterSignals(signals: RadarSignal[], filters: Filters): RadarSi
       (filters.source === "all" || signal.sources.includes(filters.source)) &&
       (filters.brand === "all" || signal.brand === filters.brand) &&
       (filters.country === "all" || signal.country === filters.country) &&
-      signal.confidence >= filters.minimumConfidence
+      signalMatchScore(signal) >= filters.minimumMatchScore &&
+      (cutoff === null || Date.parse(signal.lastSeen) >= cutoff) &&
+      matchesEvidence(signal, filters.evidence)
     );
   });
+}
+
+export function sortSignals(signals: RadarSignal[], sort: Filters["sort"]): RadarSignal[] {
+  return [...signals].sort((left, right) => {
+    if (sort === "first-seen-desc") return Date.parse(right.firstSeen) - Date.parse(left.firstSeen) || left.id.localeCompare(right.id);
+    if (sort === "match-score-desc") {
+      return signalMatchScore(right) - signalMatchScore(left) || Date.parse(right.lastSeen) - Date.parse(left.lastSeen) || left.id.localeCompare(right.id);
+    }
+    if (sort === "brand-asc") {
+      return (left.brand ?? "~").localeCompare(right.brand ?? "~") || Date.parse(right.lastSeen) - Date.parse(left.lastSeen) || left.id.localeCompare(right.id);
+    }
+    return Date.parse(right.lastSeen) - Date.parse(left.lastSeen) || left.id.localeCompare(right.id);
+  });
+}
+
+export function filtersFromSearch(search: string, signals: RadarSignal[]): Filters {
+  const parameters = new URLSearchParams(search);
+  const statuses = new Set<Filters["status"]>(["all", "active", "suspected", "offline", "mitigated", "unknown"]);
+  const sources = new Set(["all", ...sourceNames(signals)]);
+  const brands = new Set(["all", ...uniqueValues(signals, "brand")]);
+  const countries = new Set(["all", ...uniqueValues(signals, "country")]);
+  const numericScore = Number(parameters.get("score"));
+  const minimumMatchScore = [0, 50, 75, 90].includes(numericScore) ? numericScore : 0;
+
+  return {
+    ...DEFAULT_FILTERS,
+    status: validChoice(parameters.get("status"), statuses, "all"),
+    source: validChoice(parameters.get("source"), sources, "all"),
+    brand: validChoice(parameters.get("brand"), brands, "all"),
+    country: validChoice(parameters.get("country"), countries, "all"),
+    minimumMatchScore,
+    timeRange: validChoice(parameters.get("time"), TIME_RANGES, "all"),
+    evidence: validChoice(parameters.get("evidence"), EVIDENCE_FILTERS, "all"),
+    sort: validChoice(parameters.get("sort"), SORTS, "last-seen-desc"),
+  };
+}
+
+export function controlledFilterSearch(filters: Filters): string {
+  const parameters = new URLSearchParams();
+  if (filters.status !== "all") parameters.set("status", filters.status);
+  if (filters.source !== "all") parameters.set("source", filters.source);
+  if (filters.brand !== "all") parameters.set("brand", filters.brand);
+  if (filters.country !== "all") parameters.set("country", filters.country);
+  if (filters.minimumMatchScore > 0) parameters.set("score", String(filters.minimumMatchScore));
+  if (filters.timeRange !== "all") parameters.set("time", filters.timeRange);
+  if (filters.evidence !== "all") parameters.set("evidence", filters.evidence);
+  if (filters.sort !== "last-seen-desc") parameters.set("sort", filters.sort);
+  return parameters.toString();
+}
+
+export function hasControlledFilters(search: string): boolean {
+  const parameters = new URLSearchParams(search);
+  return CONTROLLED_FILTER_KEYS.some((key) => parameters.has(key));
 }
 
 export function uniqueValues(signals: RadarSignal[], key: "brand" | "country"): string[] {
@@ -51,7 +192,7 @@ export function dashboardMetrics(snapshot: RadarSnapshot) {
   return {
     total: signals.length,
     active: signals.filter((signal) => signal.status === "active").length,
-    highConfidence: signals.filter((signal) => signal.confidence >= 80).length,
+    highConfidence: signals.filter((signal) => signalMatchScore(signal) >= 80).length,
     brands: new Set(signals.map((signal) => signal.brand).filter(Boolean)).size,
     countries: new Set(signals.map((signal) => signal.country).filter(Boolean)).size,
   };

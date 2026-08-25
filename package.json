@@ -16,15 +16,17 @@
     "collect:certstream": "python -m hecavex_radar.collect_certstream",
     "hunt:urlscan": "python -m hecavex_radar.urlscan",
     "sync": "python -m hecavex_radar.sync",
+    "test:python": "python -m pytest -q",
     "lint:frontend": "eslint . --max-warnings=0",
-    "lint:python": "python -m ruff check hecavex_radar",
+    "lint:python": "python -m ruff check hecavex_radar tests",
     "lint": "pnpm lint:python && pnpm lint:frontend",
     "typecheck:frontend": "tsc --noEmit",
     "typecheck:python": "python -m mypy hecavex_radar",
     "typecheck": "pnpm typecheck:python && pnpm typecheck:frontend",
     "verify:site": "node scripts/verify-site.mjs",
+    "validate:publication": "python -m hecavex_radar.publication --stix",
     "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm build && pnpm verify:site",
-    "check": "pnpm lint:python && pnpm typecheck:python && pnpm check:frontend"
+    "check": "pnpm test:python && pnpm lint:python && pnpm typecheck:python && pnpm check:frontend && pnpm validate:publication"
   },
   "dependencies": {
     "lucide-react": "1.33.0",

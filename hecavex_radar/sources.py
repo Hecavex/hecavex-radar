@@ -152,6 +152,7 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
                 brand=match.brand,
                 confidence=match.confidence,
                 reason_codes=reason_codes_from_match(match.reasons),
+                discovered_via=[candidate.get("collectionMethod", "certstream-live")],
             )
         )
         certificate = candidate.get("certificate")
@@ -203,6 +204,7 @@ def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResul
             hashes=signal.get("hashes"),
             confidence=signal["confidence"],
             reason_codes=reason_codes_from_evidence(signal.get("brandEvidence", [])),
+            discovered_via=["urlscan-public-report"],
         )
         for signal in archived
     ]
@@ -318,6 +320,7 @@ def fetch_hecavex(now: str, source_url: str, token: str | None = None) -> Source
                     value.get("confidence"), value.get("confidenceScore"), value.get("confidence_score")
                 ),
                 reason_codes=["hecavex-public-export"],
+                discovered_via=["hecavex-public-export"],
             )
         )
     return SourceResult(

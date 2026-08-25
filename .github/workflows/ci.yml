@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths-ignore:
       - "data/certstream/**"
+      - "data/ct-search/**"
+      - "data/enrichment/**"
       - "data/urlscan/**"
   pull_request:
   workflow_dispatch:

@@ -114,8 +114,21 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data: record CertStream collection attempt"
           gh auth setup-git
+          base_sha="$(git rev-parse HEAD^)"
           for attempt in 1 2 3 4; do
-            git pull --rebase origin main
+            git fetch --no-tags origin main
+            upstream_sha="$(git rev-parse origin/main)"
+            if [[ "${upstream_sha}" != "${base_sha}" ]]; then
+              unexpected_paths="$(git diff --name-only "${base_sha}..${upstream_sha}" | grep -Ev \
+                '^(data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/)' || true)"
+              if [[ -n "${unexpected_paths}" ]]; then
+                echo "Code or configuration changed after checkout; refusing older-revision output:" >&2
+                echo "${unexpected_paths}" >&2
+                exit 1
+              fi
+              git rebase origin/main
+              base_sha="${upstream_sha}"
+            fi
             if git push origin HEAD:main; then
               exit 0
             fi

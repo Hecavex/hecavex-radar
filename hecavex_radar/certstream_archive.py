@@ -45,7 +45,7 @@ CANDIDATE_FIELDS = frozenset(
         "reasons",
     }
 )
-CANDIDATE_OPTIONAL_FIELDS = frozenset({"certificate"})
+CANDIDATE_OPTIONAL_FIELDS = frozenset({"certificate", "collectionMethod"})
 CANDIDATE_ID = re.compile(r"^[a-f\d]{20}$")
 ATTEMPT_ID = re.compile(r"^[a-f\d]{24}$")
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
@@ -79,6 +79,7 @@ def candidate_from_match(
     match: CandidateMatch,
     observed_at: datetime,
     certificate: CertificateEvidence | None = None,
+    collection_method: str = "certstream-live",
 ) -> CertStreamCandidate:
     observed = _aware(observed_at).astimezone(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
     payload: dict[str, object] = {
@@ -92,6 +93,7 @@ def candidate_from_match(
         "brand": match.brand,
         "confidence": match.confidence,
         "reasons": list(match.reasons),
+        "collectionMethod": collection_method,
     }
     certificate_detail = certificate_for_domain(certificate, match.registrable_domain)
     if certificate_detail is not None:
@@ -285,6 +287,7 @@ def _is_candidate(value: Any, expected_day: str | None = None) -> bool:
         or not isinstance(reasons, list)
         or not 1 <= len(reasons) <= MAXIMUM_REASONS
         or not all(_bounded_text(reason, MAXIMUM_REASON_CHARACTERS) for reason in reasons)
+        or value.get("collectionMethod", "certstream-live") not in {"certstream-live", "ct-search-api"}
         or (
             "certificate" in value
             and (
@@ -538,35 +541,41 @@ class CandidateArchiveWriter:
                 known = self._known_by_day.get(day)
                 if known is None:
                     existing = read_candidate_file(path, maximum=MAXIMUM_ARCHIVE_RECORDS)
-                    known = {candidate["id"] for candidate in existing}
+                    known = {
+                        f"{candidate['id']}:{candidate.get('collectionMethod', 'certstream-live')}"
+                        for candidate in existing
+                    }
                     self._known_by_day[day] = known
                     self._record_count_by_day[day] = len(existing)
                 existing_records = self._record_count_by_day[day]
                 queued: set[str] = set()
                 unique: list[CertStreamCandidate] = []
                 for candidate in candidates:
-                    if candidate["id"] not in known and candidate["id"] not in queued:
-                        queued.add(candidate["id"])
+                    archive_key = f"{candidate['id']}:{candidate.get('collectionMethod', 'certstream-live')}"
+                    if archive_key not in known and archive_key not in queued:
+                        queued.add(archive_key)
                         unique.append(candidate)
                 if not unique:
                     continue
                 existing_size = path.stat().st_size if path.exists() else 0
                 remaining_records = max(0, MAXIMUM_ARCHIVE_RECORDS - existing_records)
+                if len(unique) > remaining_records:
+                    raise ValueError("CertStream candidate archive reached its daily record limit.")
                 lines: list[str] = []
                 written_ids: list[str] = []
                 projected_size = existing_size
-                for candidate in unique[:remaining_records]:
+                for candidate in unique:
                     line = json.dumps(candidate, ensure_ascii=False, separators=(",", ":")) + "\n"
                     line_size = len(line.encode("utf-8"))
                     if line_size > MAXIMUM_CANDIDATE_LINE_BYTES:
                         raise ValueError("CertStream candidate exceeds the maximum NDJSON line size.")
                     if projected_size + line_size > MAXIMUM_ARCHIVE_BYTES:
-                        break
+                        raise ValueError("CertStream candidate archive reached its daily byte limit.")
                     lines.append(line)
-                    written_ids.append(candidate["id"])
+                    written_ids.append(
+                        f"{candidate['id']}:{candidate.get('collectionMethod', 'certstream-live')}"
+                    )
                     projected_size += line_size
-                if not lines:
-                    continue
                 descriptor = os.open(path, os.O_APPEND | os.O_CREAT | os.O_WRONLY, 0o600)
                 with os.fdopen(descriptor, "a", encoding="utf-8", newline="\n") as stream:
                     stream.writelines(lines)

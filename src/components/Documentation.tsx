@@ -13,14 +13,22 @@ const signalFields = [
   ["referenceUrl", "string | null", "Optional canonical public URLScan result URL."],
   ["hashes", "string[]", "Up to eight lowercase SHA-256 hashes of primary HTML response bodies."],
   ["reasonCodes", "string[]", "Controlled publication reasons; provenance labels, not proof or a verdict."],
+  ["discoveredVia", "string[]", "Controlled collection lineage, separate from the observation-provider source label."],
+  ["corroboratedBy", "string[]", "Controlled evidence mechanisms that supplied support beyond hostname matching."],
   ["detailAvailable", "true (optional)", "Declares one validated same-origin detail sidecar for this signal."],
-  ["confidence", "integer", "Rounded and clamped score from 0 to 100; not a probability."],
+  ["matchScore", "integer", "Automated matcher score from 0 to 100; not probability, analyst confidence, or a verdict."],
+  ["evidenceTier", "enum", "name-only, corroborated, or reviewed."],
+  ["reviewState", "enum", "Explicit analyst disposition; automated rows default to unreviewed or needs-review."],
+  ["ltRelevance", "enum", "Controlled statement of Lithuanian targeting or brand relevance, not actor location."],
+  ["confidence", "integer", "Deprecated compatibility alias that must equal matchScore."],
 ] as const;
 
 const workflows = [
   ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, production build, and site verification"],
   ["CertStream collection", "08, 23, 38, and 53 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
+  ["Checkpointed CT search", "43 minutes past each UTC hour", "Per-brand crt.sh cursors and deduplicated CT candidates"],
   ["URLScan hunt", "37 minutes past every second UTC hour", "Bounded hunt state and Vilnius-date validated archive"],
+  ["DNS and RDAP context", "13 minutes past 01, 07, 13, and 19 UTC", "Bounded context for already-published candidates"],
   ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated live snapshot and candidate history"],
   ["Pages deployment", "Verified code or changed public snapshot/health", "Static GitHub Pages artifact"],
 ] as const;
@@ -34,6 +42,8 @@ const settings = [
   ["URLSCAN_DAILY_RESULT_CAP", "Variable", "Conservative local UTC-day result guard; 8,000 successful responses by default."],
   ["URLSCAN_RUN_SEARCH_CAP / URLSCAN_RUN_RESULT_CAP", "Variables", "Per-run guards of 25 searches and 100 result retrievals by default."],
   ["CERTSTREAM_URL", "Secret or variable", "Optional monitored WSS endpoint; otherwise the scheduled workflow starts its pinned temporary source."],
+  ["CT_SEARCH_*", "Variables", "Bound hourly query rotation, rows, seven-day bootstrap, and the default 50-row/1,000-ID late-index replay overlap."],
+  ["DOMAIN_CONTEXT_*", "Variables", "Bound candidate rotation, 14-day DNS/RDAP retention, and the default 600-second monotonic run budget."],
   ["HECAVEX_ENABLED", "Variable", "Enables the optional configured public HECAVEX export."],
   ["HECAVEX_FEED_URL", "Secret", "Required with HECAVEX enabled; production endpoints must use HTTPS."],
   ["HECAVEX_FEED_TOKEN", "Secret", "Optional read-only bearer credential for the configured export."],
@@ -147,11 +157,24 @@ export function Documentation() {
             <a href="https://urlscan.io/docs/api/">Provider documentation</a>
           </article>
           <article>
-            <span>Optional service input</span>
+            <span>Indexed Certificate Transparency search</span>
+            <h3>crt.sh checkpoint path</h3>
+            <p>
+              An hourly bounded search rotates across reviewed brand terms and persists a numeric cursor for each query.
+              It also rechecks a bounded overlap behind each cursor for late-indexed rows and resumes a declared backlog
+              before normal rotation. Results are re-matched and retained in the same CT archive with explicit discovery
+              lineage. Provider indexing, availability, and result limits mean this is replayable search, not complete
+              global CT coverage.
+            </p>
+            <a href="https://crt.sh/">Provider service</a>
+          </article>
+          <article>
+            <span>Sanitized service or review input</span>
             <h3>HECAVEX</h3>
             <p>
               A deliberately limited public JSON export can be configured over HTTPS. Every record passes the same
-              normalization, brand scope, evidence, timestamp, and size checks before it can appear publicly.
+              normalization, brand scope, evidence, timestamp, and size checks before it can appear publicly. An explicit
+              sanitized local review candidate uses the same source label; <code>discoveredVia</code> distinguishes the two paths.
             </p>
             <a href="https://hecavex.com/">HECAVEX</a>
           </article>
@@ -168,9 +191,10 @@ export function Documentation() {
         <div className="docs-callout">
           <strong>Coverage is intentionally incomplete</strong>
           <p>
-            CertStream observation is sampled. URLScan is queried only for existing public reports; no result is unknown,
-            not benign, and does not suppress an independently qualifying CertStream candidate. HECAVEX is optional.
-            None of these inputs provides a continuous-monitoring guarantee.
+            Live CertStream observation is sampled. The checkpointed CT search is bounded to reviewed brand terms and one
+            external index. URLScan is queried only for existing public reports; no result is unknown, not benign, and
+            does not suppress an independently qualifying CT candidate. HECAVEX is optional. None of these inputs provides
+            a continuous-monitoring or complete-global-coverage guarantee.
           </p>
         </div>
       </section>
@@ -204,6 +228,15 @@ export function Documentation() {
             <a href="/data/radar.stix.json" download>Download public radar.stix.json</a>
           </article>
           <article>
+            <span>Reviewed decisions · STIX 2.1</span>
+            <h3>Analyst-reviewed Indicator bundle</h3>
+            <p>
+              A separate feed contains only explicit, time-bounded analyst confirmations and their correction or
+              revocation versions. It is empty of Indicators until a confirmation is deliberately exported.
+            </p>
+            <a href="/data/radar-reviewed.stix.json" download>Download reviewed STIX</a>
+          </article>
+          <article>
             <span>Retained history · JSON</span>
             <h3>Candidate history</h3>
             <p>
@@ -235,9 +268,27 @@ export function Documentation() {
             <h3>Per-signal detail sidecars</h3>
             <p>
               A live row can declare one exact same-origin sidecar containing at most one latest CertStream and URLScan
-              context record. The viewer fetches it only when evidence is opened; each file is 16 KiB or less and the
-              complete set is capped at 3 MiB.
+              observation plus optional point-in-time DNS and RDAP context. The viewer fetches it only when evidence is
+              opened; each file is 16 KiB or less and the complete set is capped at 3 MiB.
             </p>
+          </article>
+          <article>
+            <span>Release integrity · JSON</span>
+            <h3>Manifest, schemas, shards, and checksums</h3>
+            <p>
+              Versioned schemas, SHA-256 companions, a generator/source-timestamp manifest, and digest-indexed 256 KiB
+              shards make the complete accepted corpus independently retrievable and verifiable.
+            </p>
+            <a href="/data/feed-manifest.json">Open feed manifest</a>
+          </article>
+          <article>
+            <span>Aggregate operations · JSON</span>
+            <h3>Health, changes, and associations</h3>
+            <p>
+              Sanitized 24-hour and seven-day counters, change summaries, and bounded shared-evidence relations expose
+              pipeline behavior without turning infrastructure overlap into campaign or actor attribution.
+            </p>
+            <a href="/data/pipeline-health.json">Open pipeline health</a>
           </article>
         </div>
         <div className="docs-callout">
@@ -254,7 +305,7 @@ export function Documentation() {
       <section className="docs-section" id="stix-feed" aria-labelledby="stix-feed-docs-title">
         <div className="docs-section-heading">
           <p className="eyebrow">STIX 2.1 distribution</p>
-          <h2 id="stix-feed-docs-title">Radar observations for defensive tooling</h2>
+          <h2 id="stix-feed-docs-title">Separate observation and reviewed distributions</h2>
           <p>
             Use the stable HTTPS URL <a href="/data/radar.stix.json"><code>https://radar.hecavex.com/data/radar.stix.json</code></a>.
             Each successful material snapshot republishes the current candidate set as a static pull/download feed.
@@ -287,19 +338,29 @@ export function Documentation() {
             </p>
           </article>
           <article>
-            <span>Static delivery</span>
-            <h3>STIX now; TAXII later if needed</h3>
+            <span>Analyst-reviewed distribution</span>
+            <h3>Indicators require explicit confirmation</h3>
             <p>
-              Radar currently publishes a static STIX 2.1 JSON bundle over HTTPS. It does not operate a TAXII discovery,
-              collection, pagination, or authentication service. TAXII would require a service runtime such as the planned VPS.
+              <code>radar-reviewed.stix.json</code> includes only confirmed-suspicious assessments with validity limits,
+              or revoked versions of earlier confirmations. It applies the standard TLP:CLEAR marking; that marking does
+              not relicense source evidence. Automated candidates and inconclusive reviews never become Indicators.
+            </p>
+          </article>
+          <article>
+            <span>Static delivery</span>
+            <h3>Static STIX, not TAXII</h3>
+            <p>
+              Radar publishes static STIX 2.1 JSON over HTTPS. It does not operate TAXII discovery, Collections,
+              pagination, authentication, or a direction to ingest either feed as an automatic blocklist.
             </p>
           </article>
         </div>
         <div className="docs-callout docs-warning-callout">
-          <strong>Observation-only feed</strong>
+          <strong>Different trust levels stay separate</strong>
           <p>
-            Inclusion means Radar observed a potential or suspected impersonation signal that passed its publication
-            rules. It does not prove malicious intent, current activity, ownership, attribution, or suitability for blocking.
+            Inclusion in the observation feed means Radar saw a potential impersonation signal that passed publication
+            rules. Inclusion in the reviewed feed means an analyst exported a bounded confirmation. Neither establishes
+            ownership, actor attribution, present activity, or suitability for automatic blocking.
           </p>
         </div>
       </section>
@@ -307,11 +368,11 @@ export function Documentation() {
       <section className="docs-section" id="data-contract" aria-labelledby="contract-title">
         <div className="docs-section-heading">
           <p className="eyebrow">Public data contract</p>
-          <h2 id="contract-title">Snapshot schema version 1</h2>
+          <h2 id="contract-title">Snapshot schema version 2</h2>
           <p>The Python publisher is normative; browser validation is an additional structural check.</p>
         </div>
         <pre className="docs-code" aria-label="Public snapshot example" tabIndex={0}><code>{`{
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "dataset": "live",
   "generatedAt": "2026-08-21T09:15:00.000Z",
   "lastSuccessfulSyncAt": "2026-08-21T10:17:00.000Z",
@@ -380,8 +441,9 @@ export function Documentation() {
             <h3>Signal detail JSON</h3>
             <p>
               Stored below <code>public/data/signals/&lt;prefix&gt;/&lt;id&gt;.json</code>. Exact fields contain bounded,
-              defanged page, network, URLScan assessment, redirect-destination, and certificate context only for a current
-              live signal. Cross-domain destination metadata is never attributed to the submitted candidate.
+              defanged page, network, URLScan assessment, redirect-destination, certificate, DNS, and registration context
+              only for a current live signal. Context-only sidecars are permitted. Cross-domain destination metadata is
+              never attributed to the submitted candidate, and registrant identity data is never published.
             </p>
           </article>
         </div>
@@ -389,7 +451,7 @@ export function Documentation() {
           <strong>Merge rules</strong>
           <p>
             One public row represents one normalized host. The publisher unions sources and hashes, keeps earliest and
-            latest timestamps, selects the most specific safe path, keeps the highest confidence, and rejects conflicting brands.
+            latest timestamps, selects the most specific safe path, keeps the highest match score, and rejects conflicting brands.
           </p>
         </div>
       </section>
@@ -479,6 +541,16 @@ export function Documentation() {
             makes no API call and records a successful <code>skipped-not-configured</code> state.
           </p>
         </div>
+        <div className="docs-callout">
+          <strong>Checkpointed CT search and passive context</strong>
+          <p>
+            At minute 43 each hour, Radar rotates six reviewed brand queries through crt.sh by default and persists one
+            cursor per query, with a bounded late-index replay and explicit backlog state. At 01:13, 07:13, 13:13, and
+            19:13 UTC, it rotates through published candidates using only DNS-over-HTTPS and registrable-parent RDAP.
+            Both jobs commit bounded failure state before reporting a failed workflow; neither path visits a candidate
+            webpage, and neither establishes complete coverage or maliciousness.
+          </p>
+        </div>
         <h3 className="docs-subheading">Source-state semantics</h3>
         <div className="docs-table-wrap" role="region" aria-label="Source state semantics" tabIndex={0}>
           <table className="docs-table">
@@ -513,8 +585,9 @@ export function Documentation() {
             <span>Maintainer gate</span>
             <h3>Every production change is verified</h3>
             <p>
-              HECAVEX maintains pinned Python, Node.js, pnpm, and browser-check toolchains. The complete gate covers linting,
-              types, the production build, accessibility, CSP, no-JavaScript output, and responsive behavior.
+              HECAVEX maintains pinned Python, Node.js, pnpm, and browser-check toolchains. The complete gate covers tests,
+              linting, types, the production build, accessibility, CSP, no-JavaScript output, responsive behavior, public
+              schemas, shards, checksums, manifests, and standard STIX 2.1 validation.
             </p>
           </article>
           <article>
@@ -535,11 +608,11 @@ export function Documentation() {
           </article>
         </div>
         <div className="docs-callout">
-          <strong>Durable CT coverage decision</strong>
+          <strong>Checkpointed CT coverage decision</strong>
           <p>
-            Stage 02 will use checkpointed CT-log/API polling and backfill as the durable coverage source, while retaining
-            CertStream for low-latency discovery. The current sampled workflow remains in place until that implementation
-            passes the documented acceptance checks. Read the{" "}
+            Stage 02A now adds bounded, provider-indexed query checkpoints while retaining CertStream for low-latency
+            discovery. It improves replay of indexed brand results but does not satisfy a complete log-index coverage
+            claim; the remaining acceptance limits stay explicit in the{" "}
             <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/decisions/0001-ct-coverage.md">
               architecture decision record
             </a>.
@@ -637,8 +710,8 @@ export function Documentation() {
             <a href="https://hole.cert.pl/">Warning List</a>
           </article>
           <article>
-            <h3>HECAVEX export</h3>
-            <p>The exporter remains responsible for excluding internal case history, proprietary evidence, credentials, personal data, and material it cannot publish.</p>
+            <h3>HECAVEX inputs</h3>
+            <p>The exporter or reviewing operator remains responsible for excluding internal case history, proprietary evidence, credentials, personal data, and material it cannot publish.</p>
           </article>
           <article>
             <h3>Brand registry</h3>

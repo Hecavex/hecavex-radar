@@ -1,5 +1,8 @@
 # CI adds linting and type-checking tools declared in pyproject.toml to the runtime lock.
 -r automation-runtime.in
 
+hypothesis==6.165.10
 mypy==2.3.1
+pytest==8.4.2
 ruff==0.16.4
+stix2-validator==3.2.0

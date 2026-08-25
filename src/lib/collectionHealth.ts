@@ -1,3 +1,7 @@
+import { readBoundedJson } from "./boundedJson.ts";
+
+const MAXIMUM_COLLECTION_HEALTH_BYTES = 32 * 1024;
+
 export const COLLECTION_OUTCOMES = [
   "healthy-empty",
   "healthy-matches",
@@ -174,5 +178,5 @@ export async function loadCollectionHealth(signal?: AbortSignal): Promise<Collec
     signal,
   });
   if (!response.ok) throw new Error(`Collection-health request failed with HTTP ${response.status}.`);
-  return parseCollectionHealth(await response.json());
+  return parseCollectionHealth(await readBoundedJson(response, MAXIMUM_COLLECTION_HEALTH_BYTES));
 }
