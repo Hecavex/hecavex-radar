@@ -52,7 +52,7 @@ export function SignalTable({ signals, now = Date.now(), snapshotGeneratedAt, on
   if (!signals.length) return <div className="empty-state"><SearchX aria-hidden="true" /><h3>{lt ? "Atitinkančių kandidatų nėra" : "No matching candidates"}</h3><p>{lt ? "Pakeiskite paiešką arba filtrus, kad būtų rodoma daugiau rezultatų." : "Adjust the local search or controlled filters to widen the view."}</p></div>;
 
   return <div className="table-panel">
-    <div className="table-scroll" role="region" aria-label={lt ? "Galimi sukčiavimo kandidatai" : "Potential phishing candidates"} tabIndex={0}>
+    <div className="table-scroll" role="region" aria-label={lt ? "Galimi phishing kandidatai" : "Potential phishing candidates"} tabIndex={0}>
       <table className="signal-table">
         <colgroup><col className="candidate-column" /><col className="brand-column" /><col className="evidence-column" /><col className="hosting-column" /><col className="timeline-column" /></colgroup>
         <thead><tr><th scope="col">{lt ? "Kandidatas" : "Candidate"}</th><th scope="col">{lt ? "Galimas prekių ženklas" : "Potential brand"}</th><th scope="col">{lt ? "Įrodymai" : "Evidence"}</th><th scope="col">{lt ? "Stebėta priegloba" : "Hosting observed"}</th><th scope="col">{lt ? "Laiko juosta" : "Timeline"}</th></tr></thead>

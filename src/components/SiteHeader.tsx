@@ -171,7 +171,7 @@ export function SiteHeader({ currentPage, language = "en", alternateHref }: {
       <div className="product-bar">
         <a className="product-identity" href={language === "lt" ? "/lt/" : "/"}>
           <strong>Radar</strong>
-          <span>{language === "lt" ? "Galima sukčiavimo infrastruktūra" : "Potential phishing infrastructure"}</span>
+          <span>{language === "lt" ? "Galima phishing infrastruktūra" : "Potential phishing infrastructure"}</span>
         </a>
         <ProductNavigation currentPage={currentPage} className="product-navigation" language={language} />
         <div className="header-utility">

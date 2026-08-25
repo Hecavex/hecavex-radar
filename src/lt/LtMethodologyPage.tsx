@@ -14,7 +14,7 @@ export function LtMethodologyPage() {
     <main id="main-content" className="lt-methodology-page">
       <section className="lt-page-heading">
         <div><p className="eyebrow">Metodologija</p><h1>Kaip signalas patenka į Radarą</h1></div>
-        <p>HECAVEX Radaras yra pasyvi, paaiškinama galimų sukčiavimo ir apsimetimo svetainių atranka, orientuota į Lietuvą. Tikslumas svarbiau už kiekį, o vienas automatinis signalas niekada nelaikomas kenkėjiško ketinimo įrodymu.</p>
+        <p>HECAVEX Radaras yra pasyvi, paaiškinama galimų phishing ir apsimetimo svetainių atranka, orientuota į Lietuvą. Tikslumas svarbiau už kiekį, o vienas automatinis signalas niekada nelaikomas kenkėjiško ketinimo įrodymu.</p>
       </section>
       <nav className="lt-methodology-toc" aria-label="Metodologijos skyriai"><span>Šiame puslapyje</span><div><a href="#procesas">Procesas</a><a href="#rinkimas">Duomenų rinkimas</a><a href="#atitikimas">Atitikimas</a><a href="#skelbimas">Skelbimas</a><a href="#istorija">Istorija</a><a href="#ribos">Ribos ir saugumas</a></div></nav>
       <section id="procesas" className="lt-method-section"><header><p className="eyebrow">Procesas</p><h2>Keturi riboti etapai</h2></header><ol className="lt-method-steps">{stages.map(([number, title, body]) => <li key={number}><span>{number}</span><h3>{title}</h3><p>{body}</p></li>)}</ol></section>

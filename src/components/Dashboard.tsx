@@ -56,11 +56,11 @@ export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
         <div className="hero-copy">
           <p className="eyebrow"><Radar aria-hidden="true" /> {lt ? "Atviroji grėsmių žvalgyba · Lietuva" : "Open threat intelligence · Lithuania"}</p>
           <h1 id="radar-title">
-            {lt ? <>Sukčiavimo signalai.<br /><span>Pastebėti, ne numanomi.</span></> : <>Phishing signals.<br /><span>Observed, not assumed.</span></>}
+            {lt ? <>Phishing signalai.<br /><span>Pastebėti, ne numanomi.</span></> : <>Phishing signals.<br /><span>Observed, not assumed.</span></>}
           </h1>
           <p className="hero-intro">
             {lt
-              ? "Neutralizuoti galimi sukčiavimo ir apsimetimo domenai, aptikti atrankiniu būdu stebint Certificate Transparency, URLScan ir naudojant saugiai parengtus HECAVEX duomenis. Kiekviena eilutė yra tyrimo kryptis, o ne nuosprendis."
+              ? "Neutralizuoti galimi phishing ir apsimetimo domenai, aptikti atrankiniu būdu stebint Certificate Transparency, URLScan ir naudojant saugiai parengtus HECAVEX duomenis. Kiekviena eilutė yra tyrimo kryptis, o ne nuosprendis."
               : "Defanged potential phishing and impersonation domains discovered through sampled Certificate Transparency, URLScan, and sanitized HECAVEX inputs. Every row is a lead, never a verdict."}
           </p>
           <div className="hero-actions">
