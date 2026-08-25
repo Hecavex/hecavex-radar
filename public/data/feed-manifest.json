@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "dataset": "radar-feed-manifest",
+  "generatedAt": "2026-08-25T15:03:57.675Z",
+  "generator": {
+    "name": "hecavex-radar",
+    "version": "0.1.0",
+    "revision": "1036f1c56e267e4b709e822cfc639fafb37456e3"
+  },
+  "sourceFetchedAt": {
+    "CertStream": "2026-08-25T15:03:57.675Z",
+    "HECAVEX": "2026-08-25T15:03:57.675Z",
+    "URLScan": "2026-08-25T12:08:00.648Z"
+  },
+  "counts": {
+    "completeSignals": 19,
+    "dashboardSignals": 19,
+    "dashboardOmitted": 0,
+    "artifacts": 15
+  },
+  "artifacts": [
+    {
+      "path": "/data/changes.json",
+      "mediaType": "application/json",
+      "schema": "https://radar.hecavex.com/data/schemas/changes-v1.schema.json",
+      "bytes": 1894,
+      "sha256": "3ff2168db3833383c89fd229f965b690506b469d2c6410eea452ffae286d5889"
+    },
+    {
+      "path": "/data/history.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 16213,
+      "sha256": "431a23436d15791fd76c7c534c8420a25ab6269a16c1f56c2f02f1ce2080e529"
+    },
+    {
+      "path": "/data/pipeline-health.json",
+      "mediaType": "application/json",
+      "schema": "https://radar.hecavex.com/data/schemas/pipeline-health-v1.schema.json",
+      "bytes": 3912,
+      "sha256": "20e2252ee5749d63c2aeeebb952f2166532332e47973de2c0fd4a98248be5c35"
+    },
+    {
+      "path": "/data/radar-reviewed.stix.json",
+      "mediaType": "application/stix+json",
+      "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
+      "bytes": 389,
+      "sha256": "604b76a537ca6baf6cfdad6ea260911fbc4bbdada97e47c526efb826129649e4"
+    },
+    {
+      "path": "/data/radar.index.json",
+      "mediaType": "application/json",
+      "schema": "https://radar.hecavex.com/data/schemas/radar-index-v1.schema.json",
+      "bytes": 471,
+      "sha256": "a0318861a7eaac2d1b1e7bff292533aabe0026c64f17ecda430e66620ed6dede"
+    },
+    {
+      "path": "/data/radar.json",
+      "mediaType": "application/json",
+      "schema": "https://radar.hecavex.com/data/schemas/radar-v2.schema.json",
+      "bytes": 20462,
+      "sha256": "056a349b17ed732896b60699d6b9fea8e241943b7080879db891975a853ea500"
+    },
+    {
+      "path": "/data/radar.stix.json",
+      "mediaType": "application/stix+json",
+      "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
+      "bytes": 27902,
+      "sha256": "0dd7f8148d6b97b70e0b14c5a4dc77009c69cfb2305cd3dd02d73f76a66af3e5"
+    },
+    {
+      "path": "/data/related-observations.json",
+      "mediaType": "application/json",
+      "schema": "https://radar.hecavex.com/data/schemas/related-observations-v1.schema.json",
+      "bytes": 426,
+      "sha256": "9cbfb0f940c2d50e208eea5f15f09266a5a05f3303e0e030c54a085c1b128b55"
+    },
+    {
+      "path": "/data/schemas/changes-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 2806,
+      "sha256": "5304adc690333c3be5dd35d259393024ded5bc2d42d524e4a05e3be5e1c1eecc"
+    },
+    {
+      "path": "/data/schemas/feed-manifest-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 3883,
+      "sha256": "b16c820d72bbf1416dc05d4775b6124683f5d4ed6a6f94b7a20371a7fcbc258f"
+    },
+    {
+      "path": "/data/schemas/pipeline-health-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 16224,
+      "sha256": "80eae5965b421803762a83bd9233acf9b8154c2a3652d1efc8c9cf8b23a8d8cf"
+    },
+    {
+      "path": "/data/schemas/radar-index-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 1962,
+      "sha256": "06fdb840fbfeb085e29ae4dcb91e7ba5c85feea2b0cd026954c72c9518b6043f"
+    },
+    {
+      "path": "/data/schemas/radar-shard-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 6539,
+      "sha256": "6a59888c2bc3a453fa7bb3fa69f32e051a61300143dec5987e19b3d43de84164"
+    },
+    {
+      "path": "/data/schemas/radar-v2.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 9077,
+      "sha256": "dd9011fcd474c1367964a3202fe81e315593625dc096446ba98f5a66ae71885d"
+    },
+    {
+      "path": "/data/schemas/related-observations-v1.schema.json",
+      "mediaType": "application/json",
+      "schema": null,
+      "bytes": 3645,
+      "sha256": "709b663b3833cc711194cb5d7a4ddfccb7275daacaff33c4102bc015194967c0"
+    }
+  ]
+}
