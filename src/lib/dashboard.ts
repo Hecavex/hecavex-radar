@@ -197,15 +197,3 @@ export function dashboardMetrics(snapshot: RadarSnapshot) {
     countries: new Set(signals.map((signal) => signal.country).filter(Boolean)).size,
   };
 }
-
-export function topGroups(signals: RadarSignal[], key: "brand" | "country", limit = 5) {
-  const counts = new Map<string, number>();
-  for (const signal of signals) {
-    const value = signal[key] ?? "Unknown";
-    counts.set(value, (counts.get(value) ?? 0) + 1);
-  }
-  return [...counts.entries()]
-    .map(([name, count]) => ({ name, count }))
-    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name))
-    .slice(0, limit);
-}

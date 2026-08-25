@@ -14,7 +14,8 @@ export type SitePage =
   | "methodology"
   | "documentation"
   | "signal"
-  | "brand";
+  | "brand"
+  | "not-found";
 
 export type SiteLanguage = "en" | "lt";
 

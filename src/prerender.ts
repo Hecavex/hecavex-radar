@@ -6,6 +6,7 @@ import { BrandScopePage } from "./BrandScopePage.tsx";
 import { DocumentationPage } from "./DocumentationPage.tsx";
 import { HistoryApp } from "./HistoryApp.tsx";
 import { MethodologyPage } from "./MethodologyPage.tsx";
+import { NotFoundPage } from "./NotFoundPage.tsx";
 import { BrandActivityPage } from "./BrandActivityPage.tsx";
 import { SignalPage } from "./SignalPage.tsx";
 import { StaticPage } from "./StaticPages.tsx";
@@ -17,7 +18,7 @@ import { LtMethodologyPage } from "./lt/LtMethodologyPage.tsx";
 import { LtRadarApp } from "./lt/LtRadarApp.tsx";
 import type { RadarHistory, RadarSnapshot } from "./types.ts";
 
-export type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation";
+export type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation" | "not-found";
 
 export function renderPrerenderedPage(
   page: PrerenderPage,
@@ -48,7 +49,10 @@ export function renderPrerenderedPage(
   if (page === "brands") {
     return renderToString(createElement(BrandScopePage));
   }
-  return renderToString(createElement(DocumentationPage));
+  if (page === "documentation") {
+    return renderToString(createElement(DocumentationPage));
+  }
+  return renderToString(createElement(NotFoundPage));
 }
 
 export function renderStaticPage(kind: StaticPageKind, data: StaticPageData): string {

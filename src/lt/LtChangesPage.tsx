@@ -1,5 +1,5 @@
 import { AlertTriangle, Archive, Clock3, RefreshCw, Search, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SiteHeader } from "../components/SiteHeader.tsx";
 import { loadSnapshot } from "../lib/data.ts";
@@ -44,7 +44,6 @@ export function LtChangesPage({ initialSnapshot, initialHistory, initialNow }: P
 }
 
 function LtChangesContent({ snapshot, history, now, query, setQuery }: { snapshot: RadarSnapshot; history: RadarHistory; now: number; query: string; setQuery: (value: string) => void }) {
-  const currentIds = useMemo(() => new Set(snapshot.signals.map((signal) => signal.id)), [snapshot.signals]);
   const cutoff = now - 86_400_000;
   const newSignals = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) >= cutoff);
   const reobserved = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) < cutoff && Date.parse(signal.lastSeen) >= cutoff);
@@ -76,7 +75,7 @@ function LtChangesContent({ snapshot, history, now, query, setQuery }: { snapsho
       <header className="section-heading"><div><p className="eyebrow">Išsaugotas pėdsakas</p><h2 id="lt-history-title">Kandidatų istorija</h2></div><p>Detalės: {history.detailRetentionDays} d. · suvestinė: {history.summaryRetentionDays} d.</p></header>
       <label className="lt-search"><Search aria-hidden="true" /><span className="sr-only">Ieškoti istorijoje</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Domenas, prekių ženklas arba šaltinis..." /></label>
       <div className="lt-history-list">{records.slice(0, 100).map((signal) => <article key={signal.id}>
-        <div><a href={currentIds.has(signal.id) ? `/lt/signalai/${signal.id}/` : `/lt/pokyciai/#${signal.id}`}><code>{signal.domain}</code></a><span>{signal.brand} · {signal.sources.join(" · ")}</span></div>
+        <div><a href={signalPath(signal.id, "lt")}><code>{signal.domain}</code></a><span>{signal.brand} · {signal.sources.join(" · ")}</span></div>
         <div><strong>{statusLt[signal.latestStatus]}</strong><span>{signal.observationCount} steb. · paskutinis {formatRelativeTimeLt(signal.lastSeen, now)}</span></div>
         <details><summary>Provenencija</summary><p>Pirmas: {formatDateTimeLt(signal.firstSeen)}</p><p>Paskutinis: {formatDateTimeLt(signal.lastSeen)}</p><p>Taisyklės: {signal.reasonCodes.join(", ")}</p></details>
       </article>)}</div>

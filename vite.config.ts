@@ -24,7 +24,7 @@ const cloudflareAnalyticsLoader =
   `const token=document.currentScript?.dataset.hecavexAnalyticsToken;if(!token)return;` +
   `const beacon=document.createElement("script");beacon.type="module";beacon.src="${cloudflareAnalyticsScript}";` +
   `beacon.dataset.cfBeacon=JSON.stringify({token});document.head.appendChild(beacon)})();`;
-type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation";
+type PrerenderPage = "radar" | "history" | "brands" | "methodology" | "documentation" | "not-found";
 type StaticPageKind = "changes" | "trends" | "associations" | "tools" | "dataset";
 
 function readJson(path: string): unknown {
@@ -104,6 +104,7 @@ function staticPagePlugin() {
           "/methodology/": "methodology",
           "/docs/index.html": "documentation",
           "/docs/": "documentation",
+          "/404.html": "not-found",
         };
         const staticPages: Record<string, StaticPageKind> = {
           "/changes/index.html": "changes",
@@ -373,6 +374,7 @@ export default defineConfig({
         brands: fileURLToPath(new URL("./brands/index.html", import.meta.url)),
         methodology: fileURLToPath(new URL("./methodology/index.html", import.meta.url)),
         documentation: fileURLToPath(new URL("./docs/index.html", import.meta.url)),
+        notFound: fileURLToPath(new URL("./404.html", import.meta.url)),
         changes: fileURLToPath(new URL("./changes/index.html", import.meta.url)),
         trends: fileURLToPath(new URL("./trends/index.html", import.meta.url)),
         associations: fileURLToPath(new URL("./associations/index.html", import.meta.url)),

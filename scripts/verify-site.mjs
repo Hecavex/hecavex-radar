@@ -26,6 +26,7 @@ const pages = [
   { path: "/dataset/", marker: "Radar dataset distributions" },
   { path: "/methodology/", marker: "How a signal reaches Radar" },
   { path: "/docs/", marker: "HECAVEX Radar technical reference" },
+  { path: "/404.html", marker: "This route has no signal." },
 ];
 const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
 const productNavigation = ["Overview", "Changes", "Brands", "Trends", "Associations", "Tools", "Methodology", "Docs"];
@@ -97,6 +98,7 @@ function verifyDeploymentTopology() {
   assert(
     deploy.includes('git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/') &&
       deploy.includes("public/data/collection-health.json") &&
+      deploy.includes("test -f dist/404.html") &&
       deploy.includes("test -f dist/data/radar.stix.json") &&
       deploy.includes("test -f dist/data/feed-manifest.json") &&
       deploy.includes("test -f dist/data/pipeline-health.json") &&
@@ -356,13 +358,15 @@ function verifyBuiltHtml() {
   const history = JSON.parse(readFileSync(join(output, "data", "history.json"), "utf8"));
   const brands = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
   const signalIds = new Set([...snapshot.signals, ...history.signals].map((signal) => signal.id));
-  const expectedHtmlCount = 14 + (signalIds.size * 2) + (brands.entries.length * 2);
+  const expectedHtmlCount = 15 + (signalIds.size * 2) + (brands.entries.length * 2);
   assert(htmlFiles.length === expectedHtmlCount, `Expected ${expectedHtmlCount} static HTML entries, found ${htmlFiles.length}.`);
   assert(!htmlFiles.some((path) => relative(output, path).startsWith(`templates${sep}`)), "Build output still exposes route templates.");
+  assert(!existsSync(join(output, "signals", "index.html")), "Build output creates a soft-404 landing page at /signals/.");
 
   for (const path of htmlFiles) {
     const document = parseFile(path);
     const route = routeForFile(path);
+    const notFound = route === "/404.html";
     const ids = [...document.querySelectorAll("[id]")].map((element) => element.id);
     assert(new Set(ids).size === ids.length, `${route} contains duplicate IDs.`);
     const lithuanian = route.startsWith("/lt/");
@@ -414,14 +418,21 @@ function verifyBuiltHtml() {
       document.querySelector('.portfolio-navigation a[aria-current="page"]')?.textContent?.trim() === "Radar",
       `${route} does not identify Radar as the active portfolio product.`,
     );
-    if (!lithuanian) assert(document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage, `${route} does not identify ${expectedLocalPage} as the active Radar page.`);
+    if (!lithuanian && !notFound) assert(document.querySelector('.product-navigation a[aria-current="page"]')?.textContent?.trim() === expectedLocalPage, `${route} does not identify ${expectedLocalPage} as the active Radar page.`);
     assert(document.querySelector('meta[name="description"]')?.content, `${route} has no description.`);
-    assert(document.querySelector('link[rel="canonical"]')?.href, `${route} has no canonical URL.`);
+    if (notFound) {
+      assert(document.querySelector('meta[name="robots"]')?.content === "noindex, follow", "Custom 404 page must remain noindex, follow.");
+      assert(!document.querySelector('link[rel="canonical"]'), "Custom 404 page must not canonicalize missing routes to a valid page.");
+      assert(!document.querySelector('.product-navigation a[aria-current="page"]'), "Custom 404 page must not identify a nonexistent local section as current.");
+    } else {
+      assert(document.querySelector('link[rel="canonical"]')?.href, `${route} has no canonical URL.`);
+    }
     assert(document.querySelector('meta[property="og:image"]')?.content, `${route} has no Open Graph image.`);
     if (route === "/" || route.startsWith("/signals/") || route.startsWith("/brands/")) {
       assert(document.querySelector('meta[name="twitter:card"]')?.content, `${route} has no Twitter card.`);
     }
     const jsonLd = document.querySelector('script[type="application/ld+json"]')?.textContent;
+    if (notFound) assert(!jsonLd, "Custom 404 page must not publish structured data for a nonexistent resource.");
     const contentSecurityPolicy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content;
     let structuredData = null;
     if (jsonLd) {
@@ -544,11 +555,17 @@ function verifyBuiltHtml() {
   const sitemapLocations = new Set(
     [...sitemapDocument.querySelectorAll("loc")].map((node) => node.textContent?.trim()).filter(Boolean),
   );
-  const expectedLocations = new Set(htmlFiles.map((path) => `${publicOrigin}${routeForFile(path)}`));
+  const expectedLocations = new Set(
+    htmlFiles
+      .map((path) => routeForFile(path))
+      .filter((route) => route !== "/404.html")
+      .map((route) => `${publicOrigin}${route}`),
+  );
   assert(sitemapLocations.size === expectedLocations.size, "Generated sitemap does not contain exactly the public HTML routes.");
   for (const location of expectedLocations) {
     assert(sitemapLocations.has(location), `Generated sitemap omits ${location}.`);
   }
+  assert(!sitemapLocations.has(`${publicOrigin}/404.html`), "Generated sitemap includes the custom 404 page.");
 
   for (const fontFile of fontFiles) {
     const path = join(output, "fonts", fontFile);
@@ -1345,6 +1362,19 @@ async function verifySignalDialog(browser, origin, width) {
     assert(await dialog.isVisible(), `Radar candidate control did not open a signal dialog at ${width}px.`);
     const closeButton = dialog.locator('button[aria-label="Close signal details"]');
     assert(await closeButton.evaluate((element) => element === document.activeElement), `Radar signal dialog did not place focus on Close at ${width}px.`);
+    const relevanceRow = dialog.locator(".candidate-provenance-full");
+    assert(await relevanceRow.count() === 1, `Radar signal dialog has no full-width Lithuanian relevance row at ${width}px.`);
+    const relevanceLayout = await relevanceRow.evaluate((element) => {
+      const row = element.getBoundingClientRect();
+      const grid = element.parentElement?.getBoundingClientRect();
+      return grid ? { rowLeft: row.left, rowRight: row.right, gridLeft: grid.left, gridRight: grid.right } : null;
+    });
+    assert(
+      relevanceLayout &&
+        Math.abs(relevanceLayout.rowLeft - relevanceLayout.gridLeft) <= 2 &&
+        Math.abs(relevanceLayout.rowRight - relevanceLayout.gridRight) <= 2,
+      `Lithuanian relevance does not span the provenance grid at ${width}px: ${JSON.stringify(relevanceLayout)}.`,
+    );
     assert(
       await dialog.locator("a.permanent-record-link").getAttribute("href") === permanentPath,
       `Radar signal dialog does not preserve its permanent record path at ${width}px.`,

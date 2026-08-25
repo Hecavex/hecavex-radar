@@ -102,6 +102,10 @@ jobs:
           test -n "${HECAVEX_ANALYTICS_TOKEN}"
           test -f dist/.well-known/security.txt
           test -f dist/llms.txt
+          test -f dist/404.html
+          grep -Fq 'This route has no signal.' dist/404.html
+          grep -Fq '<meta name="robots" content="noindex, follow"' dist/404.html
+          ! grep -Fq '<link rel="canonical"' dist/404.html
           test -f dist/data/radar.stix.json
           test -f dist/data/radar-reviewed.stix.json
           test -f dist/data/radar.index.json
@@ -153,6 +157,7 @@ jobs:
             dist/dataset/index.html \
             dist/methodology/index.html \
             dist/docs/index.html \
+            dist/404.html \
             dist/lt/index.html \
             dist/lt/pokyciai/index.html \
             dist/lt/prekes-zenklai/index.html \

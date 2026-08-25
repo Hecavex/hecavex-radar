@@ -72,9 +72,9 @@ type DetailLoadState =
   | { status: "ready"; detail: SignalDetail }
   | { status: "error" };
 
-export function DetailItem({ label, children }: { label: string; children: ReactNode }) {
+export function DetailItem({ label, children, fullRow = false }: { label: string; children: ReactNode; fullRow?: boolean }) {
   return (
-    <div>
+    <div className={fullRow ? "candidate-provenance-full" : undefined}>
       <dt>{label}</dt>
       <dd>{children}</dd>
     </div>
@@ -424,7 +424,7 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
             <DetailItem label="First seen"><time dateTime={signal.firstSeen}>{formatDateTime(signal.firstSeen)} UTC</time></DetailItem>
             <DetailItem label="Last seen"><time dateTime={signal.lastSeen}>{formatDateTime(signal.lastSeen)} UTC</time></DetailItem>
             <DetailItem label="Snapshot generated"><time dateTime={snapshotGeneratedAt}>{formatDateTime(snapshotGeneratedAt)} UTC</time></DetailItem>
-            {signal.ltRelevance ? <DetailItem label="Lithuanian relevance"><span>{signal.ltRelevance.replaceAll("-", " ")}</span></DetailItem> : null}
+            {signal.ltRelevance ? <DetailItem label="Lithuanian relevance" fullRow><span>{signal.ltRelevance.replaceAll("-", " ")}</span></DetailItem> : null}
           </dl>
           <p className="candidate-boundary">
             The match score ranks rule strength. It is not a probability, maliciousness verdict, or block recommendation.
