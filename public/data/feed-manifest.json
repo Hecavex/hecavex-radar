@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-feed-manifest",
-  "generatedAt": "2026-08-25T15:03:57.675Z",
+  "generatedAt": "2026-08-25T16:18:35.467Z",
   "generator": {
     "name": "hecavex-radar",
     "version": "0.1.0",
-    "revision": "1036f1c56e267e4b709e822cfc639fafb37456e3"
+    "revision": "fa263e0023e1d9b63c925d8f171956976ec16f46"
   },
   "sourceFetchedAt": {
-    "CertStream": "2026-08-25T15:03:57.675Z",
-    "HECAVEX": "2026-08-25T15:03:57.675Z",
-    "URLScan": "2026-08-25T12:08:00.648Z"
+    "CertStream": "2026-08-25T16:18:35.467Z",
+    "HECAVEX": "2026-08-25T16:18:35.467Z",
+    "URLScan": "2026-08-25T15:25:53.837Z"
   },
   "counts": {
     "completeSignals": 19,
@@ -24,7 +24,7 @@
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/changes-v1.schema.json",
       "bytes": 1894,
-      "sha256": "3ff2168db3833383c89fd229f965b690506b469d2c6410eea452ffae286d5889"
+      "sha256": "133d9d86be34704b921bdac598fa5b4c3010af70b696179f929585a91b8f7bc1"
     },
     {
       "path": "/data/history.json",
@@ -37,43 +37,43 @@
       "path": "/data/pipeline-health.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/pipeline-health-v1.schema.json",
-      "bytes": 3912,
-      "sha256": "20e2252ee5749d63c2aeeebb952f2166532332e47973de2c0fd4a98248be5c35"
+      "bytes": 3910,
+      "sha256": "b4e615c6b5b8ed60d751a799e25e4d8e5271b4af4cbca780b2101a26af68076b"
     },
     {
       "path": "/data/radar-reviewed.stix.json",
       "mediaType": "application/stix+json",
       "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
       "bytes": 389,
-      "sha256": "604b76a537ca6baf6cfdad6ea260911fbc4bbdada97e47c526efb826129649e4"
+      "sha256": "db702a03003f2d6225dd474d21e7b0c94157e2ceb9c0b98bce8c58b8ce483e52"
     },
     {
       "path": "/data/radar.index.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/radar-index-v1.schema.json",
       "bytes": 471,
-      "sha256": "a0318861a7eaac2d1b1e7bff292533aabe0026c64f17ecda430e66620ed6dede"
+      "sha256": "6def84ea859d53ee1449af02d12675818df877bd380135720f674a3878a74275"
     },
     {
       "path": "/data/radar.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/radar-v2.schema.json",
-      "bytes": 20462,
-      "sha256": "056a349b17ed732896b60699d6b9fea8e241943b7080879db891975a853ea500"
+      "bytes": 20450,
+      "sha256": "8af28b32c76acc1b99d682560594c61209c33aad895454f50d9adc61b9e7cb02"
     },
     {
       "path": "/data/radar.stix.json",
       "mediaType": "application/stix+json",
       "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
       "bytes": 27902,
-      "sha256": "0dd7f8148d6b97b70e0b14c5a4dc77009c69cfb2305cd3dd02d73f76a66af3e5"
+      "sha256": "23318cae411e3118102c5c37b7c61048e59b4ea9b841dd033a75da4b61c64d47"
     },
     {
       "path": "/data/related-observations.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/related-observations-v1.schema.json",
       "bytes": 426,
-      "sha256": "9cbfb0f940c2d50e208eea5f15f09266a5a05f3303e0e030c54a085c1b128b55"
+      "sha256": "05df87b7f017c95d372ac9f64672401b1e5fa7c4237941fecde2ad53875f512f"
     },
     {
       "path": "/data/schemas/changes-v1.schema.json",
