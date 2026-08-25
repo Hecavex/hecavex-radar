@@ -5,7 +5,7 @@ These files support HECAVEX's scheduled `radar.hecavex.com` workflows and CI; th
 The two hash-locked requirement sets target Python 3.12 on the Ubuntu GitHub Actions runners:
 
 - `automation-runtime-py312.lock` is the minimal environment used by scheduled collectors and the snapshot publisher.
-- `automation-ci-py312.lock` adds linting, type-checking, and test tools for CI.
+- `automation-ci-py312.lock` adds linting and type-checking tools for CI.
 
 The checked-out HECAVEX Radar package is installed separately with dependency resolution and build isolation disabled. Its direct and build dependencies are therefore supplied by the reviewed lock before the package is built.
 

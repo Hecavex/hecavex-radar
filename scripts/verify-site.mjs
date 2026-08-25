@@ -24,6 +24,8 @@ const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
 const productNavigation = ["Overview", "History", "Methodology", "Docs"];
 const mobileNavigation = [...productNavigation, "Source", ...portfolioNavigation];
 const publicArtifactRawBytes = 512 * 1024;
+const signalDetailFileRawBytes = 16 * 1024;
+const signalDetailSetRawBytes = 3 * 1024 * 1024;
 const performanceBudgets = {
   htmlGzip: 512 * 1024,
   javascriptFileGzip: 225 * 1024,
@@ -62,32 +64,69 @@ function verifyDeploymentTopology() {
   const ci = readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8");
   const collector = readFileSync(join(root, ".github", "workflows", "collect-certstream.yml"), "utf8");
   const hunter = readFileSync(join(root, ".github", "workflows", "hunt-urlscan.yml"), "utf8");
+  const assetHunter = readFileSync(join(root, ".github", "workflows", "hunt-brand-assets.yml"), "utf8");
   const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
   const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
   const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
 
   assert(
-    /workflows:\s*\["CI",\s*"Sync radar snapshot"\]/u.test(deploy),
-    "Pages deployment must follow verified code CI and successful snapshot synchronization.",
+    /workflows:\s*\["CI",\s*"Sync radar snapshot",\s*"Collect CertStream candidates"\]/u.test(deploy),
+    "Pages deployment must follow code CI, snapshot synchronization, and public collection-health updates.",
   );
   assert(
-    deploy.includes('github.event.workflow_run.name == \'Sync radar snapshot\'') &&
-      deploy.includes('git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/radar.json'),
-    "Snapshot-triggered deployment does not prove that the public snapshot changed.",
+    deploy.includes("github.event.workflow_run.name == 'CI'") &&
+      deploy.includes("github.event.workflow_run.name == 'Sync radar snapshot'") &&
+      deploy.includes("github.event.workflow_run.name == 'Collect CertStream candidates'") &&
+      deploy.includes("github.event.workflow_run.conclusion == 'failure'") &&
+      deploy.includes("github.event.workflow_run.event == 'schedule'") &&
+      deploy.includes("github.event.workflow_run.event == 'workflow_dispatch'"),
+    "Pages deployment no longer limits each upstream workflow to its approved trigger semantics.",
+  );
+  assert(
+    deploy.includes("public/data/radar.json public/data/history.json public/data/signals") &&
+      deploy.includes("public/data/collection-health.json") &&
+      deploy.includes("git merge-base --is-ancestor") &&
+      deploy.includes("data/(certstream|urlscan|history)/|public/data/"),
+    "Pages deployment freshness checks no longer cover every staged public-data boundary.",
   );
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
   assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
+  const collectorGitAdds = collector.match(/^\s+git add -- .*$/gmu) ?? [];
+  assert(
+    collectorGitAdds.length === 1 &&
+      collectorGitAdds[0].trim() === "git add -- data/certstream public/data/collection-health.json",
+    "CertStream collector stages files outside its archive and public-health boundaries.",
+  );
   const hunterGitAdds = hunter.match(/^\s+git add -- .*$/gmu) ?? [];
   assert(
     hunterGitAdds.length === 1 && hunterGitAdds[0].trim() === "git add -- data/urlscan",
     "URLScan hunter stages files outside its archive boundary.",
   );
-  assert(ci.includes('- "data/urlscan/**"'), "Archive-only URLScan commits still trigger redundant CI and Pages runs.");
+  const assetHunterGitAdds = assetHunter.match(/^\s+git add -- .*$/gmu) ?? [];
   assert(
-    sync.includes("git add -- public/data/radar.json public/data/history.json data/history"),
-    "Snapshot synchronization does not commit history and the live snapshot atomically.",
+    assetHunterGitAdds.length === 1 && assetHunterGitAdds[0].trim() === "git add -- data/urlscan",
+    "Official asset hunter stages files outside its URLScan archive boundary.",
+  );
+  assert(
+    assetHunter.includes('cron: "47 3,15 * * *"') &&
+      assetHunter.includes("group: radar-archive-writer") &&
+      assetHunter.includes("ref: main") &&
+      assetHunter.includes("persist-credentials: false"),
+    "Official asset hunter schedule, serialization, or main-branch boundary drifted.",
+  );
+  assert(
+    hunter.includes("group: radar-archive-writer") && sync.includes("group: radar-archive-writer"),
+    "URLScan archive and snapshot writers are no longer serialized.",
+  );
+  assert(
+    ci.includes('- "data/certstream/**"') && ci.includes('- "data/urlscan/**"') && !ci.includes('- "public/data/**"'),
+    "CI path filters no longer ignore only archive-only collection changes.",
+  );
+  assert(
+    sync.includes("git add -- public/data/radar.json public/data/history.json public/data/signals data/history"),
+    "Snapshot synchronization does not stage sidecars, history, and the live snapshot atomically.",
   );
   for (const setting of [
     "RADAR_HISTORY_DETAIL_DAYS",
@@ -144,6 +183,7 @@ function verifyPythonAutomationLocks() {
     ["ci.yml", ciLock],
     ["collect-certstream.yml", runtimeLock],
     ["hunt-urlscan.yml", runtimeLock],
+    ["hunt-brand-assets.yml", runtimeLock],
     ["sync-radar.yml", runtimeLock],
   ]);
   for (const [name, lock] of workflowLocks) {
@@ -328,7 +368,274 @@ function verifyIdentityArtwork() {
   }
 }
 
-function verifyPerformanceBudgets() {
+const detailFields = ["schemaVersion", "dataset", "signalId", "domain", "generatedAt", "observations"];
+const observationFields = ["source", "observedAt", "page", "network", "assessment", "certificate"];
+const pageFields = ["title", "httpStatus"];
+const networkFields = ["ipAddress", "asn", "asnDescription", "asnRegistry"];
+const assessmentFields = ["urlscanVerdictScore", "urlscanCategories", "redirectedToDomain"];
+const certificateFields = [
+  "countryName",
+  "issuer",
+  "commonName",
+  "notBefore",
+  "notAfter",
+  "subjectAltNames",
+  "subjectAltNameCount",
+  "serialNumberHex",
+  "fingerprints",
+];
+const fingerprintFields = ["md5", "sha1", "sha256"];
+const utcTimestamp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u;
+const signalIdentifier = /^[a-f\d]{20}$/u;
+const lowerHex = /^[a-f\d]+$/u;
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function hasExactFields(value, fields) {
+  return isRecord(value) && Object.keys(value).length === fields.length && fields.every((field) => Object.hasOwn(value, field));
+}
+
+function timestampValue(value) {
+  if (typeof value !== "string" || !utcTimestamp.test(value)) return null;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value ? parsed : null;
+}
+
+function isNullableText(value, maximum) {
+  return (
+    value === null ||
+    (typeof value === "string" &&
+      value.length > 0 &&
+      value.length <= maximum &&
+      value.trim() === value &&
+      !/[\p{Cc}\p{Cf}]/u.test(value) &&
+      !/https?:\/\//iu.test(value) &&
+      !/\S+@\S+/u.test(value))
+  );
+}
+
+function isNullableHex(value, length) {
+  return value === null || (typeof value === "string" && value.length === length && lowerHex.test(value));
+}
+
+function verifyPageDetail(value, label) {
+  if (value === null) return;
+  assert(hasExactFields(value, pageFields), `${label} page does not use the exact version-1 fields.`);
+  assert(isNullableText(value.title, 160), `${label} page title is unsafe or malformed.`);
+  assert(
+    value.httpStatus === null ||
+      (Number.isInteger(value.httpStatus) && value.httpStatus >= 100 && value.httpStatus <= 599),
+    `${label} page status is malformed.`,
+  );
+  assert(value.title !== null || value.httpStatus !== null, `${label} contains an empty page object.`);
+}
+
+function verifyNetworkDetail(value, label) {
+  if (value === null) return;
+  assert(hasExactFields(value, networkFields), `${label} network does not use the exact version-1 fields.`);
+  assert(
+    value.ipAddress === null ||
+      (typeof value.ipAddress === "string" &&
+        value.ipAddress.length <= 80 &&
+        (value.ipAddress.includes("[.]") || value.ipAddress.includes("[:]"))),
+    `${label} network address is not defanged.`,
+  );
+  assert(
+    value.asn === null || (Number.isInteger(value.asn) && value.asn >= 1 && value.asn <= 4_294_967_295),
+    `${label} ASN is malformed.`,
+  );
+  assert(isNullableText(value.asnDescription, 160), `${label} ASN description is unsafe or malformed.`);
+  assert(isNullableText(value.asnRegistry, 32), `${label} ASN registry is unsafe or malformed.`);
+  assert(
+    value.ipAddress !== null || value.asn !== null || value.asnDescription !== null || value.asnRegistry !== null,
+    `${label} contains an empty network object.`,
+  );
+}
+
+function verifyAssessmentDetail(value, label) {
+  if (value === null) return;
+  assert(hasExactFields(value, assessmentFields), `${label} assessment does not use the exact version-1 fields.`);
+  assert(
+    value.urlscanVerdictScore === null ||
+      (Number.isInteger(value.urlscanVerdictScore) &&
+        value.urlscanVerdictScore >= -100 &&
+        value.urlscanVerdictScore <= 100),
+    `${label} URLScan verdict score is malformed.`,
+  );
+  assert(
+    Array.isArray(value.urlscanCategories) &&
+      value.urlscanCategories.length <= 8 &&
+      new Set(value.urlscanCategories).size === value.urlscanCategories.length &&
+      value.urlscanCategories.every(
+        (category) => typeof category === "string" && /^[a-z\d](?:[a-z\d-]{0,30}[a-z\d])?$/u.test(category),
+      ),
+    `${label} URLScan categories are malformed.`,
+  );
+  assert(
+    value.redirectedToDomain === null ||
+      (typeof value.redirectedToDomain === "string" &&
+        value.redirectedToDomain.length <= 505 &&
+        value.redirectedToDomain.includes("[.]") &&
+        !/[@/?#:\\]/u.test(value.redirectedToDomain)),
+    `${label} redirect destination is not a defanged domain.`,
+  );
+  assert(
+    value.urlscanVerdictScore !== null ||
+      value.urlscanCategories.length > 0 ||
+      value.redirectedToDomain !== null,
+    `${label} contains an empty assessment object.`,
+  );
+}
+
+function verifyCertificateDetail(value, label) {
+  if (value === null) return;
+  assert(hasExactFields(value, certificateFields), `${label} certificate does not use the exact version-1 fields.`);
+  assert(
+    hasExactFields(value.fingerprints, fingerprintFields),
+    `${label} certificate fingerprints do not use the exact version-1 fields.`,
+  );
+  assert(isNullableHex(value.fingerprints.md5, 32), `${label} certificate MD5 is malformed.`);
+  assert(isNullableHex(value.fingerprints.sha1, 40), `${label} certificate SHA-1 is malformed.`);
+  assert(isNullableHex(value.fingerprints.sha256, 64), `${label} certificate SHA-256 is malformed.`);
+  assert(
+    value.countryName === null || (typeof value.countryName === "string" && /^[A-Z]{2}$/u.test(value.countryName)),
+    `${label} certificate country is malformed.`,
+  );
+  assert(isNullableText(value.issuer, 200), `${label} certificate issuer is unsafe or malformed.`);
+  assert(
+    value.commonName === null ||
+      (typeof value.commonName === "string" &&
+        value.commonName.length <= 509 &&
+        !/[@/?#:\\]/u.test(value.commonName) &&
+        value.commonName.includes("[.]")),
+    `${label} certificate common name is not defanged.`,
+  );
+  const notBefore = value.notBefore === null ? null : timestampValue(value.notBefore);
+  const notAfter = value.notAfter === null ? null : timestampValue(value.notAfter);
+  assert(value.notBefore === null || notBefore !== null, `${label} certificate not-before timestamp is malformed.`);
+  assert(value.notAfter === null || notAfter !== null, `${label} certificate not-after timestamp is malformed.`);
+  assert(notBefore === null || notAfter === null || notBefore <= notAfter, `${label} certificate validity range is reversed.`);
+  assert(
+    Array.isArray(value.subjectAltNames) &&
+      value.subjectAltNames.length <= 12 &&
+      new Set(value.subjectAltNames).size === value.subjectAltNames.length &&
+      value.subjectAltNames.every(
+        (name) => typeof name === "string" && name.length <= 509 && !/[@/?#:\\]/u.test(name) && name.includes("[.]"),
+      ),
+    `${label} certificate subject alternative names are malformed.`,
+  );
+  assert(
+    Number.isInteger(value.subjectAltNameCount) &&
+      value.subjectAltNameCount >= value.subjectAltNames.length &&
+      value.subjectAltNameCount <= 500,
+    `${label} certificate subject alternative name count is malformed.`,
+  );
+  assert(
+    value.serialNumberHex === null ||
+      (typeof value.serialNumberHex === "string" &&
+        value.serialNumberHex.length >= 1 &&
+        value.serialNumberHex.length <= 80 &&
+        lowerHex.test(value.serialNumberHex)),
+    `${label} certificate serial number is malformed.`,
+  );
+  assert(
+    value.countryName !== null ||
+      value.issuer !== null ||
+      value.commonName !== null ||
+      value.notBefore !== null ||
+      value.notAfter !== null ||
+      value.subjectAltNameCount > 0 ||
+      value.serialNumberHex !== null ||
+      Object.values(value.fingerprints).some((fingerprint) => fingerprint !== null),
+    `${label} contains an empty certificate object.`,
+  );
+}
+
+function verifyObservation(value, signal, generatedAt, label) {
+  assert(hasExactFields(value, observationFields), `${label} does not use the exact version-1 fields.`);
+  assert(value.source === "URLScan" || value.source === "CertStream", `${label} source is unsupported.`);
+  assert(signal.sources.includes(value.source), `${label} source is absent from its live signal.`);
+  const observedAt = timestampValue(value.observedAt);
+  assert(observedAt !== null && observedAt <= generatedAt + 5 * 60 * 1000, `${label} timestamp is malformed or in the future.`);
+  verifyPageDetail(value.page, label);
+  verifyNetworkDetail(value.network, label);
+  verifyAssessmentDetail(value.assessment, label);
+  verifyCertificateDetail(value.certificate, label);
+  if (value.source === "CertStream") {
+    assert(
+      value.page === null && value.network === null && value.assessment === null && value.certificate !== null,
+      `${label} exposes fields CertStream does not supply.`,
+    );
+  } else {
+    assert(
+      value.page !== null || value.network !== null || value.assessment !== null || value.certificate !== null,
+      `${label} contains no URLScan evidence.`,
+    );
+  }
+}
+
+function verifySignalDetails() {
+  const snapshot = JSON.parse(readFileSync(join(output, "data", "radar.json"), "utf8"));
+  assert(Array.isArray(snapshot.signals), "Built radar.json has no signal list for sidecar verification.");
+  const signals = new Map();
+  const expected = new Map();
+  for (const signal of snapshot.signals) {
+    assert(isRecord(signal) && signalIdentifier.test(signal.id), "Built radar.json contains an invalid signal identifier.");
+    assert(!signals.has(signal.id), `Built radar.json contains duplicate signal ${signal.id}.`);
+    signals.set(signal.id, signal);
+    if (signal.detailAvailable === true) {
+      expected.set(`data/signals/${signal.id.slice(0, 2)}/${signal.id}.json`, signal);
+    }
+  }
+
+  const detailRoot = join(output, "data", "signals");
+  const files = existsSync(detailRoot) ? walk(detailRoot) : [];
+  let totalBytes = 0;
+  for (const path of files) {
+    const relativePath = relative(output, path).split(sep).join("/");
+    assert(
+      /^data\/signals\/[a-f\d]{2}\/[a-f\d]{20}\.json$/u.test(relativePath),
+      `Unexpected file inside the signal-detail tree: ${relativePath}.`,
+    );
+    const signal = expected.get(relativePath);
+    assert(signal, `${relativePath} is an orphan sidecar without detailAvailable=true.`);
+    const byteLength = statSync(path).size;
+    assert(byteLength > 0, `${relativePath} is empty.`);
+    assert(byteLength <= signalDetailFileRawBytes, `${relativePath} is larger than 16 KiB.`);
+    totalBytes += byteLength;
+    assert(totalBytes <= signalDetailSetRawBytes, "Signal-detail sidecars exceed the 3 MiB aggregate budget.");
+
+    let detail;
+    try {
+      detail = JSON.parse(readFileSync(path, "utf8"));
+    } catch {
+      throw new Error(`${relativePath} is not valid UTF-8 JSON.`);
+    }
+    assert(hasExactFields(detail, detailFields), `${relativePath} does not use the exact version-1 top-level fields.`);
+    assert(detail.schemaVersion === 1 && detail.dataset === "signal-detail", `${relativePath} has the wrong schema identity.`);
+    assert(detail.signalId === signal.id && detail.domain === signal.domain, `${relativePath} does not match its live signal.`);
+    const generatedAt = timestampValue(detail.generatedAt);
+    assert(generatedAt !== null, `${relativePath} has an invalid generatedAt timestamp.`);
+    assert(
+      Array.isArray(detail.observations) && detail.observations.length >= 1 && detail.observations.length <= 2,
+      `${relativePath} must contain one or two observations.`,
+    );
+    detail.observations.forEach((observation, index) =>
+      verifyObservation(observation, signal, generatedAt, `${relativePath} observation ${index + 1}`),
+    );
+    assert(
+      new Set(detail.observations.map((observation) => observation.source)).size === detail.observations.length,
+      `${relativePath} contains duplicate observation sources.`,
+    );
+    expected.delete(relativePath);
+  }
+  assert(expected.size === 0, `Missing signal-detail sidecars: ${[...expected.keys()].join(", ")}.`);
+  return { files, totalBytes };
+}
+
+function verifyPerformanceBudgets(signalDetails) {
   const files = walk(output);
   const totalBytes = files.reduce((total, path) => total + statSync(path).size, 0);
   assert(
@@ -358,9 +665,10 @@ function verifyPerformanceBudgets() {
     executableBytes <= performanceBudgets.scriptAndStyleGzip,
     `Scripts and styles total ${executableBytes} gzip bytes; budget is ${performanceBudgets.scriptAndStyleGzip}.`,
   );
-  const dataSizes = compressedSizes(
-    ["radar.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
-  );
+  const dataSizes = compressedSizes([
+    ...["radar.json", "history.json", "collection-health.json"].map((name) => join(output, "data", name)),
+    ...signalDetails.files,
+  ]);
   for (const { path, size } of dataSizes) {
     const name = path.replace(/^data\//u, "");
     assert(size <= performanceBudgets.publicDataFileGzip, `data/${name} is ${size} gzip bytes; data budget is ${performanceBudgets.publicDataFileGzip}.`);
@@ -370,6 +678,7 @@ function verifyPerformanceBudgets() {
     join(output, "data", "history.json"),
     join(output, "index.html"),
     join(output, "history", "index.html"),
+    ...signalDetails.files,
   ]);
   const fixedBytes = files
     .filter((path) => !replaceable.has(path))
@@ -380,7 +689,8 @@ function verifyPerformanceBudgets() {
     fixedBytes +
     2 * publicArtifactRawBytes +
     currentHydrationHtmlBytes +
-    2 * (3 * publicArtifactRawBytes + 1024);
+    2 * (3 * publicArtifactRawBytes + 1024) +
+    signalDetailSetRawBytes;
   assert(
     worstCaseOutputBytes <= performanceBudgets.totalOutputBytes,
     `Maximum accepted public artifacts could produce ${worstCaseOutputBytes} output bytes; total budget is ${performanceBudgets.totalOutputBytes}.`,
@@ -392,6 +702,7 @@ function verifyPerformanceBudgets() {
     stylesheet: largest(styleSizes),
     executableBytes,
     publicData: largest(dataSizes),
+    signalDetailBytes: signalDetails.totalBytes,
     worstCaseOutputBytes,
   };
 }
@@ -645,7 +956,7 @@ async function verifyInBrowser() {
           assert(await page.locator(".header-utility .source-link").isVisible(), `${entry.path} desktop Source utility is hidden at ${width}px.`);
         }
 
-        assert(browserErrors.length === 0, `${entry.path} failed its CSP-enforced browser smoke test at ${width}px: ${browserErrors.join(" | ")}`);
+        assert(browserErrors.length === 0, `${entry.path} failed its CSP-enforced browser smoke check at ${width}px: ${browserErrors.join(" | ")}`);
         page.off("console", onConsole);
         page.off("pageerror", onPageError);
       }
@@ -712,7 +1023,8 @@ verifyDeploymentTopology();
 verifyPythonAutomationLocks();
 verifyBuiltHtml();
 verifyIdentityArtwork();
-const performance = verifyPerformanceBudgets();
+const signalDetails = verifySignalDetails();
+const performance = verifyPerformanceBudgets(signalDetails);
 await verifyInBrowser();
 process.stdout.write(
   `Measured production sizes: ${performance.totalBytes} bytes total; ` +
@@ -721,6 +1033,7 @@ process.stdout.write(
     `${performance.stylesheet.path} ${performance.stylesheet.size} bytes gzip (largest stylesheet); ` +
     `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
     `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
+    `${performance.signalDetailBytes} bytes across signal-detail sidecars; ` +
     `${performance.worstCaseOutputBytes} bytes maximum proven output.\n`,
 );
 process.stdout.write(`Verified ${pages.length} hydratable static pages at ${widths.join(", ")}px with links, fragments, metadata, CSP, delayed-refresh retention, no-JS content, keyboard navigation, overflow, focus, and accessibility checks.\n`);

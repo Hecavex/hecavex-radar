@@ -1,0 +1,90 @@
+name: Hunt official brand asset hashes
+
+on:
+  schedule:
+    - cron: "47 3,15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-archive-writer
+  cancel-in-progress: false
+
+jobs:
+  hunt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements/automation-runtime-py312.lock
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
+          python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
+      - name: Derive and pivot reviewed official asset hashes
+        id: hunt
+        continue-on-error: true
+        env:
+          URLSCAN_API_KEY: ${{ secrets.URLSCAN_API_KEY }}
+          URLSCAN_ARCHIVE_ROOT: data/urlscan
+          URLSCAN_ASSET_LOOKBACK_DAYS: ${{ vars.URLSCAN_ASSET_LOOKBACK_DAYS || '30' }}
+          URLSCAN_ASSET_OFFICIAL_DOMAINS_PER_RUN: ${{ vars.URLSCAN_ASSET_OFFICIAL_DOMAINS_PER_RUN || '20' }}
+          URLSCAN_ASSET_OFFICIAL_BATCH_SIZE: ${{ vars.URLSCAN_ASSET_OFFICIAL_BATCH_SIZE || '1' }}
+          URLSCAN_ASSET_OFFICIAL_SEARCH_LIMIT: ${{ vars.URLSCAN_ASSET_OFFICIAL_SEARCH_LIMIT || '100' }}
+          URLSCAN_ASSET_OFFICIAL_DETAIL_LIMIT: ${{ vars.URLSCAN_ASSET_OFFICIAL_DETAIL_LIMIT || '40' }}
+          URLSCAN_ASSET_HASHES_PER_RUN: ${{ vars.URLSCAN_ASSET_HASHES_PER_RUN || '12' }}
+          URLSCAN_ASSET_HASH_RESULT_LIMIT: ${{ vars.URLSCAN_ASSET_HASH_RESULT_LIMIT || '5' }}
+          URLSCAN_ASSET_HASH_DETAIL_LIMIT: ${{ vars.URLSCAN_ASSET_HASH_DETAIL_LIMIT || '60' }}
+          URLSCAN_ASSET_DAILY_SEARCH_CAP: ${{ vars.URLSCAN_ASSET_DAILY_SEARCH_CAP || '80' }}
+          URLSCAN_ASSET_DAILY_RESULT_CAP: ${{ vars.URLSCAN_ASSET_DAILY_RESULT_CAP || '400' }}
+          URLSCAN_ASSET_RUN_SEARCH_CAP: ${{ vars.URLSCAN_ASSET_RUN_SEARCH_CAP || '40' }}
+          URLSCAN_ASSET_RUN_RESULT_CAP: ${{ vars.URLSCAN_ASSET_RUN_RESULT_CAP || '100' }}
+        run: python -m hecavex_radar.brand_assets
+      - name: Commit validated URLScan archive updates
+        id: commit
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git add -- data/urlscan
+          if git diff --cached --quiet; then
+            echo "No official brand asset changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: update official brand asset pivots"
+          gh auth setup-git
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [[ "${attempt}" -eq 4 ]]; then
+              echo "Official asset publication lost four push races." >&2
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
+      - name: Propagate hunt or publication failure
+        if: always() && (steps.hunt.outcome != 'success' || steps.commit.outcome != 'success')
+        shell: bash
+        run: |
+          echo "Official brand asset hunt or publication failed."
+          exit 1

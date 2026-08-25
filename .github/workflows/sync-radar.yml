@@ -58,6 +58,7 @@ jobs:
           RADAR_SNAPSHOT_GUARD_DAYS: ${{ vars.RADAR_SNAPSHOT_GUARD_DAYS || '30' }}
           RADAR_RETAIN_EXISTING_SIGNALS: ${{ vars.RADAR_RETAIN_EXISTING_SIGNALS || 'true' }}
           RADAR_RETAIN_DAYS: ${{ vars.RADAR_RETAIN_DAYS || '7' }}
+          RADAR_DETAIL_ROOT: public/data/signals
           RADAR_HISTORY_DETAIL_DAYS: ${{ vars.RADAR_HISTORY_DETAIL_DAYS || '30' }}
           RADAR_HISTORY_SUMMARY_DAYS: ${{ vars.RADAR_HISTORY_SUMMARY_DAYS || '730' }}
           RADAR_HISTORY_MAX_SIGNALS: ${{ vars.RADAR_HISTORY_MAX_SIGNALS || '5000' }}
@@ -68,7 +69,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          git add -- public/data/radar.json public/data/history.json data/history
+          git add -- public/data/radar.json public/data/history.json public/data/signals data/history
           if git diff --cached --quiet; then
             echo "Snapshot is unchanged."
             exit 0
@@ -77,5 +78,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data: refresh public radar snapshot"
           gh auth setup-git
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [[ "${attempt}" -eq 4 ]]; then
+              echo "Snapshot publication lost four push races." >&2
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done

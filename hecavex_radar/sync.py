@@ -27,6 +27,7 @@ from .normalize import merge_signals, prepare_signal
 from .provenance import normalize_reason_codes
 from .review import load_public_review
 from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
+from .signal_detail import build_signal_details, write_signal_details
 from .sources import (
     SOURCE_NAMES,
     fetch_hecavex,
@@ -512,6 +513,13 @@ def synchronize() -> Path:
     retained = _retain_only_unrefreshed_sources(retained, completed_sources, attempted_sources)
     maximum = _bounded_integer(os.environ.get("RADAR_MAX_SIGNALS"), 2500, 1, 25_000)
     merged = merge_signals(prepared + retained, maximum)
+    intelligence = [item for result in results for item in result.intelligence]
+    detail_root = os.environ.get("RADAR_DETAIL_ROOT", "").strip() or "public/data/signals"
+    details = build_signal_details(merged, intelligence, now)
+    detail_ids = write_signal_details(detail_root, details)
+    for signal in merged:
+        if signal["id"] in detail_ids:
+            signal["detailAvailable"] = True
     for source in sources:
         if source["name"] in completed_sources:
             continue
@@ -590,6 +598,7 @@ def synchronize() -> Path:
         )
     else:
         print(f"Published {len(merged)} defanged signals to {target.relative_to(Path.cwd())}.", flush=True)
+    print(f"Published {len(detail_ids)} bounded signal-detail sidecars.", flush=True)
     return target
 
 

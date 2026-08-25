@@ -72,6 +72,7 @@ function isSignal(value: unknown): value is RadarSignal {
     isUrlscanReference(value.referenceUrl) &&
     isHashes(value.hashes) &&
     isReasonCodes(value.reasonCodes) &&
+    (value.detailAvailable === undefined || value.detailAvailable === true) &&
     typeof value.confidence === "number" &&
     Number.isInteger(value.confidence) &&
     value.confidence >= 0 &&

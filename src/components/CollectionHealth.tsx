@@ -47,8 +47,8 @@ function listeningSeconds(value: number): string {
 function scheduleLabel(attempt: CollectionAttempt): string {
   if (attempt.scheduleStatus === "manual") return "Manual run";
   if (attempt.scheduleStatus === "unknown") return "Schedule unknown";
-  if (attempt.scheduleStatus === "delayed") return `Delayed by ${duration(attempt.delaySeconds ?? 0)}`;
-  return `Scheduled · ${duration(attempt.delaySeconds ?? 0)} start delay`;
+  if (attempt.scheduleStatus === "delayed") return `Inferred slot delay · ${duration(attempt.delaySeconds ?? 0)}`;
+  return `Scheduled · ${duration(attempt.delaySeconds ?? 0)} after inferred slot`;
 }
 
 export function CollectionHealth({ now = Date.now() }: { now?: number }) {

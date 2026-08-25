@@ -93,12 +93,12 @@ export function SignalTable({ signals, now = Date.now() }: { signals: RadarSigna
                   <span className="first-seen">First {formatRelativeTime(signal.firstSeen, now)}</span>
                 </td>
                 <td className="capture-cell" data-label="Evidence">
-                  {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length || signal.reasonCodes?.length ? (
+                  {signal.screenshotUrl || signal.referenceUrl || signal.hashes?.length || signal.reasonCodes?.length || signal.detailAvailable ? (
                     <button
                       type="button"
                       aria-haspopup="dialog"
                       onClick={(event) => setCapture({ signal, trigger: event.currentTarget })}
-                      aria-label={`View evidence for ${signal.domain}`}
+                      aria-label={`View evidence and domain intelligence for ${signal.domain}`}
                     >
                       {signal.screenshotUrl ? <Camera aria-hidden="true" /> : <FileSearch aria-hidden="true" />}
                     </button>

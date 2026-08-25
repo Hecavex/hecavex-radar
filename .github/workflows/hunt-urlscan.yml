@@ -20,6 +20,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: main
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Python
@@ -90,8 +91,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data: update URLScan observations"
           gh auth setup-git
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [[ "${attempt}" -eq 4 ]]; then
+              echo "URLScan publication lost four push races." >&2
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
       - name: Propagate hunt or publication failure
         if: always() && (steps.hunt.outcome != 'success' || steps.commit.outcome != 'success')
         shell: bash

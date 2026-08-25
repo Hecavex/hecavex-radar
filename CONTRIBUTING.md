@@ -9,9 +9,8 @@ Corrections to published data, brand mappings, documentation, or accessibility c
 1. Keep the public service read-only and static. Do not add accounts, submissions, browser-side indicator requests, or an administration endpoint.
 2. Never commit live credentials, private collector code, proprietary scoring logic, internal HECAVEX history, analyst notes, or victim data. Public defanged observations may use only the documented archive schemas.
 3. Preserve passive collection boundaries: Radar reads certificate names and existing public URLScan reports; it does not visit candidate hosts or submit URLs for scanning.
-4. Add Python regression coverage for pipeline changes and Vitest coverage for interface changes.
-5. Use reserved `.test`, `.example`, and documentation IP ranges in fixtures.
-6. Run the complete gate before a change is approved: `pnpm check`.
+4. Use reserved `.test`, `.example`, and documentation IP ranges in examples and validation data.
+5. Run the complete gate before a change is approved: `pnpm check`.
 
 ## Maintainer environment
 

@@ -17,10 +17,10 @@ ScheduleStatus = Literal["scheduled", "delayed", "manual", "unknown"]
 MAXIMUM_HEALTH_BYTES = 32 * 1024
 MAXIMUM_COUNTER = 2_000_000_000
 DEFAULT_HEALTH_PATH = "public/data/collection-health.json"
-DEFAULT_EXPECTED_INTERVAL_SECONDS = 30 * 60
-DEFAULT_STALE_AFTER_SECONDS = 90 * 60
+DEFAULT_EXPECTED_INTERVAL_SECONDS = 15 * 60
+DEFAULT_STALE_AFTER_SECONDS = 45 * 60
 DEFAULT_DELAY_THRESHOLD_SECONDS = 5 * 60
-DEFAULT_SCHEDULE_MINUTES = (2, 32)
+DEFAULT_SCHEDULE_MINUTES = (8, 23, 38, 53)
 OUTCOMES = frozenset({"healthy-empty", "healthy-matches", "no-input", "partial", "failed"})
 SCHEDULE_STATUSES = frozenset({"scheduled", "delayed", "manual", "unknown"})
 TRIGGERS = frozenset({"schedule", "manual", "unknown"})
@@ -369,7 +369,7 @@ def begin_attempt(
         expected_interval,
         7 * 86_400,
     )
-    expected_listening = _enabled_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 240, 0, 86_400)
+    expected_listening = _enabled_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 480, 0, 86_400)
     trigger = _trigger(trigger_value if trigger_value is not None else os.environ.get("CERTSTREAM_TRIGGER"))
     scheduled_for, schedule_status, delay_seconds = _schedule(started_at, trigger)
     artifact: dict[str, Any] = {

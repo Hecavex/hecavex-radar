@@ -26,10 +26,11 @@ from .brands import (
     score_domain,
 )
 from .certstream_archive import read_recent_candidates, vilnius_date
-from .models import BrandEvidence, CandidateMatch, RadarSignal, RawSignal
+from .models import BrandEvidence, CandidateMatch, RadarSignal, RawDomainIntelligence, RawSignal
 from .normalize import merge_signals, prepare_signal
 from .safety import parse_and_defang_url, refang, safe_reference_url, safe_screenshot_url, stable_id
 from .seeds import IntelligenceSeed, load_intelligence_seeds
+from .signal_detail import archive_record, raw_from_archive_record
 
 API_ROOT = "https://urlscan.io"
 SEARCH_ENDPOINT = f"{API_ROOT}/api/v1/search/"
@@ -438,6 +439,30 @@ def _page_url(result: dict[str, Any]) -> str | None:
     return _string(_dictionary(result.get("page")).get("url")) or _string(_dictionary(result.get("task")).get("url"))
 
 
+def _candidate_scan_url(
+    summary: dict[str, Any],
+    detail: dict[str, Any],
+    registry: BrandRegistry,
+) -> str | None:
+    """Prefer the submitted non-official URL over a redirected final page."""
+    values = [
+        _string(_dictionary(detail.get("task")).get("url")),
+        _string(_dictionary(summary.get("task")).get("url")),
+        _string(_dictionary(detail.get("page")).get("url")),
+        _string(_dictionary(summary.get("page")).get("url")),
+    ]
+    return next(
+        (
+            value
+            for value in values
+            if value
+            and (hostname := _hostname(value)) is not None
+            and not _official(hostname, registry)
+        ),
+        None,
+    )
+
+
 def _hostname(value: str) -> str | None:
     candidate = refang(value)
     if "://" not in candidate:
@@ -532,9 +557,99 @@ def _host_summary(page: dict[str, Any]) -> str | None:
     return " · ".join(present) if present else None
 
 
+def _http_status(value: object) -> int | None:
+    if isinstance(value, str) and value.isdecimal():
+        value = int(value)
+    return value if isinstance(value, int) and not isinstance(value, bool) and 100 <= value <= 599 else None
+
+
+def _asn_context(detail: dict[str, Any], page: dict[str, Any]) -> tuple[object, object]:
+    page_ip = _string(page.get("ip"))
+    processor = _dictionary(_dictionary(detail.get("meta")).get("processors"))
+    values = _dictionary(processor.get("asn")).get("data")
+    if not isinstance(values, list):
+        return (page.get("asnname"), None)
+    for raw in values:
+        item = _dictionary(raw)
+        if page_ip and _string(item.get("ip")) not in {None, page_ip}:
+            continue
+        description = item.get("description") or item.get("name") or page.get("asnname")
+        registry = item.get("registrar") or item.get("registry")
+        return (description, registry)
+    return (page.get("asnname"), None)
+
+
 def _timestamp(value: datetime) -> str:
     aware = value if value.tzinfo is not None else value.replace(tzinfo=UTC)
     return aware.astimezone(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def _tls_not_after(valid_from: object, valid_days: object) -> str | None:
+    if not isinstance(valid_from, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(valid_from.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if (
+        parsed.tzinfo is None
+        or not isinstance(valid_days, int)
+        or isinstance(valid_days, bool)
+        or not 0 <= valid_days <= 4_000
+    ):
+        return None
+    return _timestamp(parsed + timedelta(days=valid_days))
+
+
+def _intelligence_from_scan(
+    summary: dict[str, Any],
+    detail: dict[str, Any],
+    matched_url: str,
+    observed_at: str,
+) -> RawDomainIntelligence | None:
+    domain = _hostname(matched_url)
+    if domain is None:
+        return None
+    page = {**_dictionary(summary.get("page")), **_dictionary(detail.get("page"))}
+    page_domain = _hostname(_string(page.get("url")) or "")
+    same_page_host = page_domain == domain
+    description, registry = _asn_context(detail, page)
+    urlscan_verdict = _dictionary(_dictionary(detail.get("verdicts")).get("urlscan"))
+    raw_categories = urlscan_verdict.get("categories")
+    categories = (
+        [value for value in raw_categories if isinstance(value, str)] if isinstance(raw_categories, list) else []
+    )
+    valid_from = _string(page.get("tlsValidFrom"))
+    return RawDomainIntelligence(
+        domain=domain,
+        source="URLScan",
+        observed_at=observed_at,
+        page={"title": page.get("title"), "httpStatus": _http_status(page.get("status"))} if same_page_host else None,
+        network=(
+            {
+                "ipAddress": page.get("ip"),
+                "asn": page.get("asn"),
+                "asnDescription": description,
+                "asnRegistry": registry,
+            }
+            if same_page_host
+            else None
+        ),
+        assessment={
+            "urlscanVerdictScore": urlscan_verdict.get("score"),
+            "urlscanCategories": categories,
+            "redirectedToDomain": page_domain if page_domain and page_domain != domain else None,
+        },
+        certificate=(
+            {
+                "issuer": page.get("tlsIssuer"),
+                "notBefore": valid_from,
+                "notAfter": _tls_not_after(valid_from, page.get("tlsValidDays")),
+            }
+            if same_page_host
+            else None
+        ),
+    )
 
 
 def _signal_from_scan(
@@ -547,12 +662,16 @@ def _signal_from_scan(
     registry: BrandRegistry,
     brand_evidence: _BrandEvidence,
     primary_hash_pivot: bool = False,
+    intelligence_sink: list[RawDomainIntelligence] | None = None,
 ) -> RadarSignal | None:
     uuid = _scan_uuid(summary) or _scan_uuid(detail)
     if not uuid:
         return None
     page = {**_dictionary(summary.get("page")), **_dictionary(detail.get("page"))}
     task = {**_dictionary(summary.get("task")), **_dictionary(detail.get("task"))}
+    matched_domain = _hostname(matched_url)
+    page_domain = _hostname(_string(page.get("url")) or "")
+    same_page_host = matched_domain is not None and page_domain == matched_domain
     verdict = _verdict(detail)
     confidence = base_confidence
     if verdict.phishing:
@@ -569,9 +688,12 @@ def _signal_from_scan(
             source="URLScan",
             status="suspected",
             brand=brand,
-            country=_string(page.get("country")),
-            host=_host_summary(page),
-            screenshot_url=f"{API_ROOT}/screenshots/{uuid}.png",
+            # URLScan's page object describes the final destination. When a
+            # submitted candidate redirects elsewhere, do not attribute that
+            # destination's network or screenshot evidence to the candidate.
+            country=_string(page.get("country")) if same_page_host else None,
+            host=_host_summary(page) if same_page_host else None,
+            screenshot_url=f"{API_ROOT}/screenshots/{uuid}.png" if same_page_host else None,
             reference_url=f"{API_ROOT}/result/{uuid}/",
             hashes=hashes,
             confidence=confidence,
@@ -583,6 +705,9 @@ def _signal_from_scan(
     signal["brandEvidence"] = brand_evidence.labels
     if primary_hash_pivot:
         signal["brandEvidence"].append("primary-html-sha256")
+    intelligence = _intelligence_from_scan(summary, detail, matched_url, observed_at)
+    if intelligence is not None and intelligence_sink is not None:
+        intelligence_sink.append(intelligence)
     return signal
 
 
@@ -629,10 +754,13 @@ def _brand_evidence(
     detail: dict[str, Any],
     brand: str,
     registry: BrandRegistry,
+    *,
+    matched_url: str | None = None,
 ) -> _BrandEvidence:
+    candidate_urls = [matched_url] if matched_url is not None else [*_result_urls(result), *_result_urls(detail)]
     domain_brands = {
         match.brand
-        for value in [*_result_urls(result), *_result_urls(detail)]
+        for value in candidate_urls
         if (hostname := _hostname(value)) is not None and (match := score_domain(hostname, registry)) is not None
     }
     title_brand = match_brand_text(_title(result, detail), registry)
@@ -849,6 +977,7 @@ def hunt_urlscan(
     seed_rotation_shards: int = 1,
     seeds_per_run: int = 1_000,
     progress: _HuntProgress | None = None,
+    intelligence_sink: list[RawDomainIntelligence] | None = None,
 ) -> list[RadarSignal]:
     """Passively hunt existing URLScan results for reviewed Lithuanian targets."""
     if not api_key.strip():
@@ -916,10 +1045,15 @@ def hunt_urlscan(
             seed_details += 1
             _, detail = fetched
             matched_url = _seed_url(result, detail, seed)
-            final_host = _hostname(_page_url(detail) or "")
-            if not matched_url or (final_host and _official(final_host, brand_registry)):
+            if not matched_url:
                 continue
-            evidence = _brand_evidence(result, detail, seed.brand, brand_registry)
+            evidence = _brand_evidence(
+                result,
+                detail,
+                seed.brand,
+                brand_registry,
+                matched_url=matched_url,
+            )
             if evidence.conflicting or not evidence.any:
                 continue
             signal = _signal_from_scan(
@@ -931,6 +1065,7 @@ def hunt_urlscan(
                 now,
                 brand_registry,
                 evidence,
+                intelligence_sink=intelligence_sink,
             )
             if signal:
                 signals.append(signal)
@@ -952,21 +1087,26 @@ def hunt_urlscan(
         processed.add(uuid)
         detail_count += 1
         _, detail = fetched
-        final_host = _hostname(_page_url(detail) or "")
-        if final_host and _official(final_host, brand_registry):
-            continue
-        evidence = _brand_evidence(result, detail, match.brand, brand_registry)
+        matched_url = _matched_url(result, match)
+        evidence = _brand_evidence(
+            result,
+            detail,
+            match.brand,
+            brand_registry,
+            matched_url=matched_url,
+        )
         if evidence.conflicting or not evidence.domain:
             continue
         signal = _signal_from_scan(
             result,
             detail,
-            _matched_url(result, match),
+            matched_url,
             match.brand,
             match.confidence,
             now,
             brand_registry,
             evidence,
+            intelligence_sink=intelligence_sink,
         )
         if signal:
             signals.append(signal)
@@ -980,9 +1120,10 @@ def hunt_urlscan(
                 break
             uuid = _scan_uuid(result)
             summary_page = _dictionary(result.get("page"))
-            hostname = _hostname(_string(summary_page.get("url")) or "")
+            candidate_url = _candidate_scan_url(result, {}, brand_registry)
+            hostname = _hostname(candidate_url or "")
             brand = match_brand_text(_string(summary_page.get("title")), brand_registry)
-            if not uuid or uuid in processed or not hostname or _official(hostname, brand_registry) or not brand:
+            if not uuid or uuid in processed or not hostname or not brand:
                 continue
             fetched = _safe_detail(result, api_key, requester)
             if not fetched:
@@ -990,15 +1131,30 @@ def hunt_urlscan(
             processed.add(uuid)
             title_details += 1
             _, detail = fetched
-            final_host = _hostname(_page_url(detail) or "")
-            if final_host and _official(final_host, brand_registry):
+            matched_url = _candidate_scan_url(result, detail, brand_registry)
+            if matched_url is None:
                 continue
-            evidence = _brand_evidence(result, detail, brand, brand_registry)
+            evidence = _brand_evidence(
+                result,
+                detail,
+                brand,
+                brand_registry,
+                matched_url=matched_url,
+            )
             verdict = _verdict(detail)
             if evidence.conflicting or not evidence.title or (not evidence.verdict and not verdict.phishing):
                 continue
-            matched_url = _page_url(detail) or _page_url(result) or hostname
-            signal = _signal_from_scan(result, detail, matched_url, brand, 92, now, brand_registry, evidence)
+            signal = _signal_from_scan(
+                result,
+                detail,
+                matched_url,
+                brand,
+                92,
+                now,
+                brand_registry,
+                evidence,
+                intelligence_sink=intelligence_sink,
+            )
             if signal:
                 signals.append(signal)
                 hash_seeds.extend((brand, digest) for digest in _primary_hashes(detail, brand_registry))
@@ -1015,9 +1171,8 @@ def hunt_urlscan(
             uuid = _scan_uuid(result)
             if not uuid or uuid in processed:
                 continue
-            page_url = _page_url(result) or ""
-            hostname = _hostname(page_url)
-            if not hostname or _official(hostname, brand_registry):
+            candidate_url = _candidate_scan_url(result, {}, brand_registry)
+            if candidate_url is None:
                 continue
             fetched = _safe_detail(result, api_key, requester)
             if not fetched:
@@ -1025,20 +1180,30 @@ def hunt_urlscan(
             processed.add(uuid)
             pivot_details += 1
             _, detail = fetched
+            matched_url = _candidate_scan_url(result, detail, brand_registry)
+            if matched_url is None:
+                continue
             primary_hashes = _primary_hashes(detail, brand_registry)
-            evidence = _brand_evidence(result, detail, brand, brand_registry)
+            evidence = _brand_evidence(
+                result,
+                detail,
+                brand,
+                brand_registry,
+                matched_url=matched_url,
+            )
             if digest not in primary_hashes or evidence.conflicting or not evidence.any:
                 continue
             signal = _signal_from_scan(
                 result,
                 detail,
-                page_url,
+                matched_url,
                 brand,
                 94,
                 now,
                 brand_registry,
                 evidence,
                 primary_hash_pivot=True,
+                intelligence_sink=intelligence_sink,
             )
             if signal:
                 signals.append(signal)
@@ -1065,6 +1230,12 @@ def _archive_path(root: str | Path, day: str) -> Path:
     if not _valid_day(day):
         raise ValueError("Invalid URLScan archive date.")
     return _bounded_archive_root(root) / day / "signals.ndjson"
+
+
+def _intelligence_archive_path(root: str | Path, day: str) -> Path:
+    if not _valid_day(day):
+        raise ValueError("Invalid URLScan intelligence archive date.")
+    return _bounded_archive_root(root) / day / "intelligence.ndjson"
 
 
 def _archive_signal(
@@ -1274,6 +1445,117 @@ def write_urlscan_archive(
     temporary.chmod(0o600)
     os.replace(temporary, path)
     return sum(signal["id"] not in existing_ids for signal in signals)
+
+
+def _read_urlscan_intelligence_file(
+    path: Path,
+    now: datetime,
+    maximum: int = MAXIMUM_DAILY_RECORDS,
+) -> list[RawDomainIntelligence]:
+    try:
+        if path.stat().st_size > MAXIMUM_ARCHIVE_BYTES:
+            raise ValueError(f"URLScan intelligence archive exceeds 20 MiB: {path.relative_to(Path.cwd())}")
+        body = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return []
+    now_value = _timestamp(now)
+    records: list[RawDomainIntelligence] = []
+    for line in body.splitlines():
+        if len(line.encode("utf-8")) > 16 * 1024:
+            continue
+        try:
+            value: object = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        raw = raw_from_archive_record(value, now_value)
+        if raw is not None:
+            records.append(raw)
+        if len(records) >= max(0, min(maximum, MAXIMUM_DAILY_RECORDS)):
+            break
+    return records
+
+
+def write_urlscan_intelligence_archive(
+    root: str | Path,
+    intelligence: list[RawDomainIntelligence],
+    now: datetime,
+) -> int:
+    path = _intelligence_archive_path(root, vilnius_date(now))
+    now_value = _timestamp(now)
+    existing = _read_urlscan_intelligence_file(path, now) if path.exists() else []
+    records: dict[tuple[str, str], dict[str, object]] = {}
+    existing_keys: set[tuple[str, str]] = set()
+    for raw in [*existing, *intelligence]:
+        record = archive_record(raw, now_value)
+        if record is None:
+            continue
+        observation = cast(dict[str, Any], record["observation"])
+        key = (cast(str, record["signalId"]), cast(str, observation["source"]))
+        if raw in existing:
+            existing_keys.add(key)
+        current = records.get(key)
+        current_observation = cast(dict[str, Any], current["observation"]) if current else None
+        if current_observation is None or cast(str, observation["observedAt"]) > cast(
+            str, current_observation["observedAt"]
+        ):
+            records[key] = record
+    ordered = sorted(
+        records.values(),
+        key=lambda record: (
+            cast(str, cast(dict[str, Any], record["observation"])["observedAt"]),
+            cast(str, record["signalId"]),
+        ),
+        reverse=True,
+    )[:MAXIMUM_DAILY_RECORDS]
+    body = "".join(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n" for record in ordered)
+    if len(body.encode("utf-8")) > MAXIMUM_ARCHIVE_BYTES:
+        raise ValueError("URLScan intelligence archive exceeds 20 MiB.")
+    try:
+        if path.read_text(encoding="utf-8") == body:
+            return 0
+    except FileNotFoundError:
+        pass
+    if not body and not path.exists():
+        return 0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f"{path.name}.tmp")
+    temporary.write_text(body, encoding="utf-8", newline="\n")
+    temporary.chmod(0o600)
+    os.replace(temporary, path)
+    written_keys = {
+        (cast(str, record["signalId"]), cast(str, cast(dict[str, Any], record["observation"])["source"]))
+        for record in ordered
+    }
+    return sum(key not in existing_keys for key in written_keys)
+
+
+def read_recent_urlscan_intelligence(
+    root: str | Path,
+    lookback_days: int,
+    now: datetime,
+    maximum: int = MAXIMUM_DAILY_RECORDS,
+) -> list[RawDomainIntelligence]:
+    archive_root = _bounded_archive_root(root)
+    try:
+        directories = sorted(
+            (entry.name for entry in archive_root.iterdir() if entry.is_dir() and _valid_day(entry.name)),
+            reverse=True,
+        )
+    except FileNotFoundError:
+        return []
+    today = date.fromisoformat(vilnius_date(now))
+    permitted = {(today - timedelta(days=offset)).isoformat() for offset in range(lookback_days)}
+    newest: dict[tuple[str, str], RawDomainIntelligence] = {}
+    for day in (value for value in directories if value in permitted):
+        remaining = maximum - len(newest)
+        if remaining <= 0:
+            break
+        for raw in _read_urlscan_intelligence_file(_intelligence_archive_path(root, day), now, remaining):
+            key = (raw.domain, raw.source)
+            current = newest.get(key)
+            if current is None or (raw.observed_at or "") > (current.observed_at or ""):
+                newest[key] = raw
+    return list(newest.values())[:maximum]
 
 
 def read_recent_urlscan(
@@ -1516,6 +1798,7 @@ def main() -> int:
     shards = _bounded(os.environ.get("URLSCAN_SEED_ROTATION_SHARDS"), 1, 1, 48)
     seeds_per_run = _bounded(os.environ.get("URLSCAN_SEEDS_PER_RUN"), 250, 1, 250)
     progress = _HuntProgress(candidate_cursor=previous_cursor)
+    intelligence: list[RawDomainIntelligence] = []
     try:
         signals = hunt_urlscan(
             api_key,
@@ -1525,8 +1808,10 @@ def main() -> int:
             seed_rotation_shards=shards,
             seeds_per_run=seeds_per_run,
             progress=progress,
+            intelligence_sink=intelligence,
         )
         added = write_urlscan_archive(root, signals, now)
+        detail_added = write_urlscan_intelligence_archive(root, intelligence, now)
         outcome = "budget-limited" if requester.exhausted else "completed"
         _write_hunt_state_if_changed(
             root,
@@ -1545,7 +1830,8 @@ def main() -> int:
             ),
         )
         print(
-            f"URLScan: {len(signals)} reviewed signals; {added} new archive records; "
+            f"URLScan: {len(signals)} reviewed signals; {added} new signal and "
+            f"{detail_added} new detail archive records; "
             f"{requester.run_search_requests} search and {requester.run_result_requests} "
             f"result requests; outcome {outcome}."
         )

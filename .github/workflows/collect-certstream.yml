@@ -2,14 +2,14 @@ name: Collect CertStream candidates
 
 on:
   schedule:
-    - cron: "2,32 * * * *"
+    - cron: "8,23,38,53 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: radar-archive-writer
+  group: radar-certstream-writer
   cancel-in-progress: false
 
 jobs:
@@ -17,17 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      CERTSTREAM_DURATION_SECONDS: "240"
-      CERTSTREAM_EXPECTED_INTERVAL_SECONDS: "1800"
-      CERTSTREAM_STALE_AFTER_SECONDS: "5400"
+      CERTSTREAM_DURATION_SECONDS: "480"
+      CERTSTREAM_EXPECTED_INTERVAL_SECONDS: "900"
+      CERTSTREAM_STALE_AFTER_SECONDS: "2700"
       CERTSTREAM_DELAY_THRESHOLD_SECONDS: "300"
-      CERTSTREAM_SCHEDULE_MINUTES: "2,32"
+      CERTSTREAM_SCHEDULE_MINUTES: "8,23,38,53"
       CERTSTREAM_TRIGGER: ${{ github.event_name }}
       CERTSTREAM_HEALTH_PATH: public/data/collection-health.json
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: main
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Python
@@ -62,10 +63,12 @@ jobs:
           docker run --detach --name certstream-source \
             --publish 127.0.0.1:8080:8080 \
             --env CERTSTREAM_STREAM_FULL_ENABLED=false \
+            --env CERTSTREAM_STREAM_LITE_ENABLED=true \
+            --env CERTSTREAM_STREAM_DOMAINS_ONLY_ENABLED=false \
             ghcr.io/reloading01/certstream-server-rust:1.5.3@sha256:e7422e0b41aa89358ed4f07a0c78a5e80208c3ae0bff1c367bd0929ba2fa0e0b
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:8080/health > /dev/null; then
-              echo "CERTSTREAM_URL=ws://127.0.0.1:8080/domains-only" >> "${GITHUB_ENV}"
+              echo "CERTSTREAM_URL=ws://127.0.0.1:8080/" >> "${GITHUB_ENV}"
               echo "CERTSTREAM_ALLOW_INSECURE_WS=true" >> "${GITHUB_ENV}"
               exit 0
             fi
@@ -111,8 +114,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data: record CertStream collection attempt"
           gh auth setup-git
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [[ "${attempt}" -eq 4 ]]; then
+              echo "CertStream publication lost four push races." >&2
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
       - name: Fail an unsuccessful collection attempt
         if: always()
         env:

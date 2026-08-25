@@ -21,6 +21,8 @@ Archived observations do not keep an old match indefinitely. A CertStream hostna
 
 URLScan archives record whether brand evidence came from the domain, page title, or provider verdict. A primary-HTML hash label may also record how a related report was found, but it cannot establish the target brand by itself.
 
+Twice-daily official-asset pivots follow the same rule. A stable, first-party favicon or JavaScript SHA-256 from a reviewed main website can locate a public URLScan report, but the candidate must still independently match the same brand through its own domain or a provider brand verdict. Title evidence is accepted only with a URLScan phishing verdict. Cross-run ownership memory blocks hashes shared across registry brands; hashes without two current supporting scans, mismatched resource types, and official final pages are rejected.
+
 If the current hostname matcher selects a brand, it must select the row's declared brand. If it finds no brand, the row may remain only with typed title or verdict evidence. Every retained row must still resolve to a current registry brand and pass official-domain, exclusion, and collision checks. Older or untyped archive rows are rejected.
 
 ## Review decisions
@@ -32,8 +34,8 @@ An operator-added candidate is not a verdict override. It must independently pro
 ## Maintaining precision
 
 - Record every verified first-party domain in `data/brands-lt.json`, regardless of TLD, with an authoritative source.
-- Add `excludedTerms` only for demonstrated lexical collisions, and cover the full false-positive hostname with a regression test.
-- Enable `fuzzyAliases` only for reviewed typo evidence with positive and negative tests.
+- Add `excludedTerms` only for demonstrated lexical collisions, and validate the full false-positive hostname before publication.
+- Enable `fuzzyAliases` only after reviewed positive and negative validation cases succeed.
 - Do not globally allowlist shared hosting services such as `pages.dev` or `workers.dev`; attackers can obtain subdomains there.
 
 Microsoft documents the suppressed rewrite zones in [Defender for Cloud Apps proxy troubleshooting](https://learn.microsoft.com/en-us/defender-cloud-apps/troubleshooting-proxy-url).

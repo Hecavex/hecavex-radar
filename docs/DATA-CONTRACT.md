@@ -41,6 +41,7 @@ Each signal represents one normalized host. Observations of different paths on t
 | `referenceUrl` | string or null | Optional canonical `https://urlscan.io/result/<uuid>/` report URL. |
 | `hashes` | string[] | Up to eight unique, lowercase, non-empty SHA-256 hashes of primary HTML response bodies. |
 | `reasonCodes` | string[] (optional) | Up to 16 controlled public provenance labels. They explain automated acceptance inputs; they are not verdicts or private detector features. |
+| `detailAvailable` | `true` (optional) | Declares that one validated same-origin detail sidecar exists for this signal. Absence means no sidecar; `false` is invalid. |
 | `confidence` | integer | Rounded and clamped to 0-100. The viewer displays it as a score out of 100, never as a percentage or probability. |
 
 When signals merge, the publisher unions sources and hashes, keeps the earliest `firstSeen` and latest `lastSeen`, selects the most specific safe path, and keeps the highest confidence. Conflicting non-null brands for one host invalidate the merged row. Status comes from the observation with the newest `lastSeen`; only observations at the same time use the tie-break order `active`, `suspected`, `unknown`, `offline`, then `mitigated`. The newest non-null country, host, screenshot, and reference metadata wins. The final list is newest-first and capped by `RADAR_MAX_SIGNALS`.
@@ -61,6 +62,74 @@ The top-level `sources` array reports the state of each supported public source.
 `partial` means an attempted source was unavailable or only retained recent rows remain. `skipped` means the source was not configured for that publication.
 For archive-backed inputs, `healthy` confirms that the publisher loaded and validated the available archive; it is not an upstream collector-uptime or freshness guarantee.
 
+## Per-signal detail sidecars
+
+When a live row contains `"detailAvailable": true`, the dashboard may request exactly
+`public/data/signals/<first-two-ID-characters>/<20-character-ID>.json`. The path is derived from the already validated
+signal ID; no domain or source text enters the request path. Files are same-origin static JSON and are fetched only after
+a reader opens that row's evidence dialog.
+
+Each file uses this exact top-level shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "dataset": "signal-detail",
+  "signalId": "c1f2e72a0b04a2a80c44",
+  "domain": "login-brand[.]example",
+  "generatedAt": "2026-08-21T09:15:00.000Z",
+  "observations": [
+    {
+      "source": "URLScan",
+      "observedAt": "2026-08-21T08:59:00.000Z",
+      "page": {"title": "Brand account", "httpStatus": 200},
+      "network": {
+        "ipAddress": "192[.]0[.]2[.]10",
+        "asn": 64500,
+        "asnDescription": "Example network",
+        "asnRegistry": "ARIN"
+      },
+      "assessment": {
+        "urlscanVerdictScore": 75,
+        "urlscanCategories": ["phishing"],
+        "redirectedToDomain": "www[.]official-brand[.]example"
+      },
+      "certificate": {
+        "countryName": null,
+        "issuer": "Example CA",
+        "commonName": "login-brand[.]example",
+        "notBefore": "2026-08-20T00:00:00.000Z",
+        "notAfter": "2026-11-18T00:00:00.000Z",
+        "subjectAltNames": ["login-brand[.]example"],
+        "subjectAltNameCount": 1,
+        "serialNumberHex": "01ab",
+        "fingerprints": {"md5": null, "sha1": null, "sha256": null}
+      }
+    }
+  ]
+}
+```
+
+A sidecar contains at most one latest retained observation for each of `CertStream` and `URLScan`, and therefore at most
+two observations. A CertStream observation has only certificate context; its page, network, and assessment fields are
+null. A URLScan observation can contain page, network, provider assessment, and TLS context. Page, network, and TLS fields
+are retained only when URLScan's final page hostname equals the signal hostname, preventing redirect destinations from
+being attributed to the candidate. A different final hostname is retained only as the defanged
+`assessment.redirectedToDomain`; it documents observed redirect behavior and is neither a benign verdict nor proof that
+every visitor received the same destination. `urlscanVerdictScore` is URLScan's integer score from -100 to 100 and is
+separate from Radar confidence.
+
+Each file is capped at 16 KiB. The complete sidecar set is capped at 3 MiB and selected in live-snapshot order, so the
+newest qualifying rows take priority if the aggregate boundary is reached. Unchanged observation content preserves the
+existing file and its `generatedAt` value instead of creating timestamp-only rewrites. Synchronization deletes validated
+orphan sidecar paths and sets `detailAvailable` only after the corresponding file has passed producer checks.
+
+Certificate names, IP addresses, and indicator-like text are defanged. Text is bounded, control/format characters are
+removed, email addresses are redacted, and live HTTP(S) schemes are neutralized. Certificate SAN samples are limited to
+12 names under the candidate's registrable domain; `subjectAltNameCount` counts only related names, not every DNS name on
+the original certificate. Missing hashes are not calculated. The viewer treats every field as text and provides copy
+controls only; it never turns an observed indicator into a link.
+
 ## CertStream collection health
 
 The dashboard separately reads `public/data/collection-health.json`. This is operational evidence for the latest sampled CertStream attempt, not a signal source and not a candidate archive:
@@ -69,25 +138,25 @@ The dashboard separately reads `public/data/collection-health.json`. This is ope
 {
   "schemaVersion": 1,
   "dataset": "certstream-collection-health",
-  "generatedAt": "2026-08-21T19:17:53.656Z",
-  "expectedIntervalSeconds": 1800,
-  "staleAfterSeconds": 5400,
-  "lastSuccessAt": "2026-08-21T19:17:53.656Z",
+  "generatedAt": "2026-08-21T19:21:53.656Z",
+  "expectedIntervalSeconds": 900,
+  "staleAfterSeconds": 2700,
+  "lastSuccessAt": "2026-08-21T19:21:53.656Z",
   "freshness": {
     "status": "current",
-    "referenceAt": "2026-08-21T19:17:53.656Z",
+    "referenceAt": "2026-08-21T19:21:53.656Z",
     "ageSeconds": 0
   },
   "latestAttempt": {
     "startedAt": "2026-08-21T19:13:30.000Z",
     "collectorStartedAt": "2026-08-21T19:13:43.649Z",
-    "endedAt": "2026-08-21T19:17:53.656Z",
+    "endedAt": "2026-08-21T19:21:53.656Z",
     "trigger": "schedule",
-    "scheduledFor": "2026-08-21T19:02:00.000Z",
+    "scheduledFor": "2026-08-21T19:08:00.000Z",
     "scheduleStatus": "delayed",
-    "delaySeconds": 690,
-    "expectedListeningSeconds": 240,
-    "listeningSeconds": 240.0,
+    "delaySeconds": 330,
+    "expectedListeningSeconds": 480,
+    "listeningSeconds": 480.0,
     "messages": 89532,
     "dnsNames": 160340,
     "matches": 0,
@@ -112,7 +181,7 @@ Collection outcomes are independent of scheduling timeliness:
 | `partial` | Some usable input was processed, but the window was interrupted, failed, or accumulated less than 90% of expected listening time. |
 | `failed` | The workflow could not establish or complete a usable collector connection. |
 
-`scheduleStatus` is `scheduled`, `delayed`, `manual`, or `unknown`. A scheduled attempt becomes `delayed` when its actual start is more than `CERTSTREAM_DELAY_THRESHOLD_SECONDS` after the most recent configured slot; the default threshold is 300 seconds. Delay does not replace the collection outcome, so a delayed run can still be accurately described as healthy-empty, no-input, partial, or failed.
+`scheduleStatus` is `scheduled`, `delayed`, `manual`, or `unknown`. A scheduled attempt becomes `delayed` when its actual start is more than `CERTSTREAM_DELAY_THRESHOLD_SECONDS` after the most recent configured slot; the default threshold is 300 seconds. This is a nearest-slot inference, not GitHub's original event queue timestamp. A platform delay longer than one 15-minute interval can therefore be understated. Delay does not replace the collection outcome, so a delayed run can still be accurately described as healthy-empty, no-input, partial, or failed.
 
 `lastSuccessAt` advances only for `healthy-empty` or `healthy-matches`. The producer records freshness relative to that timestamp at write time; the viewer recalculates it against its current clock using `staleAfterSeconds`. The scheduled workflow atomically replaces this one file on every finalizable attempt. Its schema has an exact fixed field set, its writer caps it at 32 KiB, and it retains no attempt history, preventing per-run file growth. A hard runner cancellation or platform failure before the finalizer and git push cannot be made observable by the stopped workflow.
 
@@ -141,9 +210,25 @@ The attempt file makes a successful zero-match window explicit without claiming 
   "source": "CertStream",
   "brand": "Example Brand",
   "confidence": 95,
-  "reasons": ["brand text match: example brand", "suspicious token: secure"]
+  "reasons": ["brand text match: example brand", "suspicious token: secure"],
+  "certificate": {
+    "countryName": "US",
+    "issuer": "Example CA",
+    "commonName": "secure-brand[.]example",
+    "notBefore": "2026-08-21T08:00:00.000Z",
+    "notAfter": "2026-11-19T08:00:00.000Z",
+    "subjectAltNames": ["secure-brand[.]example"],
+    "subjectAltNameCount": 1,
+    "serialNumberHex": "01ab",
+    "fingerprints": {"md5": null, "sha1": "0000000000000000000000000000000000000000", "sha256": null}
+  }
 }
 ```
+
+`certificate` is optional. When present, it uses the same bounded certificate fields as the public sidecar, with at most
+12 same-registrable SAN samples and at most 500 related names counted. Invalid common names and country values are omitted;
+issuer text is sanitized before this public Git archive is written. DER, chains, extensions, certificate URLs, and unrelated
+SANs are never retained.
 
 The archive `id` hashes the normalized refanged domain, unlike the public snapshot ID, which hashes the defanged hostname. IDs from different artifact types are therefore not join keys. A daily CertStream file is capped at 25,000 valid records and 25 MiB. Reasons contain only contributions from the open heuristic.
 
@@ -163,6 +248,12 @@ Each complete record remains defanged and uses the same host-based ID namespace 
 
 A current hostname match must agree with the declared brand. When the hostname no longer matches, only a row backed by title or verdict evidence may remain, and it must still resolve to a current registry brand and pass suppression and collision checks. Before a row can enter the archive, its URLScan search summary and result detail must both identify the scan as public; missing, unlisted, or private visibility is rejected. Version 1 rows and legacy version 2 rows without typed evidence are rejected. References use the canonical URLScan result path, screenshots use the fixed URLScan policy, and resource or empty-body hashes are rejected. A daily file is capped at 2,500 records and 20 MiB.
 
+`data/urlscan/YYYY-MM-DD/intelligence.ndjson` stores the allowlisted context used to produce detail sidecars. Each exact
+schema row has dataset `signal-intelligence`, the live signal ID/domain, and one URLScan observation containing nullable
+page, network, assessment, and certificate sections. One newest record per signal/source is retained in a daily partition.
+Rows are capped at 16 KiB, with the same 2,500-record and 20 MiB daily boundaries as signal archives. This archive contains
+no API key, page body, request headers, cookie, extracted email, or candidate-site response content.
+
 `data/urlscan/hunt-state.json` is the bounded operational state document for the two-hour hunter. It uses schema version 1 and dataset `urlscan-hunt-state`, and contains exactly the following state classes:
 
 - `generatedAt`, `lastRunAt`, and `budgetDay` identify the persisted state transition and UTC counter window. Individual no-change runs remain visible in Actions history.
@@ -172,7 +263,7 @@ A current hostname match must agree with the declared brand. When the hostname n
 
 The document is capped at 32 KiB, uses an exact fixed-field schema, and is replaced atomically when its non-timestamp state changes. It contains no API key, authentication material, candidate domain, or result payload. Missing credentials cause no API request and record `configured: false` with `skipped-not-configured`; repeated identical skips within one UTC day do not create timestamp-only commits. HTTP 429 or exhaustion of a conservative internal cap stops further requests and records an observable bounded outcome while preserving prior archive rows.
 
-A checked-in hunt state is operational evidence produced by GitHub Actions, not a hand-authored default or local-test fixture. Synchronization publishes `skipped` for `skipped-not-configured`, `partial` for failed or budget-limited refreshes, and `healthy` only for a completed configured hunt. Valid historical archive rows remain independently visible in every case.
+A checked-in hunt state is operational evidence produced by GitHub Actions, not a hand-authored default or locally generated fixture. Synchronization publishes `skipped` for `skipped-not-configured`, `partial` for failed or budget-limited refreshes, and `healthy` only for a completed configured hunt. Valid historical archive rows remain independently visible in every case.
 
 ### Candidate history
 
@@ -228,7 +319,7 @@ A configured HECAVEX endpoint may return an array of signal objects or `{ "signa
 
 Missing or unrecognized status becomes `unknown`; missing or invalid confidence becomes `50`. Timestamp normalization follows the public rules above. A syntactically valid row may still be dropped by Lithuanian registry scoping.
 
-The feed URL must use HTTPS, omit credentials, and use the default port. HTTP is accepted only from `localhost`, `127.0.0.1`, or `::1` for maintainer tests; production service workflows require HTTPS.
+The feed URL must use HTTPS, omit credentials, and use the default port. HTTP is accepted only from `localhost`, `127.0.0.1`, or `::1` for local maintainer validation; production service workflows require HTTPS.
 
 ### Operator candidate handoff
 
@@ -247,7 +338,8 @@ Both arrays are capped at 2,500 records and the file is capped at 2 MiB. Duplica
 
 ## Deliberately excluded
 
-- Userinfo, query parameters, fragments, cookies, page content, and credentials.
+- Userinfo, query parameters, fragments, cookies, page bodies/response content, and credentials. A bounded page title may be retained in a sidecar.
+- Extracted email addresses and Google Safe Browsing classifications.
 - Private observation IDs, analyst identities, internal endpoints, and unbounded or event-level collection telemetry. The aggregate latest-attempt health fields documented above are deliberately public.
 - Detector features, model versions, proprietary rules, evidence graphs, and case data.
 - Discovery-seed provider names and raw seed records.

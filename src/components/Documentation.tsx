@@ -13,15 +13,16 @@ const signalFields = [
   ["referenceUrl", "string | null", "Optional canonical public URLScan result URL."],
   ["hashes", "string[]", "Up to eight lowercase SHA-256 hashes of primary HTML response bodies."],
   ["reasonCodes", "string[]", "Controlled publication reasons; provenance labels, not proof or a verdict."],
+  ["detailAvailable", "true (optional)", "Declares one validated same-origin detail sidecar for this signal."],
   ["confidence", "integer", "Rounded and clamped score from 0 to 100; not a probability."],
 ] as const;
 
 const workflows = [
-  ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, tests, and production build"],
-  ["CertStream collection", "02 and 32 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
+  ["Continuous integration", "Pull requests and relevant pushes", "Lint, type checks, production build, and site verification"],
+  ["CertStream collection", "08, 23, 38, and 53 minutes past each UTC hour", "Candidate archive and latest public attempt health"],
   ["URLScan hunt", "37 minutes past every second UTC hour", "Bounded hunt state and Vilnius-date validated archive"],
   ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated live snapshot and candidate history"],
-  ["Pages deployment", "Successful CI for the current main commit", "Static GitHub Pages artifact"],
+  ["Pages deployment", "Verified code or changed public snapshot/health", "Static GitHub Pages artifact"],
 ] as const;
 
 const settings = [
@@ -96,7 +97,7 @@ export function Documentation() {
           <li>
             <span>03</span>
             <h3>Synchronize</h3>
-            <p>The publisher revalidates, scopes, merges, limits, sorts, and atomically writes the live and history datasets.</p>
+            <p>The publisher revalidates, scopes, merges, limits, sorts, and atomically writes live, detail, and history data.</p>
           </li>
           <li>
             <span>04</span>
@@ -124,11 +125,12 @@ export function Documentation() {
         </div>
         <div className="docs-card-grid">
           <article>
-            <span>Certificate names</span>
+            <span>Certificate names and bounded leaf metadata</span>
             <h3>CertStream</h3>
             <p>
               Emits Certificate Transparency updates over a websocket. Radar reads DNS names, rejects official domains,
-              applies its public matcher, and archives qualifying candidates without retrieving those domains.
+              applies its public matcher, and archives qualifying candidates without retrieving those domains. The lite
+              stream can add sanitized validity, issuer, fingerprint, and same-registrable certificate-name context.
             </p>
             <a href="https://certstream.dev/docs.html">Provider documentation</a>
           </article>
@@ -138,7 +140,8 @@ export function Documentation() {
             <p>
               Authenticated passive searches require public visibility in both the search summary and result detail.
               Queries cover the rolling previous seven days. Exact-domain, brand, title, and primary-document hash pivots
-              remain bounded and independently validated; Radar never submits a scan or visits a candidate host.
+              remain bounded and independently validated. Accepted reports can add same-host page, network, provider-score,
+              and TLS context; Radar never submits a scan or visits a candidate host.
             </p>
             <a href="https://urlscan.io/docs/api/">Provider documentation</a>
           </article>
@@ -216,6 +219,15 @@ export function Documentation() {
               last success, and freshness. It contains no certificate names or unpublished candidates.
             </p>
             <a href="/data/collection-health.json">Open public collection-health.json</a>
+          </article>
+          <article>
+            <span>Lazy context · JSON</span>
+            <h3>Per-signal detail sidecars</h3>
+            <p>
+              A live row can declare one exact same-origin sidecar containing at most one latest CertStream and URLScan
+              context record. The viewer fetches it only when evidence is opened; each file is 16 KiB or less and the
+              complete set is capped at 3 MiB.
+            </p>
           </article>
         </div>
         <div className="docs-callout">
@@ -300,6 +312,15 @@ export function Documentation() {
               idempotent; older detail compacts into a bounded summary without inventing status changes.
             </p>
           </article>
+          <article>
+            <span>Detail schema 1</span>
+            <h3>Signal detail JSON</h3>
+            <p>
+              Stored below <code>public/data/signals/&lt;prefix&gt;/&lt;id&gt;.json</code>. Exact fields contain bounded,
+              defanged page, network, URLScan assessment, redirect-destination, and certificate context only for a current
+              live signal. Cross-domain destination metadata is never attributed to the submitted candidate.
+            </p>
+          </article>
         </div>
         <div className="docs-callout">
           <strong>Merge rules</strong>
@@ -379,8 +400,8 @@ export function Documentation() {
         <div className="docs-callout docs-warning-callout">
           <strong>Scheduled does not mean observed</strong>
           <p>
-            CertStream is scheduled for 48 four-minute windows per day: 192 minutes, or at most 13.3% of wall-clock time.
-            Actions can start late or fail. The dashboard reads actual timing, aggregate counts, outcome, schedule delay,
+            CertStream is scheduled for 96 eight-minute windows per day: 768 minutes, or at most 53.3% of wall-clock time.
+            Actions can start late, drop a schedule, or fail. The dashboard reads actual timing, aggregate counts, outcome, schedule delay,
             last success, and freshness from <a href="/data/collection-health.json">collection-health.json</a>; those fields
             remain separate from archive-read state in <code>radar.json</code>.
           </p>
@@ -407,7 +428,7 @@ export function Documentation() {
           </table>
         </div>
         <p className="docs-copy">
-          Healthy-empty example: the successful run reviewed on 21 August 2026 listened for 240 seconds and processed
+          Historical healthy-empty example: a successful run reviewed under the earlier four-minute configuration on 21 August 2026 listened for 240 seconds and processed
           83,875 messages containing 146,591 DNS names, with zero qualifying matches. That is evidence of one healthy
           empty run—not continuous coverage. The dashboard now presents the latest bounded attempt directly; repository
           operators can still inspect complete execution logs in{" "}
@@ -430,7 +451,7 @@ export function Documentation() {
             <h3>Every production change is verified</h3>
             <p>
               HECAVEX maintains pinned Python, Node.js, pnpm, and browser-check toolchains. The complete gate covers linting,
-              types, tests, the production build, accessibility, CSP, no-JavaScript output, and responsive behavior.
+              types, the production build, accessibility, CSP, no-JavaScript output, and responsive behavior.
             </p>
           </article>
           <article>
@@ -455,7 +476,7 @@ export function Documentation() {
           <p>
             Stage 02 will use checkpointed CT-log/API polling and backfill as the durable coverage source, while retaining
             CertStream for low-latency discovery. The current sampled workflow remains in place until that implementation
-            is tested. Read the{" "}
+            passes the documented acceptance checks. Read the{" "}
             <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/decisions/0001-ct-coverage.md">
               architecture decision record
             </a>.
@@ -504,7 +525,7 @@ export function Documentation() {
             <span>Service source</span>
             <h3>Auditable public change record</h3>
             <p>
-              Source, tests, workflows, registry references, and issue history are public for transparency. Accepted
+              Source, workflows, registry references, and issue history are public for transparency. Accepted
               production changes must preserve defanging, passive collection boundaries, provenance, and publication rules.
             </p>
             <a href="https://github.com/Hecavex/hecavex-radar">Review the service source</a>

@@ -13,8 +13,9 @@ from typing import Any, cast
 from zoneinfo import ZoneInfo
 
 from .brands import normalize_domain
+from .certstream import CertificateEvidence, certificate_for_domain, public_certificate_text
 from .models import CandidateMatch, CertStreamCandidate
-from .safety import defang_host, stable_id
+from .safety import defang_host, refang, stable_id
 
 VILNIUS = ZoneInfo("Europe/Vilnius")
 MAXIMUM_ARCHIVE_BYTES = 25 * 1024 * 1024
@@ -23,6 +24,10 @@ MAXIMUM_CANDIDATE_LINE_BYTES = 16 * 1024
 MAXIMUM_BRAND_CHARACTERS = 120
 MAXIMUM_REASON_CHARACTERS = 240
 MAXIMUM_REASONS = 12
+MAXIMUM_CERTIFICATE_SAN_SAMPLES = 12
+MAXIMUM_CERTIFICATE_SAN_COUNT = 500
+MAXIMUM_CERTIFICATE_ISSUER_CHARACTERS = 200
+MAXIMUM_CERTIFICATE_SERIAL_CHARACTERS = 80
 MAXIMUM_DAILY_ATTEMPTS = 256
 MAXIMUM_ATTEMPT_ARCHIVE_BYTES = 256 * 1024
 MAXIMUM_ATTEMPT_LINE_BYTES = 4 * 1024
@@ -40,9 +45,11 @@ CANDIDATE_FIELDS = frozenset(
         "reasons",
     }
 )
+CANDIDATE_OPTIONAL_FIELDS = frozenset({"certificate"})
 CANDIDATE_ID = re.compile(r"^[a-f\d]{20}$")
 ATTEMPT_ID = re.compile(r"^[a-f\d]{24}$")
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
+HEX = re.compile(r"^[0-9a-f]+$")
 ATTEMPT_FIELDS = frozenset(
     {
         "schemaVersion",
@@ -68,9 +75,13 @@ def vilnius_date(value: datetime) -> str:
     return _aware(value).astimezone(VILNIUS).date().isoformat()
 
 
-def candidate_from_match(match: CandidateMatch, observed_at: datetime) -> CertStreamCandidate:
+def candidate_from_match(
+    match: CandidateMatch,
+    observed_at: datetime,
+    certificate: CertificateEvidence | None = None,
+) -> CertStreamCandidate:
     observed = _aware(observed_at).astimezone(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
-    candidate: CertStreamCandidate = {
+    payload: dict[str, object] = {
         "schemaVersion": 1,
         "id": stable_id(match.domain),
         "observedAt": observed,
@@ -82,6 +93,10 @@ def candidate_from_match(match: CandidateMatch, observed_at: datetime) -> CertSt
         "confidence": match.confidence,
         "reasons": list(match.reasons),
     }
+    certificate_detail = certificate_for_domain(certificate, match.registrable_domain)
+    if certificate_detail is not None:
+        payload["certificate"] = certificate_detail
+    candidate = cast(CertStreamCandidate, payload)
     if not _is_candidate(candidate):
         raise ValueError("Candidate match cannot be represented by the public CertStream schema.")
     return candidate
@@ -134,8 +149,119 @@ def _canonical_defanged_domain(value: object) -> str | None:
     return normalized if normalized is not None and defang_host(normalized) == value else None
 
 
+def _canonical_defanged_certificate_name(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    raw = refang(value)
+    wildcard = raw.startswith("*.")
+    normalized = normalize_domain(raw)
+    if normalized is None:
+        return None
+    expected = f"*[.]{defang_host(normalized)}" if wildcard else defang_host(normalized)
+    return normalized if value == expected else None
+
+
+def _optional_timestamp(value: object) -> datetime | None | bool:
+    if value is None:
+        return None
+    parsed = _timestamp(value)
+    return parsed if parsed is not None else False
+
+
+def _fingerprint(value: object, length: int) -> bool:
+    return isinstance(value, str) and len(value) == length and HEX.fullmatch(value) is not None
+
+
+def _optional_fingerprint(value: object, length: int) -> bool:
+    return value is None or _fingerprint(value, length)
+
+
+def _is_certificate(value: object) -> bool:
+    if not isinstance(value, dict) or set(value) != {
+        "countryName",
+        "issuer",
+        "commonName",
+        "notBefore",
+        "notAfter",
+        "subjectAltNames",
+        "subjectAltNameCount",
+        "serialNumberHex",
+        "fingerprints",
+    }:
+        return False
+    subject_alt_names = value["subjectAltNames"]
+    count = value["subjectAltNameCount"]
+    fingerprints = value["fingerprints"]
+    not_before = _optional_timestamp(value["notBefore"])
+    not_after = _optional_timestamp(value["notAfter"])
+    valid = not (
+        (
+            value["countryName"] is not None
+            and (
+                not isinstance(value["countryName"], str)
+                or re.fullmatch(r"[A-Z]{2}", value["countryName"]) is None
+            )
+        )
+        or (
+            value["issuer"] is not None
+            and public_certificate_text(value["issuer"], MAXIMUM_CERTIFICATE_ISSUER_CHARACTERS)
+            != value["issuer"]
+        )
+        or (
+            value["commonName"] is not None
+            and _canonical_defanged_certificate_name(value["commonName"]) is None
+        )
+        or not_before is False
+        or not_after is False
+        or (
+            isinstance(not_before, datetime)
+            and isinstance(not_after, datetime)
+            and not_after < not_before
+        )
+        or not isinstance(subject_alt_names, list)
+        or len(subject_alt_names) > MAXIMUM_CERTIFICATE_SAN_SAMPLES
+        or not all(_canonical_defanged_domain(name) is not None for name in subject_alt_names)
+        or len(set(subject_alt_names)) != len(subject_alt_names)
+        or type(count) is not int
+        or not len(subject_alt_names) <= count <= MAXIMUM_CERTIFICATE_SAN_COUNT
+        or (
+            value["serialNumberHex"] is not None
+            and (
+                not isinstance(value["serialNumberHex"], str)
+                or not 1 <= len(value["serialNumberHex"]) <= MAXIMUM_CERTIFICATE_SERIAL_CHARACTERS
+                or HEX.fullmatch(value["serialNumberHex"]) is None
+            )
+        )
+        or not isinstance(fingerprints, dict)
+        or set(fingerprints) != {"md5", "sha1", "sha256"}
+        or not _optional_fingerprint(fingerprints["md5"], 32)
+        or not _optional_fingerprint(fingerprints["sha1"], 40)
+        or not _optional_fingerprint(fingerprints["sha256"], 64)
+    )
+    if not valid or not isinstance(fingerprints, dict):
+        return False
+    return any(
+        value[field] is not None
+        for field in ("countryName", "issuer", "commonName", "notBefore", "notAfter", "serialNumberHex")
+    ) or bool(subject_alt_names) or any(fingerprints[field] is not None for field in ("md5", "sha1", "sha256"))
+
+
+def _certificate_has_only_related_sans(value: object, registrable_domain: str) -> bool:
+    if not isinstance(value, dict) or not isinstance(value.get("subjectAltNames"), list):
+        return False
+    for item in value["subjectAltNames"]:
+        domain = _canonical_defanged_domain(item)
+        if domain is None or not (domain == registrable_domain or domain.endswith(f".{registrable_domain}")):
+            return False
+    return True
+
+
 def _is_candidate(value: Any, expected_day: str | None = None) -> bool:
-    if not isinstance(value, dict) or set(value) != CANDIDATE_FIELDS:
+    if (
+        not isinstance(value, dict)
+        or not CANDIDATE_FIELDS.issubset(value)
+        or not set(value).issubset(CANDIDATE_FIELDS | CANDIDATE_OPTIONAL_FIELDS)
+    ):
         return False
     observed_at = _timestamp(value["observedAt"])
     domain = _canonical_defanged_domain(value["domain"])
@@ -159,6 +285,13 @@ def _is_candidate(value: Any, expected_day: str | None = None) -> bool:
         or not isinstance(reasons, list)
         or not 1 <= len(reasons) <= MAXIMUM_REASONS
         or not all(_bounded_text(reason, MAXIMUM_REASON_CHARACTERS) for reason in reasons)
+        or (
+            "certificate" in value
+            and (
+                not _is_certificate(value["certificate"])
+                or not _certificate_has_only_related_sans(value["certificate"], registrable_domain)
+            )
+        )
     ):
         return False
     return expected_day is None or vilnius_date(observed_at) == expected_day

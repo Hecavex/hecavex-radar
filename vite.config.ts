@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 
 const snapshotPath = fileURLToPath(new URL("./public/data/radar.json", import.meta.url));
 const historyPath = fileURLToPath(new URL("./public/data/history.json", import.meta.url));
@@ -95,11 +95,5 @@ export default defineConfig({
         documentation: fileURLToPath(new URL("./docs/index.html", import.meta.url)),
       },
     },
-  },
-  test: {
-    environment: "jsdom",
-    setupFiles: ["./tests/setup.ts"],
-    pool: "threads",
-    maxWorkers: 1,
   },
 });

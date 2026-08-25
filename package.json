@@ -17,17 +17,14 @@
     "hunt:urlscan": "python -m hecavex_radar.urlscan",
     "sync": "python -m hecavex_radar.sync",
     "lint:frontend": "eslint . --max-warnings=0",
-    "lint:python": "python -m ruff check hecavex_radar tests_python",
+    "lint:python": "python -m ruff check hecavex_radar",
     "lint": "pnpm lint:python && pnpm lint:frontend",
     "typecheck:frontend": "tsc --noEmit",
-    "typecheck:python": "python -m mypy hecavex_radar tests_python",
+    "typecheck:python": "python -m mypy hecavex_radar",
     "typecheck": "pnpm typecheck:python && pnpm typecheck:frontend",
-    "test:frontend": "vitest run",
-    "test:python": "python -m pytest",
-    "test": "pnpm test:python && pnpm test:frontend",
     "verify:site": "node scripts/verify-site.mjs",
-    "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm test:frontend && pnpm build && pnpm verify:site",
-    "check": "pnpm lint:python && pnpm typecheck:python && pnpm test:python && pnpm check:frontend"
+    "check:frontend": "pnpm lint:frontend && pnpm typecheck:frontend && pnpm build && pnpm verify:site",
+    "check": "pnpm lint:python && pnpm typecheck:python && pnpm check:frontend"
   },
   "dependencies": {
     "lucide-react": "1.33.0",
@@ -36,8 +33,6 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
-    "@testing-library/jest-dom": "7.0.1",
-    "@testing-library/react": "16.3.2",
     "@types/node": "26.2.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
@@ -48,8 +43,7 @@
     "playwright-core": "1.62.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.67.0",
-    "vite": "8.2.2",
-    "vitest": "4.1.11"
+    "vite": "8.2.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

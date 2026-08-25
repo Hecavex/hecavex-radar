@@ -6,7 +6,9 @@
 
 ## Context
 
-Radar currently starts a live CertStream listener at 02 and 32 minutes past each UTC hour. Each scheduled run is bounded to 240 seconds. If every run starts on time and remains connected, this observes 192 minutes per day, or 13.3% of wall-clock time. Events outside those windows are not replayed or backfilled.
+At the time of this decision, Radar started a live CertStream listener at 02 and 32 minutes past each UTC hour. Each scheduled run was bounded to 240 seconds. If every run started on time and remained connected, that configuration observed 192 minutes per day, or 13.3% of wall-clock time. Events outside those windows were not replayed or backfilled.
+
+The interim sampler now runs a 48-hour coverage trial at 08, 23, 38, and 53 minutes past each UTC hour, with each delivered run bounded to 480 seconds. Its theoretical ceiling is 768 minutes, or 53.3% of a day. This changes neither the decision nor the coverage claim: GitHub Actions may delay or drop schedules, and missed live events still cannot be replayed.
 
 GitHub Actions scheduling and network delivery are best effort. A run can start late, fail before connecting, disconnect early, or complete successfully with no qualifying brand match. The signal snapshot records archive-read state. A separate bounded public health document now records the latest sampled attempt's actual connection time, aggregate input counts, outcome, scheduling delay, last success, and freshness.
 
@@ -20,7 +22,7 @@ Stage 02 will implement checkpointed Certificate Transparency log or API polling
 
 CertStream will remain as a low-latency discovery input. A live-stream observation may publish a qualifying candidate before the durable poller reaches the same certificate, but later ingestion must deduplicate the observation by stable certificate and hostname evidence.
 
-Until that implementation passes coverage, replay, deduplication, and failure-recovery tests, Radar will describe the current CertStream input as sampled and will not claim complete daily certificate coverage. Latest-attempt health improves operational transparency but is not a replay checkpoint or proof of observation outside that attempt.
+Until that implementation passes coverage, replay, deduplication, and failure-recovery validation, Radar will describe the current CertStream input as sampled and will not claim complete daily certificate coverage. Latest-attempt health improves operational transparency but is not a replay checkpoint or proof of observation outside that attempt.
 
 ## Consequences
 
@@ -50,7 +52,7 @@ The durable collector is not complete until it can:
 5. distinguish successful-empty, partial, failed, delayed, and skipped durable collection runs (the sampled listener now provides these semantics for its latest attempt);
 6. publish durable-log coverage and last-success metadata without exposing raw or quarantined observations (the sampled listener now publishes bounded latest-attempt health only);
 7. document the selected logs or APIs, their limitations, and any unmonitored scope; and
-8. pass regression tests for checkpoint advancement, replay, malformed responses, rate limiting, and atomic writes.
+8. pass repeatable validation for checkpoint advancement, replay, malformed responses, rate limiting, and atomic writes.
 
 ## Alternatives considered
 
@@ -60,7 +62,7 @@ This would improve live coverage and remains a possible latency component, but c
 
 ### Increase the number of short GitHub Actions windows
 
-More windows would reduce some gaps but would retain scheduling uncertainty, lack of replay, and ambiguous coverage accounting. It is not selected.
+More windows reduce some gaps but retain scheduling uncertainty and lack of replay. The current 48-hour trial measures this option as an interim sampling improvement; it is not selected as the durable source of record.
 
 ### Keep sampled collection indefinitely
 

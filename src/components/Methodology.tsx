@@ -93,13 +93,13 @@ export function Methodology() {
             <span>Certificate Transparency</span>
             <h3>CertStream</h3>
             <p>
-              Scheduled collection listens to live certificate events for four minutes per run, normally twice per hour.
+              Scheduled collection listens to live certificate events for eight minutes per run, normally four times per hour.
               Each DNS name is scored independently and qualifying matches are stored in Europe/Vilnius daily archives.
             </p>
             <p>
-              That schedule provides at most 192 listening minutes per day, or 13.3% of wall-clock time. It is live
+              That schedule provides at most 768 listening minutes per day, or 53.3% of wall-clock time. It is live
               sampling, not a daily certificate dump: events outside successful listening windows are not replayed or
-              backfilled by the current collector. Actions can start late or fail, so actual observation can be lower.
+              backfilled by the current collector. Actions can start late, drop a schedule, or fail, so actual observation can be lower.
             </p>
           </article>
           <article>
@@ -240,6 +240,15 @@ export function Methodology() {
             <p>
               CertStream is sampled rather than continuous, URLScan exposes only existing public reports, and some metadata
               is optional. Missing URLScan evidence does not make a candidate safe or prevent a CertStream candidate from appearing.
+            </p>
+          </article>
+          <article>
+            <p className="eyebrow">Redirects and cloaking</p>
+            <h3>A redirect is behavior, not clearance</h3>
+            <p>
+              A submitted candidate remains the indicator when a public URLScan report redirects elsewhere. Radar records
+              the defanged destination as context, but does not assign that destination&apos;s host data or screenshot to the
+              candidate. Different visitors can receive different content or redirects.
             </p>
           </article>
           <article>

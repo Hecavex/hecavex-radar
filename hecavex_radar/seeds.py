@@ -186,7 +186,7 @@ def _compile_brand_prefilter(registry: BrandRegistry) -> _BrandPrefilter:
 
 
 def _may_match_reviewed_brand(domain: str, prefilter: _BrandPrefilter) -> bool:
-    """Cheap necessary test; ``score_domain`` remains the authoritative matcher."""
+    """Cheap necessary check; ``score_domain`` remains the authoritative matcher."""
     labels = domain.split(".")
     # IDNA decoding can reveal Unicode brand text that is absent from the ASCII
     # A-label, so all punycode candidates must reach the authoritative scorer.

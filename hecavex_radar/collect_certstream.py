@@ -8,13 +8,13 @@ import sys
 import time
 from contextlib import suppress
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urlsplit
 
 from websockets.asyncio.client import ClientConnection, connect
 
 from .brands import load_brand_registry, score_domain
-from .certstream import domains_from_message
+from .certstream import parse_message
 from .certstream_archive import CandidateArchiveWriter, candidate_from_match, record_successful_attempt
 from .collection_health import (
     CollectionMetrics,
@@ -77,7 +77,7 @@ async def collect(metrics: CollectionMetrics | None = None) -> int:
     metrics = metrics or CollectionMetrics()
     registry = load_brand_registry()
     url = _websocket_url(os.environ.get("CERTSTREAM_URL"), _enabled(os.environ.get("CERTSTREAM_ALLOW_INSECURE_WS")))
-    duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 240, 0, 86_400)
+    duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 480, 0, 86_400)
     flush_seconds = _bounded_integer(os.environ.get("CERTSTREAM_FLUSH_SECONDS"), 15, 5, 300)
     idle_seconds = _bounded_integer(os.environ.get("CERTSTREAM_IDLE_SECONDS"), 90, 30, 600)
     minimum_confidence = _bounded_integer(os.environ.get("CERTSTREAM_MIN_CONFIDENCE"), 80, 1, 100)
@@ -159,14 +159,21 @@ async def collect(metrics: CollectionMetrics | None = None) -> int:
                             continue
                         metrics.messages += 1
                         observed_at = datetime.now(UTC)
-                        for candidate_domain in domains_from_message(payload):
+                        parsed_message = parse_message(payload)
+                        for candidate_domain in parsed_message.domains:
                             metrics.dns_names += 1
                             match = score_domain(candidate_domain, registry)
                             if not match or match.confidence < minimum_confidence:
                                 continue
                             metrics.matches += 1
-                            candidate = candidate_from_match(match, observed_at)
-                            pending.setdefault(candidate["id"], candidate)
+                            candidate = candidate_from_match(match, observed_at, parsed_message.certificate)
+                            existing = pending.get(candidate["id"])
+                            candidate_payload = cast(dict[str, object], candidate)
+                            existing_payload = cast(dict[str, object], existing) if existing is not None else None
+                            if existing_payload is None or (
+                                "certificate" in candidate_payload and "certificate" not in existing_payload
+                            ):
+                                pending[candidate["id"]] = candidate
                         current = time.monotonic()
                         if len(pending) >= 5_000 or current - last_flush >= flush_seconds:
                             flush()
@@ -224,7 +231,7 @@ def _collection_outcome(metrics: CollectionMetrics, duration_seconds: int, faile
 def main() -> int:
     metrics = CollectionMetrics()
     health_path = os.environ.get("CERTSTREAM_HEALTH_PATH", "").strip() or None
-    duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 240, 0, 86_400)
+    duration_seconds = _bounded_integer(os.environ.get("CERTSTREAM_DURATION_SECONDS"), 480, 0, 86_400)
     if health_path:
         try:
             current = read_collection_health(health_path, allow_running=True)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, NotRequired, TypedDict
 
 SignalStatus = Literal["active", "suspected", "offline", "mitigated", "unknown"]
@@ -69,6 +69,7 @@ class RadarSignal(TypedDict):
     hashes: NotRequired[list[str]]
     brandEvidence: NotRequired[list[BrandEvidence]]
     reasonCodes: NotRequired[list[ReasonCode]]
+    detailAvailable: NotRequired[Literal[True]]
     confidence: int
 
 
@@ -76,6 +77,74 @@ class RadarSignal(TypedDict):
 class SourceResult:
     source: RadarSource
     signals: list[RawSignal]
+    intelligence: list[RawDomainIntelligence] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class RawDomainIntelligence:
+    """Untrusted source metadata awaiting the public sidecar boundary."""
+
+    domain: str
+    source: str
+    observed_at: str | None = None
+    page: dict[str, object] | None = None
+    network: dict[str, object] | None = None
+    assessment: dict[str, object] | None = None
+    certificate: dict[str, object] | None = None
+
+
+class PageDetail(TypedDict):
+    title: str | None
+    httpStatus: int | None
+
+
+class NetworkDetail(TypedDict):
+    ipAddress: str | None
+    asn: int | None
+    asnDescription: str | None
+    asnRegistry: str | None
+
+
+class AssessmentDetail(TypedDict):
+    urlscanVerdictScore: int | None
+    urlscanCategories: list[str]
+    redirectedToDomain: str | None
+
+
+class CertificateFingerprints(TypedDict):
+    md5: str | None
+    sha1: str | None
+    sha256: str | None
+
+
+class CertificateDetail(TypedDict):
+    countryName: str | None
+    issuer: str | None
+    commonName: str | None
+    notBefore: str | None
+    notAfter: str | None
+    subjectAltNames: list[str]
+    subjectAltNameCount: int
+    serialNumberHex: str | None
+    fingerprints: CertificateFingerprints
+
+
+class SignalObservation(TypedDict):
+    source: Literal["CertStream", "URLScan"]
+    observedAt: str
+    page: PageDetail | None
+    network: NetworkDetail | None
+    assessment: AssessmentDetail | None
+    certificate: CertificateDetail | None
+
+
+class SignalDetail(TypedDict):
+    schemaVersion: Literal[1]
+    dataset: Literal["signal-detail"]
+    signalId: str
+    domain: str
+    generatedAt: str
+    observations: list[SignalObservation]
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,3 +174,4 @@ class CertStreamCandidate(TypedDict):
     brand: str
     confidence: int
     reasons: list[str]
+    certificate: NotRequired[CertificateDetail]

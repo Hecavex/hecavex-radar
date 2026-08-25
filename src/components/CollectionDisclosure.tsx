@@ -19,10 +19,10 @@ export function CollectionDisclosure() {
         <article>
           <Clock3 aria-hidden="true" />
           <div>
-            <h3>192 scheduled minutes per day</h3>
+            <h3>768 scheduled minutes per day</h3>
             <p>
-              The CertStream workflow is scheduled 48 times daily for four minutes: at most 13.3% of a day. GitHub Actions
-              may start late or fail, so actual connection time can be lower. The latest measured attempt is shown below.
+              The CertStream workflow is scheduled 96 times daily for eight minutes: at most 53.3% of a day. GitHub Actions
+              may start late, drop a schedule, or fail, so actual connection time can be lower. The latest measured attempt is shown below.
             </p>
           </div>
         </article>

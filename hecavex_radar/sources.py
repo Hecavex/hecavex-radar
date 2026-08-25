@@ -11,12 +11,13 @@ from urllib.error import HTTPError
 from urllib.parse import urljoin, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
+from .brand_assets import read_brand_asset_hunt_state
 from .brands import load_brand_registry, score_domain
 from .certstream_archive import read_recent_candidates
-from .models import RadarSource, RawSignal, SourceResult, SourceState
+from .models import RadarSource, RawDomainIntelligence, RawSignal, SourceResult, SourceState
 from .provenance import reason_codes_from_evidence, reason_codes_from_match
 from .safety import refang, safe_feed_url
-from .urlscan import read_recent_urlscan, read_urlscan_hunt_state
+from .urlscan import read_recent_urlscan, read_recent_urlscan_intelligence, read_urlscan_hunt_state
 
 MAXIMUM_SOURCE_BYTES = 20 * 1024 * 1024
 MAXIMUM_HECAVEX_RECORDS = 25_000
@@ -136,6 +137,7 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
     )
     registry = load_brand_registry()
     signals: list[RawSignal] = []
+    intelligence: list[RawDomainIntelligence] = []
     for candidate in candidates:
         match = score_domain(candidate["domain"].replace("[.]", "."), registry)
         if match is None:
@@ -152,6 +154,16 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
                 reason_codes=reason_codes_from_match(match.reasons),
             )
         )
+        certificate = candidate.get("certificate")
+        if certificate is not None:
+            intelligence.append(
+                RawDomainIntelligence(
+                    domain=match.domain,
+                    source="CertStream",
+                    observed_at=candidate["observedAt"],
+                    certificate=dict(certificate),
+                )
+            )
     suffix = "" if lookback_days == 1 else "s"
     suppressed = len(candidates) - len(signals)
     note = f"Open heuristic candidates from the last {lookback_days} day{suffix}"
@@ -166,13 +178,16 @@ def load_certstream(now: str, archive_root: str, lookback_days: int) -> SourceRe
             note=note,
         ),
         signals=signals,
+        intelligence=intelligence,
     )
 
 
 def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResult:
     observed_at = datetime.fromisoformat(now.replace("Z", "+00:00"))
     archived = read_recent_urlscan(archive_root, lookback_days, observed_at)
+    intelligence = read_recent_urlscan_intelligence(archive_root, lookback_days, observed_at)
     hunt_state = read_urlscan_hunt_state(archive_root)
+    asset_state = read_brand_asset_hunt_state(archive_root, observed_at)
     signals = [
         RawSignal(
             url=refang(signal["url"]),
@@ -222,6 +237,26 @@ def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResul
                 f"Passive public results validated from the last {lookback_days} day{suffix}; "
                 "the latest scheduled hunt completed"
             )
+    if asset_state is None:
+        if state == "healthy":
+            state = "partial"
+        note += "; official-asset pivot state is unavailable"
+    else:
+        asset_outcome = asset_state["lastOutcome"]
+        if asset_outcome == "completed":
+            note += f"; {asset_state['eligibleAssetCount']} stable official asset hashes are pivot-eligible"
+        elif asset_outcome == "budget-limited":
+            if state == "healthy":
+                state = "partial"
+            note += "; the latest official-asset pivot reached its request budget"
+        elif asset_outcome == "failed":
+            if state == "healthy":
+                state = "partial"
+            note += "; the latest official-asset pivot failed"
+        else:
+            if state == "healthy":
+                state = "partial"
+            note += "; the official-asset pivot key is not configured"
     return SourceResult(
         source=_source(
             SOURCE_DEFINITIONS["urlscan"],
@@ -231,6 +266,7 @@ def load_urlscan(now: str, archive_root: str, lookback_days: int) -> SourceResul
             note=note,
         ),
         signals=signals,
+        intelligence=intelligence,
     )
 
 

@@ -44,7 +44,64 @@ export type RadarSignal = {
   referenceUrl?: string | null;
   hashes?: string[];
   reasonCodes?: ReasonCode[];
+  detailAvailable?: true;
   confidence: number;
+};
+
+export type SignalDetailSource = "URLScan" | "CertStream";
+
+export type SignalPageDetail = {
+  title: string | null;
+  httpStatus: number | null;
+};
+
+export type SignalNetworkDetail = {
+  ipAddress: string | null;
+  asn: number | null;
+  asnDescription: string | null;
+  asnRegistry: string | null;
+};
+
+export type SignalAssessmentDetail = {
+  urlscanVerdictScore: number | null;
+  urlscanCategories: string[];
+  redirectedToDomain: string | null;
+};
+
+export type SignalCertificateFingerprints = {
+  md5: string | null;
+  sha1: string | null;
+  sha256: string | null;
+};
+
+export type SignalCertificateDetail = {
+  countryName: string | null;
+  issuer: string | null;
+  commonName: string | null;
+  notBefore: string | null;
+  notAfter: string | null;
+  subjectAltNames: string[];
+  subjectAltNameCount: number;
+  serialNumberHex: string | null;
+  fingerprints: SignalCertificateFingerprints;
+};
+
+export type SignalDetailObservation = {
+  source: SignalDetailSource;
+  observedAt: string;
+  page: SignalPageDetail | null;
+  network: SignalNetworkDetail | null;
+  assessment: SignalAssessmentDetail | null;
+  certificate: SignalCertificateDetail | null;
+};
+
+export type SignalDetail = {
+  schemaVersion: 1;
+  dataset: "signal-detail";
+  signalId: string;
+  domain: string;
+  generatedAt: string;
+  observations: SignalDetailObservation[];
 };
 
 export type SourceState = "healthy" | "partial" | "skipped";
