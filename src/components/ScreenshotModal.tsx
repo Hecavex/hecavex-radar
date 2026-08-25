@@ -1,9 +1,10 @@
-import { Check, Copy, ExternalLink, Flag, X } from "lucide-react";
+import { ArrowRight, Check, Copy, ExternalLink, Flag, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { formatDateTime } from "../lib/format.ts";
 import { evidenceTierLabel, explainReasons, signalEvidenceTier, signalMatchScore } from "../lib/dashboard.ts";
 import { loadSignalDetail } from "../lib/signalDetail.ts";
+import { signalPath } from "../lib/signalRoutes.ts";
 import type { RadarSignal, SignalCertificateDetail, SignalDetail, SignalDetailObservation, SignalDomainContext } from "../types.ts";
 
 const FOCUSABLE_SELECTOR = [
@@ -390,7 +391,7 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
             <p className="eyebrow">Passive evidence</p>
             <h2 id="capture-title">{signal.domain}</h2>
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close capture">
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close signal details">
             <X aria-hidden="true" />
           </button>
         </div>
@@ -485,6 +486,9 @@ export function ScreenshotModal({ signal, snapshotGeneratedAt, returnFocus, onCl
         <div className="capture-footer">
           <p>Viewing a screenshot or report contacts urlscan.io. The suspicious website is not contacted.</p>
           <div className="capture-links">
+            <a className="permanent-record-link" href={signalPath(signal)}>
+              Open permanent record <ArrowRight aria-hidden="true" />
+            </a>
             <a href={correctionHref}>
               Request correction <Flag aria-hidden="true" />
             </a>

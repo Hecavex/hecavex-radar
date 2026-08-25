@@ -453,7 +453,8 @@ function verifyBuiltHtml() {
       assert(document.querySelector(".activity-strip"), "Radar overview omits the compact activity strip.");
       assert(document.querySelector(".export-actions"), "Radar overview omits defanged filtered-view exports.");
       assert(document.querySelector(".filter-privacy-note")?.textContent?.includes("never added to the shared URL"), "Radar overview does not disclose local-only free-text search.");
-      assert(document.querySelector('tbody tr[id^="signal-"] .candidate-link[href^="/signals/"]'), "Radar overview omits durable per-signal links.");
+      assert(document.querySelector('tbody tr[id^="signal-"] .signal-deep-link[href^="/signals/"]'), "Radar overview omits durable per-signal links.");
+      assert(document.querySelector('tbody tr[id^="signal-"] button[aria-haspopup="dialog"]'), "Radar overview omits in-page signal detail controls.");
       assert(document.querySelector(".radar-route-grid"), "Radar overview omits dedicated exploration routes.");
     }
     if (route === "/brands/") {
@@ -657,6 +658,8 @@ function uuidBytes(value) {
 }
 
 function uuid5(namespace, name) {
+  // UUIDv5 requires SHA-1 under RFC 9562 section 5.5. This is deterministic
+  // naming for public STIX identifiers, never a security or integrity hash.
   const digest = createHash("sha1").update(uuidBytes(namespace)).update(name, "utf8").digest().subarray(0, 16);
   digest[6] = (digest[6] & 0x0f) | 0x50;
   digest[8] = (digest[8] & 0x3f) | 0x80;
@@ -1325,6 +1328,59 @@ async function verifyAccessibility(browser, origin, width) {
   }
 }
 
+async function verifySignalDialog(browser, origin, width) {
+  const context = await browser.newContext({ viewport: { width, height: 900 }, bypassCSP: true });
+  const page = await context.newPage();
+  await page.route("https://static.cloudflareinsights.com/beacon.min.js", fulfillAnalyticsScript);
+  try {
+    await page.goto(`${origin}/`, { waitUntil: "networkidle" });
+    const firstRow = page.locator('.signal-table tbody tr[id^="signal-"]').first();
+    const candidateTrigger = firstRow.locator("button.candidate-link");
+    const timelineTrigger = firstRow.locator("button.record-link");
+    const permanentPath = await firstRow.locator("a.signal-deep-link").getAttribute("href");
+    assert(permanentPath?.startsWith("/signals/"), `Radar signal has no permanent record path at ${width}px.`);
+
+    await candidateTrigger.click();
+    const dialog = page.locator('[role="dialog"]');
+    assert(await dialog.isVisible(), `Radar candidate control did not open a signal dialog at ${width}px.`);
+    const closeButton = dialog.locator('button[aria-label="Close signal details"]');
+    assert(await closeButton.evaluate((element) => element === document.activeElement), `Radar signal dialog did not place focus on Close at ${width}px.`);
+    assert(
+      await dialog.locator("a.permanent-record-link").getAttribute("href") === permanentPath,
+      `Radar signal dialog does not preserve its permanent record path at ${width}px.`,
+    );
+    if (await dialog.locator(".signal-intelligence").count()) {
+      await dialog.locator(".detail-observations, .detail-state.error").first().waitFor({ state: "visible" });
+      assert(!(await dialog.locator(".detail-state.error").count()), `Radar signal detail sidecar failed to load at ${width}px.`);
+    }
+
+    await page.addScriptTag({ content: axe.source });
+    const violations = await page.evaluate(async () => {
+      const report = await globalThis.axe.run(document, {
+        resultTypes: ["violations"],
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+      });
+      return report.violations
+        .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
+        .map((violation) => ({ id: violation.id, impact: violation.impact, targets: violation.nodes.map((node) => node.target) }));
+    });
+    assert(violations.length === 0, `Open Radar signal dialog has serious accessibility violations at ${width}px: ${JSON.stringify(violations)}`);
+
+    await page.keyboard.press("Escape");
+    assert(!(await dialog.count()), `Radar signal dialog did not close with Escape at ${width}px.`);
+    assert(await candidateTrigger.evaluate((element) => element === document.activeElement), `Radar signal dialog did not restore candidate focus at ${width}px.`);
+
+    await timelineTrigger.click();
+    const reopenedDialog = page.locator('[role="dialog"]');
+    assert(await reopenedDialog.isVisible(), `Radar timeline control did not open a signal dialog at ${width}px.`);
+    await reopenedDialog.locator('button[aria-label="Close signal details"]').click();
+    assert(!(await reopenedDialog.count()), `Radar signal dialog did not close from its Close control at ${width}px.`);
+    assert(await timelineTrigger.evaluate((element) => element === document.activeElement), `Radar signal dialog did not restore timeline focus at ${width}px.`);
+  } finally {
+    await context.close();
+  }
+}
+
 function chromeExecutable() {
   const candidates = [
     process.env.CHROME_PATH,
@@ -1391,6 +1447,22 @@ async function verifyInBrowser() {
           const methodologyFieldListRect = methodologyFieldList?.getBoundingClientRect();
           const finalMethodologyFieldRect = methodologyFields.at(-1)?.getBoundingClientRect();
           const penultimateMethodologyFieldRect = methodologyFields.at(-2)?.getBoundingClientRect();
+          const candidateCell = document.querySelector(".signal-table .indicator-cell");
+          const candidateInner = candidateCell?.querySelector(":scope > div");
+          const candidateCellRect = candidateCell?.getBoundingClientRect();
+          const candidateControls = candidateInner ? [...candidateInner.querySelectorAll("button, a")] : [];
+          const candidateControlsFit = candidateCellRect
+            ? candidateControls.every((control) => {
+                const rect = control.getBoundingClientRect();
+                return rect.width > 0 && rect.left >= candidateCellRect.left - 1 && rect.right <= candidateCellRect.right + 1;
+              })
+            : true;
+          const signalTable = document.querySelector(".signal-table");
+          const signalTableRect = signalTable?.getBoundingClientRect();
+          const hostNames = [...document.querySelectorAll(".signal-table .host-name")];
+          const longestHost = hostNames.sort((left, right) => (right.textContent?.length ?? 0) - (left.textContent?.length ?? 0))[0];
+          const hostingCellRect = longestHost?.closest("td")?.getBoundingClientRect();
+          const hostStyle = longestHost ? getComputedStyle(longestHost) : null;
           return {
             clientWidth: document.documentElement.clientWidth,
             documentWidth: document.documentElement.scrollWidth,
@@ -1419,6 +1491,15 @@ async function verifyInBrowser() {
             finalMethodologyFieldRight: finalMethodologyFieldRect?.right ?? 0,
             penultimateMethodologyFieldLeft: penultimateMethodologyFieldRect?.left ?? 0,
             penultimateMethodologyFieldRight: penultimateMethodologyFieldRect?.right ?? 0,
+            candidateControlCount: candidateControls.length,
+            candidateControlsFit,
+            candidateInnerClientWidth: candidateInner?.clientWidth ?? 0,
+            candidateInnerScrollWidth: candidateInner?.scrollWidth ?? 0,
+            hostingColumnRatio: signalTableRect && hostingCellRect ? hostingCellRect.width / signalTableRect.width : 0,
+            hostOverflowX: hostStyle?.overflowX ?? "",
+            hostOverflowY: hostStyle?.overflowY ?? "",
+            hostClientHeight: longestHost?.clientHeight ?? 0,
+            hostScrollHeight: longestHost?.scrollHeight ?? 0,
           };
         });
         assert(
@@ -1438,6 +1519,16 @@ async function verifyInBrowser() {
         if (width === 1440 && entry.path === "/") {
           assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
           assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
+          assert(
+            layout.hostingColumnRatio >= 0.21 && layout.hostingColumnRatio <= 0.23,
+            `Radar hosting column uses ${(layout.hostingColumnRatio * 100).toFixed(1)}% of the table at 1440px instead of 22%.`,
+          );
+          assert(
+            layout.hostOverflowX !== "hidden" &&
+              layout.hostOverflowY !== "hidden" &&
+              layout.hostScrollHeight <= layout.hostClientHeight + 1,
+            "Radar hosting evidence is clipped instead of visibly wrapped.",
+          );
         }
         if (width <= 760 && entry.path === "/") {
           assert(
@@ -1451,6 +1542,12 @@ async function verifyInBrowser() {
           assert(
             layout.radarFreshnessTop >= layout.radarHeroCopyBottom - 1,
             `Radar freshness card overlaps the hero copy at ${width}px.`,
+          );
+          assert(
+            layout.candidateControlCount === 3 &&
+              layout.candidateControlsFit &&
+              layout.candidateInnerScrollWidth <= layout.candidateInnerClientWidth + 1,
+            `Radar candidate controls overflow their mobile card at ${width}px.`,
           );
         }
         if (entry.path === "/methodology/" || entry.path === "/docs/") {
@@ -1549,7 +1646,10 @@ async function verifyInBrowser() {
         `Cloudflare Web Analytics loaded ${analyticsRequests} times for ${pages.length} pages at ${width}px.`,
       );
       await context.close();
-      if (width === 390 || width === 1024) await verifyAccessibility(browser, origin, width);
+      if (width === 390 || width === 1024) {
+        await verifyAccessibility(browser, origin, width);
+        await verifySignalDialog(browser, origin, width);
+      }
     }
 
     const delayedContext = await browser.newContext({ viewport: { width: 390, height: 900 } });

@@ -250,6 +250,11 @@
 }
 
 @media (max-width: 760px) {
+  .lt-signal-table td {
+    width: auto;
+    max-width: none;
+  }
+
   .lt-radar-page,
   .lt-changes-page,
   .lt-brand-page,

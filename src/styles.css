@@ -3546,7 +3546,7 @@ td time {
 
 .modal-backdrop {
   position: fixed;
-  z-index: 80;
+  z-index: 120;
   inset: 0;
   display: grid;
   place-items: center;
@@ -4560,7 +4560,7 @@ td time {
 
   .table-scroll .indicator-cell {
     padding-top: .85rem;
-    padding-right: 3.75rem;
+    padding-right: .8rem;
     padding-bottom: .85rem;
   }
 
@@ -4874,16 +4874,45 @@ td time {
 
 .signal-table {
   min-width: 65rem;
+  table-layout: fixed;
 }
 
-.signal-table .indicator-cell {
-  width: 31%;
+.signal-table .candidate-column {
+  width: 34%;
 }
 
-.candidate-link {
+.signal-table .brand-column {
+  width: 14%;
+}
+
+.signal-table .evidence-column {
+  width: 16%;
+}
+
+.signal-table .hosting-column {
+  width: 22%;
+}
+
+.signal-table .timeline-column {
+  width: 14%;
+}
+
+.indicator-cell button.candidate-link {
+  display: block;
+  flex: 1 1 0;
+  width: auto;
+  height: auto;
   min-width: 0;
+  padding: 0;
+  border: 0;
   color: inherit;
+  text-align: left;
   text-decoration: none;
+}
+
+.candidate-link code {
+  width: 100%;
+  text-align: left;
 }
 
 .candidate-link:hover code {
@@ -4909,14 +4938,25 @@ td time {
   align-items: center;
   gap: .35rem;
   margin-top: .55rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--blue);
   font: 600 .58rem var(--mono);
+  cursor: pointer;
   text-decoration: none;
 }
 
 .record-link svg {
   width: .72rem;
   height: .72rem;
+}
+
+.host-name {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: normal;
 }
 
 .radar-route-grid {
