@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "29 6 * * 1"
   workflow_dispatch:
+    inputs:
+      correction_revision:
+        description: "Optional immutable correction revision (1-999) for this ISO week"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -32,11 +37,22 @@ jobs:
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
+          CORRECTION_REVISION: ${{ inputs.correction_revision || '' }}
         shell: bash
         run: |
           set -euo pipefail
           release_week="$(date -u +'%G-W%V')"
-          tag="radar-data-${release_week}"
+          base_tag="radar-data-${release_week}"
+          tag="${base_tag}"
+          release_label="${release_week}"
+          if [[ -n "${CORRECTION_REVISION}" ]]; then
+            if [[ ! "${CORRECTION_REVISION}" =~ ^[1-9][0-9]{0,2}$ ]]; then
+              echo "::error::correction_revision must be an integer from 1 to 999."
+              exit 1
+            fi
+            tag="${base_tag}-r${CORRECTION_REVISION}"
+            release_label="${release_week}-r${CORRECTION_REVISION}"
+          fi
           existing="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" |
             jq -s -r --arg tag "${tag}" '
               map(.[]) | map(select(.tag_name == $tag)) | first |
@@ -66,8 +82,10 @@ jobs:
           fi
 
           {
-            echo "week=${release_week}"
+            echo "week=${release_label}"
+            echo "base_tag=${base_tag}"
             echo "tag=${tag}"
+            echo "correction_revision=${CORRECTION_REVISION}"
             echo "should_release=${should_release}"
             echo "resume_draft=${resume_draft}"
           } >> "${GITHUB_OUTPUT}"
@@ -273,10 +291,12 @@ jobs:
                   }
               )
 
+          release_version = tag.removeprefix("radar-data-")
+          release_week = release_version.split("-r", 1)[0]
           release_manifest = {
               "schemaVersion": 1,
               "dataset": "hecavex-radar-weekly-release",
-              "releaseWeek": tag.removeprefix("radar-data-"),
+              "releaseWeek": release_week,
               "tag": tag,
               "sourceRepository": os.environ["GITHUB_REPOSITORY"],
               "sourceCommit": os.environ["GITHUB_SHA"],
@@ -347,6 +367,8 @@ jobs:
         if: steps.release.outputs.should_release == 'true'
         env:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          BASE_RELEASE_TAG: ${{ steps.release.outputs.base_tag }}
+          CORRECTION_REVISION: ${{ steps.release.outputs.correction_revision }}
         shell: bash
         run: |
           cat > _release/notes.md <<EOF
@@ -358,6 +380,12 @@ jobs:
 
           Verify downloads with \`sha256sum --check SHA256SUMS\`. Verify workflow provenance with \`gh attestation verify ${RELEASE_TAG}.tar.gz --repo ${GITHUB_REPOSITORY}\`; the manifest, SBOM, and checksum list are attested as separate subjects by the same workflow.
           EOF
+          if [[ -n "${CORRECTION_REVISION}" ]]; then
+            cat >> _release/notes.md <<EOF
+
+          This immutable correction release supersedes \`${BASE_RELEASE_TAG}\` for data use. The original release remains available as an unmodified audit record.
+          EOF
+          fi
 
       - name: Create or refresh the draft release
         if: steps.release.outputs.should_release == 'true'

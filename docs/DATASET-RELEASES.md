@@ -1,6 +1,6 @@
 # Weekly dataset releases
 
-The Radar release workflow is designed to publish at most one point-in-time dataset package for each ISO week after its repository gates pass. A release exists only when it appears on the repository's [GitHub Releases page](https://github.com/Hecavex/hecavex-radar/releases); the checked-in workflow and schedule do not prove that any week has been published. A successful release complements the live hourly files but does not expand Radar's sampled collection coverage or turn a candidate into a maliciousness verdict.
+The Radar release workflow is designed to publish one ordinary point-in-time dataset package for each ISO week after its repository gates pass. A release exists only when it appears on the repository's [GitHub Releases page](https://github.com/Hecavex/hecavex-radar/releases); the checked-in workflow and schedule do not prove that any week has been published. A successful release complements the live hourly files but does not expand Radar's sampled collection coverage or turn a candidate into a maliciousness verdict.
 
 ## Release contract
 
@@ -12,6 +12,8 @@ The Radar release workflow is designed to publish at most one point-in-time data
 | `radar-data-YYYY-Www.manifest.json` | Source commit, snapshot timestamp, exclusion statement, and SHA-256 digest and byte length for every packaged dataset and context file; the identical in-archive manifest cannot recursively inventory itself |
 | `radar-data-YYYY-Www.spdx.json` | SPDX 2.3 software and dependency inventory derived from the exact Python runtime lock and complete pnpm package lock |
 | `SHA256SUMS` | Download verification for the archive, standalone manifest, and SPDX document |
+
+An immutable release cannot be edited after publication. If a material data-quality defect is discovered, a maintainer may dispatch a bounded correction revision from 1 through 999. That creates a new `radar-data-YYYY-Www-rN` tag and four independently attested assets. Its notes identify the ordinary weekly tag it supersedes; the original remains unchanged as an audit record. Correction revisions are exceptional and must not be used as rolling mutable snapshots.
 
 The archive contains the canonical public dataset beneath a tag-named root: artifacts and checksum sidecars declared by the validated feed manifest, the feed manifest and its checksum, index-declared shards, and signal sidecars explicitly declared available by the snapshot. It can also contain the checked-in, validated, bounded partitions below `data/history/context/`. URLScan-derived context rows are included only when `URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED` is exactly `true`; an API key alone cannot make them releasable. It excludes `public/data/collection-health.json`: that bounded latest-attempt document is replaced independently of the synchronized snapshot and would misrepresent an atomic weekly cut. Its last synchronized aggregate remains available in `pipeline-health.json`.
 

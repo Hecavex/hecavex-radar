@@ -27,7 +27,7 @@ MAXIMUM_CONTEXT_BYTES = 64 * 1024 * 1024
 MAXIMUM_MANIFEST_BYTES = 8 * 1024 * 1024
 MAXIMUM_RELEASE_FILES = 10_000
 MAXIMUM_RELEASE_BYTES = 128 * 1024 * 1024
-TAG = re.compile(r"^radar-data-(\d{4})-W(0[1-9]|[1-4]\d|5[0-3])$")
+TAG = re.compile(r"^radar-data-(\d{4})-W(0[1-9]|[1-4]\d|5[0-3])(?:-r([1-9]\d{0,2}))?$")
 SHA256 = re.compile(r"^[a-f\d]{64}$")
 
 
@@ -377,7 +377,7 @@ def package_context_history(
         manifest.get("schemaVersion") != 1
         or manifest.get("dataset") != "hecavex-radar-weekly-release"
         or manifest.get("tag") != tag
-        or manifest.get("releaseWeek") != tag.removeprefix("radar-data-")
+        or manifest.get("releaseWeek") != f"{tag_match.group(1)}-W{tag_match.group(2)}"
     ):
         raise ValueError("Weekly release manifest identity is invalid.")
     anchor = _timestamp(manifest.get("snapshotGeneratedAt"))

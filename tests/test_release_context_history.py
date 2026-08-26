@@ -13,6 +13,7 @@ from hecavex_radar.release_context_history import package_context_history
 from hecavex_radar.safety import stable_id
 
 TAG = "radar-data-2026-W35"
+CORRECTION_TAG = "radar-data-2026-W35-r1"
 ANCHOR = "2026-08-26T12:00:00.000Z"
 PARTITION = "2026-08-26"
 DOMAIN = "login[.]example"
@@ -145,6 +146,34 @@ def test_release_history_is_deterministic_and_inventory_hashes_match(tmp_path: P
     row = inventory[f"history/context/{PARTITION}/events.ndjson"]
     assert row["bytes"] == first_output.stat().st_size
     assert row["sha256"] == hashlib.sha256(first_output.read_bytes()).hexdigest()
+
+
+def test_immutable_correction_tag_preserves_the_base_release_week(tmp_path: Path) -> None:
+    paths = _fixture(tmp_path)
+    corrected_package = tmp_path / "_release" / "stage" / CORRECTION_TAG
+    paths["package"].rename(corrected_package)
+    corrected_manifest = tmp_path / "_release" / "assets" / f"{CORRECTION_TAG}.manifest.json"
+    manifest = json.loads(paths["standalone_manifest"].read_text(encoding="utf-8"))
+    manifest["tag"] = CORRECTION_TAG
+    manifest["archiveRoot"] = CORRECTION_TAG
+    payload = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()
+    (corrected_package / "RELEASE-MANIFEST.json").write_bytes(payload)
+    corrected_manifest.write_bytes(payload)
+
+    summary = package_context_history(CORRECTION_TAG, repository=tmp_path)
+
+    assert summary.events == 1
+    published = json.loads(corrected_manifest.read_text(encoding="utf-8"))
+    assert published["releaseWeek"] == "2026-W35"
+    assert published["tag"] == CORRECTION_TAG
+
+
+@pytest.mark.parametrize("tag", ["radar-data-2026-W35-r0", "radar-data-2026-W35-r1000"])
+def test_invalid_correction_revision_is_rejected(tmp_path: Path, tag: str) -> None:
+    _fixture(tmp_path)
+
+    with pytest.raises(ValueError, match="Weekly release tag is invalid"):
+        package_context_history(tag, repository=tmp_path)
 
 
 def test_urlscan_history_is_excluded_without_explicit_permission(tmp_path: Path) -> None:
