@@ -1,0 +1,2504 @@
+{
+  "schemaVersion": 1,
+  "dataset": "radar-brand-coverage-ledger",
+  "generatedAt": "2026-08-25T22:58:17.295Z",
+  "registryReviewedAt": "2026-08-23",
+  "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
+  "globalCollectorState": {
+    "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
+    "ctSearch": {
+      "stateGeneratedAt": "2026-08-25T22:58:17.295Z",
+      "queryCursor": 24,
+      "configuredQueries": 46
+    },
+    "urlscanHunt": {
+      "stateGeneratedAt": "2026-08-25T15:25:53.837Z",
+      "lastRunAt": "2026-08-25T15:25:53.837Z",
+      "lastOutcome": "failed",
+      "candidateCursor": 0,
+      "candidateCount": 16
+    }
+  },
+  "unicodeProfile": {
+    "uts46": "idna-3.19/nontransitional/std3",
+    "uts39": "confusable-homoglyphs-3.3.1",
+    "skeletonsPublished": false,
+    "semantics": "Unicode evidence is an inexact comparison signal, never a maliciousness verdict.",
+    "compatibilityNote": "restricted-identifier is a conservative Radar heuristic derived from pinned UTS #39 script and confusable data; it is not Unicode's formal restriction-level algorithm."
+  },
+  "brands": [
+    {
+      "brand": "Artea",
+      "registryRevision": "b7d2edb72547f622",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 6,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 2,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "58e45c6581dbd7a9ac9bd96f7359f86bbfd71c264af2bc66a678eba4e670851c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "f7eebb55bb94a06fae2156be618f0972894e3ed54946f2ff77bf3e8ff3cd5731",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "BTA",
+      "registryRevision": "f61a30d95b7734cf",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 1,
+        "passing": 1,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "Bigbank",
+      "registryRevision": "2bc94f2e28004ea8",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 10,
+        "authoritativeSources": 2,
+        "excludedTerms": 1,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Bitė",
+      "registryRevision": "66c32d8ae38fceb3",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 3,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "03e33cc103904d4011b037b0f30f154e122acfa038a09ceca48ca9955fb088dc",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "131751d7228b0ecfc512e5b7dff70e454924e742d470b9d9470ca9e8051b00b4",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "4beec74bdd3b34911de0c837b0aff45ca2234c6b4fe926ff0793a5bb3496eee9",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "5389deba0dbe11d5a6f75770b7ee10fa6bb9a7e4afbad58da7613d0b2d419783",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "81b8a995fb49e37fdca6152110725e799eed90da5cf32458a854a3a64d3cbc55",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "8ac5acba636d3bcdbc04a3c02c214e93c8183a0bae6cae261c80347a5bc7d2b9",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9a80bee1ad7780ccad8930f89fd3665c052002608ef95a4869101f9e0c1db778",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a2e41c3037ed45f0fd1bbc3d6c76a67a2aaf67798293e88729c0d8ce98ae6dee",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c0d658852f36e3713eb5017230b66c9a372883aea522f3c2c2ea9652aa2c0617",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c5e8ce36a8343adccb16db960e3d80d83f049c897da4d24e1cdec04fd8c7dd0c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cc98c126e7b21c1b7992758516aea66961f6ec303a6a02890b54868b0ff35c12",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Cgates",
+      "registryRevision": "5baf39404ff654ff",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 2,
+        "excludedTerms": 1,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 9,
+        "supportedByTwoRecentOfficialScans": 8,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "1c23f0dc40bae1811d704fb076204783bc51c757e44a1c83b07db2723064724e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2a0db34dc14ef4b5ce73b230701c7561e5012667a4c9cb274ecab646e1474995",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "3773e64998294874155834e7a556d85ce0dbfba6b8d5553c04dae9d1b980e777",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "57fc724409b12d5ca47de07364dafd48665e2d8490893f1dd43ba44d1f301f1a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "71cabe422a9b55469b54b288fb4920c100b7d9cd39ebcc52df73e6041460e560",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "80a61434b0a50357174d4297d3f363c3972071375b41c60225db8a14d71445d9",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "91c9fb77ab17581d0e9ede52d09a2afcdbb793321f6b2a99a85a41bb3a9933c2",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9221ee252a7095cc7a77bad18988bf493ef5c5dae248f74611e939afbe167f42",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "c0dbe0c741b7ebd6479e3798f72aa9a8762883f666afbec7c6a44a053badea28",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Citadele",
+      "registryRevision": "0ce81965241817f9",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 1,
+        "excludedTerms": 1,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 1,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "1c86fccbf71d491db7ae13655b8c977e4ce87655eea1def65bcbf8c02e13e15c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "DHL",
+      "registryRevision": "fce7548a2703588d",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": "2026-08-25T19:19:26.054Z"
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 11,
+        "allHashesHaveTwoRecentOfficialScans": true,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "22857816f623808ceca310a85091ebaa425ca7a1910fe5c849f635761d53492b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "449a022e748d9a428c80146055ed13e5c171fc930fc7ddb68457e03ce014379a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "59e771bc0d18a415180585a5ea087f3290e5e104a59b3147203f37cba825a934",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "6d979a63c25163ef6c9dfcc9526852abcf9db1af3d67a0e31a24c34624bd5cba",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "8452a978fe9e236a7aa29fe123ea9cf071408495d4c4832d5cd5034ab9529080",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "8d91802783592a64815b077b412f07d371dcc0b5de35df52f983b2694f51880b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "9983ad4b35a707cf262727449cf1285f64292f12d2a1d8c8a17c71c4b32271a9",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "9ada5709e264c31b04a05bd85448a9bd5e91925e8d83df5cef0762ec97cc283e",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "a9aa1686c9d127267fa7dc62395df4f7fdb1e962e073b29a7d1fe8f0d118e483",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "b52b5cafc69122eca776df4e142ece4a2831832c1bc088e1a77c14254468626c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "d09a8d20337967c646b8124a8880757651d87e3c4a4636eef28c568f2b8df0b0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "DPD",
+      "registryRevision": "22758380e93254af",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": "2026-08-22T03:12:03.740Z"
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 5,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "066c45dafcf58cbb505669340d55664f6acaf61aef7450e85a3e1be2c1b86340",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "0ba190408a544105c0d8d80e4624c682db5f22f4f72bb61a218e5ae669a83d4e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "54cd611df9f3dacfd49259a43b77c1b482da4aed71a8e95fe94dc2f0798872c4",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "550bfe71af2608916b62a924ef4413dacb6bbbc91c8f4c2ee43162af76e8a634",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "67d9bdf85631e59202480e6d604d2343f7c29e305f0c20bbb4914df04b28533c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "7c636f05e27c821b411159ee6b65e0467344e5e80526c03f487aaa803d87f4e1",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9ec926092f03b8af097c602f23a9af93cf7ad853a2d37e8e90ba9c2812f0be3f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b3bda0d5691cab6fd37004cfca5a32e0819e1d2733a69f43d6e96a0c9893c7c2",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "d393c10dc8a975aca9d19e9db8f2485afaa94c3c7b1c84f2f93cc7b28c8248db",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "d3dfd3ab36c762cc2437ceb7fa4cc451bba7cc3476486815433bf006004f486a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e456566ebe8079f91de4d2da36b3ad63575a5b981c7c6a69820443ca3b28116c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "ePolicija",
+      "registryRevision": "ade26b63b6460696",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 2,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 4,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "302241d9296af0ca2f51c6928051c40af14c501c0813605f0125a5cd0411c719",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "6d95739f9cbd659f2e8f761c01336cfa7d5c9770158be4792eb6b63d3358be26",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b9b371ad9d741a86d5d3a1e9c226176a20c5582ce1d0a9df72d75ee51e259318",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "ba0054a0baa0c3a1bbd4dbbf67a74cb78c530703eab71cdb3acad7a72059ab2c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Elektrum",
+      "registryRevision": "bf54249d29fc7eba",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 3,
+        "authoritativeSources": 2,
+        "excludedTerms": 2,
+        "excludedDomains": 1
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Elektroniniai valdžios vartai",
+      "registryRevision": "5d94b1cb6c9c7498",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 3,
+        "supportedByTwoRecentOfficialScans": 1,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "40f3ef92ccbb64ebc9bb7d42cd402e1485ebf3d6ec027a2c732fad309b9dc0ca",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "54752ca372d7bd52f0ddd2824ccb4328558d51161891c3e722d5d2693ec73a23",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cd332a718bcf6564769a80427f17a30c21da08b4b84c224c0c58d146b403f55d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "ERGO",
+      "registryRevision": "299d7e11b82f2fb4",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "ESO",
+      "registryRevision": "204be3c9fbdd2664",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": "2026-08-25T16:22:17.726Z"
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 2,
+        "passing": 2,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "E. sveikata",
+      "registryRevision": "865bf2fe08deaf54",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "ePristatymas",
+      "registryRevision": "5ff493fb2171b135",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T19:19:26.054Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Gjensidige",
+      "registryRevision": "fd7dbae192eeee76",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Ignitis",
+      "registryRevision": "53daeccc8ebf9342",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 7,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "IKI",
+      "registryRevision": "84e60484bf1759e9",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Lidl Lietuva",
+      "registryRevision": "5e70aa6bc2a73841",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 10,
+        "supportedByTwoRecentOfficialScans": 10,
+        "allHashesHaveTwoRecentOfficialScans": true,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "11acc680498e64dd58ae89c8086977d66846346a95b7846bc76dfe4f9e003079",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "1e93ae10abf9027bfa73a2c608e3cd8a689306a586559bea997806992dcae2cc",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2bfc48e702b57b27c9b5ad0aaa413bac29d34443b9648a9380cbc3855fe87bff",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "7a4a7255aecc86810abc31b5b05a120103d3781599ba92ff72d31ea466fdf96e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "92fca39ddce1d4d44cb5271e837be07432b59f18f352d82bfd12d081f156da5d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "978486c5941d3458bae43a1d6db5b450c026ee78479661f6591857a4277f8467",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "d501f617f422d1f05919fd89b33fbfc814839b1f11fca544e8c19c79051ebafa",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "d97c749de3238e102c4fc0fd0b40bbfe0d93391ac999c55aca31f5b820d5c72c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "dd791fbc003abfd7b88cca147554c1c74aa8f12d052c758486329346cc7c8d1d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "e978b3327037f4f885e18dbebf7d2f86961b1d8f80080ddc523ca8b8ffdf0e97",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Lietuvos bankas",
+      "registryRevision": "c8f330b82eb8791a",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 1,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 2,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "hashSupport": [
+          {
+            "sha256": "ceb958696b40f5f9d69b2404ec6c6fe6f4672e2821b64f02ccd3d6f79424597f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "efb055a2aa53613770b90d625c9a14ee76401600bf4472a2e9ed269e5fed6750",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Lietuvos draudimas",
+      "registryRevision": "cbce5a11119e9fac",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Lietuvos paštas",
+      "registryRevision": "e9f8028416d6495a",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "LP EXPRESS",
+      "registryRevision": "8955666725e3bd27",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Luminor",
+      "registryRevision": "23a620475c276af5",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 5,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 4,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "101b13f114a69ce98e4c0baa9a1274279537b4abe515f99845820af02f2d0248",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "3b11311d56fff935f8b19fdb60d68591478a322871e16bc31a1bac4ddb159906",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "564574be756bfd70ff3a50cd4899d4d07161eb9dabddd1d0b48dfb03ab264250",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "7eb5d38abbe08897b1b1abb0dc74f80956ca1325733d4bf50560a477665796a6",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Mano Bankas",
+      "registryRevision": "96c66fdfff10e44f",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T22:58:13.266Z",
+        "lastSuccessfulQueryAt": "2026-08-25T22:58:13.266Z"
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 2,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "1bdab79161ce45a807c47a0df76a2e37be0114217153e5338bdb1e39af33efe5",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "7725c1ede32f04bea454237f91a5338d40a4cc2f677c58569fc5f6c97c10ab8d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "MAXIMA",
+      "registryRevision": "3c46bf60d3f50257",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 2,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Migracijos departamentas",
+      "registryRevision": "eed05809bf0c6548",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Omniva",
+      "registryRevision": "6871d7da5a687d9e",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 1,
+        "excludedTerms": 2,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Paysera",
+      "registryRevision": "e5c9f6588d416541",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 1,
+        "passing": 1,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "REGITRA",
+      "registryRevision": "0538556fc3960e0a",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 1,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Registrų centras",
+      "registryRevision": "ed6fb7657a143ce7",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Revolut",
+      "registryRevision": "e74608afb2617180",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 11,
+        "allHashesHaveTwoRecentOfficialScans": true,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "1176afa345ae522b597002e9df741793e3dcc834aa666f79d41d7c0a2b627537",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2ec1fe3e20bbce82068df69a9d7689f733a5e7a60b4ded8af72f6c6d44fe87a8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "42ec96a6c5444257bd6dfb4d7df00673fd7019b9ca8367ec916c7ed52bef1715",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "4d05ace38f578bfcab906ca46d69d1d98ed98603043b4ce98b60aaa14ef49533",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "89d08606750229314b81b3afc41db2717074d7bd57ffc8668a18dd9a0a75850f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "9c459f76a2f04e7f4c4e302e7323414d2e06e021258624fd3f9d77b549804266",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "a8c510c147a5b8a2e194e0a4aedc375833a468fd0709d46af627ffd258a45ec1",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "d7f817255acac24d24766a420471f23c0796b5228b84f8432bf70570ed870b72",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "e2b55093846c4bc36794e73aaafd4eef778bc17264c77b0f20874b08fb7828fc",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "e86f56255e6aac0a5c9a43304f5ff699c6b4ab6dd2519ebb39bf7525f1799632",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "fb76ea69d7ad529ed459fd1112f6d5474cef96d3bfbb5f92b5d15390caf7a2c5",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 1,
+        "passing": 1,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "Rimi",
+      "registryRevision": "573409e1588044a8",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 4,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "SEB",
+      "registryRevision": "ffb97b01a05ea958",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 5,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 10,
+        "supportedByTwoRecentOfficialScans": 9,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "1ea0cc3e22d788b9c316cdbceee466ad898e75f3d7bea85db857fc1d010289ab",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2799ab8ff5311b1724ec29141fb62a975c045e6ee27934b62d15739ddab79e78",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "363a46de99a8077b44fbd47d0165b7c827e27e079a5aa2dfe6e60382f4454536",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "49a090cc737cce11d2bee09ad18dc6b4a20a2f4327b39c12265bc2fc006b6a1b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "5f56e124bbc69628fd12ebca300a2bac21903fb34fac66fd896f9cc205961f13",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "6b39d366e36a526beb5bfdf1b195ae138f343f4ee22bedb8ff005e17c2818348",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "8115a76c3d98b5e59ccb17eb985075f3262156420256301f882cbd80a7ee5c8c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "dee4e59dcc7f923efdf0aa448a8219428ac3b901856d3b50d209e1f2bbe4d59a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f4fafa5af9e5f895d5fa9f0ba3761bbb7ca77c1770c127806471e453b84d90e8",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f628d9bb7edc0a1b37e3b41bbfc718b2a112e6d0714460d83153b26a8ed72bc0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Skelbiu.lt",
+      "registryRevision": "76bd80471974af98",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 2,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "2595496fe48df6fcf9b1bc57c29a744c121eb4dd11566466bc13d2e52e6bbcc8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "3294ada623553f086c04e2f4fffa4e0d2810d3a104bd1af6aa77ddf32d504ad8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "36f320f7f90f532d0b857266fbe004fb9e7fd9c526733a346dbe290265df6d1f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "8f96d71485de4264a04b4a1a83774718c05af50db6505fb2d757b87cd98f30a5",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b768a163acdec36951a21d4cc0cdfa6bf4e4fe389de61ba72e3d0cfbb557dda0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b890046ca1dea93dd489d253df2c82a9d694f515246ea29d319ef33ef224dbc8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cf744d492c64ca8c80fc6a0f28c3c3e3ddc69d273c74d4a1c46ccf71f487bcc0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e1ac42af8a278f48ffb18d87eb80343ae0b24685dfaa78e7748f07248d39b0fd",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e3110f2054cf036530ce4509d140c7351ecc3f0cb92e574e27a5a0285020d7ba",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e4560590896f3eb432489a0a290592373e9a67afa4eb4ef90a5daaffdc253559",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "fea414555c9be117b836914d24156d7b640b4a4c9edbecba58debdff0e6e8e20",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Smart-ID",
+      "registryRevision": "dfac482b91c40f95",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 2,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 6,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "459822d33dd9667eb24b4e47156f05cd9276d5aeafcb1131c5a32f4c29a634a7",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "50679e0e3933c945348a2db0cc128bb14b57a60a74fabf8cae13acc14efbb2e1",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "5ec8f50ab08c8581253ef7d8afaee5323a278593c874481c70c0ce5027f93fd4",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "8437fd18595cd0eafc2f8967c8ecd0599b3aa5c95a03561b83d7224b77d25423",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a1ac109fb0da76a03eb39daecb548806675cda9793ad6bce4621c651746de08f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "fc90780d171e3f1a67cdbe55b5436d684bd66588b5ad1df7d7fa206f73d4ae52",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "SmartPosti",
+      "registryRevision": "9256f44588ad7d73",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 5,
+        "authoritativeSources": 4,
+        "excludedTerms": 2,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": "2026-08-25T21:00:11.279Z",
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Sodra",
+      "registryRevision": "76165e351657e4ec",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 9,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "01ec2e58020a9aeaa826379966b6d7652efaace7ab433553e8992d8f4cd1d927",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "2b326ea2e7b985188ebe3ca6948c0e9aff164b40d013e331dd3aceaeb7a6cb8b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "5679aa4f53058b67b833737514914c5ed628194fed41921b175fdd128c4e8549",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "84d0b796db1e38c0950ddda88fd39897d2bb868b94ef3230df4e077090230ca4",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9479202d6bdd0313eab8e2f8e5164bb4786c04401037fb7ec90170926c7a1592",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "add0e4aa2132bc0cb7338337beebdc698d158f52073611fb455facc3793ee118",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b374e10bcffae8cceceba134d3e33a9fc0d92a18d4cb5285ffa8242bebb96aae",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c66f47147d5fe3cceeaa47a93ff7440a328f859b049deec2f9d8f414e9137474",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "f51914d4ef25a540886ef42c2af5e39f87eac09e6e39d3e18ac85cc64dc2cc77",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Swedbank",
+      "registryRevision": "b7e9bc93569b3bbc",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 7,
+        "authoritativeSources": 3,
+        "excludedTerms": 1,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 4,
+        "supportedByTwoRecentOfficialScans": 1,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "164fa8be44ee7c086fe3167258eb800d3dfb54a0527e8be17b09f1ab124e321d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "21b10a3da1ec20d0dd45e7532ec45ec22e6a5e8bf7f0923f3ed3c9bd05f99a11",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "269d4bdf161824fa7626b463e387fea91f244062c9b025787ea401c7668cdf17",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b790234c6cd49a66862f3c6a6990058e4fc9bb235699c16db2e217f58378a501",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 7,
+        "passing": 7,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "Tele2",
+      "registryRevision": "84df203c646ef5b7",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 6,
+        "authoritativeSources": 6,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 8,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "hashSupport": [
+          {
+            "sha256": "1cb98d00b5f623823830943697cef1d7b32b10c0654e2f3b63e65320f006a017",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2586f88a9e522d65be5c833bf95ec683e6c4ee1588a2289025e6ae897c284fbb",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "3eba87a3ad33d7352e2bfe4bb1767e89b9a0e0ce88f0cf33989876ce6ef8a2f8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "433550e50e45a81bef721fbcda4f9afa85a26d2fecd742e8f0b9a7b646aa84e4",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "4bf2f2331838f66a40595b35814a2f8dca75ffce783676060349a98692e5e181",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "5393b53916480fdfce8d4f1962f16c3bea7679646fca5e0e829152401c0a2b92",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "699a03a2007d82b8fad30197010acb8f05d470c0b29394ee55c193b0d2baf0bd",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "7e9863a30c0c9042e866f9139a43bf8f6f751f7df374ad892f444a280379a2a6",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "80ae3d9209dbdd3ed7b509609369993582ea9ad6432784172d662f15e1b5fcb8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "870d87acb2048f0c0c54d6705d388d9db3221f4c3ee9accaa8a5254506fb3e6d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9b2c18da8b42f1f24ced3c13ef2faea7f602fe1a0eb269e1d3620553a474d70e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Telia",
+      "registryRevision": "f154f7268ef5dac6",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 8,
+        "authoritativeSources": 4,
+        "excludedTerms": 1,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "UNIPARK",
+      "registryRevision": "9fecf0fa39d27b5a",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Urbo",
+      "registryRevision": "1db7042639716561",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 2,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Venipak",
+      "registryRevision": "52d0ec8eb51934e7",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 2,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    },
+    {
+      "brand": "Vinted",
+      "registryRevision": "4fb525883b02c2d2",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 1,
+        "officialDomains": 4,
+        "authoritativeSources": 3,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 2,
+        "passing": 2,
+        "status": "passing"
+      }
+    },
+    {
+      "brand": "VMI",
+      "registryRevision": "b19d6bf4f78b7375",
+      "lastReviewedAt": "2026-08-23",
+      "registry": {
+        "aliases": 3,
+        "officialDomains": 1,
+        "authoritativeSources": 1,
+        "excludedTerms": 0,
+        "excludedDomains": 0
+      },
+      "ctSearch": {
+        "configuredQueries": 1,
+        "latestBoundedPollState": "never-attempted",
+        "completedQueries": 0,
+        "backloggedQueries": 0,
+        "failedQueries": 0,
+        "neverAttemptedQueries": 1,
+        "cursorAdvancedQueries": 0,
+        "lastAttemptAt": null,
+        "lastSuccessfulQueryAt": null
+      },
+      "certStream": {
+        "latestMatchAt": null
+      },
+      "urlscanAssets": {
+        "assetHashes": 0,
+        "supportedByTwoRecentOfficialScans": 0,
+        "allHashesHaveTwoRecentOfficialScans": false,
+        "lastValidatedAt": null,
+        "hashSupport": []
+      },
+      "reviewOutcomes": {},
+      "collisionCorpus": {
+        "cases": 0,
+        "passing": 0,
+        "status": "not-covered"
+      }
+    }
+  ]
+}

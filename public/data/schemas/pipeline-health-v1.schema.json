@@ -175,7 +175,8 @@
         "generatedAt",
         "configured",
         "lastOutcome",
-        "lastAttemptAt"
+        "lastAttemptAt",
+        "checkpointCoverage"
       ],
       "properties": {
         "generatedAt": {
@@ -196,6 +197,42 @@
         "lastAttemptAt": {
           "type": "string",
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "checkpointCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "queries",
+            "complete",
+            "partial",
+            "backlog",
+            "oldestBacklogProgressAt"
+          ],
+          "properties": {
+            "queries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "complete": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "partial": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "backlog": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
+            },
+            "oldestBacklogProgressAt": {
+              "$ref": "#/$defs/timestampOrNull"
+            }
+          }
         }
       }
     },
@@ -227,7 +264,8 @@
             "rowsProcessed",
             "dnsNames",
             "matches",
-            "newRecords"
+            "newRecords",
+            "failureCodes"
           ],
           "properties": {
             "startedAt": {
@@ -244,6 +282,21 @@
                 "partial",
                 "failed"
               ]
+            },
+            "failureCodes": {
+              "type": "array",
+              "maxItems": 8,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "provider-timeout",
+                  "provider-http",
+                  "provider-network",
+                  "invalid-response",
+                  "validation",
+                  "internal"
+                ]
+              }
             },
             "queriesAttempted": {
               "$ref": "#/$defs/counter"

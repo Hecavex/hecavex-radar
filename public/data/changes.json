@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-25T23:35:24.087Z",
+  "generatedAt": "2026-08-26T00:00:21.934Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-24T23:35:24.087Z",
-      "to": "2026-08-25T23:35:24.087Z",
-      "events": 18,
-      "uniqueSignals": 9,
-      "firstPublications": 8,
+      "from": "2026-08-25T00:00:21.934Z",
+      "to": "2026-08-26T00:00:21.934Z",
+      "events": 16,
+      "uniqueSignals": 8,
+      "firstPublications": 7,
       "statusChanges": 0,
-      "observations": 10,
+      "observations": 9,
       "reobservations": 1,
       "bySource": {
         "URLScan": 12,
-        "CertStream": 4,
+        "CertStream": 2,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 18
+        "suspected": 16
       },
       "byReason": {
         "brand-title-match": 8,
-        "first-publication": 8,
         "brand-domain-match": 7,
-        "brand-exact-token": 6,
-        "different-tld": 6,
-        "suspicious-context": 6,
+        "first-publication": 7,
         "provider-verdict": 5,
+        "brand-exact-token": 4,
+        "different-tld": 4,
+        "suspicious-context": 4,
         "manual-review": 2
       },
       "byBrand": {
         "Revolut": 7,
         "Vinted": 7,
-        "ESO": 4
+        "ESO": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-18T23:35:24.087Z",
-      "to": "2026-08-25T23:35:24.087Z",
+      "from": "2026-08-19T00:00:21.934Z",
+      "to": "2026-08-26T00:00:21.934Z",
       "events": 51,
       "uniqueSignals": 20,
       "firstPublications": 20,

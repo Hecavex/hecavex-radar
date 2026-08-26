@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-25T23:35:24.087Z",
+  "generatedAt": "2026-08-26T00:00:21.934Z",
   "retentionDays": 365,
-  "from": "2025-08-26",
-  "to": "2026-08-25",
+  "from": "2025-08-27",
+  "to": "2026-08-26",
   "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
   "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
   "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
-  "omittedZeroDays": 358,
+  "omittedZeroDays": 357,
   "collectorSchedule": {
     "expectedIntervalSeconds": 900,
     "expectedListeningSeconds": 480,
@@ -267,15 +267,15 @@
     },
     {
       "date": "2026-08-25",
-      "partialDay": true,
+      "partialDay": false,
       "collectorCoverage": {
-        "windowSeconds": 84924,
-        "scheduledSlots": 94,
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
         "recordedAttempts": 12,
         "healthyAttempts": 12,
-        "recordedSchedulePercent": 12.8,
-        "listeningCoveragePercent": 5.37,
-        "scheduledListeningCeilingPercent": 53.13,
+        "recordedSchedulePercent": 12.5,
+        "listeningCoveragePercent": 5.28,
+        "scheduledListeningCeilingPercent": 53.33,
         "listeningSeconds": 4559.984,
         "outcomes": {
           "healthy-empty": 11,
@@ -315,6 +315,35 @@
           "suspicious-context": 2,
           "manual-review": 1
         }
+      }
+    },
+    {
+      "date": "2026-08-26",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 21,
+        "scheduledSlots": 0,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": null,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 0.0,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 0,
+        "uniqueSignals": 0,
+        "observations": 0,
+        "reobservations": 0,
+        "firstPublications": 0,
+        "statusChanges": 0,
+        "facetSampleSize": 0,
+        "evidenceClassifiedSignals": 0,
+        "byBrand": {},
+        "bySource": {},
+        "byEvidenceTier": {},
+        "byReason": {}
       }
     }
   ],
