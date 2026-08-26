@@ -92,12 +92,12 @@ jobs:
           cache: pip
           cache-dependency-path: |
             pyproject.toml
-            requirements/automation-runtime-py312.lock
+            requirements/automation-ci-py312.lock
 
-      - name: Install the validated publication runtime
+      - name: Install the validated publication toolchain
         if: steps.release.outputs.should_release == 'true'
         run: |
-          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
+          python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-ci-py312.lock
           python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
 
       - name: Validate the checked-in publication
