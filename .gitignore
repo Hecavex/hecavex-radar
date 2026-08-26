@@ -1,6 +1,9 @@
 node_modules/
 dist/
 build/
+.vite/
+.eslintcache
+*.tsbuildinfo
 .env
 .env.*
 !.env.example
@@ -11,9 +14,16 @@ Thumbs.db
 .venv/
 __pycache__/
 *.py[cod]
+.hypothesis/
+.pytest_cache/
 .mypy_cache/
 .ruff_cache/
 *.egg-info/
+.coverage
+coverage/
+htmlcov/
+playwright-report/
+test-results/
 data/hecavex/
 .radar-local/
 *.sqlite

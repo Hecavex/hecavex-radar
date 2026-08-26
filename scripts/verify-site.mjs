@@ -35,7 +35,7 @@ const pages = [
   { path: "/lt/dokumentacija/", marker: "HECAVEX Radaro techninis žinynas" },
   { path: "/404.html", marker: "This route has no signal." },
 ];
-const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
+const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs"];
 const productNavigation = ["Overview", "Changes", "Brands", "Trends", "Associations", "Tools", "Methodology", "Docs"];
 const lithuanianProductNavigation = ["Apžvalga", "Pokyčiai", "Prekių ženklai", "Tendencijos", "Sąsajos", "Įrankiai", "Metodologija", "Dokumentacija"];
 
@@ -453,10 +453,14 @@ function verifyBuiltHtml() {
     assert(document.querySelectorAll("main").length === 1, `${route} must contain exactly one main element.`);
     assert(document.querySelectorAll("h1").length === 1, `${route} must contain exactly one h1.`);
     assert(document.querySelector('.skip-link[href="#main-content"]'), `${route} has no usable skip link.`);
+    assert(document.querySelector('link[rel="icon"][href="/favicon.svg"]'), `${route} has no shared SVG favicon.`);
+    assert(document.querySelector('link[rel="icon"][href="/favicon.ico"]'), `${route} has no ICO fallback favicon.`);
+    assert(document.querySelector('link[rel="apple-touch-icon"][href="/apple-touch-icon.png"]'), `${route} has no shared Apple touch icon.`);
+    assert(document.querySelector('link[rel="manifest"][href="/site.webmanifest"]'), `${route} has no origin web manifest.`);
     assert(document.querySelector('header.site-header[data-portfolio-shell="v2"]'), `${route} has no shared portfolio shell marker.`);
     assert(document.querySelector(`.brand[href="https://hecavex.com/${lithuanian ? "lt" : "en"}/"]`), `${route} does not link the HECAVEX brand to the correct Research edition.`);
     assert(document.querySelector(`.product-identity[href="${lithuanian ? "/lt/" : "/"}"]`), `${route} does not link the Radar identity to its localized overview.`);
-    assert(document.querySelectorAll(".portfolio-navigation a").length === 5, `${route} does not expose five portfolio links.`);
+    assert(document.querySelectorAll(".portfolio-navigation a").length === 4, `${route} does not expose four portfolio links.`);
     assert(document.querySelectorAll(".product-navigation a").length === 8, `${route} exposes the wrong Radar navigation set.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
     const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
@@ -728,12 +732,19 @@ function verifyBuiltHtml() {
 }
 
 function verifyIdentityArtwork() {
-  for (const path of [join(root, "public", "hecavex-mark.svg"), join(output, "hecavex-mark.svg")]) {
+  for (const path of [join(root, "public", "hecavex-mark.svg"), join(output, "hecavex-mark.svg"), join(root, "public", "favicon.svg"), join(output, "favicon.svg")]) {
     const mark = readFileSync(path, "utf8").toLowerCase();
     assert(mark.includes("#44c7dc"), `${relative(root, path)} is missing shared cyan #44c7dc.`);
     assert(mark.includes("#f2f8fb"), `${relative(root, path)} is missing shared white #f2f8fb.`);
     assert(!mark.includes("#ff6b6b"), `${relative(root, path)} still contains retired danger red #ff6b6b.`);
   }
+  for (const name of ["favicon.ico", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "site.webmanifest"]) {
+    assert(existsSync(join(root, "public", name)), `public/${name} is missing from the shared identity kit.`);
+    assert(existsSync(join(output, name)), `dist/${name} is missing from the shared identity kit.`);
+  }
+  const manifest = JSON.parse(readFileSync(join(output, "site.webmanifest"), "utf8"));
+  assert(manifest.name === "HECAVEX Radar" && manifest.id === "/" && manifest.scope === "/", "Radar manifest identity or scope is invalid.");
+  assert(Array.isArray(manifest.icons) && manifest.icons.some((icon) => icon.src === "/icon-192.png") && manifest.icons.some((icon) => icon.src === "/icon-512.png"), "Radar manifest omits required application icons.");
 }
 
 const detailFields = ["schemaVersion", "dataset", "signalId", "domain", "generatedAt", "observations"];

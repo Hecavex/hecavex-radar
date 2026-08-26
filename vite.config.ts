@@ -70,6 +70,29 @@ function cloudflareWebAnalyticsPlugin() {
   };
 }
 
+function portfolioIdentityPlugin() {
+  const identityLinks = [
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml" />',
+    '<link rel="icon" href="/favicon.ico" sizes="any" />',
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png" />',
+    '<link rel="manifest" href="/site.webmanifest" />',
+  ].join("\n    ");
+
+  return {
+    name: "hecavex-portfolio-identity",
+    transformIndexHtml: {
+      order: "pre" as const,
+      handler(html: string) {
+        const withoutLegacyIdentity = html
+          .replace(/<link\s+rel=["']icon["'][^>]*>\s*/gi, "")
+          .replace(/<link\s+rel=["']apple-touch-icon["'][^>]*>\s*/gi, "")
+          .replace(/<link\s+rel=["']manifest["'][^>]*>\s*/gi, "");
+        return withoutLegacyIdentity.replace("</head>", `    ${identityLinks}\n  </head>`);
+      },
+    },
+  };
+}
+
 function socialMetadataDefaultsPlugin() {
   return {
     name: "hecavex-social-metadata-defaults",
@@ -377,7 +400,7 @@ function dynamicRoutesPlugin() {
 }
 
 export default defineConfig({
-  plugins: [staticPagePlugin(), socialMetadataDefaultsPlugin(), cloudflareWebAnalyticsPlugin(), react(), dynamicRoutesPlugin()],
+  plugins: [portfolioIdentityPlugin(), staticPagePlugin(), socialMetadataDefaultsPlugin(), cloudflareWebAnalyticsPlugin(), react(), dynamicRoutesPlugin()],
   build: {
     rollupOptions: {
       input: {

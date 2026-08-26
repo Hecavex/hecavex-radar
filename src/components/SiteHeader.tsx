@@ -24,7 +24,6 @@ const portfolioNavigation = [
   { label: "Radar", href: "/", current: true },
   { label: "APT Notes", href: "https://apt.hecavex.com/", current: false },
   { label: "Labs", href: "https://labs.hecavex.com/", current: false },
-  { label: "Data", href: "https://labs.hecavex.com/data/", current: false },
 ] as const;
 
 const englishNavigation: Array<{ label: string; href: string; pages: SitePage[] }> = [
