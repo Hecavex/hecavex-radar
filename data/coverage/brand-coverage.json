@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-26T00:32:11.269Z",
+  "generatedAt": "2026-08-26T00:43:02.967Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
@@ -56,7 +56,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "58e45c6581dbd7a9ac9bd96f7359f86bbfd71c264af2bc66a678eba4e670851c",
@@ -184,7 +184,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "03e33cc103904d4011b037b0f30f154e122acfa038a09ceca48ca9955fb088dc",
@@ -276,10 +276,10 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 9,
+        "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 8,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "1c23f0dc40bae1811d704fb076204783bc51c757e44a1c83b07db2723064724e",
@@ -292,9 +292,19 @@
             "twoRecentOfficialScans": true
           },
           {
+            "sha256": "373805d36c6a905ce0eb105bec99b3416c02adac73a12c205aa302b03bd44ddf",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
             "sha256": "3773e64998294874155834e7a556d85ce0dbfba6b8d5553c04dae9d1b980e777",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "510c4ccabfb303eeedd4f5e02afcb3f4ba091276e39c17b91ca31e2546b97c3a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
           },
           {
             "sha256": "57fc724409b12d5ca47de07364dafd48665e2d8490893f1dd43ba44d1f301f1a",
@@ -364,7 +374,7 @@
         "assetHashes": 1,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "1c86fccbf71d491db7ae13655b8c977e4ce87655eea1def65bcbf8c02e13e15c",
@@ -406,43 +416,33 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 11,
-        "supportedByTwoRecentOfficialScans": 11,
+        "assetHashes": 12,
+        "supportedByTwoRecentOfficialScans": 12,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
-            "sha256": "22857816f623808ceca310a85091ebaa425ca7a1910fe5c849f635761d53492b",
+            "sha256": "0483a80b1f7d423bdb5e92910a49f80e5e883b70bb0bb45975125381ad6435a2",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "449a022e748d9a428c80146055ed13e5c171fc930fc7ddb68457e03ce014379a",
+            "sha256": "1e51a4c31040f68ae231d3ead8ddcb749f8bccf096a4ca09dd0b01a9b7e3a48b",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "59e771bc0d18a415180585a5ea087f3290e5e104a59b3147203f37cba825a934",
+            "sha256": "82e0bc954e6b02ddc5cd7a8c7a7b0762199ccd17c5136c8934449b01d475d691",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "6d979a63c25163ef6c9dfcc9526852abcf9db1af3d67a0e31a24c34624bd5cba",
+            "sha256": "89de09a118d62dc3a79befdd257b1201a82edd6ffbe18640574fca9718e2bace",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "8452a978fe9e236a7aa29fe123ea9cf071408495d4c4832d5cd5034ab9529080",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "8d91802783592a64815b077b412f07d371dcc0b5de35df52f983b2694f51880b",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "9983ad4b35a707cf262727449cf1285f64292f12d2a1d8c8a17c71c4b32271a9",
+            "sha256": "99f8ff454a4e7f1280ae4e7d4506aad76a527231138e6ab78f4729426db378bd",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
@@ -452,17 +452,32 @@
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "a9aa1686c9d127267fa7dc62395df4f7fdb1e962e073b29a7d1fe8f0d118e483",
+            "sha256": "a0a2c000b545bb5f6aca4fd61978652bbc6538a2fbe3cd353d5a3a97b176152d",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "b52b5cafc69122eca776df4e142ece4a2831832c1bc088e1a77c14254468626c",
+            "sha256": "b9e3182ec80a1c2a7afaf5631547d79146eef326a7fbf3f1185c072d56a5d8c2",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "d09a8d20337967c646b8124a8880757651d87e3c4a4636eef28c568f2b8df0b0",
+            "sha256": "da8d3088849353f7daef8d5de035be41d80dd7b3e916394af49ee86c68bb0bfd",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "e763a82649ff37698e3587de44c2a512ed5220962f9f53f4d58c814a3637c310",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "eb734420cd8832670ee14e0ea83e3b060710d4f2bf782e90c147661e321b8567",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f8049f1e9e2683c33f475610bb3ced508be887fff3cee91594acbc27eb26f8af",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           }
@@ -504,7 +519,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 5,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "066c45dafcf58cbb505669340d55664f6acaf61aef7450e85a3e1be2c1b86340",
@@ -599,7 +614,7 @@
         "assetHashes": 4,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "302241d9296af0ca2f51c6928051c40af14c501c0813605f0125a5cd0411c719",
@@ -698,7 +713,7 @@
         "assetHashes": 3,
         "supportedByTwoRecentOfficialScans": 1,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
         "hashSupport": [
           {
             "sha256": "40f3ef92ccbb64ebc9bb7d42cd402e1485ebf3d6ec027a2c732fad309b9dc0ca",
@@ -1848,16 +1863,11 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 11,
+        "assetHashes": 10,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
         "lastValidatedAt": "2026-08-25T17:18:08.130Z",
         "hashSupport": [
-          {
-            "sha256": "2595496fe48df6fcf9b1bc57c29a744c121eb4dd11566466bc13d2e52e6bbcc8",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": false
-          },
           {
             "sha256": "3294ada623553f086c04e2f4fffa4e0d2810d3a104bd1af6aa77ddf32d504ad8",
             "resourceType": "javascript",
@@ -2292,11 +2302,27 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
+        "assetHashes": 3,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
+        "hashSupport": [
+          {
+            "sha256": "998cb074f864a5a940be7911d85e7806bc88d60f420d85727598e00a9891e421",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a1a5a42e0d61a7d0c58052a3bf637f5ab671e8755894a1d4a5e1264a2875532b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "ef6882422857cd7215e300c8e12905a40453f98346ac86daf1f9f7f2ddcd2b00",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
@@ -2370,11 +2396,37 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
-        "supportedByTwoRecentOfficialScans": 0,
+        "assetHashes": 5,
+        "supportedByTwoRecentOfficialScans": 1,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
+        "hashSupport": [
+          {
+            "sha256": "0abd86fd0da40f84389b8c7933ae15ab3cda08f6e4b6ffbc8307232d8d5b8e5f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "26c9e08e19738287f58281df0df8998b21ae14aa9803286d4ec615617ac4e92f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c534744ff7545741f37e57d0f8b5a20c70760c7ff1df4a18bd1a1f094adfce1e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e3f320d269b89581f1afb34e25c4de515a473472780c06099d0eba374d5ba904",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f6925326d082ae030a60a398a8aceec40dce34065e10b7cc17514f78c2b3452f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
@@ -2448,11 +2500,67 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
+        "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
+        "hashSupport": [
+          {
+            "sha256": "341b30ca886e49260b8af7f1ecc654039da232eb6188e782444cc920fc938b88",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "572eaf57e64e1320400cd48fcee2ab6f7e3cb6efa8ef05b8db1b32d0bf55f9cb",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "5fc4e630861b78967f93bc3f55a512645fe24d598773ea7c7cf7aa5e6e31fd98",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "724a3ef74dd663d79638076bdd66256d2bab99dddd19b39d99e6e4085840e70a",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "8e722dc5f9d51c3bffbe3f585617443a9027d494fdb8f483bbd423fe250017cf",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "9cd53e270081c69862b5f6ae6c41c4a8cda0b091589ac5f9d36ab8c8b560b377",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a8eadeeefb3c1e212f6df05a7d3f53d14604c1b0012c96bc31d25dfffebb4e66",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "df6184d2992386ad1939d4f4eeffcb1cfc01676d53a21bbd75a650742c430a39",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e3997ae26781d1c71f164f15019dee6a4a7bc2f3258f546b6490c0087e805c08",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e936f9269bd4aa8e74d02f52eb8b4aa8d8019b966dcc10c515de36e62fe591f2",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "f1dbf8206b9becf90bd2495e3d3d7dd318aae844424bd58b177d00a1744a2ecf",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
@@ -2487,11 +2595,67 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
+        "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-26T00:34:09.836Z",
+        "hashSupport": [
+          {
+            "sha256": "205f319b1238d922c981b4747b24f9621ecbf73f6369f935ff833edec8f68d61",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "2975d319a971d93cf6d4d4519011f8f42a6bc8a8406d106db8e81d818671b62a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "364f48c01892245eb0790b462e8e8aa22284e04f289512afa75d9864d99e979c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "43b59f412458c199532a49d27b0b20330aaa6be007c45b2131677e4ac4a30b8e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "8c606e06de33f055b99c486606f325414f45e081988cb80626d85b7d9ebd8116",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "96465f7bcf3b9ac41db14d42de271e87d36d712ee300cb54e76b2e93c759b008",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "b4c543930b513406ef3081a8c1b71fcbb45864dc2991025a4276d43e8668e75b",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cec3963d6faafb3195649fb289deb720e43ffd4209ec01f75531099a027728c3",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "f0a62cac548462e703677247b721aab2dcb5fb1f140d2301880c8c9400381115",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "f90d2cd11437e4977ff0412ce92f4c87763bb2c14d976a4bb68bd66d649ff0b6",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "fa5f0c0a795765fe8c2a87e10fe27c798b04f8fb8b64be20a27be7575c8a42f2",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
