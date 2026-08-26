@@ -57,6 +57,23 @@ def test_dns_record_families_change_independently() -> None:
     ]
 
 
+def test_dns_rrset_order_does_not_create_a_change() -> None:
+    before = _dns(
+        a=["192[.]0[.]2[.]10", "192[.]0[.]2[.]11"],
+        aaaa=["2001:db8::1", "2001:db8::2"],
+        ns=["ns1[.]example", "ns2[.]example"],
+        mx=["10 mail1[.]example", "20 mail2[.]example"],
+    )
+    after = _dns(
+        a=["192[.]0[.]2[.]11", "192[.]0[.]2[.]10"],
+        aaaa=["2001:db8::2", "2001:db8::1"],
+        ns=["ns2[.]example", "ns1[.]example"],
+        mx=["20 mail2[.]example", "10 mail1[.]example"],
+    )
+
+    assert _semantic_changes("dns", before, after) == []
+
+
 def test_rdap_changes_are_field_specific() -> None:
     before = {
         "registrar": "Old Registrar",
@@ -74,6 +91,13 @@ def test_rdap_changes_are_field_specific() -> None:
         ("rdap-status-changed", ["statuses"]),
         ("rdap-expiry-changed", ["expiresAt"]),
     ]
+
+
+def test_rdap_status_order_does_not_create_a_change() -> None:
+    before = {"statuses": ["active", "client-hold"]}
+    after = {"statuses": ["client-hold", "active"]}
+
+    assert _semantic_changes("rdap", before, after) == []
 
 
 def test_urlscan_hash_certificate_and_page_changes_are_explicit() -> None:

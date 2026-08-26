@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-26T00:43:02.967Z",
+  "generatedAt": "2026-08-26T01:01:48.803Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 13,
@@ -81,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-25T00:43:02.967Z",
-      "to": "2026-08-26T00:43:02.967Z",
+      "from": "2026-08-25T01:01:48.803Z",
+      "to": "2026-08-26T01:01:48.803Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 13,
@@ -102,9 +102,9 @@
       "screening": {
         "matches": 1,
         "newArchiveRecords": 1,
-        "firstPublications": 7,
+        "firstPublications": 6,
         "bySource": {
-          "URLScan": 12,
+          "URLScan": 9,
           "CertStream": 2,
           "HECAVEX": 2
         }
@@ -120,16 +120,16 @@
         "rdap": 0
       },
       "publication": {
-        "events": 16,
-        "observations": 9,
-        "statusTransitions": 7,
-        "uniqueSignals": 8
+        "events": 13,
+        "observations": 7,
+        "statusTransitions": 6,
+        "uniqueSignals": 7
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-19T00:43:02.967Z",
-      "to": "2026-08-26T00:43:02.967Z",
+      "from": "2026-08-19T01:01:48.803Z",
+      "to": "2026-08-26T01:01:48.803Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 39,

@@ -330,9 +330,15 @@ def _resolves(value: Mapping[str, object]) -> bool:
     return any(isinstance(value.get(field), list) and bool(value[field]) for field in ("a", "aaaa", "cname"))
 
 
-def _dns_values(value: Mapping[str, object], field: str) -> list[object]:
+def _unordered_string_values(value: Mapping[str, object], field: str) -> tuple[str, ...]:
     answers = value.get(field)
-    return cast(list[object], answers) if isinstance(answers, list) else []
+    if not isinstance(answers, list):
+        return ()
+    return tuple(sorted({answer for answer in answers if isinstance(answer, str)}))
+
+
+def _dns_values(value: Mapping[str, object], field: str) -> tuple[str, ...]:
+    return _unordered_string_values(value, field)
 
 
 def _semantic_changes(
@@ -365,7 +371,9 @@ def _semantic_changes(
             ("statuses", "rdap-status-changed"),
             ("expiresAt", "rdap-expiry-changed"),
         ):
-            if before.get(field) != after.get(field):
+            before_value = _unordered_string_values(before, field) if field == "statuses" else before.get(field)
+            after_value = _unordered_string_values(after, field) if field == "statuses" else after.get(field)
+            if before_value != after_value:
                 changes.append((change_type, [field]))
     elif component == "urlscan":
         for field, change_type in (

@@ -9,7 +9,7 @@ The Radar release workflow is designed to publish at most one point-in-time data
 | Asset | Purpose |
 | --- | --- |
 | `radar-data-YYYY-Www.tar.gz` | Reproducible archive of the checked-in static public data tree and validated bounded context-journal partitions |
-| `radar-data-YYYY-Www.manifest.json` | Source commit, snapshot timestamp, exclusion statement, and SHA-256 digest and byte length for every packaged file |
+| `radar-data-YYYY-Www.manifest.json` | Source commit, snapshot timestamp, exclusion statement, and SHA-256 digest and byte length for every packaged dataset and context file; the identical in-archive manifest cannot recursively inventory itself |
 | `radar-data-YYYY-Www.spdx.json` | SPDX 2.3 software and dependency inventory derived from the exact Python runtime lock and complete pnpm package lock |
 | `SHA256SUMS` | Download verification for the archive, standalone manifest, and SPDX document |
 

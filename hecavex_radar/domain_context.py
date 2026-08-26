@@ -281,7 +281,15 @@ def _dns_context(domain: str, requester: JsonRequester) -> dict[str, object]:
                 ttl_values.append(ttl)
     if successful == 0:
         raise RuntimeError("DNS context returned no completed queries.")
-    return {**records, "minimumTtl": min(ttl_values) if ttl_values else None, "queriesCompleted": successful}
+    # DNS answer order is not meaningful and recursive resolvers may return the
+    # same RRset in a different order on every query.  Keep the stored baseline
+    # deterministic so a harmless reorder cannot become a context-change event.
+    ordered_records = {record_type: sorted(values) for record_type, values in records.items()}
+    return {
+        **ordered_records,
+        "minimumTtl": min(ttl_values) if ttl_values else None,
+        "queriesCompleted": successful,
+    }
 
 
 def _safe_registrar(value: object) -> str | None:
@@ -346,7 +354,8 @@ def _registration_context(value: object) -> dict[str, object] | None:
         "registeredAt": _timestamp(dates["registeredAt"]) if "registeredAt" in dates else None,
         "updatedAt": _timestamp(dates["updatedAt"]) if "updatedAt" in dates else None,
         "expiresAt": _timestamp(dates["expiresAt"]) if "expiresAt" in dates else None,
-        "statuses": statuses,
+        # RDAP status is also an unordered set in this contract.
+        "statuses": sorted(statuses),
     }
     return context if any(value for value in context.values()) else None
 
