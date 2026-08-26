@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-26T04:05:37.383Z",
+  "generatedAt": "2026-08-26T05:58:43.327Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 13,
@@ -48,10 +48,10 @@
       }
     },
     "ctSearch": {
-      "generatedAt": "2026-08-26T03:49:26.506Z",
+      "generatedAt": "2026-08-26T05:19:11.005Z",
       "latestRun": {
-        "startedAt": "2026-08-26T03:49:22.810Z",
-        "endedAt": "2026-08-26T03:49:26.506Z",
+        "startedAt": "2026-08-26T05:19:06.603Z",
+        "endedAt": "2026-08-26T05:19:11.005Z",
         "outcome": "failed",
         "queriesAttempted": 6,
         "queriesCompleted": 0,
@@ -81,21 +81,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-25T04:05:37.383Z",
-      "to": "2026-08-26T04:05:37.383Z",
+      "from": "2026-08-25T05:58:43.327Z",
+      "to": "2026-08-26T05:58:43.327Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 13,
-        "healthyAttempts": 13,
-        "recordedSchedulePercent": 13.5,
-        "listeningCoveragePercent": 6.11,
+        "recordedAttempts": 12,
+        "healthyAttempts": 12,
+        "recordedSchedulePercent": 12.5,
+        "listeningCoveragePercent": 5.83,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 5280,
-        "listeningSeconds": 5279.982,
-        "messages": 1735342,
-        "dnsNames": 3001926,
+        "expectedListeningSeconds": 5040,
+        "listeningSeconds": 5039.983,
+        "messages": 1643242,
+        "dnsNames": 2847677,
         "outcomes": {
-          "healthy-empty": 12,
+          "healthy-empty": 11,
           "healthy-matches": 1
         }
       },
@@ -110,11 +110,11 @@
         }
       },
       "enrichment": {
-        "observations": 13,
-        "uniqueSignals": 9,
+        "observations": 12,
+        "uniqueSignals": 8,
         "page": 12,
         "network": 9,
-        "assessment": 13,
+        "assessment": 12,
         "certificate": 9,
         "dns": 0,
         "rdap": 0
@@ -128,8 +128,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-19T04:05:37.383Z",
-      "to": "2026-08-26T04:05:37.383Z",
+      "from": "2026-08-19T05:58:43.327Z",
+      "to": "2026-08-26T05:58:43.327Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 40,
@@ -157,11 +157,11 @@
         }
       },
       "enrichment": {
-        "observations": 31,
-        "uniqueSignals": 19,
+        "observations": 28,
+        "uniqueSignals": 16,
         "page": 28,
         "network": 25,
-        "assessment": 31,
+        "assessment": 28,
         "certificate": 23,
         "dns": 0,
         "rdap": 0
