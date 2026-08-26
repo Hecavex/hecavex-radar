@@ -1,20 +1,21 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-26T10:20:46.470Z",
+  "generatedAt": "2026-08-26T12:03:56.304Z",
   "latestRun": {
-    "dnsNames": 2,
-    "endedAt": "2026-08-26T10:20:46.470Z",
+    "dnsNames": 0,
+    "endedAt": "2026-08-26T12:03:56.304Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
+    "outcome": "failed",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
-    "rowsProcessed": 1,
-    "startedAt": "2026-08-26T10:20:09.355Z"
+    "queriesCompleted": 0,
+    "rowsProcessed": 0,
+    "startedAt": "2026-08-26T12:03:07.251Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -135,7 +136,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "gjensidige"
     },
     "brand:ignitis": {
@@ -143,7 +144,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "ignitis"
     },
     "brand:ikilietuva": {
@@ -151,7 +152,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "ikilietuva"
     },
     "brand:itella": {
@@ -159,7 +160,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "itella"
     },
     "brand:lddraudimas": {
@@ -167,7 +168,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "lddraudimas"
     },
     "brand:lidllietuva": {
@@ -175,7 +176,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastRunAt": "2026-08-26T12:03:07.251Z",
       "term": "lidllietuva"
     },
     "brand:lietuvosbankas": {
@@ -387,6 +388,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 14,
+  "queryCursor": 20,
   "schemaVersion": 1
 }
