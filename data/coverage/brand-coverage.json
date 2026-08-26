@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-26T03:49:26.506Z",
+  "generatedAt": "2026-08-26T05:19:22.083Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-26T03:49:26.506Z",
-      "queryCursor": 42,
+      "stateGeneratedAt": "2026-08-26T05:19:11.005Z",
+      "queryCursor": 2,
       "configuredQueries": 46
     },
     "urlscanHunt": {
@@ -46,7 +46,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -135,7 +135,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-25T17:17:35.267Z",
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -1041,7 +1041,7 @@
         "assetHashes": 10,
         "supportedByTwoRecentOfficialScans": 10,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "11acc680498e64dd58ae89c8086977d66846346a95b7846bc76dfe4f9e003079",
@@ -1131,7 +1131,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T12:09:50.980Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "ceb958696b40f5f9d69b2404ec6c6fe6f4672e2821b64f02ccd3d6f79424597f",
@@ -1298,7 +1298,7 @@
         "assetHashes": 4,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "101b13f114a69ce98e4c0baa9a1274279537b4abe515f99845820af02f2d0248",
@@ -1358,7 +1358,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "1bdab79161ce45a807c47a0df76a2e37be0114217153e5338bdb1e39af33efe5",
@@ -1642,7 +1642,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 11,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "1176afa345ae522b597002e9df741793e3dcc834aa666f79d41d7c0a2b627537",
@@ -1776,7 +1776,7 @@
         "assetHashes": 10,
         "supportedByTwoRecentOfficialScans": 9,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-25T17:18:08.130Z",
+        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
         "hashSupport": [
           {
             "sha256": "1ea0cc3e22d788b9c316cdbceee466ad898e75f3d7bea85db857fc1d010289ab",
@@ -2344,13 +2344,13 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "never-attempted",
+        "latestBoundedPollState": "failed",
         "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
-        "neverAttemptedQueries": 1,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": null,
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -2383,13 +2383,13 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "never-attempted",
+        "latestBoundedPollState": "failed",
         "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
-        "neverAttemptedQueries": 1,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": null,
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -2448,13 +2448,13 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "never-attempted",
+        "latestBoundedPollState": "failed",
         "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
-        "neverAttemptedQueries": 1,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": null,
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -2487,13 +2487,13 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "never-attempted",
+        "latestBoundedPollState": "failed",
         "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
-        "neverAttemptedQueries": 1,
+        "failedQueries": 1,
+        "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": null,
+        "lastAttemptAt": "2026-08-26T05:19:06.603Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
