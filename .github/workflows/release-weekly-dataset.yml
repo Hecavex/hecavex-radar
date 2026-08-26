@@ -385,8 +385,13 @@ jobs:
               --draft
           fi
 
-          release_id="$(gh api "repos/${GITHUB_REPOSITORY}/releases" \
-            --jq ".[] | select(.tag_name == \"${RELEASE_TAG}\") | .id" | head -n 1)"
+          release_id=""
+          for lookup_attempt in 1 2 3 4 5; do
+            release_id="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+              --jq ".[] | select(.tag_name == \"${RELEASE_TAG}\") | .id" | head -n 1)"
+            [[ -n "${release_id}" ]] && break
+            sleep "${lookup_attempt}"
+          done
           test -n "${release_id}"
           gh api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" \
             --jq '.assets[].name' | sort > _release/actual-assets.txt
