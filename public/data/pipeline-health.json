@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-26T00:00:21.934Z",
+  "generatedAt": "2026-08-26T00:32:11.269Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 13,
     "sourceStates": {
       "CertStream": "healthy",
-      "URLScan": "partial",
+      "URLScan": "healthy",
       "HECAVEX": "healthy"
     },
     "sourceRecords": {
@@ -35,40 +35,42 @@
       }
     },
     "urlscan": {
-      "generatedAt": "2026-08-25T15:25:53.837Z",
+      "generatedAt": "2026-08-26T00:28:32.217Z",
       "configured": true,
-      "lastOutcome": "failed",
-      "lastAttemptAt": "2026-08-25T15:25:53.837Z",
+      "lastOutcome": "completed",
+      "lastAttemptAt": "2026-08-26T00:28:32.217Z",
       "checkpointCoverage": {
-        "queries": 0,
-        "complete": 0,
-        "partial": 0,
-        "backlog": 0,
-        "oldestBacklogProgressAt": null
+        "queries": 3,
+        "complete": 1,
+        "partial": 2,
+        "backlog": 2,
+        "oldestBacklogProgressAt": "2026-08-26T00:28:32.217Z"
       }
     },
     "ctSearch": {
-      "generatedAt": "2026-08-25T22:58:17.295Z",
+      "generatedAt": "2026-08-26T00:31:18.463Z",
       "latestRun": {
-        "startedAt": "2026-08-25T22:58:13.266Z",
-        "endedAt": "2026-08-25T22:58:17.295Z",
-        "outcome": "partial",
+        "startedAt": "2026-08-26T00:30:58.637Z",
+        "endedAt": "2026-08-26T00:31:18.463Z",
+        "outcome": "failed",
         "queriesAttempted": 6,
-        "queriesCompleted": 1,
+        "queriesCompleted": 0,
         "queriesBacklogged": 0,
         "rowsProcessed": 0,
         "dnsNames": 0,
         "matches": 0,
         "newRecords": 0,
-        "failureCodes": []
+        "failureCodes": [
+          "provider-http"
+        ]
       },
       "provider": "crt.sh"
     },
     "domainContext": {
-      "generatedAt": "2026-08-25T20:00:52.524Z",
+      "generatedAt": "2026-08-26T00:27:10.976Z",
       "latestRun": {
-        "startedAt": "2026-08-25T20:00:44.366Z",
-        "endedAt": "2026-08-25T20:00:52.524Z",
+        "startedAt": "2026-08-26T00:26:59.256Z",
+        "endedAt": "2026-08-26T00:27:10.976Z",
         "outcome": "completed",
         "attempted": 13,
         "completed": 13
@@ -79,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-25T00:00:21.934Z",
-      "to": "2026-08-26T00:00:21.934Z",
+      "from": "2026-08-25T00:32:11.269Z",
+      "to": "2026-08-26T00:32:11.269Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 12,
@@ -108,12 +110,12 @@
         }
       },
       "enrichment": {
-        "observations": 4,
-        "uniqueSignals": 4,
-        "page": 4,
-        "network": 3,
-        "assessment": 4,
-        "certificate": 3,
+        "observations": 9,
+        "uniqueSignals": 8,
+        "page": 8,
+        "network": 7,
+        "assessment": 9,
+        "certificate": 7,
         "dns": 0,
         "rdap": 0
       },
@@ -126,8 +128,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-19T00:00:21.934Z",
-      "to": "2026-08-26T00:00:21.934Z",
+      "from": "2026-08-19T00:32:11.269Z",
+      "to": "2026-08-26T00:32:11.269Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 38,
@@ -155,12 +157,12 @@
         }
       },
       "enrichment": {
-        "observations": 12,
-        "uniqueSignals": 12,
-        "page": 12,
-        "network": 11,
-        "assessment": 12,
-        "certificate": 10,
+        "observations": 27,
+        "uniqueSignals": 18,
+        "page": 24,
+        "network": 23,
+        "assessment": 27,
+        "certificate": 21,
         "dns": 0,
         "rdap": 0
       },
