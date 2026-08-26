@@ -1,21 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-26T12:03:56.304Z",
+  "generatedAt": "2026-08-26T16:37:48.107Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-26T12:03:56.304Z",
+    "endedAt": "2026-08-26T16:37:48.107Z",
     "failureCodes": [
-      "provider-http",
-      "provider-timeout"
+      "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-26T12:03:07.251Z"
+    "startedAt": "2026-08-26T16:37:09.865Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -183,8 +182,8 @@
       "brand": "Lietuvos bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "lietuvosbankas"
     },
     "brand:lpexpress": {
@@ -192,7 +191,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "lpexpress"
     },
     "brand:luminor": {
@@ -200,15 +199,15 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "luminor"
     },
     "brand:manobank": {
       "brand": "Mano Bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-08-25T22:58:13.266Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "manobank"
     },
     "brand:manovmi": {
@@ -216,7 +215,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T00:30:58.637Z",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "manovmi"
     },
     "brand:maxima": {
@@ -224,7 +223,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T00:30:58.637Z",
+      "lastRunAt": "2026-08-26T16:37:09.865Z",
       "term": "maxima"
     },
     "brand:migris": {
@@ -388,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 20,
+  "queryCursor": 26,
   "schemaVersion": 1
 }
