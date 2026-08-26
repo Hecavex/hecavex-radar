@@ -1,39 +1,28 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-26T14:50:22.507Z",
+  "generatedAt": "2026-08-26T16:58:26.636Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-25T14:50:22.507Z",
-      "to": "2026-08-26T14:50:22.507Z",
-      "events": 2,
-      "uniqueSignals": 1,
-      "firstPublications": 1,
+      "from": "2026-08-25T16:58:26.636Z",
+      "to": "2026-08-26T16:58:26.636Z",
+      "events": 0,
+      "uniqueSignals": 0,
+      "firstPublications": 0,
       "statusChanges": 0,
-      "observations": 1,
+      "observations": 0,
       "reobservations": 0,
-      "bySource": {
-        "CertStream": 2
-      },
-      "byStatus": {
-        "suspected": 2
-      },
-      "byReason": {
-        "brand-exact-token": 2,
-        "different-tld": 2,
-        "suspicious-context": 2,
-        "first-publication": 1
-      },
-      "byBrand": {
-        "ESO": 2
-      }
+      "bySource": {},
+      "byStatus": {},
+      "byReason": {},
+      "byBrand": {}
     },
     {
       "hours": 168,
-      "from": "2026-08-19T14:50:22.507Z",
-      "to": "2026-08-26T14:50:22.507Z",
+      "from": "2026-08-19T16:58:26.636Z",
+      "to": "2026-08-26T16:58:26.636Z",
       "events": 51,
       "uniqueSignals": 20,
       "firstPublications": 20,
