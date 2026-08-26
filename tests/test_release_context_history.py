@@ -85,7 +85,7 @@ def _fixture(
         "dataset": "hecavex-radar-weekly-release",
         "releaseWeek": "2026-W35",
         "tag": TAG,
-        "sourceRepository": "Hecavex/hecavex-radar",
+        "sourceRepository": "Hecavex/radar.hecavex.com",
         "sourceCommit": "a" * 40,
         "snapshotGeneratedAt": ANCHOR,
         "archiveRoot": TAG,

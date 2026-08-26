@@ -1,6 +1,6 @@
 # Weekly dataset releases
 
-The Radar release workflow is designed to publish one ordinary point-in-time dataset package for each ISO week after its repository gates pass. A release exists only when it appears on the repository's [GitHub Releases page](https://github.com/Hecavex/hecavex-radar/releases); the checked-in workflow and schedule do not prove that any week has been published. A successful release complements the live hourly files but does not expand Radar's sampled collection coverage or turn a candidate into a maliciousness verdict.
+The Radar release workflow is designed to publish one ordinary point-in-time dataset package for each ISO week after its repository gates pass. A release exists only when it appears on the repository's [GitHub Releases page](https://github.com/Hecavex/radar.hecavex.com/releases); the checked-in workflow and schedule do not prove that any week has been published. A successful release complements the live hourly files but does not expand Radar's sampled collection coverage or turn a candidate into a maliciousness verdict.
 
 ## Release contract
 
@@ -49,10 +49,18 @@ After downloading all four assets into one directory:
 
 ```sh
 sha256sum --check SHA256SUMS
-gh attestation verify radar-data-YYYY-Www.tar.gz --repo Hecavex/hecavex-radar
-gh attestation verify radar-data-YYYY-Www.manifest.json --repo Hecavex/hecavex-radar
-gh attestation verify radar-data-YYYY-Www.spdx.json --repo Hecavex/hecavex-radar
-gh attestation verify SHA256SUMS --repo Hecavex/hecavex-radar
+gh attestation verify radar-data-YYYY-Www.tar.gz --repo Hecavex/radar.hecavex.com
+gh attestation verify radar-data-YYYY-Www.manifest.json --repo Hecavex/radar.hecavex.com
+gh attestation verify radar-data-YYYY-Www.spdx.json --repo Hecavex/radar.hecavex.com
+gh attestation verify SHA256SUMS --repo Hecavex/radar.hecavex.com
 ```
+
+Releases attested before the 26 August 2026 repository rename retain the signed workflow identity `Hecavex/hecavex-radar`. Verify those historical assets with the former slug, which currently resolves to this repository:
+
+```sh
+gh attestation verify ARTIFACT --repo Hecavex/hecavex-radar
+```
+
+Do not recreate a different repository at the former slug while those attestations remain part of the public audit trail. Releases produced after the rename use `Hecavex/radar.hecavex.com` as shown above.
 
 The checksum establishes byte integrity. The GitHub attestation binds those bytes to the repository workflow and source revision. Neither mechanism validates third-party observations or changes the terms in [`DATA-LICENSE.md`](../DATA-LICENSE.md).

@@ -295,7 +295,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               Reviewed aliases, opt-in fuzzy aliases, official domains, collision exclusions, and supporting references
               used by the public matcher. Repository history records changes and review context.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/data/brands-lt.json">Open the registry</a>
+            <a href="https://github.com/Hecavex/radar.hecavex.com/blob/main/data/brands-lt.json">Open the registry</a>
           </article>
           <article>
             <span>Latest attempt · JSON</span>
@@ -331,7 +331,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               A successful weekly workflow publishes a reproducible archive, standalone manifest, SPDX 2.3 inventory,
               checksums, and attestations. The workflow schedule alone does not mean a release has occurred.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar/releases">Check published releases</a>
+            <a href="https://github.com/Hecavex/radar.hecavex.com/releases">Check published releases</a>
           </article>
           <article>
             <span>Aggregate operations · JSON</span>
@@ -514,7 +514,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               a random sample; and the synthetic/reserved/official-domain matcher corpus is a CI regression contract.
               None is a verdict, public decision, or prevalence estimate.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar/tree/main/data/coverage">Review quality artifacts</a>
+            <a href="https://github.com/Hecavex/radar.hecavex.com/tree/main/data/coverage">Review quality artifacts</a>
           </article>
           <article>
             <span>Proposal schema 1</span>
@@ -598,8 +598,8 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
         <p className="docs-copy">
           Browse the <a href="/history/">retained candidate trail</a>. Repository operators can review the complete
           retention and operator-export contracts in{" "}
-          <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/HISTORY.md">HISTORY.md</a> and{" "}
-          <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/REVIEW-WORKFLOW.md">REVIEW-WORKFLOW.md</a>.
+          <a href="https://github.com/Hecavex/radar.hecavex.com/blob/main/docs/HISTORY.md">HISTORY.md</a> and{" "}
+          <a href="https://github.com/Hecavex/radar.hecavex.com/blob/main/docs/REVIEW-WORKFLOW.md">REVIEW-WORKFLOW.md</a>.
         </p>
       </section>
 
@@ -664,7 +664,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
           83,875 messages containing 146,591 DNS names, with zero qualifying matches. That is evidence of one healthy
           empty run—not continuous coverage. The dashboard now presents the latest bounded attempt directly; repository
           operators can still inspect complete execution logs in{" "}
-          <a href="https://github.com/Hecavex/hecavex-radar/actions/workflows/collect-certstream.yml">GitHub Actions</a>.
+          <a href="https://github.com/Hecavex/radar.hecavex.com/actions/workflows/collect-certstream.yml">GitHub Actions</a>.
         </p>
         <h3 className="docs-subheading">Repository configuration</h3>
         <div className="docs-table-wrap" role="region" aria-label="Repository configuration" tabIndex={0}>
@@ -719,7 +719,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
             Stage 02A now adds bounded, provider-indexed query checkpoints while retaining CertStream for low-latency
             discovery. It improves replay of indexed brand results but does not satisfy a complete log-index coverage
             claim; the remaining acceptance limits stay explicit in the{" "}
-            <a href="https://github.com/Hecavex/hecavex-radar/blob/main/docs/decisions/0001-ct-coverage.md">
+            <a href="https://github.com/Hecavex/radar.hecavex.com/blob/main/docs/decisions/0001-ct-coverage.md">
               architecture decision record
             </a>.
           </p>
@@ -743,7 +743,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               Automated workflows publish when their validation gates pass. Source-panel state and snapshot timestamps
               expose what the current data can establish; workflow history remains the operational source of truth.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar/actions">Review workflow history</a>
+            <a href="https://github.com/Hecavex/radar.hecavex.com/actions">Review workflow history</a>
           </article>
           <article>
             <span>Responsible reporting</span>
@@ -770,7 +770,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
               Source, workflows, registry references, and issue history are public for transparency. Accepted
               production changes must preserve defanging, passive collection boundaries, provenance, and publication rules.
             </p>
-            <a href="https://github.com/Hecavex/hecavex-radar">Review the service source</a>
+            <a href="https://github.com/Hecavex/radar.hecavex.com">Review the service source</a>
           </article>
           <article id="privacy-analytics">
             <span>Privacy and analytics</span>

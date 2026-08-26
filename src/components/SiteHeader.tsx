@@ -110,7 +110,7 @@ function SourceLink({ className, onNavigate }: { className?: string; onNavigate?
   return (
     <a
       className={className ? `source-link ${className}` : "source-link"}
-      href="https://github.com/Hecavex/hecavex-radar"
+      href="https://github.com/Hecavex/radar.hecavex.com"
       target="_blank"
       rel="noreferrer"
       onClick={onNavigate}

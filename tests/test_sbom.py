@@ -83,7 +83,7 @@ snapshots:
 def _build(paths: dict[str, Path]) -> dict[str, object]:
     return build_sbom(
         tag=TAG,
-        repository="Hecavex/hecavex-radar",
+        repository="Hecavex/radar.hecavex.com",
         commit=COMMIT,
         release_manifest=paths["release_manifest"],
         files=[paths["archive"], paths["release_manifest"]],
@@ -184,7 +184,7 @@ def test_repository_locks_produce_a_complete_hybrid_inventory(tmp_path: Path) ->
 
     value = build_sbom(
         tag=TAG,
-        repository="Hecavex/hecavex-radar",
+        repository="Hecavex/radar.hecavex.com",
         commit=COMMIT,
         release_manifest=release_manifest,
         files=[archive, release_manifest],

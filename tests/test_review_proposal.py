@@ -32,7 +32,7 @@ def _input(**changes: str | None) -> ProposalInput:
     values: dict[str, str | None] = {
         "action": "false-positive",
         "issue_number": "42",
-        "repository": "Hecavex/hecavex-radar",
+        "repository": "Hecavex/radar.hecavex.com",
         "brand": "Vinted",
         "subject": "support-vinted[.]example",
         "reason": "unrelated-name-collision",
@@ -49,7 +49,7 @@ def test_build_proposal_contains_only_controlled_sanitized_fields() -> None:
         _registry(),
         created_at="2026-08-26T10:00:00.000Z",
     )
-    assert proposal["issueReference"] == "https://github.com/Hecavex/hecavex-radar/issues/42"
+    assert proposal["issueReference"] == "https://github.com/Hecavex/radar.hecavex.com/issues/42"
     assert proposal["subject"] == "support-vinted[.]example"
     assert proposal["state"] == "proposed"
     assert "note" not in proposal
@@ -63,7 +63,7 @@ def test_build_proposal_contains_only_controlled_sanitized_fields() -> None:
         ("subject", "support-vinted[.]example;echo-test"),
         ("signal_id", "../../unsafe"),
         ("issue_number", "42; env"),
-        ("repository", "Hecavex/hecavex-radar/extra"),
+        ("repository", "Hecavex/radar.hecavex.com/extra"),
         ("brand", "Not registered"),
         ("reason", "free-form-reason"),
     ],

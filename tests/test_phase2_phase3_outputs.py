@@ -256,7 +256,7 @@ def test_weekly_sbom_is_spdx_and_covers_both_release_files(tmp_path: Path, monke
     )
     sbom = build_sbom(
         tag="radar-data-2026-W35",
-        repository="Hecavex/hecavex-radar",
+        repository="Hecavex/radar.hecavex.com",
         commit="a" * 40,
         release_manifest=manifest,
         files=[archive, manifest],
