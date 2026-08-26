@@ -1,11 +1,12 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-26T00:31:18.463Z",
+  "generatedAt": "2026-08-26T01:18:48.666Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-26T00:31:18.463Z",
+    "endedAt": "2026-08-26T01:18:48.666Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
@@ -14,7 +15,7 @@
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-26T00:30:58.637Z"
+    "startedAt": "2026-08-26T01:17:45.799Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -262,48 +263,48 @@
       "brand": "Lietuvos paštas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
       "brand": "Registrų centras",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "registrucentras"
     },
     "brand:regitra": {
       "brand": "REGITRA",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "regitra"
     },
     "brand:revolut": {
       "brand": "Revolut",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "revolut"
     },
     "brand:rimilietuva": {
       "brand": "Rimi",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "rimilietuva"
     },
     "brand:sebbankas": {
       "brand": "SEB",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T01:17:45.799Z",
       "term": "sebbankas"
     },
     "brand:skelbiu": {
@@ -387,6 +388,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 30,
+  "queryCursor": 36,
   "schemaVersion": 1
 }
