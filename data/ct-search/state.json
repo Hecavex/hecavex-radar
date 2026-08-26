@@ -1,17 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-25T22:58:17.295Z",
+  "generatedAt": "2026-08-26T00:31:18.463Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-25T22:58:17.295Z",
+    "endedAt": "2026-08-26T00:31:18.463Z",
+    "failureCodes": [
+      "provider-http"
+    ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
+    "outcome": "failed",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
+    "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-25T22:58:13.266Z"
+    "startedAt": "2026-08-26T00:30:58.637Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -211,48 +214,48 @@
       "brand": "VMI",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "manovmi"
     },
     "brand:maxima": {
       "brand": "MAXIMA",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "maxima"
     },
     "brand:migris": {
       "brand": "Migracijos departamentas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "migris"
     },
     "brand:omniva": {
       "brand": "Omniva",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "omniva"
     },
     "brand:paysera": {
       "brand": "Paysera",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "paysera"
     },
     "brand:policija": {
       "brand": "ePolicija",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": null,
-      "lastRunAt": null,
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-26T00:30:58.637Z",
       "term": "policija"
     },
     "brand:postlt": {
@@ -384,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 24,
+  "queryCursor": 30,
   "schemaVersion": 1
 }
