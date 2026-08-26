@@ -1,20 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-26T08:12:25.994Z",
+  "generatedAt": "2026-08-26T10:20:46.470Z",
   "latestRun": {
-    "dnsNames": 0,
-    "endedAt": "2026-08-26T08:12:25.994Z",
+    "dnsNames": 2,
+    "endedAt": "2026-08-26T10:20:46.470Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
-    "rowsProcessed": 0,
-    "startedAt": "2026-08-26T08:12:22.297Z"
+    "queriesCompleted": 1,
+    "rowsProcessed": 1,
+    "startedAt": "2026-08-26T10:20:09.355Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -85,9 +85,9 @@
     "brand:elektrum": {
       "brand": "Elektrum",
       "lastEntryAt": null,
-      "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T19:19:26.054Z",
+      "lastId": 27835197032,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
@@ -95,7 +95,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T19:19:26.054Z",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
@@ -103,7 +103,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T19:19:26.054Z",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "epaslaugos"
     },
     "brand:epristatymas": {
@@ -111,7 +111,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T19:19:26.054Z",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
@@ -119,7 +119,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "ergodraudimas"
     },
     "brand:esveikata": {
@@ -127,7 +127,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-25T21:00:11.279Z",
+      "lastRunAt": "2026-08-26T10:20:09.355Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
@@ -387,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 8,
+  "queryCursor": 14,
   "schemaVersion": 1
 }
