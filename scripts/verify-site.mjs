@@ -156,7 +156,10 @@ function verifyDeploymentTopology() {
       deploy.includes("test -f dist/data/schemas/radar-v2.schema.json") &&
       deploy.includes("! grep -Fq 'Allow: /data/radar.stix.json' dist/robots.txt") &&
       deploy.includes("git merge-base --is-ancestor") &&
-      deploy.includes("data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/"),
+      deploy.includes("data/(certstream|ct-search|enrichment|urlscan|history)/") &&
+      deploy.includes("data/coverage/brand-coverage\\.json$") &&
+      deploy.includes("data/review/review-queue\\.json$") &&
+      deploy.includes("public/data/"),
     "Pages deployment freshness checks no longer cover every staged public-data boundary.",
   );
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");

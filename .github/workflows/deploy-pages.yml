@@ -55,7 +55,7 @@ jobs:
             should_deploy=false
           elif [[ "${actual_sha}" != "${EXPECTED_SHA}" ]]; then
             unexpected_paths="$(git diff --name-only "${EXPECTED_SHA}..${actual_sha}" | grep -Ev \
-              '^(data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/)' || true)"
+              '^(data/(certstream|ct-search|enrichment|urlscan|history)/|data/coverage/brand-coverage\.json$|data/review/review-queue\.json$|public/data/)' || true)"
             if [[ -n "${unexpected_paths}" ]]; then
               echo "Newer main contains code or configuration that this upstream run did not validate:"
               echo "${unexpected_paths}"
