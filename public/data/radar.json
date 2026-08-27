@@ -1,9 +1,49 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-27T10:25:31.710Z",
-  "lastSuccessfulSyncAt": "2026-08-27T10:25:31.710Z",
+  "generatedAt": "2026-08-27T11:24:39.498Z",
+  "lastSuccessfulSyncAt": "2026-08-27T11:24:39.498Z",
   "signals": [
+    {
+      "id": "d6aee63d133c297e817c",
+      "url": "hxxps://revolut-casino-online[.]cz",
+      "domain": "revolut-casino-online[.]cz",
+      "firstSeen": "2026-08-22T04:14:27.215Z",
+      "lastSeen": "2026-08-27T11:02:04.745Z",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a027ad-44be-7166-9a01-40c986e0326c.png",
+      "referenceUrl": "https://urlscan.io/result/01a027ad-44be-7166-9a01-40c986e0326c/",
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "corroborated",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live",
+        "urlscan-public-report"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "brand-domain-match",
+        "brand-title-match"
+      ],
+      "corroboratedBy": [
+        "urlscan-page-title",
+        "urlscan-public-report"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "a382fec207647951045a",
       "url": "hxxps://vinted-auth[.]vinto[.]app",
@@ -223,39 +263,6 @@
       "detailAvailable": true
     },
     {
-      "id": "d6aee63d133c297e817c",
-      "url": "hxxp://revolut-casino-online[.]cz",
-      "domain": "revolut-casino-online[.]cz",
-      "firstSeen": "2026-08-22T04:14:27.215Z",
-      "lastSeen": "2026-08-22T04:14:27.215Z",
-      "sources": [
-        "URLScan"
-      ],
-      "status": "suspected",
-      "brand": "Revolut",
-      "country": null,
-      "host": null,
-      "screenshotUrl": "https://urlscan.io/screenshots/01a027ad-44be-7166-9a01-40c986e0326c.png",
-      "referenceUrl": "https://urlscan.io/result/01a027ad-44be-7166-9a01-40c986e0326c/",
-      "hashes": [],
-      "matchScore": 100,
-      "evidenceTier": "corroborated",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 100,
-      "discoveredVia": [
-        "urlscan-public-report"
-      ],
-      "corroboratedBy": [
-        "urlscan-page-title"
-      ],
-      "reasonCodes": [
-        "brand-domain-match",
-        "brand-title-match"
-      ],
-      "detailAvailable": true
-    },
-    {
       "id": "0c3d246103bbf9c56c5f",
       "url": "hxxps://dpd-service[.]cyou",
       "domain": "dpd-service[.]cyou",
@@ -441,8 +448,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-27T10:25:31.710Z",
-      "records": 4,
+      "fetchedAt": "2026-08-27T11:24:39.498Z",
+      "records": 5,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -457,7 +464,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-27T10:25:31.710Z",
+      "fetchedAt": "2026-08-27T11:24:39.498Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

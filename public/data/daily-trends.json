@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-27T10:25:31.710Z",
+  "generatedAt": "2026-08-27T11:24:39.498Z",
   "retentionDays": 365,
   "from": "2025-08-28",
   "to": "2026-08-27",
@@ -352,42 +352,45 @@
       "date": "2026-08-27",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 37531,
-        "scheduledSlots": 41,
-        "recordedAttempts": 15,
-        "healthyAttempts": 15,
-        "recordedSchedulePercent": 36.6,
-        "listeningCoveragePercent": 19.18,
-        "scheduledListeningCeilingPercent": 52.44,
-        "listeningSeconds": 7196.969,
+        "windowSeconds": 41079,
+        "scheduledSlots": 45,
+        "recordedAttempts": 19,
+        "healthyAttempts": 19,
+        "recordedSchedulePercent": 42.2,
+        "listeningCoveragePercent": 22.19,
+        "scheduledListeningCeilingPercent": 52.58,
+        "listeningSeconds": 9116.965,
         "outcomes": {
-          "healthy-empty": 14,
-          "healthy-matches": 1
+          "healthy-empty": 17,
+          "healthy-matches": 2
         }
       },
       "discovery": {
-        "events": 2,
-        "uniqueSignals": 1,
-        "observations": 1,
+        "events": 3,
+        "uniqueSignals": 2,
+        "observations": 2,
         "reobservations": 0,
         "firstPublications": 1,
         "statusChanges": 0,
-        "facetSampleSize": 1,
-        "evidenceClassifiedSignals": 1,
+        "facetSampleSize": 2,
+        "evidenceClassifiedSignals": 2,
         "byBrand": {
+          "Revolut": 1,
           "Vinted": 1
         },
         "bySource": {
-          "CertStream": 1
+          "CertStream": 2
         },
         "byEvidenceTier": {
+          "corroborated": 1,
           "name-only": 1
         },
         "byReason": {
-          "brand-exact-token": 1,
-          "different-tld": 1,
+          "brand-exact-token": 2,
+          "different-tld": 2,
+          "suspicious-context": 2,
           "first-publication": 1,
-          "suspicious-context": 1
+          "multiple-hyphens": 1
         }
       }
     }

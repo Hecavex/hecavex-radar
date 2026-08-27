@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T10:25:31.710Z",
+  "generatedAt": "2026-08-27T11:24:39.498Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T10:25:31.710Z",
-    "to": "2026-08-27T10:25:31.710Z"
+    "from": "2026-07-28T11:24:39.498Z",
+    "to": "2026-08-27T11:24:39.498Z"
   },
-  "totalAvailable": 26,
+  "totalAvailable": 27,
   "truncated": false,
   "events": [
+    {
+      "id": "05a5487450e78f21646f638206541b55",
+      "type": "reobservation",
+      "occurredAt": "2026-08-27T11:02:04.745Z",
+      "signalId": "d6aee63d133c297e817c",
+      "signalPath": "/signals/d6aee63d133c297e817c/",
+      "domain": "revolut-casino-online[.]cz",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "3632a31c70f95bfeeb60fe62ff41e944",
       "type": "first-publication",

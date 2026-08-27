@@ -1,10 +1,48 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T10:25:31.710Z",
+  "generatedAt": "2026-08-27T11:24:39.498Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d6aee63d133c297e817c",
+      "domain": "revolut-casino-online[.]cz",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-22T04:14:27.215Z",
+      "lastSeen": "2026-08-27T11:02:04.745Z",
+      "observationCount": 3,
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-domain-match",
+        "brand-title-match",
+        "first-publication",
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ab6bcd12ec027f69b1e9ea85ce7c9fc9",
+          "observedAt": "2026-08-22T04:14:27.215Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "URLScan"
+          ],
+          "reasonCodes": [
+            "brand-domain-match",
+            "brand-title-match",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a382fec207647951045a",
       "domain": "vinted-auth[.]vinto[.]app",
@@ -235,39 +273,6 @@
           ],
           "reasonCodes": [
             "brand-domain-match",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "d6aee63d133c297e817c",
-      "domain": "revolut-casino-online[.]cz",
-      "brand": "Revolut",
-      "firstSeen": "2026-08-22T04:14:27.215Z",
-      "lastSeen": "2026-08-25T07:53:04.659Z",
-      "observationCount": 2,
-      "sources": [
-        "URLScan"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-domain-match",
-        "brand-title-match",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "ab6bcd12ec027f69b1e9ea85ce7c9fc9",
-          "observedAt": "2026-08-22T04:14:27.215Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "URLScan"
-          ],
-          "reasonCodes": [
-            "brand-domain-match",
-            "brand-title-match",
             "first-publication"
           ]
         }
