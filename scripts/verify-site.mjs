@@ -219,12 +219,12 @@ function verifyDeploymentTopology() {
       collector.includes("client_payload[source_run_id]") &&
       collector.includes("client_payload[source_ref]") &&
       collector.includes("client_payload[head_sha]") &&
-      collector.includes('git rev-parse HEAD 2> /dev/null || printf') &&
+      collector.includes('client_payload[head_sha]=${SOURCE_SHA}') &&
       sync.includes("event_type=radar_writer_completed") &&
       sync.includes("client_payload[source_workflow]=Sync radar snapshot") &&
       sync.includes("client_payload[source_conclusion]") &&
       sync.includes("client_payload[head_sha]") &&
-      sync.includes('git rev-parse HEAD 2> /dev/null || printf'),
+      sync.includes('client_payload[head_sha]=${SOURCE_SHA}'),
     "Writer notification or relay-dispatched schedule telemetry semantics drifted.",
   );
   const collectorGitAdds = collector.match(/^\s+git add -- .*$/gmu) ?? [];
