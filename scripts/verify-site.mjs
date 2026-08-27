@@ -135,8 +135,8 @@ function verifyDeploymentTopology() {
   const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
 
   assert(
-    /workflows:\s*\["CI",\s*"Sync radar snapshot",\s*"Collect CertStream candidates"\]/u.test(deploy),
-    "Pages deployment must follow code CI, snapshot synchronization, and public collection-health updates.",
+    /workflows:\s*\["CI"\]/u.test(deploy),
+    "Pages deployment must follow successful code CI.",
   );
   assert(
     deploy.includes("repository_dispatch:") && deploy.includes("types: [radar_writer_completed]"),
@@ -144,11 +144,9 @@ function verifyDeploymentTopology() {
   );
   assert(
     deploy.includes("github.event.workflow_run.name == 'CI'") &&
-      deploy.includes("github.event.workflow_run.name == 'Sync radar snapshot'") &&
-      deploy.includes("github.event.workflow_run.name == 'Collect CertStream candidates'") &&
-      deploy.includes("github.event.workflow_run.conclusion == 'failure'") &&
-      deploy.includes("github.event.workflow_run.event == 'schedule'") &&
-      deploy.includes("github.event.workflow_run.event == 'workflow_dispatch'") &&
+      !deploy.includes("github.event.workflow_run.name == 'Sync radar snapshot'") &&
+      !deploy.includes("github.event.workflow_run.name == 'Collect CertStream candidates'") &&
+      deploy.includes("github.event.workflow_run.event == 'push'") &&
       deploy.includes("github.event.client_payload.source_ref == 'main'") &&
       deploy.includes("github.event.client_payload.source_workflow == 'Sync radar snapshot'") &&
       deploy.includes("github.event.client_payload.source_workflow == 'Collect CertStream candidates'") &&
