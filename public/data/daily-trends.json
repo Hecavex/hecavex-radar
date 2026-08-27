@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-26T16:58:26.636Z",
+  "generatedAt": "2026-08-27T06:57:09.338Z",
   "retentionDays": 365,
-  "from": "2025-08-27",
-  "to": "2026-08-26",
+  "from": "2025-08-28",
+  "to": "2026-08-27",
   "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
   "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
   "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
-  "omittedZeroDays": 357,
+  "omittedZeroDays": 356,
   "collectorSchedule": {
     "expectedIntervalSeconds": 900,
     "expectedListeningSeconds": 480,
@@ -319,18 +319,49 @@
     },
     {
       "date": "2026-08-26",
-      "partialDay": true,
+      "partialDay": false,
       "collectorCoverage": {
-        "windowSeconds": 61106,
-        "scheduledSlots": 67,
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
         "recordedAttempts": 6,
         "healthyAttempts": 6,
-        "recordedSchedulePercent": 9.0,
-        "listeningCoveragePercent": 4.71,
-        "scheduledListeningCeilingPercent": 52.63,
+        "recordedSchedulePercent": 6.2,
+        "listeningCoveragePercent": 3.33,
+        "scheduledListeningCeilingPercent": 53.33,
         "listeningSeconds": 2877.985,
         "outcomes": {
           "healthy-empty": 6
+        }
+      },
+      "discovery": {
+        "events": 0,
+        "uniqueSignals": 0,
+        "observations": 0,
+        "reobservations": 0,
+        "firstPublications": 0,
+        "statusChanges": 0,
+        "facetSampleSize": 0,
+        "evidenceClassifiedSignals": 0,
+        "byBrand": {},
+        "bySource": {},
+        "byEvidenceTier": {},
+        "byReason": {}
+      }
+    },
+    {
+      "date": "2026-08-27",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 25029,
+        "scheduledSlots": 27,
+        "recordedAttempts": 1,
+        "healthyAttempts": 1,
+        "recordedSchedulePercent": 3.7,
+        "listeningCoveragePercent": 1.92,
+        "scheduledListeningCeilingPercent": 51.78,
+        "listeningSeconds": 479.999,
+        "outcomes": {
+          "healthy-empty": 1
         }
       },
       "discovery": {
