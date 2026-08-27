@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T15:20:56.636Z",
+  "generatedAt": "2026-08-27T17:18:57.257Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "b34a2e231d62aa6d739a",
+      "domain": "revolut-user-security[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-27T17:01:12.009Z",
+      "lastSeen": "2026-08-27T17:01:12.009Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1513813f8945d81933a21dc1a58dff75",
+          "observedAt": "2026-08-27T17:01:12.009Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c08995e1b7627132ab6e",
       "domain": "www[.]revolutpay[.]online",
