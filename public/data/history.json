@@ -1,10 +1,121 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T18:18:22.683Z",
+  "generatedAt": "2026-08-27T19:17:11.406Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "89a29a0c2d2698fa8711",
+      "domain": "phonepe-seb-bank[.]com[.]ph",
+      "brand": "SEB",
+      "firstSeen": "2026-08-27T19:10:55.117Z",
+      "lastSeen": "2026-08-27T19:10:55.117Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a7a19cbb2fffde692f5a59bdc52ab7f4",
+          "observedAt": "2026-08-27T19:10:55.117Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "af8c5dfea9cd525ecab0",
+      "domain": "www[.]phonepe-seb-bank[.]com[.]ph",
+      "brand": "SEB",
+      "firstSeen": "2026-08-27T19:08:58.625Z",
+      "lastSeen": "2026-08-27T19:08:58.625Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3064ea960434e5a44b07fab1ae9d9a16",
+          "observedAt": "2026-08-27T19:08:58.625Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c389673bf929cb6b9bc8",
+      "domain": "vmi-gra-portal[.]aergs[.]eu",
+      "brand": "VMI",
+      "firstSeen": "2026-08-27T18:29:32.087Z",
+      "lastSeen": "2026-08-27T18:29:32.087Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "384a7b306d9bd890c6d3ffc73dd22815",
+          "observedAt": "2026-08-27T18:29:32.087Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "be142d686c54ab530aa8",
       "domain": "revolut-service[.]com",

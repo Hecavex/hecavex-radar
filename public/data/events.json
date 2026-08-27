@@ -1,15 +1,57 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T18:18:22.683Z",
+  "generatedAt": "2026-08-27T19:17:11.406Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T18:18:22.683Z",
-    "to": "2026-08-27T18:18:22.683Z"
+    "from": "2026-07-28T19:17:11.406Z",
+    "to": "2026-08-27T19:17:11.406Z"
   },
-  "totalAvailable": 34,
+  "totalAvailable": 37,
   "truncated": false,
   "events": [
+    {
+      "id": "6e97ad5ab6c66dbde527e8d713d41527",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T19:10:55.117Z",
+      "signalId": "89a29a0c2d2698fa8711",
+      "signalPath": "/signals/89a29a0c2d2698fa8711/",
+      "domain": "phonepe-seb-bank[.]com[.]ph",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "d49d3bd5989174ff8f2f144dbaadfc59",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T19:08:58.625Z",
+      "signalId": "af8c5dfea9cd525ecab0",
+      "signalPath": "/signals/af8c5dfea9cd525ecab0/",
+      "domain": "www[.]phonepe-seb-bank[.]com[.]ph",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "238df15c7ed008fd6180e60388ad01b9",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T18:29:32.087Z",
+      "signalId": "c389673bf929cb6b9bc8",
+      "signalPath": "/signals/c389673bf929cb6b9bc8/",
+      "domain": "vmi-gra-portal[.]aergs[.]eu",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "7738e1dce4767dafaec78dbdcad40975",
       "type": "first-publication",

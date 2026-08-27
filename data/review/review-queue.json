@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-27T18:18:22.683Z",
+  "generatedAt": "2026-08-27T19:17:11.406Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,8 +15,8 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 21,
-  "selected": 21,
+  "availableUnreviewed": 24,
+  "selected": 24,
   "candidates": [
     {
       "signalId": "be2c387faff6ef6e44dc",
@@ -308,6 +308,60 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-27T09:33:41.579Z"
+    },
+    {
+      "signalId": "c389673bf929cb6b9bc8",
+      "recordPath": "/signals/c389673bf929cb6b9bc8/",
+      "brand": "VMI",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "multiple-hyphens",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-27T18:29:32.087Z"
+    },
+    {
+      "signalId": "af8c5dfea9cd525ecab0",
+      "recordPath": "/signals/af8c5dfea9cd525ecab0/",
+      "brand": "SEB",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "multiple-hyphens",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-27T19:08:58.625Z"
+    },
+    {
+      "signalId": "89a29a0c2d2698fa8711",
+      "recordPath": "/signals/89a29a0c2d2698fa8711/",
+      "brand": "SEB",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "multiple-hyphens",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-27T19:10:55.117Z"
     },
     {
       "signalId": "7da36ffb72d4937b1d0a",
