@@ -121,6 +121,8 @@ function verifyDeploymentTopology() {
   const deploy = readFileSync(join(root, ".github", "workflows", "deploy-pages.yml"), "utf8");
   const ci = readFileSync(join(root, ".github", "workflows", "ci.yml"), "utf8");
   const collector = readFileSync(join(root, ".github", "workflows", "collect-certstream.yml"), "utf8");
+  const cadence = readFileSync(join(root, ".github", "workflows", "maintain-certstream-cadence.yml"), "utf8");
+  const snapshotCadence = readFileSync(join(root, ".github", "workflows", "maintain-snapshot-cadence.yml"), "utf8");
   const hunter = readFileSync(join(root, ".github", "workflows", "hunt-urlscan.yml"), "utf8");
   const assetHunter = readFileSync(join(root, ".github", "workflows", "hunt-brand-assets.yml"), "utf8");
   const ctSearch = readFileSync(join(root, ".github", "workflows", "poll-ct-search.yml"), "utf8");
@@ -165,6 +167,43 @@ function verifyDeploymentTopology() {
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
   assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
+  assert(
+    cadence.includes('workflows: ["Collect CertStream candidates"]') &&
+      cadence.includes("actions: write") &&
+      cadence.includes("contents: read") &&
+      cadence.includes("group: radar-certstream-cadence") &&
+      cadence.includes("cancel-in-progress: true") &&
+      cadence.includes("environment: radar-certstream-cadence") &&
+      cadence.includes("github.event.workflow_run.head_branch == 'main'") &&
+      cadence.includes("github.event.workflow_run.event == 'schedule'") &&
+      cadence.includes("github.event.workflow_run.event == 'workflow_dispatch'") &&
+      cadence.includes('select(.status != "completed")') &&
+      cadence.includes("select(.id > $source)") &&
+      cadence.includes("/actions/workflows/collect-certstream.yml/dispatches") &&
+      cadence.includes("inputs[cadence_relay]=true") &&
+      !cadence.includes("contents: write"),
+    "CertStream cadence relay permissions, deduplication, or fixed dispatch boundary drifted.",
+  );
+  assert(
+    snapshotCadence.includes('workflows: ["Collect CertStream candidates"]') &&
+      snapshotCadence.includes("github.event.workflow_run.conclusion == 'success'") &&
+      snapshotCadence.includes("github.event.workflow_run.head_branch == 'main'") &&
+      snapshotCadence.includes("actions: write") &&
+      snapshotCadence.includes("contents: read") &&
+      snapshotCadence.includes("group: radar-snapshot-cadence") &&
+      snapshotCadence.includes("cancel-in-progress: true") &&
+      snapshotCadence.includes('MINIMUM_SYNC_AGE_SECONDS: "2700"') &&
+      snapshotCadence.includes('select(.status != "completed")') &&
+      snapshotCadence.includes('select(.status == "completed" and .conclusion == "success")') &&
+      snapshotCadence.includes("/actions/workflows/sync-radar.yml/dispatches") &&
+      !snapshotCadence.includes("contents: write"),
+    "Snapshot cadence relay permissions, age gate, or fixed dispatch boundary drifted.",
+  );
+  assert(
+    collector.includes("cadence_relay:") &&
+      collector.includes("inputs.cadence_relay && 'schedule' || github.event_name"),
+    "Relay-dispatched collection no longer retains automated schedule telemetry semantics.",
+  );
   const collectorGitAdds = collector.match(/^\s+git add -- .*$/gmu) ?? [];
   assert(
     collectorGitAdds.length === 1 &&

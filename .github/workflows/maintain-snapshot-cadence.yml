@@ -1,0 +1,64 @@
+name: Maintain snapshot cadence
+
+on:
+  workflow_run:
+    workflows: ["Collect CertStream candidates"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: radar-snapshot-cadence
+  cancel-in-progress: true
+
+jobs:
+  relay:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      (github.event.workflow_run.event == 'schedule' ||
+      github.event.workflow_run.event == 'workflow_dispatch'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch one due snapshot sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          MINIMUM_SYNC_AGE_SECONDS: "2700"
+        shell: bash
+        run: |
+          runs="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/actions/workflows/sync-radar.yml/runs?per_page=20")"
+
+          active="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<<"${runs}")"
+          if [[ "${active}" -gt 0 ]]; then
+            echo "A snapshot sync is already queued or running; no relay dispatch is needed."
+            exit 0
+          fi
+
+          latest_success="$(jq -r \
+            '[.workflow_runs[] | select(.status == "completed" and .conclusion == "success")] | sort_by(.updated_at) | last | .updated_at // empty' \
+            <<<"${runs}")"
+          if [[ -n "${latest_success}" ]]; then
+            latest_epoch="$(date -u -d "${latest_success}" +%s)"
+            now_epoch="$(date -u +%s)"
+            age_seconds="$((now_epoch - latest_epoch))"
+            if [[ "${age_seconds}" -lt "${MINIMUM_SYNC_AGE_SECONDS}" ]]; then
+              echo "The latest successful snapshot sync is ${age_seconds}s old; it is not due yet."
+              exit 0
+            fi
+          fi
+
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/actions/workflows/sync-radar.yml/dispatches" \
+            -f ref=main
+          echo "Dispatched one overdue snapshot sync."

@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "8,23,38,53 * * * *"
   workflow_dispatch:
+    inputs:
+      cadence_relay:
+        description: "Internal cadence relay dispatch"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -23,7 +29,7 @@ jobs:
       CERTSTREAM_STALE_AFTER_SECONDS: "2700"
       CERTSTREAM_DELAY_THRESHOLD_SECONDS: "300"
       CERTSTREAM_SCHEDULE_MINUTES: "8,23,38,53"
-      CERTSTREAM_TRIGGER: ${{ github.event_name }}
+      CERTSTREAM_TRIGGER: ${{ inputs.cadence_relay && 'schedule' || github.event_name }}
       CERTSTREAM_HEALTH_PATH: public/data/collection-health.json
     steps:
       - name: Check out repository

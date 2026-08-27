@@ -1,0 +1,61 @@
+name: Maintain CertStream cadence
+
+on:
+  workflow_run:
+    workflows: ["Collect CertStream candidates"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: radar-certstream-cadence
+  cancel-in-progress: true
+
+jobs:
+  relay:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+      (github.event.workflow_run.event == 'schedule' ||
+      github.event.workflow_run.event == 'workflow_dispatch'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: radar-certstream-cadence
+    steps:
+      - name: Dispatch one due collection
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id || '0' }}
+        shell: bash
+        run: |
+          runs="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/actions/workflows/collect-certstream.yml/runs?per_page=20")"
+
+          active="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<<"${runs}")"
+          if [[ "${active}" -gt 0 ]]; then
+            echo "A CertStream collection is already queued or running; no relay dispatch is needed."
+            exit 0
+          fi
+
+          if [[ "${SOURCE_RUN_ID}" != "0" ]]; then
+            newer="$(jq --argjson source "${SOURCE_RUN_ID}" \
+              '[.workflow_runs[] | select(.id > $source)] | length' <<<"${runs}")"
+            if [[ "${newer}" -gt 0 ]]; then
+              echo "A newer CertStream run already exists; its completion owns the next relay."
+              exit 0
+            fi
+          fi
+
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/actions/workflows/collect-certstream.yml/dispatches" \
+            -f ref=main \
+            -f 'inputs[cadence_relay]=true'
+          echo "Dispatched the next bounded CertStream collection."

@@ -55,6 +55,8 @@ review decision, contact a candidate, or submit a report.
 | Workflow | External interaction | Persistent input/output boundary |
 | --- | --- | --- |
 | `collect-certstream.yml` | Sampled live CT websocket, eight minutes four times per hour | `data/certstream/` and `public/data/collection-health.json` |
+| `maintain-certstream-cadence.yml` | Collector-completion relay with a protected six-minute wait and active-run deduplication | Dispatch only; no repository data write |
+| `maintain-snapshot-cadence.yml` | Successful-collector relay with active-run deduplication and a 45-minute snapshot-age gate | Dispatch only; no repository data write |
 | `poll-ct-search.yml` | Hourly bounded `crt.sh` keyword result search | `data/ct-search/state.json` and qualifying rows in `data/certstream/` |
 | `hunt-urlscan.yml`, `hunt-brand-assets.yml` | Existing public URLScan search/result documents only | `data/urlscan/` |
 | `enrich-domain-context.yml` | DNS-over-HTTPS and IANA-selected RDAP only | `data/enrichment/domain-context.json` |
@@ -66,7 +68,7 @@ review decision, contact a candidate, or submit a report.
 
 ## Certificate Transparency coverage
 
-The live GitHub Actions listener is scheduled for eight minutes four times per hour. That is at most 768 minutes, or 53.3% of a day, only when every run starts and completes. It is a low-latency sampled input, not continuous coverage. The public health file makes late, empty, partial, and failed sampled windows visible; it does not recover dropped schedules or events outside a listening window.
+The live GitHub Actions listener uses eight-minute windows at an intended four-per-hour cadence. That is at most 768 minutes, or 53.3% of a day, only when every run starts and completes. Native cron remains the backstop. Each finalized collector also starts a read-only cadence relay behind a six-minute environment wait; the relay cancels an older pending relay, verifies that no newer collector is queued or running, and dispatches one next bounded run. After a successful collection, a separate read-only relay dispatches snapshot synchronization only when no sync is active and the last successful sync is at least 45 minutes old. These relays reduce dependence on cron-event delivery without converting the design into a continuous listener. A complete Actions trigger outage can still break all GitHub-hosted paths. The public health file makes late, empty, partial, and failed sampled windows visible; it cannot recover events outside an actual listening window.
 
 The hourly `crt.sh` path adds bounded replay for reviewed brand keywords. It rotates through six queries per run by default, reads no more than 500 result rows per query, and limits a new query to a seven-day bootstrap. Its persisted per-query result ID resumes that selected search after ordinary downtime, while a default 50-row/1,000-ID overlap rechecks a bounded slice for late-indexed records. A backlog is marked partial and resumed before rotation. These are provider-index cursors, not RFC 9162 log positions: the path neither proves which logs are complete nor discovers certificates whose names do not match a reviewed query. [ADR 0001](decisions/0001-ct-coverage.md) records why Radar continues to reject complete daily or global CT coverage claims.
 
