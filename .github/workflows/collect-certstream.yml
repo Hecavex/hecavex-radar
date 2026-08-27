@@ -161,3 +161,25 @@ jobs:
             echo "The attempt was recorded, but collection did not complete successfully." >&2
             exit 1
           fi
+      - name: Notify bounded writer completion
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_CONCLUSION: ${{ job.status }}
+          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
+          SOURCE_REF: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          head_sha="$(git rev-parse HEAD 2> /dev/null || printf '%s' "${SOURCE_SHA}")"
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/dispatches" \
+            -f event_type=radar_writer_completed \
+            -f 'client_payload[source_workflow]=Collect CertStream candidates' \
+            -f "client_payload[source_conclusion]=${SOURCE_CONCLUSION}" \
+            -f "client_payload[source_run_id]=${SOURCE_RUN_ID}" \
+            -f "client_payload[source_ref]=${SOURCE_REF}" \
+            -f "client_payload[head_sha]=${head_sha}"

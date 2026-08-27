@@ -1,9 +1,8 @@
 name: Maintain CertStream cadence
 
 on:
-  workflow_run:
-    workflows: ["Collect CertStream candidates"]
-    types: [completed]
+  repository_dispatch:
+    types: [radar_writer_completed]
   workflow_dispatch:
 
 permissions:
@@ -18,9 +17,8 @@ jobs:
   relay:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.head_branch == 'main' &&
-      (github.event.workflow_run.event == 'schedule' ||
-      github.event.workflow_run.event == 'workflow_dispatch'))
+      (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
+      github.event.client_payload.source_ref == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: radar-certstream-cadence
@@ -29,7 +27,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
-          SOURCE_RUN_ID: ${{ github.event.workflow_run.id || '0' }}
+          SOURCE_RUN_ID: ${{ github.event.client_payload.source_run_id || '0' }}
         shell: bash
         run: |
           runs="$(gh api \

@@ -1,9 +1,8 @@
 name: Maintain snapshot cadence
 
 on:
-  workflow_run:
-    workflows: ["Collect CertStream candidates"]
-    types: [completed]
+  repository_dispatch:
+    types: [radar_writer_completed]
   workflow_dispatch:
 
 permissions:
@@ -18,10 +17,9 @@ jobs:
   relay:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      (github.event.workflow_run.event == 'schedule' ||
-      github.event.workflow_run.event == 'workflow_dispatch'))
+      (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
+      github.event.client_payload.source_conclusion == 'success' &&
+      github.event.client_payload.source_ref == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

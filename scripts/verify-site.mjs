@@ -139,12 +139,22 @@ function verifyDeploymentTopology() {
     "Pages deployment must follow code CI, snapshot synchronization, and public collection-health updates.",
   );
   assert(
+    deploy.includes("repository_dispatch:") && deploy.includes("types: [radar_writer_completed]"),
+    "Pages deployment no longer accepts the bounded writer-completion event.",
+  );
+  assert(
     deploy.includes("github.event.workflow_run.name == 'CI'") &&
       deploy.includes("github.event.workflow_run.name == 'Sync radar snapshot'") &&
       deploy.includes("github.event.workflow_run.name == 'Collect CertStream candidates'") &&
       deploy.includes("github.event.workflow_run.conclusion == 'failure'") &&
       deploy.includes("github.event.workflow_run.event == 'schedule'") &&
-      deploy.includes("github.event.workflow_run.event == 'workflow_dispatch'"),
+      deploy.includes("github.event.workflow_run.event == 'workflow_dispatch'") &&
+      deploy.includes("github.event.client_payload.source_ref == 'main'") &&
+      deploy.includes("github.event.client_payload.source_workflow == 'Sync radar snapshot'") &&
+      deploy.includes("github.event.client_payload.source_workflow == 'Collect CertStream candidates'") &&
+      deploy.includes("github.event.client_payload.source_conclusion == 'success'") &&
+      deploy.includes("github.event.client_payload.source_conclusion == 'failure'") &&
+      deploy.includes("github.event.client_payload.head_sha"),
     "Pages deployment no longer limits each upstream workflow to its approved trigger semantics.",
   );
   assert(
@@ -168,15 +178,16 @@ function verifyDeploymentTopology() {
   assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
   assert(
-    cadence.includes('workflows: ["Collect CertStream candidates"]') &&
+    cadence.includes("repository_dispatch:") &&
+      cadence.includes("types: [radar_writer_completed]") &&
       cadence.includes("actions: write") &&
       cadence.includes("contents: read") &&
       cadence.includes("group: radar-certstream-cadence") &&
       cadence.includes("cancel-in-progress: true") &&
       cadence.includes("environment: radar-certstream-cadence") &&
-      cadence.includes("github.event.workflow_run.head_branch == 'main'") &&
-      cadence.includes("github.event.workflow_run.event == 'schedule'") &&
-      cadence.includes("github.event.workflow_run.event == 'workflow_dispatch'") &&
+      cadence.includes("github.event.client_payload.source_workflow == 'Collect CertStream candidates'") &&
+      cadence.includes("github.event.client_payload.source_ref == 'main'") &&
+      cadence.includes("github.event.client_payload.source_run_id") &&
       cadence.includes('select(.status != "completed")') &&
       cadence.includes("select(.id > $source)") &&
       cadence.includes("/actions/workflows/collect-certstream.yml/dispatches") &&
@@ -185,9 +196,11 @@ function verifyDeploymentTopology() {
     "CertStream cadence relay permissions, deduplication, or fixed dispatch boundary drifted.",
   );
   assert(
-    snapshotCadence.includes('workflows: ["Collect CertStream candidates"]') &&
-      snapshotCadence.includes("github.event.workflow_run.conclusion == 'success'") &&
-      snapshotCadence.includes("github.event.workflow_run.head_branch == 'main'") &&
+    snapshotCadence.includes("repository_dispatch:") &&
+      snapshotCadence.includes("types: [radar_writer_completed]") &&
+      snapshotCadence.includes("github.event.client_payload.source_workflow == 'Collect CertStream candidates'") &&
+      snapshotCadence.includes("github.event.client_payload.source_conclusion == 'success'") &&
+      snapshotCadence.includes("github.event.client_payload.source_ref == 'main'") &&
       snapshotCadence.includes("actions: write") &&
       snapshotCadence.includes("contents: read") &&
       snapshotCadence.includes("group: radar-snapshot-cadence") &&
@@ -201,8 +214,20 @@ function verifyDeploymentTopology() {
   );
   assert(
     collector.includes("cadence_relay:") &&
-      collector.includes("inputs.cadence_relay && 'schedule' || github.event_name"),
-    "Relay-dispatched collection no longer retains automated schedule telemetry semantics.",
+      collector.includes("inputs.cadence_relay && 'schedule' || github.event_name") &&
+      collector.includes("event_type=radar_writer_completed") &&
+      collector.includes("client_payload[source_workflow]=Collect CertStream candidates") &&
+      collector.includes("client_payload[source_conclusion]") &&
+      collector.includes("client_payload[source_run_id]") &&
+      collector.includes("client_payload[source_ref]") &&
+      collector.includes("client_payload[head_sha]") &&
+      collector.includes('git rev-parse HEAD 2> /dev/null || printf') &&
+      sync.includes("event_type=radar_writer_completed") &&
+      sync.includes("client_payload[source_workflow]=Sync radar snapshot") &&
+      sync.includes("client_payload[source_conclusion]") &&
+      sync.includes("client_payload[head_sha]") &&
+      sync.includes('git rev-parse HEAD 2> /dev/null || printf'),
+    "Writer notification or relay-dispatched schedule telemetry semantics drifted.",
   );
   const collectorGitAdds = collector.match(/^\s+git add -- .*$/gmu) ?? [];
   assert(

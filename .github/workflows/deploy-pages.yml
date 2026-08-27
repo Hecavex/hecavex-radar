@@ -4,6 +4,8 @@ on:
   workflow_run:
     workflows: ["CI", "Sync radar snapshot", "Collect CertStream candidates"]
     types: [completed]
+  repository_dispatch:
+    types: [radar_writer_completed]
 
 permissions:
   contents: read
@@ -27,7 +29,14 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' ||
       github.event.workflow_run.conclusion == 'failure') &&
       (github.event.workflow_run.event == 'schedule' ||
-      github.event.workflow_run.event == 'workflow_dispatch')))
+      github.event.workflow_run.event == 'workflow_dispatch'))) ||
+      (github.event_name == 'repository_dispatch' &&
+      github.event.client_payload.source_ref == 'main' &&
+      ((github.event.client_payload.source_workflow == 'Sync radar snapshot' &&
+      github.event.client_payload.source_conclusion == 'success') ||
+      (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
+      (github.event.client_payload.source_conclusion == 'success' ||
+      github.event.client_payload.source_conclusion == 'failure'))))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -44,8 +53,8 @@ jobs:
       - name: Ignore stale or unchanged completions
         id: freshness
         env:
-          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
-          TRIGGER_WORKFLOW: ${{ github.event.workflow_run.name }}
+          EXPECTED_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.event.client_payload.head_sha }}
+          TRIGGER_WORKFLOW: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.name || github.event.client_payload.source_workflow }}
         shell: bash
         run: |
           should_deploy=true
