@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T14:22:06.078Z",
+  "generatedAt": "2026-08-27T15:20:56.636Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T14:22:06.078Z",
-    "to": "2026-08-27T14:22:06.078Z"
+    "from": "2026-07-28T15:20:56.636Z",
+    "to": "2026-08-27T15:20:56.636Z"
   },
-  "totalAvailable": 31,
+  "totalAvailable": 32,
   "truncated": false,
   "events": [
+    {
+      "id": "148ebd8518ec68c90aa190975d6bb9ac",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T15:13:56.611Z",
+      "signalId": "c08995e1b7627132ab6e",
+      "signalPath": "/signals/c08995e1b7627132ab6e/",
+      "domain": "www[.]revolutpay[.]online",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "8e449008055c8bce6bf7fb9e72c7d0f2",
       "type": "first-publication",

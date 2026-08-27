@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T14:22:06.078Z",
+  "generatedAt": "2026-08-27T15:20:56.636Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c08995e1b7627132ab6e",
+      "domain": "www[.]revolutpay[.]online",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-27T15:13:56.611Z",
+      "lastSeen": "2026-08-27T15:13:56.611Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "90b9430dd7193971e1c77fb224d4af6d",
+          "observedAt": "2026-08-27T15:13:56.611Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "623c9be6ca68ccf196f0",
       "domain": "bite-staging-security[.]lt",
