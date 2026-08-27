@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-27T11:24:39.498Z",
-  "lastSuccessfulSyncAt": "2026-08-27T11:24:39.498Z",
+  "generatedAt": "2026-08-27T12:24:04.216Z",
+  "lastSuccessfulSyncAt": "2026-08-27T12:24:04.216Z",
   "signals": [
+    {
+      "id": "7da36ffb72d4937b1d0a",
+      "url": "hxxps://revolut-auth-access[.]ph",
+      "domain": "revolut-auth-access[.]ph",
+      "firstSeen": "2026-08-27T11:35:00.516Z",
+      "lastSeen": "2026-08-27T11:35:00.516Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "d6aee63d133c297e817c",
       "url": "hxxps://revolut-casino-online[.]cz",
@@ -448,8 +480,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-27T11:24:39.498Z",
-      "records": 5,
+      "fetchedAt": "2026-08-27T12:24:04.216Z",
+      "records": 6,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -464,7 +496,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-27T11:24:39.498Z",
+      "fetchedAt": "2026-08-27T12:24:04.216Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T11:24:39.498Z",
+  "generatedAt": "2026-08-27T12:24:04.216Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T11:24:39.498Z",
-    "to": "2026-08-27T11:24:39.498Z"
+    "from": "2026-07-28T12:24:04.216Z",
+    "to": "2026-08-27T12:24:04.216Z"
   },
-  "totalAvailable": 27,
+  "totalAvailable": 28,
   "truncated": false,
   "events": [
+    {
+      "id": "7f4a1e213f1141e45272aa654c4cfa3e",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T11:35:00.516Z",
+      "signalId": "7da36ffb72d4937b1d0a",
+      "signalPath": "/signals/7da36ffb72d4937b1d0a/",
+      "domain": "revolut-auth-access[.]ph",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "05a5487450e78f21646f638206541b55",
       "type": "reobservation",

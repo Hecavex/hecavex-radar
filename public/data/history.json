@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T11:24:39.498Z",
+  "generatedAt": "2026-08-27T12:24:04.216Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "7da36ffb72d4937b1d0a",
+      "domain": "revolut-auth-access[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-27T11:35:00.516Z",
+      "lastSeen": "2026-08-27T11:35:00.516Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2ccf73cdfd1a54dc265492b764522925",
+          "observedAt": "2026-08-27T11:35:00.516Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d6aee63d133c297e817c",
       "domain": "revolut-casino-online[.]cz",
