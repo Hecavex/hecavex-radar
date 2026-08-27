@@ -176,7 +176,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/repos/${REPOSITORY}/dispatches" \
-            -f event_type=radar_writer_completed \
+            -f event_type=certstream_writer_completed \
             -f 'client_payload[source_workflow]=Collect CertStream candidates' \
             -f "client_payload[source_conclusion]=${SOURCE_CONCLUSION}" \
             -f "client_payload[source_run_id]=${SOURCE_RUN_ID}" \

@@ -5,7 +5,7 @@ on:
     workflows: ["CI"]
     types: [completed]
   repository_dispatch:
-    types: [radar_writer_completed]
+    types: [certstream_writer_completed, snapshot_writer_completed]
 
 permissions:
   contents: read

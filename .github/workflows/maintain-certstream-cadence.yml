@@ -2,7 +2,7 @@ name: Maintain CertStream cadence
 
 on:
   repository_dispatch:
-    types: [radar_writer_completed]
+    types: [certstream_writer_completed]
   workflow_dispatch:
 
 permissions:

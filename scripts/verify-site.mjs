@@ -139,7 +139,8 @@ function verifyDeploymentTopology() {
     "Pages deployment must follow successful code CI.",
   );
   assert(
-    deploy.includes("repository_dispatch:") && deploy.includes("types: [radar_writer_completed]"),
+    deploy.includes("repository_dispatch:") &&
+      deploy.includes("types: [certstream_writer_completed, snapshot_writer_completed]"),
     "Pages deployment no longer accepts the bounded writer-completion event.",
   );
   assert(
@@ -177,7 +178,7 @@ function verifyDeploymentTopology() {
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
   assert(
     cadence.includes("repository_dispatch:") &&
-      cadence.includes("types: [radar_writer_completed]") &&
+      cadence.includes("types: [certstream_writer_completed]") &&
       cadence.includes("actions: write") &&
       cadence.includes("contents: read") &&
       cadence.includes("group: radar-certstream-cadence") &&
@@ -195,7 +196,7 @@ function verifyDeploymentTopology() {
   );
   assert(
     snapshotCadence.includes("repository_dispatch:") &&
-      snapshotCadence.includes("types: [radar_writer_completed]") &&
+      snapshotCadence.includes("types: [certstream_writer_completed]") &&
       snapshotCadence.includes("github.event.client_payload.source_workflow == 'Collect CertStream candidates'") &&
       snapshotCadence.includes("github.event.client_payload.source_conclusion == 'success'") &&
       snapshotCadence.includes("github.event.client_payload.source_ref == 'main'") &&
@@ -213,14 +214,14 @@ function verifyDeploymentTopology() {
   assert(
     collector.includes("cadence_relay:") &&
       collector.includes("inputs.cadence_relay && 'schedule' || github.event_name") &&
-      collector.includes("event_type=radar_writer_completed") &&
+      collector.includes("event_type=certstream_writer_completed") &&
       collector.includes("client_payload[source_workflow]=Collect CertStream candidates") &&
       collector.includes("client_payload[source_conclusion]") &&
       collector.includes("client_payload[source_run_id]") &&
       collector.includes("client_payload[source_ref]") &&
       collector.includes("client_payload[head_sha]") &&
       collector.includes('client_payload[head_sha]=${SOURCE_SHA}') &&
-      sync.includes("event_type=radar_writer_completed") &&
+      sync.includes("event_type=snapshot_writer_completed") &&
       sync.includes("client_payload[source_workflow]=Sync radar snapshot") &&
       sync.includes("client_payload[source_conclusion]") &&
       sync.includes("client_payload[head_sha]") &&
