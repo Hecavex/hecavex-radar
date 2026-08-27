@@ -1,77 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-27T20:16:19.809Z",
+  "generatedAt": "2026-08-27T21:14:47.848Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-26T20:16:19.809Z",
-      "to": "2026-08-27T20:16:19.809Z",
-      "events": 23,
-      "uniqueSignals": 12,
-      "firstPublications": 11,
+      "from": "2026-08-26T21:14:47.848Z",
+      "to": "2026-08-27T21:14:47.848Z",
+      "events": 29,
+      "uniqueSignals": 15,
+      "firstPublications": 14,
       "statusChanges": 0,
-      "observations": 12,
+      "observations": 15,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 23
+        "CertStream": 29
       },
       "byStatus": {
-        "suspected": 23
+        "suspected": 29
       },
       "byReason": {
-        "suspicious-context": 23,
-        "brand-exact-token": 19,
-        "different-tld": 19,
-        "multiple-hyphens": 15,
-        "first-publication": 11,
-        "brand-joined-affix": 4
+        "suspicious-context": 27,
+        "brand-exact-token": 25,
+        "different-tld": 25,
+        "multiple-hyphens": 17,
+        "first-publication": 14,
+        "brand-joined-affix": 4,
+        "punycode": 2,
+        "unicode-confusable": 2
       },
       "byBrand": {
-        "Revolut": 9,
+        "Revolut": 11,
         "Bitė": 4,
         "SEB": 4,
+        "Vinted": 4,
+        "DHL": 2,
         "MAXIMA": 2,
-        "VMI": 2,
-        "Vinted": 2
+        "VMI": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-20T20:16:19.809Z",
-      "to": "2026-08-27T20:16:19.809Z",
-      "events": 72,
-      "uniqueSignals": 31,
-      "firstPublications": 31,
+      "from": "2026-08-20T21:14:47.848Z",
+      "to": "2026-08-27T21:14:47.848Z",
+      "events": 78,
+      "uniqueSignals": 34,
+      "firstPublications": 34,
       "statusChanges": 0,
-      "observations": 41,
+      "observations": 44,
       "reobservations": 10,
       "bySource": {
         "URLScan": 41,
-        "CertStream": 29,
+        "CertStream": 35,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 72
+        "suspected": 78
       },
       "byReason": {
         "brand-domain-match": 36,
-        "first-publication": 31,
-        "suspicious-context": 31,
-        "brand-exact-token": 27,
-        "different-tld": 27,
-        "multiple-hyphens": 15,
+        "suspicious-context": 35,
+        "first-publication": 34,
+        "brand-exact-token": 33,
+        "different-tld": 33,
+        "multiple-hyphens": 17,
         "brand-title-match": 10,
         "provider-verdict": 5,
         "brand-joined-affix": 4,
-        "manual-review": 2
+        "manual-review": 2,
+        "punycode": 2,
+        "unicode-confusable": 2
       },
       "byBrand": {
-        "Revolut": 27,
-        "Vinted": 13,
+        "Revolut": 29,
+        "Vinted": 15,
+        "DHL": 7,
         "MAXIMA": 6,
-        "DHL": 5,
         "Bitė": 4,
         "ESO": 4,
         "SEB": 4,

@@ -1,10 +1,119 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T19:17:11.406Z",
+  "generatedAt": "2026-08-27T21:14:47.848Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "7d3c57c7312ee0850e9e",
+      "domain": "xn--l-wmmyd[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-27T20:58:38.459Z",
+      "lastSeen": "2026-08-27T20:58:38.459Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "968692bdaf8fa0f564419de791df8605",
+          "observedAt": "2026-08-27T20:58:38.459Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "02cd7ea73c3095f6db27",
+      "domain": "revolut-payment[.]lingering-dew-af9a[.]workers[.]dev",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-27T20:54:07.504Z",
+      "lastSeen": "2026-08-27T20:54:07.504Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a68dfe69125ebcd568d382933f3dca35",
+          "observedAt": "2026-08-27T20:54:07.504Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d5def02bcc56a41ffbd6",
+      "domain": "www[.]login-vinted[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-27T20:38:21.207Z",
+      "lastSeen": "2026-08-27T20:38:21.207Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8b2a062a9908f7aa2cf1d682d6cfdae7",
+          "observedAt": "2026-08-27T20:38:21.207Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "89a29a0c2d2698fa8711",
       "domain": "phonepe-seb-bank[.]com[.]ph",
