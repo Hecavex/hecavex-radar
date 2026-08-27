@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-26T16:37:48.107Z",
+  "generatedAt": "2026-08-27T10:25:31.710Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,8 +15,8 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 13,
-  "selected": 13,
+  "availableUnreviewed": 14,
+  "selected": 14,
   "candidates": [
     {
       "signalId": "be2c387faff6ef6e44dc",
@@ -66,8 +66,8 @@
       "firstSeen": "2026-08-21T10:44:29.723Z"
     },
     {
-      "signalId": "a78cb24fc20a65f1ba1f",
-      "recordPath": "/signals/a78cb24fc20a65f1ba1f/",
+      "signalId": "6d1985055ef1c90ba8d8",
+      "recordPath": "/signals/6d1985055ef1c90ba8d8/",
       "brand": "ESO",
       "sources": [
         "CertStream"
@@ -80,7 +80,7 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-24T23:51:42.897Z"
+      "firstSeen": "2026-08-25T16:22:17.726Z"
     },
     {
       "signalId": "54b7622ec9c57480f3dc",
@@ -146,23 +146,6 @@
       "firstSeen": "2026-08-22T10:09:17.586Z"
     },
     {
-      "signalId": "6d1985055ef1c90ba8d8",
-      "recordPath": "/signals/6d1985055ef1c90ba8d8/",
-      "brand": "ESO",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-25T16:22:17.726Z"
-    },
-    {
       "signalId": "b2a74041369ff0a25a50",
       "recordPath": "/signals/b2a74041369ff0a25a50/",
       "brand": "Revolut",
@@ -178,6 +161,23 @@
       "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
+      "signalId": "a78cb24fc20a65f1ba1f",
+      "recordPath": "/signals/a78cb24fc20a65f1ba1f/",
+      "brand": "ESO",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-24T23:51:42.897Z"
+    },
+    {
       "signalId": "3d179a68c89e521dc72c",
       "recordPath": "/signals/3d179a68c89e521dc72c/",
       "brand": "MAXIMA",
@@ -191,6 +191,23 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-23T02:00:48.622Z"
+    },
+    {
+      "signalId": "a382fec207647951045a",
+      "recordPath": "/signals/a382fec207647951045a/",
+      "brand": "Vinted",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-27T09:33:41.579Z"
     },
     {
       "signalId": "d6aee63d133c297e817c",

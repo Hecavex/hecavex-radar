@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-25T16:30:13.777Z",
+  "generatedAt": "2026-08-27T10:25:31.710Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a382fec207647951045a",
+      "domain": "vinted-auth[.]vinto[.]app",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-27T09:33:41.579Z",
+      "lastSeen": "2026-08-27T09:33:41.579Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "7853d048cc37f05347c18a222b48e755",
+          "observedAt": "2026-08-27T09:33:41.579Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "6d1985055ef1c90ba8d8",
       "domain": "bsconseils[.]eso-online[.]fr",
