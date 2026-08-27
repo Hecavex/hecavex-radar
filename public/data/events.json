@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T13:23:09.455Z",
+  "generatedAt": "2026-08-27T14:22:06.078Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T13:23:09.455Z",
-    "to": "2026-08-27T13:23:09.455Z"
+    "from": "2026-07-28T14:22:06.078Z",
+    "to": "2026-08-27T14:22:06.078Z"
   },
-  "totalAvailable": 29,
+  "totalAvailable": 31,
   "truncated": false,
   "events": [
+    {
+      "id": "8e449008055c8bce6bf7fb9e72c7d0f2",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T14:18:23.959Z",
+      "signalId": "623c9be6ca68ccf196f0",
+      "signalPath": "/signals/623c9be6ca68ccf196f0/",
+      "domain": "bite-staging-security[.]lt",
+      "brand": "Bitė",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "daaf3fd7583192a68a24272c7553b3c7",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T13:30:54.839Z",
+      "signalId": "8f661c31c7f57edb691b",
+      "signalPath": "/signals/8f661c31c7f57edb691b/",
+      "domain": "pg-maximaportal-prd-01[.]postgres[.]database[.]azure[.]com",
+      "brand": "MAXIMA",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "e22c436c3951bff4cc79ce25154de20d",
       "type": "first-publication",
