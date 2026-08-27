@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T17:18:57.257Z",
+  "generatedAt": "2026-08-27T18:18:22.683Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "be142d686c54ab530aa8",
+      "domain": "revolut-service[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-27T17:40:22.348Z",
+      "lastSeen": "2026-08-27T17:40:22.348Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3027bdccac71fa8ce7777a75b99aaa5d",
+          "observedAt": "2026-08-27T17:40:22.348Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "b34a2e231d62aa6d739a",
       "domain": "revolut-user-security[.]ph",

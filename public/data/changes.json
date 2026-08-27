@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-27T17:18:57.257Z",
+  "generatedAt": "2026-08-27T18:18:22.683Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-26T17:18:57.257Z",
-      "to": "2026-08-27T17:18:57.257Z",
-      "events": 15,
-      "uniqueSignals": 8,
-      "firstPublications": 7,
+      "from": "2026-08-26T18:18:22.683Z",
+      "to": "2026-08-27T18:18:22.683Z",
+      "events": 17,
+      "uniqueSignals": 9,
+      "firstPublications": 8,
       "statusChanges": 0,
-      "observations": 8,
+      "observations": 9,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 15
+        "CertStream": 17
       },
       "byStatus": {
-        "suspected": 15
+        "suspected": 17
       },
       "byReason": {
-        "suspicious-context": 15,
+        "suspicious-context": 17,
+        "brand-exact-token": 13,
         "different-tld": 13,
-        "brand-exact-token": 11,
         "multiple-hyphens": 9,
-        "first-publication": 7,
+        "first-publication": 8,
         "brand-joined-affix": 4
       },
       "byBrand": {
-        "Revolut": 7,
+        "Revolut": 9,
         "Bitė": 4,
         "MAXIMA": 2,
         "Vinted": 2
@@ -37,28 +37,28 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-20T17:18:57.257Z",
-      "to": "2026-08-27T17:18:57.257Z",
-      "events": 64,
-      "uniqueSignals": 27,
-      "firstPublications": 27,
+      "from": "2026-08-20T18:18:22.683Z",
+      "to": "2026-08-27T18:18:22.683Z",
+      "events": 66,
+      "uniqueSignals": 28,
+      "firstPublications": 28,
       "statusChanges": 0,
-      "observations": 37,
+      "observations": 38,
       "reobservations": 10,
       "bySource": {
         "URLScan": 41,
-        "CertStream": 21,
+        "CertStream": 23,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 64
+        "suspected": 66
       },
       "byReason": {
         "brand-domain-match": 36,
-        "first-publication": 27,
-        "suspicious-context": 23,
+        "first-publication": 28,
+        "suspicious-context": 25,
+        "brand-exact-token": 21,
         "different-tld": 21,
-        "brand-exact-token": 19,
         "brand-title-match": 10,
         "multiple-hyphens": 9,
         "provider-verdict": 5,
@@ -66,7 +66,7 @@
         "manual-review": 2
       },
       "byBrand": {
-        "Revolut": 25,
+        "Revolut": 27,
         "Vinted": 13,
         "MAXIMA": 6,
         "DHL": 5,
