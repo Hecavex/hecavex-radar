@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T12:24:04.216Z",
+  "generatedAt": "2026-08-27T13:23:09.455Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "f6117c2c086d19cee2fc",
+      "domain": "maxbot[.]bite-service[.]com",
+      "brand": "Bitė",
+      "firstSeen": "2026-08-27T13:17:54.746Z",
+      "lastSeen": "2026-08-27T13:17:54.746Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3407dd6e9536b090a9ce6e60343fd225",
+          "observedAt": "2026-08-27T13:17:54.746Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "7da36ffb72d4937b1d0a",
       "domain": "revolut-auth-access[.]ph",

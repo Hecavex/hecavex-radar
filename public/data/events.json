@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T12:24:04.216Z",
+  "generatedAt": "2026-08-27T13:23:09.455Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T12:24:04.216Z",
-    "to": "2026-08-27T12:24:04.216Z"
+    "from": "2026-07-28T13:23:09.455Z",
+    "to": "2026-08-27T13:23:09.455Z"
   },
-  "totalAvailable": 28,
+  "totalAvailable": 29,
   "truncated": false,
   "events": [
+    {
+      "id": "e22c436c3951bff4cc79ce25154de20d",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T13:17:54.746Z",
+      "signalId": "f6117c2c086d19cee2fc",
+      "signalPath": "/signals/f6117c2c086d19cee2fc/",
+      "domain": "maxbot[.]bite-service[.]com",
+      "brand": "Bitė",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "7f4a1e213f1141e45272aa654c4cfa3e",
       "type": "first-publication",
