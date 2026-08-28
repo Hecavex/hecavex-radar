@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T21:41:10.135Z",
+  "generatedAt": "2026-08-28T23:08:55.652Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "412a0d4ff3da3bbf33bc",
+      "domain": "dhl-expedition-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T23:07:20.234Z",
+      "lastSeen": "2026-08-28T23:07:20.234Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "33ddf169c49248e245b5a0166e209e18",
+          "observedAt": "2026-08-28T23:07:20.234Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "991dcac5fe0bcb888981",
+      "domain": "dhl-service[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T23:02:56.637Z",
+      "lastSeen": "2026-08-28T23:02:56.637Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "7bbea807e8de619a4b34900e0570e94a",
+          "observedAt": "2026-08-28T23:02:56.637Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "63f22ac8fd798f6a3ff4",
       "domain": "dhl-secure-express[.]com[.]ph",

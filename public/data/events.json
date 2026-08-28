@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T22:20:36.871Z",
+  "generatedAt": "2026-08-28T23:08:55.652Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T22:20:36.871Z",
-    "to": "2026-08-28T22:20:36.871Z"
+    "from": "2026-07-29T23:08:55.652Z",
+    "to": "2026-08-28T23:08:55.652Z"
   },
-  "totalAvailable": 68,
+  "totalAvailable": 70,
   "truncated": false,
   "events": [
+    {
+      "id": "8f8bec674907850e411ed01c9ede2b01",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T23:07:20.234Z",
+      "signalId": "412a0d4ff3da3bbf33bc",
+      "signalPath": "/signals/412a0d4ff3da3bbf33bc/",
+      "domain": "dhl-expedition-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "97fcc8aa04dddcbed76fc36aa15647a2",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T23:02:56.637Z",
+      "signalId": "991dcac5fe0bcb888981",
+      "signalPath": "/signals/991dcac5fe0bcb888981/",
+      "domain": "dhl-service[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "06eba9e261498612e16de587fdd80ad3",
       "type": "first-publication",
