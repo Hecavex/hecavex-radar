@@ -1,10 +1,42 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-28T12:55:18.423Z",
+  "generatedAt": "2026-08-28T13:54:16.106Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
-  "nodes": [],
-  "edges": [],
+  "nodes": [
+    {
+      "signalId": "3fff5d4e13b79be1161d",
+      "domain": "www[.]xn--chez-seb-et-la-nkb[.]fr",
+      "clusterId": "aae83e99b565144e"
+    },
+    {
+      "signalId": "f244770fd730a8f8f74a",
+      "domain": "xn--chez-seb-et-la-nkb[.]fr",
+      "clusterId": "aae83e99b565144e"
+    }
+  ],
+  "edges": [
+    {
+      "id": "aac54fd544a03b8cad7e",
+      "source": "3fff5d4e13b79be1161d",
+      "target": "f244770fd730a8f8f74a",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "www[.]xn--chez-seb-et-la-nkb[.]fr"
+        },
+        {
+          "type": "certificate-san",
+          "value": "xn--chez-seb-et-la-nkb[.]fr"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "f8461c957781b637ae594a1152b1f093d75a27c31b67b154b744eae218219daa"
+        }
+      ]
+    }
+  ],
   "suppressedEvidence": {
     "highFanoutValues": 0,
     "temporalPairs": 0,

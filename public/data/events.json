@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T12:55:18.423Z",
+  "generatedAt": "2026-08-28T13:54:16.106Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T12:55:18.423Z",
-    "to": "2026-08-28T12:55:18.423Z"
+    "from": "2026-07-29T13:54:16.106Z",
+    "to": "2026-08-28T13:54:16.106Z"
   },
-  "totalAvailable": 61,
+  "totalAvailable": 63,
   "truncated": false,
   "events": [
+    {
+      "id": "a10958c93f7cbbd64d9940c8e8c3951e",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T13:52:51.226Z",
+      "signalId": "f244770fd730a8f8f74a",
+      "signalPath": "/signals/f244770fd730a8f8f74a/",
+      "domain": "xn--chez-seb-et-la-nkb[.]fr",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "2862a8f6cf54ea11d86cf4a2ccaccc0c",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T13:52:51.226Z",
+      "signalId": "3fff5d4e13b79be1161d",
+      "signalPath": "/signals/3fff5d4e13b79be1161d/",
+      "domain": "www[.]xn--chez-seb-et-la-nkb[.]fr",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "9280e03d18ac2c46a4151bdeb8677f5b",
       "type": "first-publication",
