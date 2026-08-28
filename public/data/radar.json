@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-28T09:58:47.973Z",
-  "lastSuccessfulSyncAt": "2026-08-28T09:58:47.973Z",
+  "generatedAt": "2026-08-28T10:57:26.144Z",
+  "lastSuccessfulSyncAt": "2026-08-28T10:57:26.144Z",
   "signals": [
+    {
+      "id": "41630f90b9c744dbcf76",
+      "url": "hxxps://confirm-telia[.]ph",
+      "domain": "confirm-telia[.]ph",
+      "firstSeen": "2026-08-28T10:12:50.229Z",
+      "lastSeen": "2026-08-28T10:12:50.229Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "afc8d3a028031f2f28cc",
       "url": "hxxps://dpd-tracking[.]villeroy-boch[.]com",
@@ -1424,8 +1455,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-28T09:58:47.973Z",
-      "records": 36,
+      "fetchedAt": "2026-08-28T10:57:26.144Z",
+      "records": 37,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -1440,7 +1471,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-28T09:58:47.973Z",
+      "fetchedAt": "2026-08-28T10:57:26.144Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

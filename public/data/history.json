@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T09:58:47.973Z",
+  "generatedAt": "2026-08-28T10:57:26.144Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "41630f90b9c744dbcf76",
+      "domain": "confirm-telia[.]ph",
+      "brand": "Telia",
+      "firstSeen": "2026-08-28T10:12:50.229Z",
+      "lastSeen": "2026-08-28T10:12:50.229Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "330785383a2562376044037730d4d21f",
+          "observedAt": "2026-08-28T10:12:50.229Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "afc8d3a028031f2f28cc",
       "domain": "dpd-tracking[.]villeroy-boch[.]com",

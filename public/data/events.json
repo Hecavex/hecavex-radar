@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T09:58:47.973Z",
+  "generatedAt": "2026-08-28T10:57:26.144Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T09:58:47.973Z",
-    "to": "2026-08-28T09:58:47.973Z"
+    "from": "2026-07-29T10:57:26.144Z",
+    "to": "2026-08-28T10:57:26.144Z"
   },
-  "totalAvailable": 59,
+  "totalAvailable": 60,
   "truncated": false,
   "events": [
+    {
+      "id": "1c6c86483598caa7e275bb8d3d7f6ddc",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T10:12:50.229Z",
+      "signalId": "41630f90b9c744dbcf76",
+      "signalPath": "/signals/41630f90b9c744dbcf76/",
+      "domain": "confirm-telia[.]ph",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "50881042727acec3c9ff92a22fef0edc",
       "type": "first-publication",
