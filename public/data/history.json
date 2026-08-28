@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T08:01:40.966Z",
+  "generatedAt": "2026-08-28T08:59:57.816Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "0d284af65210b0c1307e",
+      "domain": "omada[.]delivery-dhl-uae[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T08:25:31.949Z",
+      "lastSeen": "2026-08-28T08:25:31.949Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "48237d8b1f4285788b39b0763ebcfa33",
+          "observedAt": "2026-08-28T08:25:31.949Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "546c0bd84e3bd39248bb",
+      "domain": "login-support-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T08:23:12.404Z",
+      "lastSeen": "2026-08-28T08:23:12.404Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "0be4ba8e2b3e91b03d9e2500be5a6cd1",
+          "observedAt": "2026-08-28T08:23:12.404Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "b0a528848023ad05d765",
       "domain": "www[.]en-dhl-support[.]com[.]ph",

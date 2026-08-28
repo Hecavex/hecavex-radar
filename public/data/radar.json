@@ -1,9 +1,72 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-28T08:01:40.966Z",
-  "lastSuccessfulSyncAt": "2026-08-28T08:01:40.966Z",
+  "generatedAt": "2026-08-28T08:59:57.816Z",
+  "lastSuccessfulSyncAt": "2026-08-28T08:59:57.816Z",
   "signals": [
+    {
+      "id": "0d284af65210b0c1307e",
+      "url": "hxxps://omada[.]delivery-dhl-uae[.]com",
+      "domain": "omada[.]delivery-dhl-uae[.]com",
+      "firstSeen": "2026-08-28T08:25:31.949Z",
+      "lastSeen": "2026-08-28T08:25:31.949Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "546c0bd84e3bd39248bb",
+      "url": "hxxps://login-support-dhl[.]com[.]ph",
+      "domain": "login-support-dhl[.]com[.]ph",
+      "firstSeen": "2026-08-28T08:23:12.404Z",
+      "lastSeen": "2026-08-28T08:23:12.404Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "b0a528848023ad05d765",
       "url": "hxxps://www[.]en-dhl-support[.]com[.]ph",
@@ -1235,8 +1298,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-28T08:01:40.966Z",
-      "records": 30,
+      "fetchedAt": "2026-08-28T08:59:57.816Z",
+      "records": 32,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -1251,7 +1314,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-28T08:01:40.966Z",
+      "fetchedAt": "2026-08-28T08:59:57.816Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
