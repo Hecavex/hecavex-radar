@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T04:06:49.499Z",
+  "generatedAt": "2026-08-28T05:05:51.971Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T04:06:49.499Z",
-    "to": "2026-08-28T04:06:49.499Z"
+    "from": "2026-07-29T05:05:51.971Z",
+    "to": "2026-08-28T05:05:51.971Z"
   },
-  "totalAvailable": 43,
+  "totalAvailable": 45,
   "truncated": false,
   "events": [
+    {
+      "id": "526ca3c7365cd3de92ab4eed56adb0af",
+      "type": "reobservation",
+      "occurredAt": "2026-08-28T04:58:56.879Z",
+      "signalId": "0c3d246103bbf9c56c5f",
+      "signalPath": "/signals/0c3d246103bbf9c56c5f/",
+      "domain": "dpd-service[.]cyou",
+      "brand": "DPD",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "a09395b9c29d55f80943ba6d7b1386b0",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T04:31:16.895Z",
+      "signalId": "db4d311fe3bf4fdc6fba",
+      "signalPath": "/signals/db4d311fe3bf4fdc6fba/",
+      "domain": "secure-acres-telia[.]ph",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "dc149d52a025d09e1b7e9ed28fb178d1",
       "type": "first-publication",

@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T04:06:49.499Z",
+  "generatedAt": "2026-08-28T05:05:51.971Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "0c3d246103bbf9c56c5f",
+      "domain": "dpd-service[.]cyou",
+      "brand": "DPD",
+      "firstSeen": "2026-08-22T03:12:03.740Z",
+      "lastSeen": "2026-08-28T04:58:56.879Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ff868b84c1256a1ea4d2386f6206cdc1",
+          "observedAt": "2026-08-22T03:12:03.740Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "db4d311fe3bf4fdc6fba",
+      "domain": "secure-acres-telia[.]ph",
+      "brand": "Telia",
+      "firstSeen": "2026-08-28T04:31:16.895Z",
+      "lastSeen": "2026-08-28T04:31:16.895Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "6900477f2342924592af61da8cda34cc",
+          "observedAt": "2026-08-28T04:31:16.895Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "0923afa966c0841e00f8",
       "domain": "maximaservice[.]se",
@@ -1194,41 +1266,6 @@
           ],
           "reasonCodes": [
             "brand-domain-match",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0c3d246103bbf9c56c5f",
-      "domain": "dpd-service[.]cyou",
-      "brand": "DPD",
-      "firstSeen": "2026-08-22T03:12:03.740Z",
-      "lastSeen": "2026-08-22T03:12:03.740Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "ff868b84c1256a1ea4d2386f6206cdc1",
-          "observedAt": "2026-08-22T03:12:03.740Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "suspicious-context",
-            "different-tld",
             "first-publication"
           ]
         }

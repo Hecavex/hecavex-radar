@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-28T04:06:49.499Z",
+  "generatedAt": "2026-08-28T05:05:51.971Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T04:06:49.499Z",
-      "to": "2026-08-28T04:06:49.499Z",
-      "events": 35,
-      "uniqueSignals": 18,
-      "firstPublications": 17,
+      "from": "2026-08-27T05:05:51.971Z",
+      "to": "2026-08-28T05:05:51.971Z",
+      "events": 38,
+      "uniqueSignals": 20,
+      "firstPublications": 18,
       "statusChanges": 0,
-      "observations": 18,
+      "observations": 20,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 35
+        "CertStream": 38
       },
       "byStatus": {
-        "suspected": 35
+        "suspected": 38
       },
       "byReason": {
-        "suspicious-context": 33,
-        "different-tld": 31,
-        "brand-exact-token": 29,
-        "first-publication": 17,
-        "multiple-hyphens": 17,
+        "suspicious-context": 36,
+        "different-tld": 34,
+        "brand-exact-token": 32,
+        "multiple-hyphens": 19,
+        "first-publication": 18,
         "brand-joined-affix": 6,
         "punycode": 2,
         "unicode-confusable": 2
@@ -37,34 +37,36 @@
         "DHL": 4,
         "MAXIMA": 4,
         "Vinted": 4,
-        "VMI": 2
+        "Telia": 2,
+        "VMI": 2,
+        "DPD": 1
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-21T04:06:49.499Z",
-      "to": "2026-08-28T04:06:49.499Z",
-      "events": 82,
-      "uniqueSignals": 36,
-      "firstPublications": 36,
+      "from": "2026-08-21T05:05:51.971Z",
+      "to": "2026-08-28T05:05:51.971Z",
+      "events": 85,
+      "uniqueSignals": 37,
+      "firstPublications": 37,
       "statusChanges": 0,
-      "observations": 46,
-      "reobservations": 10,
+      "observations": 48,
+      "reobservations": 11,
       "bySource": {
-        "CertStream": 41,
+        "CertStream": 44,
         "URLScan": 39,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 82
+        "suspected": 85
       },
       "byReason": {
-        "suspicious-context": 41,
-        "different-tld": 39,
-        "brand-exact-token": 37,
-        "first-publication": 36,
+        "suspicious-context": 44,
+        "different-tld": 42,
+        "brand-exact-token": 40,
+        "first-publication": 37,
         "brand-domain-match": 34,
-        "multiple-hyphens": 17,
+        "multiple-hyphens": 19,
         "brand-title-match": 10,
         "brand-joined-affix": 6,
         "provider-verdict": 5,
@@ -80,9 +82,10 @@
         "SEB": 6,
         "Bitė": 4,
         "ESO": 4,
+        "DPD": 3,
         "Smart-ID": 3,
-        "DPD": 2,
         "Swedbank": 2,
+        "Telia": 2,
         "VMI": 2
       }
     }

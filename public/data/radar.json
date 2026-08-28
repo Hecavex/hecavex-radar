@@ -1,9 +1,72 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-28T04:06:49.499Z",
-  "lastSuccessfulSyncAt": "2026-08-28T04:06:49.499Z",
+  "generatedAt": "2026-08-28T05:05:51.971Z",
+  "lastSuccessfulSyncAt": "2026-08-28T05:05:51.971Z",
   "signals": [
+    {
+      "id": "0c3d246103bbf9c56c5f",
+      "url": "hxxps://dpd-service[.]cyou",
+      "domain": "dpd-service[.]cyou",
+      "firstSeen": "2026-08-22T03:12:03.740Z",
+      "lastSeen": "2026-08-28T04:58:56.879Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DPD",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "db4d311fe3bf4fdc6fba",
+      "url": "hxxps://secure-acres-telia[.]ph",
+      "domain": "secure-acres-telia[.]ph",
+      "firstSeen": "2026-08-28T04:31:16.895Z",
+      "lastSeen": "2026-08-28T04:31:16.895Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "0923afa966c0841e00f8",
       "url": "hxxps://maximaservice[.]se",
@@ -766,37 +829,6 @@
       "detailAvailable": true
     },
     {
-      "id": "0c3d246103bbf9c56c5f",
-      "url": "hxxps://dpd-service[.]cyou",
-      "domain": "dpd-service[.]cyou",
-      "firstSeen": "2026-08-22T03:12:03.740Z",
-      "lastSeen": "2026-08-22T03:12:03.740Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "DPD",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 90,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 90,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld"
-      ],
-      "detailAvailable": true
-    },
-    {
       "id": "b2a74041369ff0a25a50",
       "url": "hxxps://service-revolut[.]ph",
       "domain": "service-revolut[.]ph",
@@ -951,8 +983,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-28T04:06:49.499Z",
-      "records": 21,
+      "fetchedAt": "2026-08-28T05:05:51.971Z",
+      "records": 22,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -967,7 +999,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-28T04:06:49.499Z",
+      "fetchedAt": "2026-08-28T05:05:51.971Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-feeds",
-  "generatedAt": "2026-08-28T04:06:49.499Z",
+  "generatedAt": "2026-08-28T05:05:51.971Z",
   "semantics": "Each per-brand feed is a filtered view of the same bounded 30-day global event stream. An empty feed means no publishable event in that sampled window, not no phishing activity.",
   "brands": [
     {
@@ -63,7 +63,7 @@
     {
       "brand": "DPD",
       "slug": "dpd",
-      "eventCount": 1,
+      "eventCount": 2,
       "atom": "/data/brands/dpd/events.atom.xml",
       "rss": "/data/brands/dpd/events.rss.xml",
       "jsonFeed": "/data/brands/dpd/events.feed.json"
@@ -327,7 +327,7 @@
     {
       "brand": "Telia",
       "slug": "telia",
-      "eventCount": 0,
+      "eventCount": 1,
       "atom": "/data/brands/telia/events.atom.xml",
       "rss": "/data/brands/telia/events.rss.xml",
       "jsonFeed": "/data/brands/telia/events.feed.json"
