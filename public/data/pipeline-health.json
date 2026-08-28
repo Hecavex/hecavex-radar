@@ -1,37 +1,37 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-28T14:52:51.326Z",
+  "generatedAt": "2026-08-28T15:51:39.439Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
-    "publishedSignals": 49,
+    "publishedSignals": 50,
     "sourceStates": {
       "CertStream": "healthy",
       "URLScan": "healthy",
       "HECAVEX": "healthy"
     },
     "sourceRecords": {
-      "CertStream": 40,
+      "CertStream": 41,
       "URLScan": 9,
       "HECAVEX": 1
     },
     "certstream": {
-      "generatedAt": "2026-08-28T14:52:22.977Z",
-      "lastSuccessAt": "2026-08-28T14:52:22.977Z",
+      "generatedAt": "2026-08-28T15:51:11.055Z",
+      "lastSuccessAt": "2026-08-28T15:51:11.055Z",
       "freshness": {
         "status": "current",
-        "referenceAt": "2026-08-28T14:52:22.977Z",
+        "referenceAt": "2026-08-28T15:51:11.055Z",
         "ageSeconds": 0
       },
       "latestAttempt": {
-        "startedAt": "2026-08-28T14:44:04.999Z",
-        "endedAt": "2026-08-28T14:52:22.977Z",
-        "outcome": "healthy-empty",
-        "listeningSeconds": 478.996,
-        "messages": 188668,
-        "dnsNames": 337570,
-        "matches": 0,
-        "newRecords": 0
+        "startedAt": "2026-08-28T15:42:53.794Z",
+        "endedAt": "2026-08-28T15:51:11.055Z",
+        "outcome": "healthy-matches",
+        "listeningSeconds": 479.998,
+        "messages": 174975,
+        "dnsNames": 318060,
+        "matches": 1,
+        "newRecords": 1
       }
     },
     "urlscan": {
@@ -81,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T14:52:51.326Z",
-      "to": "2026-08-28T14:52:51.326Z",
+      "from": "2026-08-27T15:51:39.439Z",
+      "to": "2026-08-28T15:51:39.439Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 98,
@@ -92,15 +92,15 @@
         "scheduledListeningCeilingPercent": 53.33,
         "expectedListeningSeconds": 47040,
         "listeningSeconds": 47027.815,
-        "messages": 15452139,
-        "dnsNames": 28429302,
+        "messages": 15550980,
+        "dnsNames": 28694974,
         "outcomes": {
           "healthy-empty": 72,
           "healthy-matches": 26
         }
       },
       "screening": {
-        "matches": 52,
+        "matches": 51,
         "newArchiveRecords": 32,
         "firstPublications": 31,
         "bySource": {
@@ -126,31 +126,31 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-21T14:52:51.326Z",
-      "to": "2026-08-28T14:52:51.326Z",
+      "from": "2026-08-21T15:51:39.439Z",
+      "to": "2026-08-28T15:51:39.439Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 175,
-        "healthyAttempts": 175,
-        "recordedSchedulePercent": 26.0,
-        "listeningCoveragePercent": 12.65,
+        "recordedAttempts": 179,
+        "healthyAttempts": 179,
+        "recordedSchedulePercent": 26.6,
+        "listeningCoveragePercent": 12.97,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 76560,
-        "listeningSeconds": 76528.653,
-        "messages": 26037032,
-        "dnsNames": 46860662,
+        "expectedListeningSeconds": 78480,
+        "listeningSeconds": 78448.646,
+        "messages": 26724621,
+        "dnsNames": 48159689,
         "outcomes": {
-          "healthy-empty": 141,
-          "healthy-matches": 34
+          "healthy-empty": 144,
+          "healthy-matches": 35
         }
       },
       "screening": {
-        "matches": 63,
-        "newArchiveRecords": 40,
+        "matches": 64,
+        "newArchiveRecords": 41,
         "firstPublications": 52,
         "bySource": {
-          "CertStream": 80,
-          "URLScan": 31,
+          "CertStream": 82,
+          "URLScan": 29,
           "HECAVEX": 2
         }
       },
@@ -168,7 +168,7 @@
         "events": 113,
         "observations": 61,
         "statusTransitions": 52,
-        "uniqueSignals": 55
+        "uniqueSignals": 56
       }
     }
   ]

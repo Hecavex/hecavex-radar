@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T13:54:16.106Z",
+  "generatedAt": "2026-08-28T15:51:39.439Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "08f94854a3fe0e9324d1",
+      "domain": "dhlexpress-online[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T15:50:23.946Z",
+      "lastSeen": "2026-08-28T15:50:23.946Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d795a688c8f598cf1ec41f28c2b990e1",
+          "observedAt": "2026-08-28T15:50:23.946Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-split-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "f244770fd730a8f8f74a",
       "domain": "xn--chez-seb-et-la-nkb[.]fr",

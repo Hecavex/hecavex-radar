@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-28T13:54:16.106Z",
+  "generatedAt": "2026-08-28T15:51:39.439Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 49,
+  "availableUnreviewed": 50,
   "selected": 24,
   "candidates": [
     {
@@ -277,21 +277,21 @@
       "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
-      "signalId": "0923afa966c0841e00f8",
-      "recordPath": "/signals/0923afa966c0841e00f8/",
-      "brand": "MAXIMA",
+      "signalId": "08f94854a3fe0e9324d1",
+      "recordPath": "/signals/08f94854a3fe0e9324d1/",
+      "brand": "DHL",
       "sources": [
         "CertStream"
       ],
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-joined-affix",
+        "brand-split-token",
         "different-tld",
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-28T04:01:34.504Z"
+      "firstSeen": "2026-08-28T15:50:23.946Z"
     },
     {
       "signalId": "3fff5d4e13b79be1161d",
@@ -311,6 +311,23 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-28T13:52:51.226Z"
+    },
+    {
+      "signalId": "0923afa966c0841e00f8",
+      "recordPath": "/signals/0923afa966c0841e00f8/",
+      "brand": "MAXIMA",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-28T04:01:34.504Z"
     },
     {
       "signalId": "be142d686c54ab530aa8",
@@ -379,22 +396,6 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-28T13:52:51.226Z"
-    },
-    {
-      "signalId": "1922e88c9527cd472c77",
-      "recordPath": "/signals/1922e88c9527cd472c77/",
-      "brand": "Revolut",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-28T06:27:33.996Z"
     },
     {
       "signalId": "6d1985055ef1c90ba8d8",
