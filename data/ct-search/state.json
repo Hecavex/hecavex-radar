@@ -1,20 +1,21 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-28T22:48:15.158Z",
+  "generatedAt": "2026-08-28T23:45:27.935Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-28T22:48:15.158Z",
+    "endedAt": "2026-08-28T23:45:27.935Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
+    "outcome": "failed",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
+    "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-28T22:47:28.518Z"
+    "startedAt": "2026-08-28T23:44:33.094Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -23,7 +24,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "artea"
     },
     "brand:bigbank": {
@@ -31,7 +32,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "bigbank"
     },
     "brand:bitelietuva": {
@@ -39,7 +40,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T08:12:22.297Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "bitelietuva"
     },
     "brand:btadraudimas": {
@@ -47,7 +48,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T08:12:22.297Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "btadraudimas"
     },
     "brand:cgates": {
@@ -375,7 +376,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "venipak"
     },
     "brand:vinted": {
@@ -383,10 +384,10 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T23:44:33.094Z",
       "term": "vinted"
     }
   },
-  "queryCursor": 44,
+  "queryCursor": 4,
   "schemaVersion": 1
 }
