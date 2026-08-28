@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-27T21:14:47.848Z",
+  "generatedAt": "2026-08-28T00:11:25.389Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "8fa25c29ac4ef858580f",
+      "domain": "seb-bank[.]ru",
+      "brand": "SEB",
+      "firstSeen": "2026-08-27T23:36:29.666Z",
+      "lastSeen": "2026-08-27T23:36:29.666Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ff866d13bcb0c880862cc365003e9a63",
+          "observedAt": "2026-08-27T23:36:29.666Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4d6827c917c67a54c8c7",
+      "domain": "support-dhl[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-27T23:33:48.510Z",
+      "lastSeen": "2026-08-27T23:33:48.510Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d3b91c3293c183e8973217a6e1fd3fcf",
+          "observedAt": "2026-08-27T23:33:48.510Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "7d3c57c7312ee0850e9e",
       "domain": "xn--l-wmmyd[.]com[.]ph",

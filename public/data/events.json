@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-27T23:12:41.518Z",
+  "generatedAt": "2026-08-28T00:11:25.389Z",
   "window": {
     "days": 30,
-    "from": "2026-07-28T23:12:41.518Z",
-    "to": "2026-08-27T23:12:41.518Z"
+    "from": "2026-07-29T00:11:25.389Z",
+    "to": "2026-08-28T00:11:25.389Z"
   },
-  "totalAvailable": 40,
+  "totalAvailable": 42,
   "truncated": false,
   "events": [
+    {
+      "id": "04c0fb8e2f48362d6e4dc9b752a6a6aa",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T23:36:29.666Z",
+      "signalId": "8fa25c29ac4ef858580f",
+      "signalPath": "/signals/8fa25c29ac4ef858580f/",
+      "domain": "seb-bank[.]ru",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "173635f6ca41daea4a3d7f13da7ac62c",
+      "type": "first-publication",
+      "occurredAt": "2026-08-27T23:33:48.510Z",
+      "signalId": "4d6827c917c67a54c8c7",
+      "signalPath": "/signals/4d6827c917c67a54c8c7/",
+      "domain": "support-dhl[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "c690c2eca1cb9284a690927f2458968b",
       "type": "first-publication",
