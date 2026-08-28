@@ -1,15 +1,57 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T06:04:36.239Z",
+  "generatedAt": "2026-08-28T07:03:10.600Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T06:04:36.239Z",
-    "to": "2026-08-28T06:04:36.239Z"
+    "from": "2026-07-29T07:03:10.600Z",
+    "to": "2026-08-28T07:03:10.600Z"
   },
-  "totalAvailable": 48,
+  "totalAvailable": 51,
   "truncated": false,
   "events": [
+    {
+      "id": "00d6a536e23ca5458ada48fe1d4f0c4e",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T06:41:38.086Z",
+      "signalId": "a052de282668c9e9d65d",
+      "signalPath": "/signals/a052de282668c9e9d65d/",
+      "domain": "www[.]login-support-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "bfe327c713bd792fd620ee4bcfab03ef",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T06:29:57.351Z",
+      "signalId": "80274c8f73980d3197e7",
+      "signalPath": "/signals/80274c8f73980d3197e7/",
+      "domain": "www[.]dhl-parcel-de[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "e1148fc609a0b1d151038367a95710ed",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T06:27:33.996Z",
+      "signalId": "1922e88c9527cd472c77",
+      "signalPath": "/signals/1922e88c9527cd472c77/",
+      "domain": "www[.]secure-revolut[.]com",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f4247d7f97fc8f31ce9a88039d4003c0",
       "type": "first-publication",

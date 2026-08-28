@@ -1,10 +1,117 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T06:04:36.239Z",
+  "generatedAt": "2026-08-28T07:03:10.600Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a052de282668c9e9d65d",
+      "domain": "www[.]login-support-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T06:41:38.086Z",
+      "lastSeen": "2026-08-28T06:41:38.086Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c50e4b06d7a1019262d9c7edaf8fd674",
+          "observedAt": "2026-08-28T06:41:38.086Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "80274c8f73980d3197e7",
+      "domain": "www[.]dhl-parcel-de[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T06:29:57.351Z",
+      "lastSeen": "2026-08-28T06:29:57.351Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "5e3a9d76162c5663cd38d386dc76b355",
+          "observedAt": "2026-08-28T06:29:57.351Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1922e88c9527cd472c77",
+      "domain": "www[.]secure-revolut[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-28T06:27:33.996Z",
+      "lastSeen": "2026-08-28T06:27:33.996Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bb1383541debf57b78054a39d78b41a5",
+          "observedAt": "2026-08-28T06:27:33.996Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "6718a48a9d6c4669e8f5",
       "domain": "www[.]revolut-service[.]com",
