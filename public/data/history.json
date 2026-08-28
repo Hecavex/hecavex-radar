@@ -1,10 +1,117 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T05:05:51.971Z",
+  "generatedAt": "2026-08-28T06:04:36.239Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "6718a48a9d6c4669e8f5",
+      "domain": "www[.]revolut-service[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-28T05:44:08.474Z",
+      "lastSeen": "2026-08-28T05:44:08.474Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "cfb1f53a0f5e4c09e2f17c78d150b787",
+          "observedAt": "2026-08-28T05:44:08.474Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "df4665f38c168b41480b",
+      "domain": "dhl-support-service[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T05:43:45.338Z",
+      "lastSeen": "2026-08-28T05:43:45.338Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3d111874149b2a0c9bafbe71737c7b74",
+          "observedAt": "2026-08-28T05:43:45.338Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5ec78080326fa0d0e0e1",
+      "domain": "invoice-splitter-bta[.]pages[.]dev",
+      "brand": "BTA",
+      "firstSeen": "2026-08-28T05:32:19.654Z",
+      "lastSeen": "2026-08-28T05:32:19.654Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ebddb1654d3d62c831eeb79d114d4afa",
+          "observedAt": "2026-08-28T05:32:19.654Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "0c3d246103bbf9c56c5f",
       "domain": "dpd-service[.]cyou",
