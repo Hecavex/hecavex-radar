@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-28T11:56:18.591Z",
+  "generatedAt": "2026-08-28T12:55:18.423Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T11:56:18.591Z",
-      "to": "2026-08-28T11:56:18.591Z",
-      "events": 63,
-      "uniqueSignals": 32,
-      "firstPublications": 31,
+      "from": "2026-08-27T12:55:18.423Z",
+      "to": "2026-08-28T12:55:18.423Z",
+      "events": 65,
+      "uniqueSignals": 33,
+      "firstPublications": 32,
       "statusChanges": 0,
-      "observations": 32,
+      "observations": 33,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 63
+        "CertStream": 65
       },
       "byStatus": {
-        "suspected": 63
+        "suspected": 65
       },
       "byReason": {
-        "suspicious-context": 61,
-        "brand-exact-token": 57,
-        "different-tld": 51,
-        "multiple-hyphens": 38,
-        "first-publication": 31,
+        "suspicious-context": 63,
+        "brand-exact-token": 59,
+        "different-tld": 53,
+        "multiple-hyphens": 40,
+        "first-publication": 32,
         "brand-joined-affix": 6,
         "punycode": 2,
         "unicode-confusable": 2
@@ -34,10 +34,10 @@
         "DHL": 22,
         "Revolut": 12,
         "SEB": 6,
+        "Telia": 6,
         "DPD": 5,
         "Bitė": 4,
         "MAXIMA": 4,
-        "Telia": 4,
         "BTA": 2,
         "VMI": 2,
         "Vinted": 2
@@ -45,29 +45,29 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-21T11:56:18.591Z",
-      "to": "2026-08-28T11:56:18.591Z",
+      "from": "2026-08-21T12:55:18.423Z",
+      "to": "2026-08-28T12:55:18.423Z",
       "events": 109,
-      "uniqueSignals": 52,
+      "uniqueSignals": 53,
       "firstPublications": 50,
       "statusChanges": 0,
       "observations": 59,
-      "reobservations": 7,
+      "reobservations": 6,
       "bySource": {
-        "CertStream": 74,
-        "URLScan": 33,
+        "CertStream": 76,
+        "URLScan": 31,
         "HECAVEX": 2
       },
       "byStatus": {
         "suspected": 109
       },
       "byReason": {
-        "suspicious-context": 74,
-        "brand-exact-token": 70,
-        "different-tld": 64,
+        "suspicious-context": 76,
+        "brand-exact-token": 72,
+        "different-tld": 66,
         "first-publication": 50,
-        "multiple-hyphens": 41,
-        "brand-domain-match": 28,
+        "multiple-hyphens": 43,
+        "brand-domain-match": 26,
         "brand-title-match": 10,
         "brand-joined-affix": 6,
         "provider-verdict": 5,
@@ -78,13 +78,13 @@
       "byBrand": {
         "Revolut": 28,
         "DHL": 27,
-        "Vinted": 14,
+        "Vinted": 12,
         "MAXIMA": 8,
         "DPD": 7,
         "SEB": 6,
+        "Telia": 6,
         "Bitė": 4,
         "ESO": 4,
-        "Telia": 4,
         "BTA": 2,
         "Swedbank": 2,
         "VMI": 2,

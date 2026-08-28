@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-28T11:56:18.591Z",
+  "generatedAt": "2026-08-28T12:55:18.423Z",
   "retentionDays": 365,
   "from": "2025-08-29",
   "to": "2026-08-28",
@@ -406,48 +406,48 @@
       "date": "2026-08-28",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 42978,
-        "scheduledSlots": 47,
-        "recordedAttempts": 49,
-        "healthyAttempts": 49,
+        "windowSeconds": 46518,
+        "scheduledSlots": 51,
+        "recordedAttempts": 53,
+        "healthyAttempts": 53,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 54.71,
-        "scheduledListeningCeilingPercent": 52.49,
-        "listeningSeconds": 23511.902,
+        "listeningCoveragePercent": 54.67,
+        "scheduledListeningCeilingPercent": 52.62,
+        "listeningSeconds": 25430.892,
         "outcomes": {
-          "healthy-empty": 33,
-          "healthy-matches": 16
+          "healthy-empty": 36,
+          "healthy-matches": 17
         }
       },
       "discovery": {
-        "events": 35,
-        "uniqueSignals": 18,
-        "observations": 18,
+        "events": 37,
+        "uniqueSignals": 19,
+        "observations": 19,
         "reobservations": 0,
-        "firstPublications": 17,
+        "firstPublications": 18,
         "statusChanges": 0,
-        "facetSampleSize": 18,
-        "evidenceClassifiedSignals": 18,
+        "facetSampleSize": 19,
+        "evidenceClassifiedSignals": 19,
         "byBrand": {
           "DHL": 9,
           "DPD": 3,
+          "Telia": 3,
           "Revolut": 2,
-          "Telia": 2,
           "BTA": 1,
           "MAXIMA": 1
         },
         "bySource": {
-          "CertStream": 18
+          "CertStream": 19
         },
         "byEvidenceTier": {
-          "name-only": 18
+          "name-only": 19
         },
         "byReason": {
-          "suspicious-context": 18,
-          "brand-exact-token": 17,
-          "first-publication": 17,
-          "different-tld": 14,
-          "multiple-hyphens": 12,
+          "suspicious-context": 19,
+          "brand-exact-token": 18,
+          "first-publication": 18,
+          "different-tld": 15,
+          "multiple-hyphens": 13,
           "brand-joined-affix": 1
         }
       }

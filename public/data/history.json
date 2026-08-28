@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T10:57:26.144Z",
+  "generatedAt": "2026-08-28T12:55:18.423Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ec62aaf5dc86de5cfbcf",
+      "domain": "telia-compte-service[.]com[.]ph",
+      "brand": "Telia",
+      "firstSeen": "2026-08-28T12:18:04.459Z",
+      "lastSeen": "2026-08-28T12:18:04.459Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e8c4be505443e17df2c987ab57575cca",
+          "observedAt": "2026-08-28T12:18:04.459Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "41630f90b9c744dbcf76",
       "domain": "confirm-telia[.]ph",
