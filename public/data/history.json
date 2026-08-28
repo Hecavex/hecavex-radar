@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T17:50:14.417Z",
+  "generatedAt": "2026-08-28T21:41:10.135Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "63f22ac8fd798f6a3ff4",
+      "domain": "dhl-secure-express[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T21:14:19.986Z",
+      "lastSeen": "2026-08-28T21:14:19.986Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "329c42f1131e6060592ce4fb3f9fcba8",
+          "observedAt": "2026-08-28T21:14:19.986Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2c6727c06f1fe36331e",
+      "domain": "swedbank-verify[.]ph",
+      "brand": "Swedbank",
+      "firstSeen": "2026-08-28T21:08:57.859Z",
+      "lastSeen": "2026-08-28T21:08:57.859Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1a0b02c1e868d4e001714b4d41305efb",
+          "observedAt": "2026-08-28T21:08:57.859Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "fbacd65c239b07f30b11",
       "domain": "wg[.]vrnplay[.]bite-service[.]com",

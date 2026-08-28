@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T20:47:43.013Z",
+  "generatedAt": "2026-08-28T21:41:10.135Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T20:47:43.013Z",
-    "to": "2026-08-28T20:47:43.013Z"
+    "from": "2026-07-29T21:41:10.135Z",
+    "to": "2026-08-28T21:41:10.135Z"
   },
-  "totalAvailable": 66,
+  "totalAvailable": 68,
   "truncated": false,
   "events": [
+    {
+      "id": "06eba9e261498612e16de587fdd80ad3",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T21:14:19.986Z",
+      "signalId": "63f22ac8fd798f6a3ff4",
+      "signalPath": "/signals/63f22ac8fd798f6a3ff4/",
+      "domain": "dhl-secure-express[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "f72b926cea91193d68e1211bd556e883",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T21:08:57.859Z",
+      "signalId": "c2c6727c06f1fe36331e",
+      "signalPath": "/signals/c2c6727c06f1fe36331e/",
+      "domain": "swedbank-verify[.]ph",
+      "brand": "Swedbank",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "31b0f12b67a50a25a0c6490fe4e5f067",
       "type": "first-publication",
