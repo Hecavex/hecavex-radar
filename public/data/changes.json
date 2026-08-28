@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-28T19:48:36.125Z",
+  "generatedAt": "2026-08-28T20:47:43.013Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T19:48:36.125Z",
-      "to": "2026-08-28T19:48:36.125Z",
-      "events": 57,
-      "uniqueSignals": 29,
-      "firstPublications": 28,
+      "from": "2026-08-27T20:47:43.013Z",
+      "to": "2026-08-28T20:47:43.013Z",
+      "events": 55,
+      "uniqueSignals": 28,
+      "firstPublications": 27,
       "statusChanges": 0,
-      "observations": 29,
+      "observations": 28,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 57
+        "CertStream": 55
       },
       "byStatus": {
-        "suspected": 57
+        "suspected": 55
       },
       "byReason": {
-        "brand-exact-token": 53,
-        "suspicious-context": 51,
-        "different-tld": 47,
+        "brand-exact-token": 51,
+        "suspicious-context": 49,
+        "different-tld": 45,
         "multiple-hyphens": 34,
-        "first-publication": 28,
+        "first-publication": 27,
         "punycode": 6,
         "unicode-confusable": 6,
         "brand-joined-affix": 2,
@@ -39,14 +39,13 @@
         "DPD": 5,
         "BTA": 2,
         "Bitė": 2,
-        "MAXIMA": 2,
-        "Vinted": 2
+        "MAXIMA": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-21T19:48:36.125Z",
-      "to": "2026-08-28T19:48:36.125Z",
+      "from": "2026-08-21T20:47:43.013Z",
+      "to": "2026-08-28T20:47:43.013Z",
       "events": 117,
       "uniqueSignals": 58,
       "firstPublications": 54,
