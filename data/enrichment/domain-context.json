@@ -1,15 +1,35 @@
 {
-  "cursor": 0,
+  "cursor": 20,
   "dataset": "domain-context",
-  "generatedAt": "2026-08-26T16:38:53.533Z",
+  "generatedAt": "2026-08-28T21:34:09.604Z",
   "latestRun": {
-    "attempted": 13,
-    "completed": 13,
-    "endedAt": "2026-08-26T16:38:53.533Z",
-    "outcome": "completed",
-    "startedAt": "2026-08-26T16:38:39.559Z"
+    "attempted": 20,
+    "completed": 18,
+    "endedAt": "2026-08-28T21:34:09.604Z",
+    "outcome": "partial",
+    "startedAt": "2026-08-28T21:33:49.468Z"
   },
   "records": [
+    {
+      "dns": {
+        "a": [
+          "89[.]145[.]164[.]98"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [
+          "ns[.]bi[.]lt",
+          "vu[.]bi[.]lt"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "bite-staging-security[.]lt",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "623c9be6ca68ccf196f0"
+    },
     {
       "dns": {
         "a": [
@@ -23,7 +43,7 @@
         "queriesCompleted": 5
       },
       "domain": "bsconseils[.]eso-online[.]fr",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": {
         "domain": "eso-online[.]fr",
         "expiresAt": "2026-10-16T16:47:38.000Z",
@@ -73,6 +93,23 @@
     {
       "dns": {
         "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "confirm-telia[.]ph",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "41630f90b9c744dbcf76"
+    },
+    {
+      "dns": {
+        "a": [
           "159[.]8[.]105[.]201"
         ],
         "aaaa": [],
@@ -98,6 +135,41 @@
     },
     {
       "dns": {
+        "a": [
+          "104[.]18[.]34[.]81",
+          "172[.]64[.]153[.]175"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 300,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "dhl-proxy-service[.]prod[.]core[.]thirdparty[.]sx",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "22b038e1cf96d0b61251"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "dhlexpress-online[.]ph",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "08f94854a3fe0e9324d1"
+    },
+    {
+      "dns": {
         "a": [],
         "aaaa": [],
         "cname": [],
@@ -110,7 +182,7 @@
         "queriesCompleted": 5
       },
       "domain": "dpd-service[.]cyou",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": {
         "domain": "dpd-service[.]cyou",
         "expiresAt": "2027-02-11T23:59:59.000Z",
@@ -122,6 +194,23 @@
         "updatedAt": "2026-02-16T20:12:23.000Z"
       },
       "signalId": "0c3d246103bbf9c56c5f"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "login-support-dhl[.]com[.]ph",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "546c0bd84e3bd39248bb"
     },
     {
       "dns": {
@@ -140,9 +229,65 @@
         "queriesCompleted": 5
       },
       "domain": "maxima-bank[.]ru",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": null,
       "signalId": "54b7622ec9c57480f3dc"
+    },
+    {
+      "dns": {
+        "a": [
+          "46[.]30[.]213[.]92"
+        ],
+        "aaaa": [
+          "2a02[:]2350[:]5[:]10b[:]e4[:]6a24[:]d2bb[:]e6a5"
+        ],
+        "cname": [],
+        "minimumTtl": 3600,
+        "mx": [
+          "10 mx1[.]pub[.]mailpod8-cph3[.]one[.]com",
+          "10 mx2[.]pub[.]mailpod8-cph3[.]one[.]com",
+          "10 mx3[.]pub[.]mailpod8-cph3[.]one[.]com"
+        ],
+        "ns": [
+          "ns01[.]one[.]com",
+          "ns02[.]one[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "maximaservice[.]se",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "0923afa966c0841e00f8"
+    },
+    {
+      "dns": {
+        "a": [
+          "185[.]53[.]179[.]136"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 900,
+        "mx": [],
+        "ns": [
+          "ina1[.]registrar[.]eu",
+          "ina2[.]registrar[.]eu",
+          "ina3[.]registrar[.]eu"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "omada[.]delivery-dhl-uae[.]com",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": {
+        "domain": "delivery-dhl-uae[.]com",
+        "expiresAt": "2027-03-03T18:58:36.000Z",
+        "registeredAt": "2026-03-03T18:58:36.000Z",
+        "registrar": "Hosting Concepts B.V. d/b/a Registrar[.]eu",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-03-09T10:00:23.000Z"
+      },
+      "signalId": "0d284af65210b0c1307e"
     },
     {
       "dns": {
@@ -223,6 +368,23 @@
     {
       "dns": {
         "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "support-dhl[.]ph",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "4d6827c917c67a54c8c7"
+    },
+    {
+      "dns": {
+        "a": [
           "198[.]185[.]159[.]144",
           "198[.]185[.]159[.]145",
           "198[.]49[.]23[.]144",
@@ -243,7 +405,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]net",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": {
         "domain": "support-vinted[.]net",
         "expiresAt": "2026-12-17T18:30:43.000Z",
@@ -270,7 +432,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]ph",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": null,
       "signalId": "5b0f8b137394c5f88ddf"
     },
@@ -294,7 +456,7 @@
         "queriesCompleted": 5
       },
       "domain": "trackmaxima[.]com",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": {
         "domain": "trackmaxima[.]com",
         "expiresAt": "2029-01-15T00:51:13.000Z",
@@ -348,10 +510,116 @@
         "ns": [],
         "queriesCompleted": 5
       },
+      "domain": "www[.]dhl-portal[.]com[.]ph",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": null,
+      "signalId": "1e95c8d5f1d62af98520"
+    },
+    {
+      "dns": {
+        "a": [
+          "15[.]197[.]148[.]33",
+          "3[.]33[.]130[.]190"
+        ],
+        "aaaa": [],
+        "cname": [
+          "revolut-service[.]com"
+        ],
+        "minimumTtl": 600,
+        "mx": [
+          "10 emx[.]mail[.]ru"
+        ],
+        "ns": [
+          "ns73[.]domaincontrol[.]com",
+          "ns74[.]domaincontrol[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "www[.]revolut-service[.]com",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": {
+        "domain": "revolut-service[.]com",
+        "expiresAt": "2027-08-28T05:18:21.000Z",
+        "registeredAt": "2025-08-28T05:18:21.000Z",
+        "registrar": "GoDaddy[.]com, LLC",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-renew-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-08-16T12:46:33.000Z"
+      },
+      "signalId": "6718a48a9d6c4669e8f5"
+    },
+    {
+      "dns": {
+        "a": [
+          "91[.]195[.]240[.]94"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 300,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "www[.]secure-revolut[.]com",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": {
+        "domain": "secure-revolut[.]com",
+        "expiresAt": "2027-02-09T23:16:59.000Z",
+        "registeredAt": "2026-02-09T23:16:59.000Z",
+        "registrar": "Name[.]com, Inc.",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-02-14T11:12:24.000Z"
+      },
+      "signalId": "1922e88c9527cd472c77"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
       "domain": "www[.]swedbank-bank[.]com[.]ph",
       "observedAt": "2026-08-26T16:38:39.559Z",
       "registration": null,
       "signalId": "f1909ad7540e264b7fb4"
+    },
+    {
+      "dns": {
+        "a": [
+          "20[.]71[.]52[.]50"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 3600,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "www[.]xn--chez-seb-et-la-nkb[.]fr",
+      "observedAt": "2026-08-28T21:33:49.468Z",
+      "registration": {
+        "domain": "xn--chez-seb-et-la-nkb[.]fr",
+        "expiresAt": "2027-03-04T21:32:54.693Z",
+        "registeredAt": "2026-03-04T21:32:54.713Z",
+        "registrar": "IONOS SE",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-03-09T21:34:14.181Z"
+      },
+      "signalId": "3fff5d4e13b79be1161d"
     }
   ],
   "schemaVersion": 1
