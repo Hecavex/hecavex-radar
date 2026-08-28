@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T16:50:20.649Z",
+  "generatedAt": "2026-08-28T17:50:14.417Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T16:50:20.649Z",
-    "to": "2026-08-28T16:50:20.649Z"
+    "from": "2026-07-29T17:50:14.417Z",
+    "to": "2026-08-28T17:50:14.417Z"
   },
-  "totalAvailable": 64,
+  "totalAvailable": 66,
   "truncated": false,
   "events": [
+    {
+      "id": "31b0f12b67a50a25a0c6490fe4e5f067",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T17:29:59.772Z",
+      "signalId": "fbacd65c239b07f30b11",
+      "signalPath": "/signals/fbacd65c239b07f30b11/",
+      "domain": "wg[.]vrnplay[.]bite-service[.]com",
+      "brand": "Bitė",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "fb8eeccea30711241a4323da6b3e21e2",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T17:00:25.875Z",
+      "signalId": "b1158b011aa853ba4989",
+      "signalPath": "/signals/b1158b011aa853ba4989/",
+      "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "590cf30134f8977605fd9e72c86f15ee",
       "type": "first-publication",

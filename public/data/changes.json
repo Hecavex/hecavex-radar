@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-28T16:50:20.649Z",
+  "generatedAt": "2026-08-28T17:50:14.417Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T16:50:20.649Z",
-      "to": "2026-08-28T16:50:20.649Z",
+      "from": "2026-08-27T17:50:14.417Z",
+      "to": "2026-08-28T17:50:14.417Z",
       "events": 63,
       "uniqueSignals": 32,
       "firstPublications": 31,
@@ -32,12 +32,13 @@
         "brand-split-token": 2
       },
       "byBrand": {
-        "DHL": 24,
-        "Revolut": 10,
+        "DHL": 26,
         "SEB": 10,
+        "Revolut": 6,
         "Telia": 6,
         "DPD": 5,
         "BTA": 2,
+        "Bitė": 2,
         "MAXIMA": 2,
         "VMI": 2,
         "Vinted": 2
@@ -45,28 +46,28 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-21T16:50:20.649Z",
-      "to": "2026-08-28T16:50:20.649Z",
-      "events": 113,
-      "uniqueSignals": 56,
-      "firstPublications": 52,
+      "from": "2026-08-21T17:50:14.417Z",
+      "to": "2026-08-28T17:50:14.417Z",
+      "events": 117,
+      "uniqueSignals": 58,
+      "firstPublications": 54,
       "statusChanges": 0,
-      "observations": 61,
+      "observations": 63,
       "reobservations": 5,
       "bySource": {
-        "CertStream": 82,
+        "CertStream": 86,
         "URLScan": 29,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 113
+        "suspected": 117
       },
       "byReason": {
-        "suspicious-context": 78,
-        "brand-exact-token": 76,
-        "different-tld": 72,
-        "first-publication": 52,
-        "multiple-hyphens": 47,
+        "suspicious-context": 82,
+        "brand-exact-token": 80,
+        "different-tld": 74,
+        "first-publication": 54,
+        "multiple-hyphens": 49,
         "brand-domain-match": 24,
         "brand-title-match": 10,
         "brand-joined-affix": 6,
@@ -77,14 +78,14 @@
         "manual-review": 2
       },
       "byBrand": {
-        "DHL": 29,
+        "DHL": 31,
         "Revolut": 26,
         "Vinted": 12,
         "SEB": 10,
         "MAXIMA": 8,
         "DPD": 7,
+        "Bitė": 6,
         "Telia": 6,
-        "Bitė": 4,
         "ESO": 4,
         "BTA": 2,
         "Swedbank": 2,

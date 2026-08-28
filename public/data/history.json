@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T15:51:39.439Z",
+  "generatedAt": "2026-08-28T17:50:14.417Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "fbacd65c239b07f30b11",
+      "domain": "wg[.]vrnplay[.]bite-service[.]com",
+      "brand": "Bitė",
+      "firstSeen": "2026-08-28T17:29:59.772Z",
+      "lastSeen": "2026-08-28T17:29:59.772Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8c34d590394861e614b90455510b23c6",
+          "observedAt": "2026-08-28T17:29:59.772Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b1158b011aa853ba4989",
+      "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T17:00:25.875Z",
+      "lastSeen": "2026-08-28T17:00:25.875Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "625f7d43a75b3d76e5edd3b5e3289233",
+          "observedAt": "2026-08-28T17:00:25.875Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "08f94854a3fe0e9324d1",
       "domain": "dhlexpress-online[.]ph",
