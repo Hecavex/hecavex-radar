@@ -1,15 +1,71 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-28T08:59:57.816Z",
+  "generatedAt": "2026-08-28T09:58:47.973Z",
   "window": {
     "days": 30,
-    "from": "2026-07-29T08:59:57.816Z",
-    "to": "2026-08-28T08:59:57.816Z"
+    "from": "2026-07-29T09:58:47.973Z",
+    "to": "2026-08-28T09:58:47.973Z"
   },
-  "totalAvailable": 55,
+  "totalAvailable": 59,
   "truncated": false,
   "events": [
+    {
+      "id": "50881042727acec3c9ff92a22fef0edc",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T09:40:37.871Z",
+      "signalId": "afc8d3a028031f2f28cc",
+      "signalPath": "/signals/afc8d3a028031f2f28cc/",
+      "domain": "dpd-tracking[.]villeroy-boch[.]com",
+      "brand": "DPD",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "cd0f7702aaea64d7485b54802e0b1824",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T09:38:34.518Z",
+      "signalId": "1e95c8d5f1d62af98520",
+      "signalPath": "/signals/1e95c8d5f1d62af98520/",
+      "domain": "www[.]dhl-portal[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "1e82c13e11dfc05a19708aa7e00b6fff",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T09:23:10.647Z",
+      "signalId": "7ebab05e5de6bba2fe80",
+      "signalPath": "/signals/7ebab05e5de6bba2fe80/",
+      "domain": "dhl-parcel-de[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "3504036855a70f25bd1438980a07fbc6",
+      "type": "first-publication",
+      "occurredAt": "2026-08-28T09:12:45.545Z",
+      "signalId": "22b038e1cf96d0b61251",
+      "signalPath": "/signals/22b038e1cf96d0b61251/",
+      "domain": "dhl-proxy-service[.]prod[.]core[.]thirdparty[.]sx",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "84ef578da8777348853e86f29b584909",
       "type": "first-publication",

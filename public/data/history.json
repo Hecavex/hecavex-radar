@@ -1,10 +1,154 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T08:59:57.816Z",
+  "generatedAt": "2026-08-28T09:58:47.973Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "afc8d3a028031f2f28cc",
+      "domain": "dpd-tracking[.]villeroy-boch[.]com",
+      "brand": "DPD",
+      "firstSeen": "2026-08-28T09:40:37.871Z",
+      "lastSeen": "2026-08-28T09:40:37.871Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "f32d28630cacf51450cdfd99009683d9",
+          "observedAt": "2026-08-28T09:40:37.871Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1e95c8d5f1d62af98520",
+      "domain": "www[.]dhl-portal[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T09:38:34.518Z",
+      "lastSeen": "2026-08-28T09:38:34.518Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "80aec1979b9ff93ca3d5a8c88f181e89",
+          "observedAt": "2026-08-28T09:38:34.518Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7ebab05e5de6bba2fe80",
+      "domain": "dhl-parcel-de[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T09:23:10.647Z",
+      "lastSeen": "2026-08-28T09:23:10.647Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2998a6c7ea230f7ed15533cb213918b3",
+          "observedAt": "2026-08-28T09:23:10.647Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22b038e1cf96d0b61251",
+      "domain": "dhl-proxy-service[.]prod[.]core[.]thirdparty[.]sx",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T09:12:45.545Z",
+      "lastSeen": "2026-08-28T09:12:45.545Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "71f1bad831c3330a4f437f1fb6239240",
+          "observedAt": "2026-08-28T09:12:45.545Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "0d284af65210b0c1307e",
       "domain": "omada[.]delivery-dhl-uae[.]com",
