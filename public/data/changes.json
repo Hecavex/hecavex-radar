@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-28T01:10:23.154Z",
+  "generatedAt": "2026-08-28T02:09:34.744Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-27T01:10:23.154Z",
-      "to": "2026-08-28T01:10:23.154Z",
+      "from": "2026-08-27T02:09:34.744Z",
+      "to": "2026-08-28T02:09:34.744Z",
       "events": 33,
       "uniqueSignals": 17,
       "firstPublications": 16,
@@ -42,28 +42,28 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-21T01:10:23.154Z",
-      "to": "2026-08-28T01:10:23.154Z",
-      "events": 82,
-      "uniqueSignals": 36,
-      "firstPublications": 36,
+      "from": "2026-08-21T02:09:34.744Z",
+      "to": "2026-08-28T02:09:34.744Z",
+      "events": 80,
+      "uniqueSignals": 35,
+      "firstPublications": 35,
       "statusChanges": 0,
-      "observations": 46,
+      "observations": 45,
       "reobservations": 10,
       "bySource": {
-        "URLScan": 41,
         "CertStream": 39,
+        "URLScan": 39,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 82
+        "suspected": 80
       },
       "byReason": {
         "suspicious-context": 39,
         "brand-exact-token": 37,
         "different-tld": 37,
-        "brand-domain-match": 36,
-        "first-publication": 36,
+        "first-publication": 35,
+        "brand-domain-match": 34,
         "multiple-hyphens": 17,
         "brand-title-match": 10,
         "provider-verdict": 5,
@@ -73,7 +73,7 @@
         "unicode-confusable": 2
       },
       "byBrand": {
-        "Revolut": 29,
+        "Revolut": 27,
         "Vinted": 15,
         "DHL": 9,
         "MAXIMA": 6,
