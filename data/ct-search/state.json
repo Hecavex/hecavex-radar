@@ -1,20 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-28T22:01:07.480Z",
+  "generatedAt": "2026-08-28T22:48:15.158Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-28T22:01:07.480Z",
+    "endedAt": "2026-08-28T22:48:15.158Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-28T22:01:03.511Z"
+    "startedAt": "2026-08-28T22:47:28.518Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -326,8 +326,8 @@
       "brand": "Sodra",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T03:49:22.810Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "sodra"
     },
     "brand:swedbank": {
@@ -335,7 +335,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T03:49:22.810Z",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "swedbank"
     },
     "brand:tele2": {
@@ -343,7 +343,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T03:49:22.810Z",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "tele2"
     },
     "brand:telia": {
@@ -351,7 +351,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T03:49:22.810Z",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "telia"
     },
     "brand:unipark": {
@@ -359,7 +359,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "unipark"
     },
     "brand:urbobankas": {
@@ -367,7 +367,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T05:19:06.603Z",
+      "lastRunAt": "2026-08-28T22:47:28.518Z",
       "term": "urbobankas"
     },
     "brand:venipak": {
@@ -387,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 38,
+  "queryCursor": 44,
   "schemaVersion": 1
 }
