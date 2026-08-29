@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T20:20:18.956Z",
+  "generatedAt": "2026-08-29T21:11:19.499Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T20:20:18.956Z",
-    "to": "2026-08-29T20:20:18.956Z"
+    "from": "2026-07-30T21:11:19.499Z",
+    "to": "2026-08-29T21:11:19.499Z"
   },
-  "totalAvailable": 106,
+  "totalAvailable": 108,
   "truncated": false,
   "events": [
+    {
+      "id": "4ecd8d6c6fe84b4d733253d9965e4529",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T21:03:15.270Z",
+      "signalId": "18c088c6b761f03c6ab7",
+      "signalPath": "/signals/18c088c6b761f03c6ab7/",
+      "domain": "dhl-profi-paket-service[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "6c8fdf579a97d8989713bbfae5ff357b",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T20:55:05.147Z",
+      "signalId": "2433e05eef18ae892030",
+      "signalPath": "/signals/2433e05eef18ae892030/",
+      "domain": "redbynih[.]xn--tl2mobile-b4ab[.]com",
+      "brand": "Tele2",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "bcb555a65ef4734db981e59836b99d62",
       "type": "first-publication",

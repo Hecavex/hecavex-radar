@@ -1,35 +1,36 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-29T20:20:18.956Z",
+  "generatedAt": "2026-08-29T21:11:19.499Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T20:20:18.956Z",
-      "to": "2026-08-29T20:20:18.956Z",
-      "events": 79,
-      "uniqueSignals": 40,
-      "firstPublications": 39,
+      "from": "2026-08-28T21:11:19.499Z",
+      "to": "2026-08-29T21:11:19.499Z",
+      "events": 81,
+      "uniqueSignals": 41,
+      "firstPublications": 40,
       "statusChanges": 0,
-      "observations": 40,
+      "observations": 41,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 79
+        "CertStream": 81
       },
       "byStatus": {
-        "suspected": 79
+        "suspected": 81
       },
       "byReason": {
-        "suspicious-context": 79,
+        "suspicious-context": 81,
         "different-tld": 68,
         "brand-exact-token": 65,
-        "multiple-hyphens": 44,
-        "first-publication": 39,
-        "brand-joined-affix": 14
+        "multiple-hyphens": 46,
+        "first-publication": 40,
+        "brand-joined-affix": 16,
+        "punycode": 2
       },
       "byBrand": {
-        "DHL": 42,
+        "DHL": 44,
         "Vinted": 10,
         "Revolut": 7,
         "Bigbank": 4,
@@ -38,45 +39,45 @@
         "Bitė": 2,
         "ESO": 2,
         "Smart-ID": 2,
-        "Swedbank": 2,
+        "Tele2": 2,
         "Telia": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-22T20:20:18.956Z",
-      "to": "2026-08-29T20:20:18.956Z",
-      "events": 187,
-      "uniqueSignals": 94,
-      "firstPublications": 89,
+      "from": "2026-08-22T21:11:19.499Z",
+      "to": "2026-08-29T21:11:19.499Z",
+      "events": 191,
+      "uniqueSignals": 96,
+      "firstPublications": 91,
       "statusChanges": 0,
-      "observations": 98,
+      "observations": 100,
       "reobservations": 4,
       "bySource": {
-        "CertStream": 163,
+        "CertStream": 167,
         "URLScan": 22,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 187
+        "suspected": 191
       },
       "byReason": {
-        "suspicious-context": 159,
-        "brand-exact-token": 143,
-        "different-tld": 140,
-        "multiple-hyphens": 93,
-        "first-publication": 89,
-        "brand-joined-affix": 20,
+        "suspicious-context": 163,
+        "brand-exact-token": 145,
+        "different-tld": 142,
+        "multiple-hyphens": 95,
+        "first-publication": 91,
+        "brand-joined-affix": 22,
         "brand-domain-match": 17,
         "brand-title-match": 8,
-        "punycode": 6,
+        "punycode": 8,
         "unicode-confusable": 6,
         "provider-verdict": 5,
         "brand-split-token": 2,
         "manual-review": 2
       },
       "byBrand": {
-        "DHL": 73,
+        "DHL": 75,
         "Revolut": 31,
         "Vinted": 22,
         "SEB": 10,
@@ -90,7 +91,8 @@
         "Artea": 2,
         "BTA": 2,
         "Smart-ID": 2,
-        "Swedbank": 2
+        "Swedbank": 2,
+        "Tele2": 2
       }
     }
   ]
