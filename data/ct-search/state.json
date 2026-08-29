@@ -1,20 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T02:44:37.273Z",
+  "generatedAt": "2026-08-29T03:44:53.561Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-29T02:44:37.273Z",
+    "endedAt": "2026-08-29T03:44:53.561Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
+    "outcome": "failed",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
+    "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-29T02:44:26.818Z"
+    "startedAt": "2026-08-29T03:44:49.494Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -199,7 +199,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "luminor"
     },
     "brand:manobank": {
@@ -207,7 +207,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "manobank"
     },
     "brand:manovmi": {
@@ -215,7 +215,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "manovmi"
     },
     "brand:maxima": {
@@ -223,7 +223,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "maxima"
     },
     "brand:migris": {
@@ -231,7 +231,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-28T21:40:33.423Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "migris"
     },
     "brand:omniva": {
@@ -239,7 +239,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-28T21:40:33.423Z",
+      "lastRunAt": "2026-08-29T03:44:49.494Z",
       "term": "omniva"
     },
     "brand:paysera": {
@@ -387,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 22,
+  "queryCursor": 28,
   "schemaVersion": 1
 }
