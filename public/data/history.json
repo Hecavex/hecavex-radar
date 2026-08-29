@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T12:09:11.843Z",
+  "generatedAt": "2026-08-29T13:09:27.770Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5333cc942fd542f9ea87",
+      "domain": "delivery-track-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T13:02:00.284Z",
+      "lastSeen": "2026-08-29T13:02:00.284Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "861344bc194cd07fb96b960755574994",
+          "observedAt": "2026-08-29T13:02:00.284Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b038dc66f6f80de56674",
+      "domain": "revolut-user-auth[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-29T12:35:02.979Z",
+      "lastSeen": "2026-08-29T12:35:02.979Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9f853b8cc14b9a1228d7fc873ff7f149",
+          "observedAt": "2026-08-29T12:35:02.979Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "af5a1860bf79433e74e6",
       "domain": "dhl-payment[.]com[.]ph",
