@@ -1,15 +1,71 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T15:20:37.443Z",
+  "generatedAt": "2026-08-29T16:12:07.528Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T15:20:37.443Z",
-    "to": "2026-08-29T15:20:37.443Z"
+    "from": "2026-07-30T16:12:07.528Z",
+    "to": "2026-08-29T16:12:07.528Z"
   },
-  "totalAvailable": 96,
+  "totalAvailable": 100,
   "truncated": false,
   "events": [
+    {
+      "id": "8c95e9430b3e8f42da89ad4c95bd9a93",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T16:05:49.423Z",
+      "signalId": "614b3a8c1edccfa6785f",
+      "signalPath": "/signals/614b3a8c1edccfa6785f/",
+      "domain": "parcel-box-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "ee86def54bac2dc866fdd67ad4075237",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T16:00:54.898Z",
+      "signalId": "a81cd393639526071d80",
+      "signalPath": "/signals/a81cd393639526071d80/",
+      "domain": "dhl-secure-box[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "39dfa68780c971ccb2cdb0be926ac7b6",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T15:35:06.765Z",
+      "signalId": "811a792e97fc9603e002",
+      "signalPath": "/signals/811a792e97fc9603e002/",
+      "domain": "bite-online[.]com",
+      "brand": "Bitė",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "9dc45aee857229743af49706ada4b246",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T15:25:23.404Z",
+      "signalId": "88cf9aea0dd09952cff4",
+      "signalPath": "/signals/88cf9aea0dd09952cff4/",
+      "domain": "wildcard[.]dhl-de-track-ih[.]info",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f507eb9faf21ec10040f0120a4d6ff2f",
       "type": "first-publication",

@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-29T14:45:01.300Z",
+  "generatedAt": "2026-08-29T16:12:07.528Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-29T14:45:01.300Z",
-      "queryCursor": 2,
+      "stateGeneratedAt": "2026-08-29T15:46:02.182Z",
+      "queryCursor": 8,
       "configuredQueries": 46
     },
     "urlscanHunt": {
@@ -56,7 +56,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "58e45c6581dbd7a9ac9bd96f7359f86bbfd71c264af2bc66a678eba4e670851c",
@@ -96,7 +96,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T07:47:28.197Z",
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -168,17 +168,17 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T07:47:28.197Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
+        "lastSuccessfulQueryAt": "2026-08-29T15:44:46.431Z"
       },
       "certStream": {
-        "latestMatchAt": "2026-08-28T17:29:59.772Z"
+        "latestMatchAt": "2026-08-29T15:35:06.765Z"
       },
       "urlscanAssets": {
         "assetHashes": 11,
@@ -269,7 +269,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T07:47:28.197Z",
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -364,7 +364,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T07:47:28.197Z",
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -409,11 +409,11 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
-        "latestMatchAt": "2026-08-29T13:02:00.284Z"
+        "latestMatchAt": "2026-08-29T16:05:49.423Z"
       },
       "urlscanAssets": {
         "assetHashes": 12,
@@ -509,7 +509,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
+        "lastAttemptAt": "2026-08-29T15:44:46.431Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -1698,13 +1698,8 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 11,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
-          {
-            "sha256": "1176afa345ae522b597002e9df741793e3dcc834aa666f79d41d7c0a2b627537",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
           {
             "sha256": "2ec1fe3e20bbce82068df69a9d7689f733a5e7a60b4ded8af72f6c6d44fe87a8",
             "resourceType": "javascript",
@@ -1721,7 +1716,7 @@
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "89d08606750229314b81b3afc41db2717074d7bd57ffc8668a18dd9a0a75850f",
+            "sha256": "7b6e63fa27ee153d46319706cdc0b2725617a8cd6b2b1d73fe8f3239bed591c4",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
@@ -1732,6 +1727,11 @@
           },
           {
             "sha256": "a8c510c147a5b8a2e194e0a4aedc375833a468fd0709d46af627ffd258a45ec1",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "b72c783ab37072f8324220d245f1629dc66841a030223fc091d91bb08b423de3",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
@@ -1832,7 +1832,7 @@
         "assetHashes": 10,
         "supportedByTwoRecentOfficialScans": 9,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-26T05:19:22.083Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "1ea0cc3e22d788b9c316cdbceee466ad898e75f3d7bea85db857fc1d010289ab",
@@ -1922,7 +1922,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 7,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "1aaf4450172170c2a59037f5ee62c7d553bb2606772abc4440d77d2ec5a0a8fa",
@@ -2017,7 +2017,7 @@
         "assetHashes": 6,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "459822d33dd9667eb24b4e47156f05cd9276d5aeafcb1131c5a32f4c29a634a7",
@@ -2126,7 +2126,7 @@
         "assetHashes": 9,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "01ec2e58020a9aeaa826379966b6d7652efaace7ab433553e8992d8f4cd1d927",
@@ -2211,7 +2211,7 @@
         "assetHashes": 4,
         "supportedByTwoRecentOfficialScans": 1,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "164fa8be44ee7c086fe3167258eb800d3dfb54a0527e8be17b09f1ab124e321d",
@@ -2271,7 +2271,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 8,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "1cb98d00b5f623823830943697cef1d7b32b10c0654e2f3b63e65320f006a017",
@@ -2366,7 +2366,7 @@
         "assetHashes": 3,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "998cb074f864a5a940be7911d85e7806bc88d60f420d85727598e00a9891e421",
@@ -2460,7 +2460,7 @@
         "assetHashes": 5,
         "supportedByTwoRecentOfficialScans": 1,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "0abd86fd0da40f84389b8c7933ae15ab3cda08f6e4b6ffbc8307232d8d5b8e5f",
@@ -2564,7 +2564,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "341b30ca886e49260b8af7f1ecc654039da232eb6188e782444cc920fc938b88",
@@ -2659,7 +2659,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-28T21:51:24.138Z",
+        "lastValidatedAt": "2026-08-29T15:49:20.296Z",
         "hashSupport": [
           {
             "sha256": "205f319b1238d922c981b4747b24f9621ecbf73f6369f935ff833edec8f68d61",

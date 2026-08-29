@@ -1,10 +1,156 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T14:09:10.789Z",
+  "generatedAt": "2026-08-29T16:12:07.528Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "614b3a8c1edccfa6785f",
+      "domain": "parcel-box-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T16:05:49.423Z",
+      "lastSeen": "2026-08-29T16:05:49.423Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "60fa5ea84f816ea65be383176da4a5e5",
+          "observedAt": "2026-08-29T16:05:49.423Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a81cd393639526071d80",
+      "domain": "dhl-secure-box[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T16:00:54.898Z",
+      "lastSeen": "2026-08-29T16:00:54.898Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "4334342918743e5eae1aad36a6c54ba0",
+          "observedAt": "2026-08-29T16:00:54.898Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "811a792e97fc9603e002",
+      "domain": "bite-online[.]com",
+      "brand": "Bitė",
+      "firstSeen": "2026-08-29T15:35:06.765Z",
+      "lastSeen": "2026-08-29T15:35:06.765Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "beb5b84eb1348f33e7a7d6db7975bb2a",
+          "observedAt": "2026-08-29T15:35:06.765Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "88cf9aea0dd09952cff4",
+      "domain": "wildcard[.]dhl-de-track-ih[.]info",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T15:25:23.404Z",
+      "lastSeen": "2026-08-29T15:25:23.404Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "867fc295eda1d4cb615776b9f9c008a7",
+          "observedAt": "2026-08-29T15:25:23.404Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c9dffdb5efa12358a21c",
       "domain": "login[.]smartidverify[.]net",
