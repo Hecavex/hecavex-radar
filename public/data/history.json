@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T16:12:07.528Z",
+  "generatedAt": "2026-08-29T17:11:22.693Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "0bccf153c8ceef06cd77",
+      "domain": "dhl-update-de[.]shop",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T16:42:53.822Z",
+      "lastSeen": "2026-08-29T16:42:53.822Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "cb118958f4342ebb54e67a8a42d0726c",
+          "observedAt": "2026-08-29T16:42:53.822Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "614b3a8c1edccfa6785f",
       "domain": "parcel-box-dhl[.]com[.]ph",

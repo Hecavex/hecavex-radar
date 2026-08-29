@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-29T16:12:07.528Z",
+  "generatedAt": "2026-08-29T17:11:22.693Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-29T15:46:02.182Z",
-      "queryCursor": 8,
+      "stateGeneratedAt": "2026-08-29T16:48:27.370Z",
+      "queryCursor": 14,
       "configuredQueries": 46
     },
     "urlscanHunt": {
-      "stateGeneratedAt": "2026-08-29T14:41:18.604Z",
-      "lastRunAt": "2026-08-29T14:41:18.604Z",
+      "stateGeneratedAt": "2026-08-29T16:41:25.173Z",
+      "lastRunAt": "2026-08-29T16:41:25.173Z",
       "lastOutcome": "completed",
-      "candidateCursor": 43,
-      "candidateCount": 79
+      "candidateCursor": 20,
+      "candidateCount": 83
     }
   },
   "unicodeProfile": {
@@ -413,7 +413,7 @@
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
-        "latestMatchAt": "2026-08-29T16:05:49.423Z"
+        "latestMatchAt": "2026-08-29T16:42:53.822Z"
       },
       "urlscanAssets": {
         "assetHashes": 12,
@@ -658,14 +658,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 1,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
+        "lastSuccessfulQueryAt": "2026-08-29T16:47:27.574Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -697,14 +697,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
+        "lastSuccessfulQueryAt": "2026-08-29T16:47:27.574Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -758,7 +758,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T09:44:49.294Z",
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -791,14 +791,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
+        "lastSuccessfulQueryAt": "2026-08-29T16:47:27.574Z"
       },
       "certStream": {
         "latestMatchAt": "2026-08-28T23:49:37.129Z"
@@ -836,7 +836,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T09:44:49.294Z",
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -875,7 +875,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-29T08:44:45.555Z",
+        "lastAttemptAt": "2026-08-29T16:47:27.574Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {

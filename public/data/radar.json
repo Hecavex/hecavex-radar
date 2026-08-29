@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T16:12:07.528Z",
-  "lastSuccessfulSyncAt": "2026-08-29T16:20:22.661Z",
+  "generatedAt": "2026-08-29T17:11:22.693Z",
+  "lastSuccessfulSyncAt": "2026-08-29T17:11:22.693Z",
   "signals": [
+    {
+      "id": "0bccf153c8ceef06cd77",
+      "url": "hxxps://dhl-update-de[.]shop",
+      "domain": "dhl-update-de[.]shop",
+      "firstSeen": "2026-08-29T16:42:53.822Z",
+      "lastSeen": "2026-08-29T16:42:53.822Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "614b3a8c1edccfa6785f",
       "url": "hxxps://parcel-box-dhl[.]com[.]ph",
@@ -2690,15 +2722,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T16:20:22.661Z",
-      "records": 77,
+      "fetchedAt": "2026-08-29T17:11:22.693Z",
+      "records": 78,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-29T14:41:18.604Z",
+      "fetchedAt": "2026-08-29T16:41:25.173Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
@@ -2706,7 +2738,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T16:20:22.661Z",
+      "fetchedAt": "2026-08-29T17:11:22.693Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
