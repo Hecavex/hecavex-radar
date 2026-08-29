@@ -1,20 +1,21 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T11:47:50.355Z",
+  "generatedAt": "2026-08-29T12:46:47.028Z",
   "latestRun": {
-    "dnsNames": 0,
-    "endedAt": "2026-08-29T11:47:50.355Z",
+    "dnsNames": 2,
+    "endedAt": "2026-08-29T12:46:47.028Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
-    "rowsProcessed": 0,
-    "startedAt": "2026-08-29T11:47:46.167Z"
+    "queriesCompleted": 1,
+    "rowsProcessed": 2,
+    "startedAt": "2026-08-29T12:44:46.564Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -263,7 +264,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T04:47:57.496Z",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
@@ -271,7 +272,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T04:47:57.496Z",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "registrucentras"
     },
     "brand:regitra": {
@@ -279,15 +280,15 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T04:47:57.496Z",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "regitra"
     },
     "brand:revolut": {
       "brand": "Revolut",
-      "lastEntryAt": null,
-      "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T04:47:57.496Z",
+      "lastEntryAt": "2026-08-28T20:22:13.947Z",
+      "lastId": 29118779167,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "revolut"
     },
     "brand:rimilietuva": {
@@ -295,7 +296,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T05:44:58.157Z",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "rimilietuva"
     },
     "brand:sebbankas": {
@@ -303,7 +304,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T05:44:58.157Z",
+      "lastRunAt": "2026-08-29T12:44:46.564Z",
       "term": "sebbankas"
     },
     "brand:skelbiu": {
@@ -387,6 +388,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 30,
+  "queryCursor": 36,
   "schemaVersion": 1
 }
