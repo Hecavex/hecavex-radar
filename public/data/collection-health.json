@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
   "dataset": "certstream-collection-health",
-  "generatedAt": "2026-08-29T15:38:58.661Z",
+  "generatedAt": "2026-08-29T15:54:38.672Z",
   "expectedIntervalSeconds": 900,
   "staleAfterSeconds": 2700,
-  "lastSuccessAt": "2026-08-29T15:38:58.661Z",
+  "lastSuccessAt": "2026-08-29T15:54:38.672Z",
   "freshness": {
     "status": "current",
-    "referenceAt": "2026-08-29T15:38:58.661Z",
+    "referenceAt": "2026-08-29T15:54:38.672Z",
     "ageSeconds": 0
   },
   "latestAttempt": {
-    "startedAt": "2026-08-29T15:30:40.147Z",
-    "collectorStartedAt": "2026-08-29T15:30:58.659Z",
-    "endedAt": "2026-08-29T15:38:58.661Z",
+    "startedAt": "2026-08-29T15:46:15.424Z",
+    "collectorStartedAt": "2026-08-29T15:46:28.664Z",
+    "endedAt": "2026-08-29T15:54:38.672Z",
     "trigger": "schedule",
-    "scheduledFor": "2026-08-29T15:23:00.000Z",
+    "scheduledFor": "2026-08-29T15:38:00.000Z",
     "scheduleStatus": "delayed",
-    "delaySeconds": 460,
+    "delaySeconds": 495,
     "expectedListeningSeconds": 480,
     "listeningSeconds": 479.999,
-    "messages": 143656,
-    "dnsNames": 265716,
-    "matches": 2,
-    "newRecords": 1,
+    "messages": 262878,
+    "dnsNames": 448797,
+    "matches": 0,
+    "newRecords": 0,
     "connectionAttempts": 1,
     "connections": 1,
-    "outcome": "healthy-matches",
-    "summary": "Input was processed successfully and one or more candidates matched."
+    "outcome": "healthy-empty",
+    "summary": "Input was processed successfully; no candidate matched the publication heuristic."
   }
 }
