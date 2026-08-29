@@ -1,21 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T15:46:02.182Z",
+  "generatedAt": "2026-08-29T16:48:27.370Z",
   "latestRun": {
-    "dnsNames": 0,
-    "endedAt": "2026-08-29T15:46:02.182Z",
+    "dnsNames": 2,
+    "endedAt": "2026-08-29T16:48:27.370Z",
     "failureCodes": [
-      "provider-http",
-      "provider-timeout"
+      "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
     "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
-    "rowsProcessed": 0,
-    "startedAt": "2026-08-29T15:44:46.431Z"
+    "queriesCompleted": 3,
+    "rowsProcessed": 1,
+    "startedAt": "2026-08-29T16:47:27.574Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -87,24 +86,24 @@
       "brand": "Elektrum",
       "lastEntryAt": null,
       "lastId": 27835197032,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T08:44:45.555Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
       "brand": "ESO",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T08:44:45.555Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
       "brand": "Elektroniniai valdžios vartai",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T08:44:45.555Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "epaslaugos"
     },
     "brand:epristatymas": {
@@ -112,7 +111,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T08:44:45.555Z",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
@@ -120,7 +119,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T09:44:49.294Z",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "ergodraudimas"
     },
     "brand:esveikata": {
@@ -128,7 +127,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T09:44:49.294Z",
+      "lastRunAt": "2026-08-29T16:47:27.574Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
@@ -388,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 8,
+  "queryCursor": 14,
   "schemaVersion": 1
 }
