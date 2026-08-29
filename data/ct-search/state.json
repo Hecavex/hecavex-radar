@@ -1,11 +1,12 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T08:44:49.807Z",
+  "generatedAt": "2026-08-29T09:45:37.786Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-29T08:44:49.807Z",
+    "endedAt": "2026-08-29T09:45:37.786Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
@@ -14,7 +15,7 @@
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-29T08:44:45.555Z"
+    "startedAt": "2026-08-29T09:44:49.294Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -119,7 +120,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T01:47:12.526Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "ergodraudimas"
     },
     "brand:esveikata": {
@@ -127,7 +128,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T01:47:12.526Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
@@ -135,7 +136,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T01:47:12.526Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "gjensidige"
     },
     "brand:ignitis": {
@@ -143,7 +144,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T01:47:12.526Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "ignitis"
     },
     "brand:ikilietuva": {
@@ -151,7 +152,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T02:44:26.818Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "ikilietuva"
     },
     "brand:itella": {
@@ -159,7 +160,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T02:44:26.818Z",
+      "lastRunAt": "2026-08-29T09:44:49.294Z",
       "term": "itella"
     },
     "brand:lddraudimas": {
@@ -387,6 +388,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 12,
+  "queryCursor": 18,
   "schemaVersion": 1
 }
