@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-29T06:20:26.169Z",
+  "generatedAt": "2026-08-29T07:11:59.124Z",
   "retentionDays": 365,
   "from": "2025-08-30",
   "to": "2026-08-29",
@@ -82,7 +82,7 @@
           "URLScan": 1
         },
         "byEvidenceTier": {
-          "name-only": 1
+          "corroborated": 1
         },
         "byReason": {
           "brand-domain-match": 1
@@ -121,8 +121,8 @@
           "URLScan": 5
         },
         "byEvidenceTier": {
-          "name-only": 3,
-          "corroborated": 2
+          "corroborated": 3,
+          "name-only": 2
         },
         "byReason": {
           "brand-domain-match": 5,
@@ -213,8 +213,7 @@
           "URLScan": 6
         },
         "byEvidenceTier": {
-          "corroborated": 3,
-          "name-only": 1
+          "corroborated": 4
         },
         "byReason": {
           "brand-domain-match": 6,
@@ -463,46 +462,47 @@
       "date": "2026-08-29",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 22826,
-        "scheduledSlots": 25,
-        "recordedAttempts": 31,
-        "healthyAttempts": 31,
+        "windowSeconds": 25919,
+        "scheduledSlots": 28,
+        "recordedAttempts": 36,
+        "healthyAttempts": 36,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 65.18,
-        "scheduledListeningCeilingPercent": 52.57,
-        "listeningSeconds": 14876.936,
+        "listeningCoveragePercent": 66.65,
+        "scheduledListeningCeilingPercent": 51.85,
+        "listeningSeconds": 17275.925,
         "outcomes": {
-          "healthy-empty": 21,
-          "healthy-matches": 10
+          "healthy-empty": 22,
+          "healthy-matches": 14
         }
       },
       "discovery": {
-        "events": 20,
-        "uniqueSignals": 10,
-        "observations": 10,
+        "events": 27,
+        "uniqueSignals": 14,
+        "observations": 14,
         "reobservations": 0,
-        "firstPublications": 10,
+        "firstPublications": 13,
         "statusChanges": 0,
-        "facetSampleSize": 10,
-        "evidenceClassifiedSignals": 10,
+        "facetSampleSize": 14,
+        "evidenceClassifiedSignals": 14,
         "byBrand": {
-          "DHL": 5,
-          "Revolut": 2,
-          "Vinted": 2,
+          "DHL": 7,
+          "Revolut": 3,
+          "Vinted": 3,
           "Telia": 1
         },
         "bySource": {
-          "CertStream": 10
+          "CertStream": 14
         },
         "byEvidenceTier": {
-          "name-only": 10
+          "name-only": 13,
+          "corroborated": 1
         },
         "byReason": {
-          "first-publication": 10,
-          "suspicious-context": 10,
-          "brand-exact-token": 9,
-          "different-tld": 7,
-          "multiple-hyphens": 5,
+          "suspicious-context": 14,
+          "brand-exact-token": 13,
+          "first-publication": 13,
+          "different-tld": 10,
+          "multiple-hyphens": 7,
           "brand-joined-affix": 1
         }
       }

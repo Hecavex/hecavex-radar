@@ -1,10 +1,153 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T05:09:16.784Z",
+  "generatedAt": "2026-08-29T07:11:59.124Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ab8a410b9d2c4d44691d",
+      "domain": "global-dhl-service[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T07:10:57.555Z",
+      "lastSeen": "2026-08-29T07:10:57.555Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3f0eb90781e8998116eca524475b9b11",
+          "observedAt": "2026-08-29T07:10:57.555Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "74a34aa5a01e9ed77fb6",
+      "domain": "wildcard[.]revolut-account[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-20T00:04:17.182Z",
+      "lastSeen": "2026-08-29T07:02:06.695Z",
+      "observationCount": 4,
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-domain-match",
+        "first-publication",
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "90e1ca14b017ae9d9330ecd19c4f1761",
+          "observedAt": "2026-08-21T07:33:48.367Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "URLScan"
+          ],
+          "reasonCodes": [
+            "brand-domain-match",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "af3991b787463e2f050d",
+      "domain": "dhl-en-express-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T06:48:20.717Z",
+      "lastSeen": "2026-08-29T06:48:20.717Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "b20fafa9bd11a35e4b863b3b958a7324",
+          "observedAt": "2026-08-29T06:48:20.717Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6a61d5fc60a85ce628b6",
+      "domain": "login-vinted[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-29T06:19:02.610Z",
+      "lastSeen": "2026-08-29T06:19:02.610Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2b01ab21f82318b50dbab5eda742187c",
+          "observedAt": "2026-08-29T06:19:02.610Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "8d5ed2b45073f9a0a777",
       "domain": "vintedpay[.]ba",
@@ -2441,37 +2584,6 @@
         {
           "eventId": "e80572361c1255e54caaf65291ff9584",
           "observedAt": "2026-08-21T15:34:37.133Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "URLScan"
-          ],
-          "reasonCodes": [
-            "brand-domain-match",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "74a34aa5a01e9ed77fb6",
-      "domain": "wildcard[.]revolut-account[.]com",
-      "brand": "Revolut",
-      "firstSeen": "2026-08-20T00:04:17.182Z",
-      "lastSeen": "2026-08-23T07:56:21.835Z",
-      "observationCount": 3,
-      "sources": [
-        "URLScan"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-domain-match",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "90e1ca14b017ae9d9330ecd19c4f1761",
-          "observedAt": "2026-08-21T07:33:48.367Z",
           "previousStatus": null,
           "status": "suspected",
           "sources": [

@@ -1,9 +1,140 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T05:09:16.784Z",
-  "lastSuccessfulSyncAt": "2026-08-29T06:20:26.169Z",
+  "generatedAt": "2026-08-29T07:11:59.124Z",
+  "lastSuccessfulSyncAt": "2026-08-29T07:11:59.124Z",
   "signals": [
+    {
+      "id": "ab8a410b9d2c4d44691d",
+      "url": "hxxps://global-dhl-service[.]com[.]ph",
+      "domain": "global-dhl-service[.]com[.]ph",
+      "firstSeen": "2026-08-29T07:10:57.555Z",
+      "lastSeen": "2026-08-29T07:10:57.555Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "74a34aa5a01e9ed77fb6",
+      "url": "hxxps://wildcard[.]revolut-account[.]com",
+      "domain": "wildcard[.]revolut-account[.]com",
+      "firstSeen": "2026-08-21T07:33:48.367Z",
+      "lastSeen": "2026-08-29T07:02:06.695Z",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": "VG",
+      "host": "AS40034 · CONFLUENCE-NETWORK-INC - Confluence Networks Inc, VG · 199[.]191[.]50[.]11",
+      "screenshotUrl": "https://urlscan.io/screenshots/01a0233d-63e0-702e-8387-f671f5d631cb.png",
+      "referenceUrl": "https://urlscan.io/result/01a0233d-63e0-702e-8387-f671f5d631cb/",
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "corroborated",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live",
+        "urlscan-public-report"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "brand-domain-match"
+      ],
+      "corroboratedBy": [
+        "urlscan-public-report"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "af3991b787463e2f050d",
+      "url": "hxxps://dhl-en-express-tracking[.]com[.]ph",
+      "domain": "dhl-en-express-tracking[.]com[.]ph",
+      "firstSeen": "2026-08-29T06:48:20.717Z",
+      "lastSeen": "2026-08-29T06:48:20.717Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "6a61d5fc60a85ce628b6",
+      "url": "hxxps://login-vinted[.]ph",
+      "domain": "login-vinted[.]ph",
+      "firstSeen": "2026-08-29T06:19:02.610Z",
+      "lastSeen": "2026-08-29T06:19:02.610Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "8d5ed2b45073f9a0a777",
       "url": "hxxps://vintedpay[.]ba",
@@ -2089,35 +2220,6 @@
       "detailAvailable": true
     },
     {
-      "id": "74a34aa5a01e9ed77fb6",
-      "url": "hxxps://wildcard[.]revolut-account[.]com",
-      "domain": "wildcard[.]revolut-account[.]com",
-      "firstSeen": "2026-08-21T07:33:48.367Z",
-      "lastSeen": "2026-08-21T07:33:48.367Z",
-      "sources": [
-        "URLScan"
-      ],
-      "status": "suspected",
-      "brand": "Revolut",
-      "country": "VG",
-      "host": "AS40034 · CONFLUENCE-NETWORK-INC - Confluence Networks Inc, VG · 199[.]191[.]50[.]11",
-      "screenshotUrl": "https://urlscan.io/screenshots/01a0233d-63e0-702e-8387-f671f5d631cb.png",
-      "referenceUrl": "https://urlscan.io/result/01a0233d-63e0-702e-8387-f671f5d631cb/",
-      "hashes": [],
-      "matchScore": 95,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 95,
-      "discoveredVia": [
-        "urlscan-public-report"
-      ],
-      "reasonCodes": [
-        "brand-domain-match"
-      ],
-      "detailAvailable": true
-    },
-    {
       "id": "71b7af4763ffa22c34dd",
       "url": "hxxp://portal[.]smartidverify[.]com",
       "domain": "portal[.]smartidverify[.]com",
@@ -2180,23 +2282,23 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T06:20:26.169Z",
-      "records": 60,
+      "fetchedAt": "2026-08-29T07:11:59.124Z",
+      "records": 64,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-29T04:41:23.908Z",
+      "fetchedAt": "2026-08-29T06:41:24.448Z",
       "records": 9,
-      "state": "partial",
-      "note": "Validated passive archive from the last 30 days; the latest passive hunt failed; 84 stable official asset hashes are pivot-eligible"
+      "state": "healthy",
+      "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
     },
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T06:20:26.169Z",
+      "fetchedAt": "2026-08-29T07:11:59.124Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
