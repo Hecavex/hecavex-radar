@@ -1,11 +1,12 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T18:44:40.974Z",
+  "generatedAt": "2026-08-29T19:45:38.129Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-29T18:44:40.974Z",
+    "endedAt": "2026-08-29T19:45:38.129Z",
     "failureCodes": [
-      "provider-http"
+      "provider-http",
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
@@ -14,7 +15,7 @@
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-29T18:44:37.046Z"
+    "startedAt": "2026-08-29T19:44:44.356Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -231,7 +232,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T11:47:46.167Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "migris"
     },
     "brand:omniva": {
@@ -239,7 +240,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T11:47:46.167Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "omniva"
     },
     "brand:paysera": {
@@ -247,7 +248,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T11:47:46.167Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "paysera"
     },
     "brand:policija": {
@@ -255,7 +256,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T11:47:46.167Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "policija"
     },
     "brand:postlt": {
@@ -263,7 +264,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T12:44:46.564Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
@@ -271,7 +272,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-29T12:44:46.564Z",
+      "lastRunAt": "2026-08-29T19:44:44.356Z",
       "term": "registrucentras"
     },
     "brand:regitra": {
@@ -387,6 +388,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 26,
+  "queryCursor": 32,
   "schemaVersion": 1
 }
