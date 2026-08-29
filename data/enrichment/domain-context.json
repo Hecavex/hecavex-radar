@@ -1,13 +1,13 @@
 {
-  "cursor": 0,
+  "cursor": 20,
   "dataset": "domain-context",
-  "generatedAt": "2026-08-29T13:21:27.980Z",
+  "generatedAt": "2026-08-29T19:21:13.710Z",
   "latestRun": {
     "attempted": 20,
-    "completed": 20,
-    "endedAt": "2026-08-29T13:21:27.980Z",
-    "outcome": "completed",
-    "startedAt": "2026-08-29T13:21:10.039Z"
+    "completed": 19,
+    "endedAt": "2026-08-29T19:21:13.710Z",
+    "outcome": "partial",
+    "startedAt": "2026-08-29T19:21:03.307Z"
   },
   "records": [
     {
@@ -53,6 +53,23 @@
       "observedAt": "2026-08-28T21:33:49.468Z",
       "registration": null,
       "signalId": "623c9be6ca68ccf196f0"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "box-parcel-dhl[.]com[.]ph",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": null,
+      "signalId": "05e69e5d5ed96e9c67f7"
     },
     {
       "dns": {
@@ -127,7 +144,7 @@
         "queriesCompleted": 5
       },
       "domain": "confirm-telia[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "41630f90b9c744dbcf76"
     },
@@ -188,6 +205,23 @@
       "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "af3991b787463e2f050d"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "dhl-expedition-tracking[.]com[.]ph",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": null,
+      "signalId": "412a0d4ff3da3bbf33bc"
     },
     {
       "dns": {
@@ -276,7 +310,7 @@
         "queriesCompleted": 5
       },
       "domain": "dhl-proxy-service[.]prod[.]core[.]thirdparty[.]sx",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "22b038e1cf96d0b61251"
     },
@@ -334,6 +368,39 @@
     {
       "dns": {
         "a": [
+          "13[.]248[.]213[.]45",
+          "76[.]223[.]67[.]189"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 600,
+        "mx": [],
+        "ns": [
+          "ns17[.]domaincontrol[.]com",
+          "ns18[.]domaincontrol[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "dhl-update-de[.]shop",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": {
+        "domain": "dhl-update-de[.]shop",
+        "expiresAt": "2027-07-29T23:59:59.000Z",
+        "registeredAt": "2025-07-29T08:38:19.000Z",
+        "registrar": "GoDaddy[.]com LLC",
+        "statuses": [
+          "auto-renew-period",
+          "client-delete-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-08-10T18:44:46.000Z"
+      },
+      "signalId": "0bccf153c8ceef06cd77"
+    },
+    {
+      "dns": {
+        "a": [
           "45[.]79[.]222[.]138"
         ],
         "aaaa": [],
@@ -344,7 +411,7 @@
         "queriesCompleted": 5
       },
       "domain": "dhlexpress-online[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "08f94854a3fe0e9324d1"
     },
@@ -387,7 +454,7 @@
         "queriesCompleted": 5
       },
       "domain": "dpd-service[.]cyou",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": {
         "domain": "dpd-service[.]cyou",
         "expiresAt": "2027-02-11T23:59:59.000Z",
@@ -455,6 +522,23 @@
         "updatedAt": "2026-03-03T10:59:54.000Z"
       },
       "signalId": "b1158b011aa853ba4989"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "en-dhl-support[.]com[.]ph",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": null,
+      "signalId": "40d6b061bee0a383a02f"
     },
     {
       "dns": {
@@ -592,7 +676,7 @@
         "queriesCompleted": 5
       },
       "domain": "maximaservice[.]se",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "0923afa966c0841e00f8"
     },
@@ -613,7 +697,7 @@
         "queriesCompleted": 5
       },
       "domain": "omada[.]delivery-dhl-uae[.]com",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": {
         "domain": "delivery-dhl-uae[.]com",
         "expiresAt": "2027-03-03T18:58:36.000Z",
@@ -705,6 +789,39 @@
     {
       "dns": {
         "a": [
+          "20[.]16[.]115[.]41"
+        ],
+        "aaaa": [],
+        "cname": [
+          "prod-fml-dhl-softbank-service-db-server[.]rs-a1a4a2d2b3cc[.]postgres[.]database[.]azure[.]com"
+        ],
+        "minimumTtl": 30,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "prod-fml-dhl-softbank-service-db-server[.]postgres[.]database[.]azure[.]com",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": {
+        "domain": "azure[.]com",
+        "expiresAt": "2026-10-24T04:00:00.000Z",
+        "registeredAt": "1994-10-25T04:00:00.000Z",
+        "registrar": "MarkMonitor Inc.",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited",
+          "server-delete-prohibited",
+          "server-transfer-prohibited",
+          "server-update-prohibited"
+        ],
+        "updatedAt": "2025-09-22T12:20:12.000Z"
+      },
+      "signalId": "13d06a7efa04f6696a4e"
+    },
+    {
+      "dns": {
+        "a": [
           "45[.]79[.]222[.]138"
         ],
         "aaaa": [],
@@ -751,6 +868,40 @@
         "updatedAt": "2026-08-28T07:15:02.000Z"
       },
       "signalId": "d6aee63d133c297e817c"
+    },
+    {
+      "dns": {
+        "a": [
+          "104[.]21[.]24[.]58",
+          "172[.]67[.]217[.]32"
+        ],
+        "aaaa": [
+          "2606[:]4700[:]3032[:][:]ac43[:]d920",
+          "2606[:]4700[:]3036[:][:]6815[:]183a"
+        ],
+        "cname": [],
+        "minimumTtl": 300,
+        "mx": [],
+        "ns": [
+          "malcolm[.]ns[.]cloudflare[.]com",
+          "melissa[.]ns[.]cloudflare[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "revolut-secure[.]com",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": {
+        "domain": "revolut-secure[.]com",
+        "expiresAt": "2027-06-05T18:18:09.000Z",
+        "registeredAt": "2026-06-05T18:18:09.000Z",
+        "registrar": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-06-05T18:21:18.000Z"
+      },
+      "signalId": "2f14467983c9a15f4045"
     },
     {
       "dns": {
@@ -871,7 +1022,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-dhl[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "4d6827c917c67a54c8c7"
     },
@@ -1013,7 +1164,7 @@
         "queriesCompleted": 5
       },
       "domain": "trackmaxima[.]com",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": {
         "domain": "trackmaxima[.]com",
         "expiresAt": "2029-01-15T00:51:13.000Z",
@@ -1075,6 +1226,32 @@
       "observedAt": "2026-08-29T13:21:10.039Z",
       "registration": null,
       "signalId": "c389673bf929cb6b9bc8"
+    },
+    {
+      "dns": {
+        "a": [
+          "91[.]195[.]240[.]94"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 300,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "webmail[.]secure-revolut[.]com",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": {
+        "domain": "secure-revolut[.]com",
+        "expiresAt": "2027-02-09T23:16:59.000Z",
+        "registeredAt": "2026-02-09T23:16:59.000Z",
+        "registrar": "Name[.]com, Inc.",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-02-14T11:12:24.000Z"
+      },
+      "signalId": "47c2a3b50e09d1a32f7d"
     },
     {
       "dns": {
@@ -1177,7 +1354,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]dhl-portal[.]com[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": null,
       "signalId": "1e95c8d5f1d62af98520"
     },
@@ -1197,6 +1374,23 @@
       "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "b0a528848023ad05d765"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "www[.]home-dhl-delivery[.]ph",
+      "observedAt": "2026-08-29T19:21:03.307Z",
+      "registration": null,
+      "signalId": "448542b6a073a872fbcc"
     },
     {
       "dns": {
@@ -1330,7 +1524,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]secure-revolut[.]com",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": {
         "domain": "secure-revolut[.]com",
         "expiresAt": "2027-02-09T23:16:59.000Z",
@@ -1390,7 +1584,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]xn--chez-seb-et-la-nkb[.]fr",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-29T19:21:03.307Z",
       "registration": {
         "domain": "xn--chez-seb-et-la-nkb[.]fr",
         "expiresAt": "2027-03-04T21:32:54.693Z",
