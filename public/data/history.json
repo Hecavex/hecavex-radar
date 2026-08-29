@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T22:11:22.181Z",
+  "generatedAt": "2026-08-29T23:09:31.403Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "00e3650db7666b86bde4",
+      "domain": "online[.]dev[.]swedbankpay[.]tech",
+      "brand": "Swedbank",
+      "firstSeen": "2026-08-29T22:51:09.853Z",
+      "lastSeen": "2026-08-29T22:51:09.853Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8cb9b7e8811df0a658fc184c7561cf09",
+          "observedAt": "2026-08-29T22:51:09.853Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d910c07973fdd4162ed5",
+      "domain": "box-secure-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T22:33:07.742Z",
+      "lastSeen": "2026-08-29T22:33:07.742Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "65beca2f5b9fceb097417215915a2f53",
+          "observedAt": "2026-08-29T22:33:07.742Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d30dfb25d4a3d1168771",
       "domain": "dhl-redelivery-service[.]com[.]ph",

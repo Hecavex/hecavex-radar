@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-feeds",
-  "generatedAt": "2026-08-29T22:20:28.730Z",
+  "generatedAt": "2026-08-29T23:09:31.403Z",
   "semantics": "Each per-brand feed is a filtered view of the same bounded 30-day global event stream. An empty feed means no publishable event in that sampled window, not no phishing activity.",
   "brands": [
     {
@@ -55,7 +55,7 @@
     {
       "brand": "DHL",
       "slug": "dhl",
-      "eventCount": 38,
+      "eventCount": 39,
       "atom": "/data/brands/dhl/events.atom.xml",
       "rss": "/data/brands/dhl/events.rss.xml",
       "jsonFeed": "/data/brands/dhl/events.feed.json"
@@ -311,7 +311,7 @@
     {
       "brand": "Swedbank",
       "slug": "swedbank",
-      "eventCount": 2,
+      "eventCount": 3,
       "atom": "/data/brands/swedbank/events.atom.xml",
       "rss": "/data/brands/swedbank/events.rss.xml",
       "jsonFeed": "/data/brands/swedbank/events.feed.json"
