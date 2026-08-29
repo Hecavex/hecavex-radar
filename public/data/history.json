@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T09:09:00.813Z",
+  "generatedAt": "2026-08-29T10:11:54.338Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c5ee446f5f0dae3cd2ac",
+      "domain": "bankartea[.]lt",
+      "brand": "Artea",
+      "firstSeen": "2026-08-29T09:22:58.578Z",
+      "lastSeen": "2026-08-29T09:22:58.578Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a15cf4b3f4f856c5b4b896fbcdc1f462",
+          "observedAt": "2026-08-29T09:22:58.578Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "b46a47e396bd8530005b",
       "domain": "vintedportal[.]ph",
