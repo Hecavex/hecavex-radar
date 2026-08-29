@@ -1,9 +1,72 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T11:15:33.154Z",
-  "lastSuccessfulSyncAt": "2026-08-29T11:20:37.165Z",
+  "generatedAt": "2026-08-29T12:09:11.843Z",
+  "lastSuccessfulSyncAt": "2026-08-29T12:09:11.843Z",
   "signals": [
+    {
+      "id": "af5a1860bf79433e74e6",
+      "url": "hxxps://dhl-payment[.]com[.]ph",
+      "domain": "dhl-payment[.]com[.]ph",
+      "firstSeen": "2026-08-29T11:30:48.197Z",
+      "lastSeen": "2026-08-29T11:30:48.197Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "8b58c37d1de20670c382",
+      "url": "hxxps://opencode-vmi-portal[.]bmscloud[.]in[.]th",
+      "domain": "opencode-vmi-portal[.]bmscloud[.]in[.]th",
+      "firstSeen": "2026-08-29T11:17:17.335Z",
+      "lastSeen": "2026-08-29T11:17:17.335Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "VMI",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "987e64e94627cf65e044",
       "url": "hxxps://vmi-portal[.]bmscloud[.]in[.]th",
@@ -2405,8 +2468,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T11:20:37.165Z",
-      "records": 68,
+      "fetchedAt": "2026-08-29T12:09:11.843Z",
+      "records": 70,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -2421,7 +2484,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T11:20:37.165Z",
+      "fetchedAt": "2026-08-29T12:09:11.843Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

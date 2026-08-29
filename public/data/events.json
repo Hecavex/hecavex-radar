@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T11:20:37.165Z",
+  "generatedAt": "2026-08-29T12:09:11.843Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T11:20:37.165Z",
-    "to": "2026-08-29T11:20:37.165Z"
+    "from": "2026-07-30T12:09:11.843Z",
+    "to": "2026-08-29T12:09:11.843Z"
   },
-  "totalAvailable": 91,
+  "totalAvailable": 93,
   "truncated": false,
   "events": [
+    {
+      "id": "193960fad583bced92c424d974c9b542",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T11:30:48.197Z",
+      "signalId": "af5a1860bf79433e74e6",
+      "signalPath": "/signals/af5a1860bf79433e74e6/",
+      "domain": "dhl-payment[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "78266857988d37c65ad3d14392236759",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T11:17:17.335Z",
+      "signalId": "8b58c37d1de20670c382",
+      "signalPath": "/signals/8b58c37d1de20670c382/",
+      "domain": "opencode-vmi-portal[.]bmscloud[.]in[.]th",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "cf871e348f4be935c433ebaeec419b13",
       "type": "first-publication",

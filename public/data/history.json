@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T11:15:33.154Z",
+  "generatedAt": "2026-08-29T12:09:11.843Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "af5a1860bf79433e74e6",
+      "domain": "dhl-payment[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T11:30:48.197Z",
+      "lastSeen": "2026-08-29T11:30:48.197Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1fb917201fe5ccb4da06720f97168d8f",
+          "observedAt": "2026-08-29T11:30:48.197Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8b58c37d1de20670c382",
+      "domain": "opencode-vmi-portal[.]bmscloud[.]in[.]th",
+      "brand": "VMI",
+      "firstSeen": "2026-08-29T11:17:17.335Z",
+      "lastSeen": "2026-08-29T11:17:17.335Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1466d31b63370200fabae6a173cecae2",
+          "observedAt": "2026-08-29T11:17:17.335Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "987e64e94627cf65e044",
       "domain": "vmi-portal[.]bmscloud[.]in[.]th",
