@@ -1,10 +1,158 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-28T23:08:55.652Z",
+  "generatedAt": "2026-08-29T00:09:02.888Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "448542b6a073a872fbcc",
+      "domain": "www[.]home-dhl-delivery[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T00:01:58.943Z",
+      "lastSeen": "2026-08-29T00:01:58.943Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "810430475a45d52daee842ba29b99e51",
+          "observedAt": "2026-08-29T00:01:58.943Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2f4389fd849f44e5a6a",
+      "domain": "eso-assessment-service-db[.]postgres[.]database[.]azure[.]com",
+      "brand": "ESO",
+      "firstSeen": "2026-08-28T23:49:37.129Z",
+      "lastSeen": "2026-08-28T23:49:37.129Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3ebf98cf972715375bbae368dbbb6f59",
+          "observedAt": "2026-08-28T23:49:37.129Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f23dcf2314427f68d375",
+      "domain": "www[.]dhl-delivery-package[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T23:32:52.283Z",
+      "lastSeen": "2026-08-28T23:32:52.283Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "223da372c89c63049110da9c1344afec",
+          "observedAt": "2026-08-28T23:32:52.283Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a987a2e240dc6f49c844",
+      "domain": "delivery-support72-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-28T23:17:44.207Z",
+      "lastSeen": "2026-08-28T23:17:44.207Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ec1554133c63b455dc7dfbb4bbffdab8",
+          "observedAt": "2026-08-28T23:17:44.207Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "412a0d4ff3da3bbf33bc",
       "domain": "dhl-expedition-tracking[.]com[.]ph",

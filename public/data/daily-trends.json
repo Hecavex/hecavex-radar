@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-28T23:20:12.113Z",
+  "generatedAt": "2026-08-29T00:09:02.888Z",
   "retentionDays": 365,
-  "from": "2025-08-29",
-  "to": "2026-08-28",
+  "from": "2025-08-30",
+  "to": "2026-08-29",
   "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
   "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
   "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
-  "omittedZeroDays": 355,
+  "omittedZeroDays": 354,
   "collectorSchedule": {
     "expectedIntervalSeconds": 900,
     "expectedListeningSeconds": 480,
@@ -404,57 +404,101 @@
     },
     {
       "date": "2026-08-28",
-      "partialDay": true,
+      "partialDay": false,
       "collectorCoverage": {
-        "windowSeconds": 84012,
-        "scheduledSlots": 93,
-        "recordedAttempts": 95,
-        "healthyAttempts": 95,
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 99,
+        "healthyAttempts": 99,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 54.26,
-        "scheduledListeningCeilingPercent": 53.14,
-        "listeningSeconds": 45588.823,
+        "listeningCoveragePercent": 54.99,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 47508.819,
         "outcomes": {
-          "healthy-empty": 70,
-          "healthy-matches": 25
+          "healthy-empty": 71,
+          "healthy-matches": 28
         }
       },
       "discovery": {
-        "events": 55,
-        "uniqueSignals": 28,
-        "observations": 28,
+        "events": 61,
+        "uniqueSignals": 31,
+        "observations": 31,
         "reobservations": 0,
-        "firstPublications": 27,
+        "firstPublications": 30,
         "statusChanges": 0,
-        "facetSampleSize": 28,
-        "evidenceClassifiedSignals": 28,
+        "facetSampleSize": 31,
+        "evidenceClassifiedSignals": 31,
         "byBrand": {
-          "DHL": 14,
+          "DHL": 16,
           "DPD": 3,
           "Telia": 3,
           "Revolut": 2,
           "SEB": 2,
           "BTA": 1,
           "Bitė": 1,
+          "ESO": 1,
           "MAXIMA": 1,
           "Swedbank": 1
         },
         "bySource": {
-          "CertStream": 28
+          "CertStream": 31
         },
         "byEvidenceTier": {
-          "name-only": 28
+          "name-only": 31
         },
         "byReason": {
-          "first-publication": 27,
-          "brand-exact-token": 26,
-          "suspicious-context": 26,
-          "different-tld": 23,
-          "multiple-hyphens": 18,
+          "first-publication": 30,
+          "brand-exact-token": 29,
+          "suspicious-context": 29,
+          "different-tld": 26,
+          "multiple-hyphens": 21,
           "punycode": 2,
           "unicode-confusable": 2,
           "brand-joined-affix": 1,
           "brand-split-token": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-29",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 542,
+        "scheduledSlots": 0,
+        "recordedAttempts": 1,
+        "healthyAttempts": 1,
+        "recordedSchedulePercent": null,
+        "listeningCoveragePercent": 88.56,
+        "scheduledListeningCeilingPercent": 0.0,
+        "listeningSeconds": 479.998,
+        "outcomes": {
+          "healthy-matches": 1
+        }
+      },
+      "discovery": {
+        "events": 2,
+        "uniqueSignals": 1,
+        "observations": 1,
+        "reobservations": 0,
+        "firstPublications": 1,
+        "statusChanges": 0,
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "DHL": 1
+        },
+        "bySource": {
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-exact-token": 1,
+          "different-tld": 1,
+          "first-publication": 1,
+          "multiple-hyphens": 1,
+          "suspicious-context": 1
         }
       }
     }
