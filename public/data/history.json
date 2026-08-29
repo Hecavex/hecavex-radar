@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T17:11:22.693Z",
+  "generatedAt": "2026-08-29T18:09:34.687Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "40d6b061bee0a383a02f",
+      "domain": "en-dhl-support[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T17:36:24.329Z",
+      "lastSeen": "2026-08-29T17:36:24.329Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "685d8ccf552fd16e21b986dcc8328617",
+          "observedAt": "2026-08-29T17:36:24.329Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "0bccf153c8ceef06cd77",
       "domain": "dhl-update-de[.]shop",

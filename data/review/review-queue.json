@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-29T17:11:22.693Z",
+  "generatedAt": "2026-08-29T18:09:34.687Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 86,
+  "availableUnreviewed": 87,
   "selected": 24,
   "candidates": [
     {
@@ -296,8 +296,8 @@
       "firstSeen": "2026-08-29T13:51:59.392Z"
     },
     {
-      "signalId": "c08995e1b7627132ab6e",
-      "recordPath": "/signals/c08995e1b7627132ab6e/",
+      "signalId": "be142d686c54ab530aa8",
+      "recordPath": "/signals/be142d686c54ab530aa8/",
       "brand": "Revolut",
       "sources": [
         "CertStream"
@@ -305,12 +305,11 @@
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-joined-affix",
-        "different-tld",
+        "brand-exact-token",
         "suspicious-context"
       ],
       "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T15:13:56.611Z"
+      "firstSeen": "2026-08-27T17:40:22.348Z"
     },
     {
       "signalId": "0d284af65210b0c1307e",
@@ -330,22 +329,21 @@
       "firstSeen": "2026-08-28T08:25:31.949Z"
     },
     {
-      "signalId": "74a34aa5a01e9ed77fb6",
-      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "signalId": "c08995e1b7627132ab6e",
+      "recordPath": "/signals/c08995e1b7627132ab6e/",
       "brand": "Revolut",
       "sources": [
-        "CertStream",
-        "URLScan"
+        "CertStream"
       ],
       "scoreBand": "95-100",
-      "evidenceTier": "corroborated",
+      "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-domain-match",
-        "brand-exact-token",
+        "brand-joined-affix",
+        "different-tld",
         "suspicious-context"
       ],
-      "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T07:33:48.367Z"
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-27T15:13:56.611Z"
     },
     {
       "signalId": "f244770fd730a8f8f74a",
@@ -365,6 +363,24 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-28T13:52:51.226Z"
+    },
+    {
+      "signalId": "74a34aa5a01e9ed77fb6",
+      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "brand": "Revolut",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "corroborated",
+      "reasonCodes": [
+        "brand-domain-match",
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
       "signalId": "0923afa966c0841e00f8",
@@ -399,22 +415,6 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-25T16:22:17.726Z"
-    },
-    {
-      "signalId": "be142d686c54ab530aa8",
-      "recordPath": "/signals/be142d686c54ab530aa8/",
-      "brand": "Revolut",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-27T17:40:22.348Z"
     }
   ]
 }

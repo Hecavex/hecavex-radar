@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-29T17:20:37.129Z",
+  "generatedAt": "2026-08-29T18:09:34.687Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T17:20:37.129Z",
-      "to": "2026-08-29T17:20:37.129Z",
+      "from": "2026-08-28T18:09:34.687Z",
+      "to": "2026-08-29T18:09:34.687Z",
       "events": 71,
       "uniqueSignals": 36,
       "firstPublications": 35,
@@ -24,17 +24,17 @@
         "suspicious-context": 71,
         "different-tld": 62,
         "brand-exact-token": 61,
-        "multiple-hyphens": 38,
+        "multiple-hyphens": 40,
         "first-publication": 35,
         "brand-joined-affix": 10
       },
       "byBrand": {
-        "DHL": 36,
+        "DHL": 38,
         "Vinted": 10,
         "Revolut": 7,
-        "Bitė": 4,
         "VMI": 4,
         "Artea": 2,
+        "Bitė": 2,
         "ESO": 2,
         "Smart-ID": 2,
         "Swedbank": 2,
@@ -43,29 +43,29 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-22T17:20:37.129Z",
-      "to": "2026-08-29T17:20:37.129Z",
-      "events": 178,
+      "from": "2026-08-22T18:09:34.687Z",
+      "to": "2026-08-29T18:09:34.687Z",
+      "events": 179,
       "uniqueSignals": 90,
-      "firstPublications": 84,
+      "firstPublications": 85,
       "statusChanges": 0,
       "observations": 94,
       "reobservations": 4,
       "bySource": {
-        "CertStream": 153,
-        "URLScan": 23,
+        "CertStream": 155,
+        "URLScan": 22,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 178
+        "suspected": 179
       },
       "byReason": {
-        "suspicious-context": 149,
-        "brand-exact-token": 137,
-        "different-tld": 132,
-        "multiple-hyphens": 87,
-        "first-publication": 84,
-        "brand-domain-match": 18,
+        "suspicious-context": 151,
+        "brand-exact-token": 139,
+        "different-tld": 134,
+        "multiple-hyphens": 89,
+        "first-publication": 85,
+        "brand-domain-match": 17,
         "brand-joined-affix": 16,
         "brand-title-match": 8,
         "punycode": 6,
@@ -75,7 +75,7 @@
         "manual-review": 2
       },
       "byBrand": {
-        "DHL": 67,
+        "DHL": 69,
         "Revolut": 31,
         "Vinted": 22,
         "SEB": 10,
@@ -85,9 +85,9 @@
         "MAXIMA": 6,
         "VMI": 6,
         "DPD": 5,
-        "Smart-ID": 3,
         "Artea": 2,
         "BTA": 2,
+        "Smart-ID": 2,
         "Swedbank": 2
       }
     }
