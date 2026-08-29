@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T21:11:19.499Z",
+  "generatedAt": "2026-08-29T22:11:22.181Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d30dfb25d4a3d1168771",
+      "domain": "dhl-redelivery-service[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T22:00:20.948Z",
+      "lastSeen": "2026-08-29T22:00:20.948Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "acba65b6a58a8354fa0c7961a7cefff3",
+          "observedAt": "2026-08-29T22:00:20.948Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "18c088c6b761f03c6ab7",
       "domain": "dhl-profi-paket-service[.]com[.]ph",
