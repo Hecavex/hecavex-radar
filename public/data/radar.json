@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T13:09:27.770Z",
-  "lastSuccessfulSyncAt": "2026-08-29T13:20:33.520Z",
+  "generatedAt": "2026-08-29T14:09:10.789Z",
+  "lastSuccessfulSyncAt": "2026-08-29T14:09:10.789Z",
   "signals": [
+    {
+      "id": "c9dffdb5efa12358a21c",
+      "url": "hxxps://login[.]smartidverify[.]net",
+      "domain": "login[.]smartidverify[.]net",
+      "firstSeen": "2026-08-29T13:51:59.392Z",
+      "lastSeen": "2026-08-29T13:51:59.392Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Smart-ID",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "5333cc942fd542f9ea87",
       "url": "hxxps://delivery-track-dhl[.]com[.]ph",
@@ -2532,8 +2563,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T13:20:33.520Z",
-      "records": 72,
+      "fetchedAt": "2026-08-29T14:09:10.789Z",
+      "records": 73,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -2548,7 +2579,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T13:20:33.520Z",
+      "fetchedAt": "2026-08-29T14:09:10.789Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

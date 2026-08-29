@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T13:20:33.520Z",
+  "generatedAt": "2026-08-29T14:09:10.789Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T13:20:33.520Z",
-    "to": "2026-08-29T13:20:33.520Z"
+    "from": "2026-07-30T14:09:10.789Z",
+    "to": "2026-08-29T14:09:10.789Z"
   },
-  "totalAvailable": 95,
+  "totalAvailable": 96,
   "truncated": false,
   "events": [
+    {
+      "id": "f507eb9faf21ec10040f0120a4d6ff2f",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T13:51:59.392Z",
+      "signalId": "c9dffdb5efa12358a21c",
+      "signalPath": "/signals/c9dffdb5efa12358a21c/",
+      "domain": "login[.]smartidverify[.]net",
+      "brand": "Smart-ID",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "1edafe09a061c59254710e6cd8f93f72",
       "type": "first-publication",

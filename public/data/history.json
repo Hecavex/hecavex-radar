@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T13:09:27.770Z",
+  "generatedAt": "2026-08-29T14:09:10.789Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c9dffdb5efa12358a21c",
+      "domain": "login[.]smartidverify[.]net",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-08-29T13:51:59.392Z",
+      "lastSeen": "2026-08-29T13:51:59.392Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "6463184c53f6b109a1b23dffde42bf34",
+          "observedAt": "2026-08-29T13:51:59.392Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5333cc942fd542f9ea87",
       "domain": "delivery-track-dhl[.]com[.]ph",

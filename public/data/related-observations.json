@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-29T13:20:33.520Z",
+  "generatedAt": "2026-08-29T14:09:10.789Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -37,7 +37,7 @@
   ],
   "edges": [
     {
-      "id": "aac54fd544a03b8cad7e",
+      "id": "d28414f75146be496963",
       "source": "3fff5d4e13b79be1161d",
       "target": "f244770fd730a8f8f74a",
       "strength": "strong",
@@ -53,6 +53,10 @@
         {
           "type": "certificate-sha256",
           "value": "f8461c957781b637ae594a1152b1f093d75a27c31b67b154b744eae218219daa"
+        },
+        {
+          "type": "dns-a",
+          "value": "20[.]71[.]52[.]50"
         }
       ]
     },
