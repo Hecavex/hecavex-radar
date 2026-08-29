@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T18:20:41.641Z",
+  "generatedAt": "2026-08-29T19:09:08.429Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T18:20:41.641Z",
-    "to": "2026-08-29T18:20:41.641Z"
+    "from": "2026-07-30T19:09:08.429Z",
+    "to": "2026-08-29T19:09:08.429Z"
   },
-  "totalAvailable": 102,
+  "totalAvailable": 104,
   "truncated": false,
   "events": [
+    {
+      "id": "3ffdee76c817e633a6e88bfdaded2b73",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T18:46:20.904Z",
+      "signalId": "13d06a7efa04f6696a4e",
+      "signalPath": "/signals/13d06a7efa04f6696a4e/",
+      "domain": "prod-fml-dhl-softbank-service-db-server[.]postgres[.]database[.]azure[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "8fc276ef5d4c20b7f357c1b38b239922",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T18:20:22.476Z",
+      "signalId": "8fdeb6ddb7b74f3a79a8",
+      "signalPath": "/signals/8fdeb6ddb7b74f3a79a8/",
+      "domain": "dhl-delivery-tracking[.]info",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "def47bad4026ac21ece579b7b5c28edd",
       "type": "first-publication",
