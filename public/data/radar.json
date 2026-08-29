@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T19:09:08.429Z",
-  "lastSuccessfulSyncAt": "2026-08-29T19:20:25.845Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
+  "lastSuccessfulSyncAt": "2026-08-29T20:09:20.638Z",
   "signals": [
+    {
+      "id": "4178e3ccc2b50a49490e",
+      "url": "hxxps://bigbankrefund[.]com",
+      "domain": "bigbankrefund[.]com",
+      "firstSeen": "2026-08-29T19:17:13.908Z",
+      "lastSeen": "2026-08-29T19:17:13.908Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Bigbank",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "80c59f76ae51fa144141",
+      "url": "hxxps://www[.]bigbankrefund[.]com",
+      "domain": "www[.]bigbankrefund[.]com",
+      "firstSeen": "2026-08-29T19:17:13.908Z",
+      "lastSeen": "2026-08-29T19:17:13.908Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Bigbank",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "13d06a7efa04f6696a4e",
       "url": "hxxps://prod-fml-dhl-softbank-service-db-server[.]postgres[.]database[.]azure[.]com",
@@ -2817,8 +2879,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T19:20:25.845Z",
-      "records": 81,
+      "fetchedAt": "2026-08-29T20:09:20.638Z",
+      "records": 83,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -2833,7 +2895,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T19:20:25.845Z",
+      "fetchedAt": "2026-08-29T20:09:20.638Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-29T19:09:08.429Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 89,
+  "availableUnreviewed": 91,
   "selected": 24,
   "candidates": [
     {
@@ -279,9 +279,9 @@
       "firstSeen": "2026-08-29T02:31:22.724Z"
     },
     {
-      "signalId": "c9dffdb5efa12358a21c",
-      "recordPath": "/signals/c9dffdb5efa12358a21c/",
-      "brand": "Smart-ID",
+      "signalId": "4178e3ccc2b50a49490e",
+      "recordPath": "/signals/4178e3ccc2b50a49490e/",
+      "brand": "Bigbank",
       "sources": [
         "CertStream"
       ],
@@ -293,7 +293,7 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T13:51:59.392Z"
+      "firstSeen": "2026-08-29T19:17:13.908Z"
     },
     {
       "signalId": "be142d686c54ab530aa8",
@@ -329,9 +329,9 @@
       "firstSeen": "2026-08-28T08:25:31.949Z"
     },
     {
-      "signalId": "c08995e1b7627132ab6e",
-      "recordPath": "/signals/c08995e1b7627132ab6e/",
-      "brand": "Revolut",
+      "signalId": "c9dffdb5efa12358a21c",
+      "recordPath": "/signals/c9dffdb5efa12358a21c/",
+      "brand": "Smart-ID",
       "sources": [
         "CertStream"
       ],
@@ -342,8 +342,26 @@
         "different-tld",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T15:13:56.611Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-29T13:51:59.392Z"
+    },
+    {
+      "signalId": "74a34aa5a01e9ed77fb6",
+      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "brand": "Revolut",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "corroborated",
+      "reasonCodes": [
+        "brand-domain-match",
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
       "signalId": "f244770fd730a8f8f74a",
@@ -365,27 +383,9 @@
       "firstSeen": "2026-08-28T13:52:51.226Z"
     },
     {
-      "signalId": "74a34aa5a01e9ed77fb6",
-      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "signalId": "c08995e1b7627132ab6e",
+      "recordPath": "/signals/c08995e1b7627132ab6e/",
       "brand": "Revolut",
-      "sources": [
-        "CertStream",
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "corroborated",
-      "reasonCodes": [
-        "brand-domain-match",
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T07:33:48.367Z"
-    },
-    {
-      "signalId": "0923afa966c0841e00f8",
-      "recordPath": "/signals/0923afa966c0841e00f8/",
-      "brand": "MAXIMA",
       "sources": [
         "CertStream"
       ],
@@ -396,8 +396,8 @@
         "different-tld",
         "suspicious-context"
       ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-28T04:01:34.504Z"
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-27T15:13:56.611Z"
     },
     {
       "signalId": "6d1985055ef1c90ba8d8",

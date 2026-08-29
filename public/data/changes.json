@@ -1,37 +1,38 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-29T19:20:25.845Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T19:20:25.845Z",
-      "to": "2026-08-29T19:20:25.845Z",
-      "events": 75,
-      "uniqueSignals": 38,
-      "firstPublications": 37,
+      "from": "2026-08-28T20:09:20.638Z",
+      "to": "2026-08-29T20:09:20.638Z",
+      "events": 79,
+      "uniqueSignals": 40,
+      "firstPublications": 39,
       "statusChanges": 0,
-      "observations": 38,
+      "observations": 40,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 75
+        "CertStream": 79
       },
       "byStatus": {
-        "suspected": 75
+        "suspected": 79
       },
       "byReason": {
-        "suspicious-context": 75,
+        "suspicious-context": 79,
+        "different-tld": 68,
         "brand-exact-token": 65,
-        "different-tld": 64,
         "multiple-hyphens": 44,
-        "first-publication": 37,
-        "brand-joined-affix": 10
+        "first-publication": 39,
+        "brand-joined-affix": 14
       },
       "byBrand": {
         "DHL": 42,
         "Vinted": 10,
         "Revolut": 7,
+        "Bigbank": 4,
         "VMI": 4,
         "Artea": 2,
         "Bitė": 2,
@@ -43,30 +44,30 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-22T19:20:25.845Z",
-      "to": "2026-08-29T19:20:25.845Z",
-      "events": 183,
-      "uniqueSignals": 92,
-      "firstPublications": 87,
+      "from": "2026-08-22T20:09:20.638Z",
+      "to": "2026-08-29T20:09:20.638Z",
+      "events": 187,
+      "uniqueSignals": 94,
+      "firstPublications": 89,
       "statusChanges": 0,
-      "observations": 96,
+      "observations": 98,
       "reobservations": 4,
       "bySource": {
-        "CertStream": 159,
+        "CertStream": 163,
         "URLScan": 22,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 183
+        "suspected": 187
       },
       "byReason": {
-        "suspicious-context": 155,
+        "suspicious-context": 159,
         "brand-exact-token": 143,
-        "different-tld": 136,
+        "different-tld": 140,
         "multiple-hyphens": 93,
-        "first-publication": 87,
+        "first-publication": 89,
+        "brand-joined-affix": 20,
         "brand-domain-match": 17,
-        "brand-joined-affix": 16,
         "brand-title-match": 8,
         "punycode": 6,
         "unicode-confusable": 6,
@@ -85,6 +86,7 @@
         "MAXIMA": 6,
         "VMI": 6,
         "DPD": 5,
+        "Bigbank": 4,
         "Artea": 2,
         "BTA": 2,
         "Smart-ID": 2,

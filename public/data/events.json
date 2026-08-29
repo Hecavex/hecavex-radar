@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T19:20:25.845Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T19:20:25.845Z",
-    "to": "2026-08-29T19:20:25.845Z"
+    "from": "2026-07-30T20:09:20.638Z",
+    "to": "2026-08-29T20:09:20.638Z"
   },
-  "totalAvailable": 104,
+  "totalAvailable": 106,
   "truncated": false,
   "events": [
+    {
+      "id": "bcb555a65ef4734db981e59836b99d62",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T19:17:13.908Z",
+      "signalId": "80c59f76ae51fa144141",
+      "signalPath": "/signals/80c59f76ae51fa144141/",
+      "domain": "www[.]bigbankrefund[.]com",
+      "brand": "Bigbank",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "4154614c19e6098521b4478bf0868491",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T19:17:13.908Z",
+      "signalId": "4178e3ccc2b50a49490e",
+      "signalPath": "/signals/4178e3ccc2b50a49490e/",
+      "domain": "bigbankrefund[.]com",
+      "brand": "Bigbank",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "3ffdee76c817e633a6e88bfdaded2b73",
       "type": "first-publication",

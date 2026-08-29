@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T19:09:08.429Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "80c59f76ae51fa144141",
+      "domain": "www[.]bigbankrefund[.]com",
+      "brand": "Bigbank",
+      "firstSeen": "2026-08-29T19:17:13.908Z",
+      "lastSeen": "2026-08-29T19:17:13.908Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "748555ee236ade956c263e86fe75bfbb",
+          "observedAt": "2026-08-29T19:17:13.908Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4178e3ccc2b50a49490e",
+      "domain": "bigbankrefund[.]com",
+      "brand": "Bigbank",
+      "firstSeen": "2026-08-29T19:17:13.908Z",
+      "lastSeen": "2026-08-29T19:17:13.908Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "148add37d50f7b46107785da716f7d1d",
+          "observedAt": "2026-08-29T19:17:13.908Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "13d06a7efa04f6696a4e",
       "domain": "prod-fml-dhl-softbank-service-db-server[.]postgres[.]database[.]azure[.]com",

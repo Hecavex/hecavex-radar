@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-29T19:20:25.845Z",
+  "generatedAt": "2026-08-29T20:09:20.638Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -15,9 +15,19 @@
       "clusterId": "aae83e99b565144e"
     },
     {
+      "signalId": "4178e3ccc2b50a49490e",
+      "domain": "bigbankrefund[.]com",
+      "clusterId": "12ccea743184fe36"
+    },
+    {
       "signalId": "6718a48a9d6c4669e8f5",
       "domain": "www[.]revolut-service[.]com",
       "clusterId": "6be5cc106937b73f"
+    },
+    {
+      "signalId": "80c59f76ae51fa144141",
+      "domain": "www[.]bigbankrefund[.]com",
+      "clusterId": "12ccea743184fe36"
     },
     {
       "signalId": "b1158b011aa853ba4989",
@@ -57,6 +67,26 @@
         {
           "type": "dns-a",
           "value": "20[.]71[.]52[.]50"
+        }
+      ]
+    },
+    {
+      "id": "127efda0c97d351c6411",
+      "source": "4178e3ccc2b50a49490e",
+      "target": "80c59f76ae51fa144141",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "bigbankrefund[.]com"
+        },
+        {
+          "type": "certificate-san",
+          "value": "www[.]bigbankrefund[.]com"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "f94e5596ac1783323c851b41d2feb2831a514d4defda5fe4781405ef801abcfe"
         }
       ]
     },
