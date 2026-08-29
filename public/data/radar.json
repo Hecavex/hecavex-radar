@@ -1,9 +1,134 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T00:09:02.888Z",
-  "lastSuccessfulSyncAt": "2026-08-29T01:20:24.502Z",
+  "generatedAt": "2026-08-29T02:09:06.076Z",
+  "lastSuccessfulSyncAt": "2026-08-29T02:09:06.076Z",
   "signals": [
+    {
+      "id": "05e69e5d5ed96e9c67f7",
+      "url": "hxxps://box-parcel-dhl[.]com[.]ph",
+      "domain": "box-parcel-dhl[.]com[.]ph",
+      "firstSeen": "2026-08-29T02:06:42.888Z",
+      "lastSeen": "2026-08-29T02:06:42.888Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "b5cf0d8b194116c2cf3f",
+      "url": "hxxps://dhl-parcel-delivered[.]com[.]ph",
+      "domain": "dhl-parcel-delivered[.]com[.]ph",
+      "firstSeen": "2026-08-29T02:02:41.944Z",
+      "lastSeen": "2026-08-29T02:02:41.944Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "8a24893e838ee85dc566",
+      "url": "hxxps://account-vinted[.]ph",
+      "domain": "account-vinted[.]ph",
+      "firstSeen": "2026-08-29T02:01:36.378Z",
+      "lastSeen": "2026-08-29T02:01:36.378Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "2f14467983c9a15f4045",
+      "url": "hxxps://revolut-secure[.]com",
+      "domain": "revolut-secure[.]com",
+      "firstSeen": "2026-08-29T01:49:57.268Z",
+      "lastSeen": "2026-08-29T01:49:57.268Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "448542b6a073a872fbcc",
       "url": "hxxps://www[.]home-dhl-delivery[.]ph",
@@ -1900,8 +2025,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T01:20:24.502Z",
-      "records": 51,
+      "fetchedAt": "2026-08-29T02:09:06.076Z",
+      "records": 55,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -1916,7 +2041,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T01:20:24.502Z",
+      "fetchedAt": "2026-08-29T02:09:06.076Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

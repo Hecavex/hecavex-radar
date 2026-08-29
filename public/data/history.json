@@ -1,10 +1,152 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T00:09:02.888Z",
+  "generatedAt": "2026-08-29T02:09:06.076Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "05e69e5d5ed96e9c67f7",
+      "domain": "box-parcel-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T02:06:42.888Z",
+      "lastSeen": "2026-08-29T02:06:42.888Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "637003f065454ff8b0cba880fe59ccfc",
+          "observedAt": "2026-08-29T02:06:42.888Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b5cf0d8b194116c2cf3f",
+      "domain": "dhl-parcel-delivered[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T02:02:41.944Z",
+      "lastSeen": "2026-08-29T02:02:41.944Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "efe53b7aed369a0571c9cc5e90522d20",
+          "observedAt": "2026-08-29T02:02:41.944Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8a24893e838ee85dc566",
+      "domain": "account-vinted[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-29T02:01:36.378Z",
+      "lastSeen": "2026-08-29T02:01:36.378Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "aedd2c1d12f3a49a6e8cd19b90e90be8",
+          "observedAt": "2026-08-29T02:01:36.378Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2f14467983c9a15f4045",
+      "domain": "revolut-secure[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-29T01:49:57.268Z",
+      "lastSeen": "2026-08-29T01:49:57.268Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "fa0a17f55e25f46d2ee5aae8135e741f",
+          "observedAt": "2026-08-29T01:49:57.268Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "448542b6a073a872fbcc",
       "domain": "www[.]home-dhl-delivery[.]ph",
