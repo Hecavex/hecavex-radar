@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-29T09:09:00.813Z",
+  "generatedAt": "2026-08-29T09:20:41.738Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 73,
@@ -81,53 +81,53 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T09:09:00.813Z",
-      "to": "2026-08-29T09:09:00.813Z",
+      "from": "2026-08-28T09:20:41.738Z",
+      "to": "2026-08-29T09:20:41.738Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 108,
-        "healthyAttempts": 108,
+        "recordedAttempts": 107,
+        "healthyAttempts": 107,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 59.99,
+        "listeningCoveragePercent": 59.43,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 51840,
-        "listeningSeconds": 51830.807,
-        "messages": 17010080,
-        "dnsNames": 31522537,
+        "expectedListeningSeconds": 51360,
+        "listeningSeconds": 51351.811,
+        "messages": 16831887,
+        "dnsNames": 31181918,
         "outcomes": {
           "healthy-empty": 75,
-          "healthy-matches": 33
+          "healthy-matches": 32
         }
       },
       "screening": {
-        "matches": 50,
-        "newArchiveRecords": 33,
-        "firstPublications": 32,
+        "matches": 49,
+        "newArchiveRecords": 32,
+        "firstPublications": 31,
         "bySource": {
-          "CertStream": 65
+          "CertStream": 63
         }
       },
       "enrichment": {
-        "observations": 19,
-        "uniqueSignals": 19,
-        "page": 18,
-        "network": 18,
-        "assessment": 19,
-        "certificate": 18,
+        "observations": 18,
+        "uniqueSignals": 18,
+        "page": 17,
+        "network": 17,
+        "assessment": 18,
+        "certificate": 17,
         "dns": 0,
         "rdap": 0
       },
       "publication": {
-        "events": 65,
-        "observations": 33,
-        "statusTransitions": 32,
-        "uniqueSignals": 33
+        "events": 63,
+        "observations": 32,
+        "statusTransitions": 31,
+        "uniqueSignals": 32
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-22T09:09:00.813Z",
-      "to": "2026-08-29T09:09:00.813Z",
+      "from": "2026-08-22T09:20:41.738Z",
+      "to": "2026-08-29T09:20:41.738Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 259,
