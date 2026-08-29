@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-29T10:11:54.338Z",
+  "generatedAt": "2026-08-29T10:20:40.755Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 74,
@@ -82,30 +82,30 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T10:11:54.338Z",
-      "to": "2026-08-29T10:11:54.338Z",
+      "from": "2026-08-28T10:20:40.755Z",
+      "to": "2026-08-29T10:20:40.755Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 109,
-        "healthyAttempts": 109,
+        "recordedAttempts": 108,
+        "healthyAttempts": 108,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 60.54,
+        "listeningCoveragePercent": 59.99,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 52320,
-        "listeningSeconds": 52310.806,
-        "messages": 17156958,
-        "dnsNames": 31753154,
+        "expectedListeningSeconds": 51840,
+        "listeningSeconds": 51830.807,
+        "messages": 17000583,
+        "dnsNames": 31449563,
         "outcomes": {
           "healthy-empty": 78,
-          "healthy-matches": 31
+          "healthy-matches": 30
         }
       },
       "screening": {
-        "matches": 47,
-        "newArchiveRecords": 30,
-        "firstPublications": 29,
+        "matches": 46,
+        "newArchiveRecords": 29,
+        "firstPublications": 28,
         "bySource": {
-          "CertStream": 59
+          "CertStream": 57
         }
       },
       "enrichment": {
@@ -119,16 +119,16 @@
         "rdap": 0
       },
       "publication": {
-        "events": 59,
-        "observations": 30,
-        "statusTransitions": 29,
-        "uniqueSignals": 30
+        "events": 57,
+        "observations": 29,
+        "statusTransitions": 28,
+        "uniqueSignals": 29
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-22T10:11:54.338Z",
-      "to": "2026-08-29T10:11:54.338Z",
+      "from": "2026-08-22T10:20:40.755Z",
+      "to": "2026-08-29T10:20:40.755Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 264,
