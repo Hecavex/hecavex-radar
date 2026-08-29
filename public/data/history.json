@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T03:09:01.773Z",
+  "generatedAt": "2026-08-29T04:11:04.797Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "b05b7de977a301760bc6",
+      "domain": "dhl-parcel-alert[.]net",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T04:05:08.452Z",
+      "lastSeen": "2026-08-29T04:05:08.452Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "dad5ce04bcec344df7d3760e326ccfef",
+          "observedAt": "2026-08-29T04:05:08.452Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "47c2a3b50e09d1a32f7d",
       "domain": "webmail[.]secure-revolut[.]com",
