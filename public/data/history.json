@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T10:11:54.338Z",
+  "generatedAt": "2026-08-29T11:15:33.154Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "987e64e94627cf65e044",
+      "domain": "vmi-portal[.]bmscloud[.]in[.]th",
+      "brand": "VMI",
+      "firstSeen": "2026-08-29T10:33:58.741Z",
+      "lastSeen": "2026-08-29T10:33:58.741Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c70b1567c7aaef563d0fcc8917959cf7",
+          "observedAt": "2026-08-29T10:33:58.741Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ea8f029d427f7b86b253",
+      "domain": "www[.]vintedportal[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-29T10:16:12.945Z",
+      "lastSeen": "2026-08-29T10:16:12.945Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8ba8db709f4f3755d42b60edb3982b8d",
+          "observedAt": "2026-08-29T10:16:12.945Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c5ee446f5f0dae3cd2ac",
       "domain": "bankartea[.]lt",

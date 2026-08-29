@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T10:11:54.338Z",
-  "lastSuccessfulSyncAt": "2026-08-29T10:20:40.755Z",
+  "generatedAt": "2026-08-29T11:15:33.154Z",
+  "lastSuccessfulSyncAt": "2026-08-29T11:15:33.154Z",
   "signals": [
+    {
+      "id": "987e64e94627cf65e044",
+      "url": "hxxps://vmi-portal[.]bmscloud[.]in[.]th",
+      "domain": "vmi-portal[.]bmscloud[.]in[.]th",
+      "firstSeen": "2026-08-29T10:33:58.741Z",
+      "lastSeen": "2026-08-29T10:33:58.741Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "VMI",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "ea8f029d427f7b86b253",
+      "url": "hxxps://www[.]vintedportal[.]ph",
+      "domain": "www[.]vintedportal[.]ph",
+      "firstSeen": "2026-08-29T10:16:12.945Z",
+      "lastSeen": "2026-08-29T10:16:12.945Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "c5ee446f5f0dae3cd2ac",
       "url": "hxxps://bankartea[.]lt",
@@ -2343,15 +2405,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T10:20:40.755Z",
-      "records": 66,
+      "fetchedAt": "2026-08-29T11:15:33.154Z",
+      "records": 68,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-29T08:41:41.274Z",
+      "fetchedAt": "2026-08-29T10:41:11.259Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
@@ -2359,7 +2421,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T10:20:40.755Z",
+      "fetchedAt": "2026-08-29T11:15:33.154Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

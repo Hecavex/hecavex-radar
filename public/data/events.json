@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T10:20:40.755Z",
+  "generatedAt": "2026-08-29T11:15:33.154Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T10:20:40.755Z",
-    "to": "2026-08-29T10:20:40.755Z"
+    "from": "2026-07-30T11:15:33.154Z",
+    "to": "2026-08-29T11:15:33.154Z"
   },
-  "totalAvailable": 89,
+  "totalAvailable": 91,
   "truncated": false,
   "events": [
+    {
+      "id": "cf871e348f4be935c433ebaeec419b13",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T10:33:58.741Z",
+      "signalId": "987e64e94627cf65e044",
+      "signalPath": "/signals/987e64e94627cf65e044/",
+      "domain": "vmi-portal[.]bmscloud[.]in[.]th",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "34fdc7d23f6bddda4296c28eef4004ac",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T10:16:12.945Z",
+      "signalId": "ea8f029d427f7b86b253",
+      "signalPath": "/signals/ea8f029d427f7b86b253/",
+      "domain": "www[.]vintedportal[.]ph",
+      "brand": "Vinted",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "af1d08696a4d56f83149ca7b33e2562a",
       "type": "first-publication",
