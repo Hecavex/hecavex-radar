@@ -1,21 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-29T01:48:01.748Z",
+  "generatedAt": "2026-08-29T02:44:37.273Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-29T01:48:01.748Z",
+    "endedAt": "2026-08-29T02:44:37.273Z",
     "failureCodes": [
-      "provider-http",
-      "provider-timeout"
+      "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-29T01:47:12.526Z"
+    "startedAt": "2026-08-29T02:44:26.818Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -152,7 +151,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T12:03:07.251Z",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "ikilietuva"
     },
     "brand:itella": {
@@ -160,7 +159,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T12:03:07.251Z",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "itella"
     },
     "brand:lddraudimas": {
@@ -168,7 +167,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T12:03:07.251Z",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "lddraudimas"
     },
     "brand:lidllietuva": {
@@ -176,23 +175,23 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T12:03:07.251Z",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "lidllietuva"
     },
     "brand:lietuvosbankas": {
       "brand": "Lietuvos bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "lietuvosbankas"
     },
     "brand:lpexpress": {
       "brand": "LP EXPRESS",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-26T16:37:09.865Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-29T02:44:26.818Z",
       "term": "lpexpress"
     },
     "brand:luminor": {
@@ -388,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 16,
+  "queryCursor": 22,
   "schemaVersion": 1
 }
