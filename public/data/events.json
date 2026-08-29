@@ -1,15 +1,57 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-29T02:20:20.248Z",
+  "generatedAt": "2026-08-29T03:09:01.773Z",
   "window": {
     "days": 30,
-    "from": "2026-07-30T02:20:20.248Z",
-    "to": "2026-08-29T02:20:20.248Z"
+    "from": "2026-07-30T03:09:01.773Z",
+    "to": "2026-08-29T03:09:01.773Z"
   },
-  "totalAvailable": 78,
+  "totalAvailable": 81,
   "truncated": false,
   "events": [
+    {
+      "id": "48dfbd7f7107771b9a8e7ed51fe29666",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T02:51:01.094Z",
+      "signalId": "47c2a3b50e09d1a32f7d",
+      "signalPath": "/signals/47c2a3b50e09d1a32f7d/",
+      "domain": "webmail[.]secure-revolut[.]com",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "8ff235068c617ab6c752f804cdc5cf59",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T02:47:59.603Z",
+      "signalId": "6b9da5027b0ed5b21c60",
+      "signalPath": "/signals/6b9da5027b0ed5b21c60/",
+      "domain": "www[.]dhl-secure-express[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "933f0db4d2bbee23dc6684da082445da",
+      "type": "first-publication",
+      "occurredAt": "2026-08-29T02:31:22.724Z",
+      "signalId": "f168e7f8b118abe0feaf",
+      "signalPath": "/signals/f168e7f8b118abe0feaf/",
+      "domain": "telia-support[.]no",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "16e4f0cdf21a270e6da1bed7e8ade645",
       "type": "first-publication",

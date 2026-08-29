@@ -1,10 +1,113 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T02:09:06.076Z",
+  "generatedAt": "2026-08-29T03:09:01.773Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "47c2a3b50e09d1a32f7d",
+      "domain": "webmail[.]secure-revolut[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-29T02:51:01.094Z",
+      "lastSeen": "2026-08-29T02:51:01.094Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "cbb3ed93fdb8beb68764b81267d13341",
+          "observedAt": "2026-08-29T02:51:01.094Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6b9da5027b0ed5b21c60",
+      "domain": "www[.]dhl-secure-express[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T02:47:59.603Z",
+      "lastSeen": "2026-08-29T02:47:59.603Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "57504968c03db292ec6010d3449754a9",
+          "observedAt": "2026-08-29T02:47:59.603Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f168e7f8b118abe0feaf",
+      "domain": "telia-support[.]no",
+      "brand": "Telia",
+      "firstSeen": "2026-08-29T02:31:22.724Z",
+      "lastSeen": "2026-08-29T02:31:22.724Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "088b6d4e77806ec6fbe6bec825c22ca8",
+          "observedAt": "2026-08-29T02:31:22.724Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "05e69e5d5ed96e9c67f7",
       "domain": "box-parcel-dhl[.]com[.]ph",
