@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T07:11:59.124Z",
-  "lastSuccessfulSyncAt": "2026-08-29T08:20:33.474Z",
+  "generatedAt": "2026-08-29T09:09:00.813Z",
+  "lastSuccessfulSyncAt": "2026-08-29T09:09:00.813Z",
   "signals": [
+    {
+      "id": "b46a47e396bd8530005b",
+      "url": "hxxps://vintedportal[.]ph",
+      "domain": "vintedportal[.]ph",
+      "firstSeen": "2026-08-29T09:02:15.809Z",
+      "lastSeen": "2026-08-29T09:02:15.809Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "ab8a410b9d2c4d44691d",
       "url": "hxxps://global-dhl-service[.]com[.]ph",
@@ -2282,15 +2313,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T08:20:33.474Z",
-      "records": 64,
+      "fetchedAt": "2026-08-29T09:09:00.813Z",
+      "records": 65,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-29T06:41:24.448Z",
+      "fetchedAt": "2026-08-29T08:41:41.274Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
@@ -2298,7 +2329,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T08:20:33.474Z",
+      "fetchedAt": "2026-08-29T09:09:00.813Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

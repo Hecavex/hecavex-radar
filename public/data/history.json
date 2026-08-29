@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T07:11:59.124Z",
+  "generatedAt": "2026-08-29T09:09:00.813Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "b46a47e396bd8530005b",
+      "domain": "vintedportal[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-29T09:02:15.809Z",
+      "lastSeen": "2026-08-29T09:02:15.809Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "91f1f734d1d0587d0783906682cc6c6c",
+          "observedAt": "2026-08-29T09:02:15.809Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "ab8a410b9d2c4d44691d",
       "domain": "global-dhl-service[.]com[.]ph",
