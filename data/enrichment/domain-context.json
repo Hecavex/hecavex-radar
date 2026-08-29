@@ -1,13 +1,13 @@
 {
-  "cursor": 40,
+  "cursor": 60,
   "dataset": "domain-context",
-  "generatedAt": "2026-08-29T01:21:10.181Z",
+  "generatedAt": "2026-08-29T07:21:02.478Z",
   "latestRun": {
     "attempted": 20,
     "completed": 20,
-    "endedAt": "2026-08-29T01:21:10.181Z",
-    "outcome": "completed",
-    "startedAt": "2026-08-29T01:20:52.536Z"
+    "endedAt": "2026-08-29T07:21:02.478Z",
+    "outcome": "partial",
+    "startedAt": "2026-08-29T07:20:55.339Z"
   },
   "records": [
     {
@@ -76,7 +76,7 @@
         "queriesCompleted": 5
       },
       "domain": "cards-revolut[.]com",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": {
         "domain": "cards-revolut[.]com",
         "expiresAt": "2027-05-21T10:02:36.000Z",
@@ -120,7 +120,7 @@
         "queriesCompleted": 5
       },
       "domain": "cpam93[.]eso-online[.]fr",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": {
         "domain": "eso-online[.]fr",
         "expiresAt": "2026-10-16T16:47:38.000Z",
@@ -146,9 +146,63 @@
         "queriesCompleted": 5
       },
       "domain": "delivery-support72-dhl[.]com[.]ph",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "a987a2e240dc6f49c844"
+    },
+    {
+      "dns": {
+        "a": [],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": null,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 4
+      },
+      "domain": "dhl-en-express-tracking[.]com[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "af3991b787463e2f050d"
+    },
+    {
+      "dns": {
+        "a": [
+          "104[.]21[.]14[.]249",
+          "172[.]67[.]160[.]211"
+        ],
+        "aaaa": [
+          "2606[:]4700[:]3033[:][:]6815[:]ef9",
+          "2606[:]4700[:]3034[:][:]ac43[:]a0d3"
+        ],
+        "cname": [],
+        "minimumTtl": 300,
+        "mx": [
+          "10 mxa[.]eu[.]mailgun[.]org",
+          "10 mxb[.]eu[.]mailgun[.]org"
+        ],
+        "ns": [
+          "david[.]ns[.]cloudflare[.]com",
+          "melissa[.]ns[.]cloudflare[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "dhl-parcel-alert[.]net",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": {
+        "domain": "dhl-parcel-alert[.]net",
+        "expiresAt": "2027-06-29T14:33:06.000Z",
+        "registeredAt": "2026-06-29T14:33:06.000Z",
+        "registrar": "GoDaddy[.]com, LLC",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-renew-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-06-29T15:08:09.000Z"
+      },
+      "signalId": "b05b7de977a301760bc6"
     },
     {
       "dns": {
@@ -166,6 +220,21 @@
       "observedAt": "2026-08-29T01:20:52.536Z",
       "registration": null,
       "signalId": "7ebab05e5de6bba2fe80"
+    },
+    {
+      "dns": {
+        "a": [],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": null,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 4
+      },
+      "domain": "dhl-parcel-delivered[.]com[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "b5cf0d8b194116c2cf3f"
     },
     {
       "dns": {
@@ -247,7 +316,7 @@
         "queriesCompleted": 5
       },
       "domain": "dpd-lt-pay[.]cfd",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": {
         "domain": "dpd-lt-pay[.]cfd",
         "expiresAt": "2027-08-26T23:59:59.000Z",
@@ -301,7 +370,7 @@
         "queriesCompleted": 5
       },
       "domain": "dpd-tracking[.]villeroy-boch[.]com",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": {
         "domain": "villeroy-boch[.]com",
         "expiresAt": "2027-02-08T05:00:00.000Z",
@@ -313,6 +382,86 @@
         "updatedAt": "2026-02-09T08:02:06.000Z"
       },
       "signalId": "afc8d3a028031f2f28cc"
+    },
+    {
+      "dns": {
+        "a": [
+          "185[.]53[.]179[.]136"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 900,
+        "mx": [],
+        "ns": [
+          "ina1[.]registrar[.]eu",
+          "ina2[.]registrar[.]eu",
+          "ina3[.]registrar[.]eu"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": {
+        "domain": "dhl-support-del[.]com",
+        "expiresAt": "2027-02-25T09:52:43.000Z",
+        "registeredAt": "2026-02-25T09:52:43.000Z",
+        "registrar": "Hosting Concepts B.V. d/b/a Registrar[.]eu",
+        "statuses": [
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-03-03T10:59:54.000Z"
+      },
+      "signalId": "b1158b011aa853ba4989"
+    },
+    {
+      "dns": {
+        "a": [
+          "52[.]169[.]224[.]62"
+        ],
+        "aaaa": [],
+        "cname": [
+          "eso-assessment-service-db[.]privatelink[.]postgres[.]database[.]azure[.]com"
+        ],
+        "minimumTtl": 30,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "eso-assessment-service-db[.]postgres[.]database[.]azure[.]com",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": {
+        "domain": "azure[.]com",
+        "expiresAt": "2026-10-24T04:00:00.000Z",
+        "registeredAt": "1994-10-25T04:00:00.000Z",
+        "registrar": "MarkMonitor Inc.",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited",
+          "server-delete-prohibited",
+          "server-transfer-prohibited",
+          "server-update-prohibited"
+        ],
+        "updatedAt": "2025-09-22T12:20:12.000Z"
+      },
+      "signalId": "c2f4389fd849f44e5a6a"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "global-dhl-service[.]com[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "ab8a410b9d2c4d44691d"
     },
     {
       "dns": {
@@ -537,6 +686,58 @@
     {
       "dns": {
         "a": [
+          "15[.]197[.]148[.]33",
+          "3[.]33[.]130[.]190"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 600,
+        "mx": [
+          "10 emx[.]mail[.]ru"
+        ],
+        "ns": [
+          "ns73[.]domaincontrol[.]com",
+          "ns74[.]domaincontrol[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "revolut-service[.]com",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": {
+        "domain": "revolut-service[.]com",
+        "expiresAt": "2027-08-28T05:18:21.000Z",
+        "registeredAt": "2025-08-28T05:18:21.000Z",
+        "registrar": "GoDaddy[.]com, LLC",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-renew-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-08-16T12:46:33.000Z"
+      },
+      "signalId": "be142d686c54ab530aa8"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "revolut-user-security[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "b34a2e231d62aa6d739a"
+    },
+    {
+      "dns": {
+        "a": [
           "93[.]95[.]102[.]237"
         ],
         "aaaa": [],
@@ -567,7 +768,7 @@
         "queriesCompleted": 5
       },
       "domain": "service-revolut[.]ph",
-      "observedAt": "2026-08-26T16:38:39.559Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "b2a74041369ff0a25a50"
     },
@@ -645,6 +846,23 @@
     {
       "dns": {
         "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "swedbank-verify[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "c2c6727c06f1fe36331e"
+    },
+    {
+      "dns": {
+        "a": [
           "216[.]198[.]79[.]1"
         ],
         "aaaa": [],
@@ -691,7 +909,7 @@
         "queriesCompleted": 5
       },
       "domain": "vinted-auth[.]vinto[.]app",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": {
         "domain": "vinto[.]app",
         "expiresAt": "2027-07-24T14:56:58.657Z",
@@ -776,8 +994,25 @@
         "ns": [],
         "queriesCompleted": 5
       },
+      "domain": "www[.]en-dhl-support[.]com[.]ph",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": null,
+      "signalId": "b0a528848023ad05d765"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
       "domain": "www[.]login-support-dhl[.]com[.]ph",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "a052de282668c9e9d65d"
     },
@@ -794,7 +1029,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]phonepe-seb-bank[.]com[.]ph",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "af8c5dfea9cd525ecab0"
     },
@@ -834,6 +1069,37 @@
         "updatedAt": "2026-08-16T12:46:33.000Z"
       },
       "signalId": "6718a48a9d6c4669e8f5"
+    },
+    {
+      "dns": {
+        "a": [
+          "69[.]46[.]46[.]21"
+        ],
+        "aaaa": [],
+        "cname": [
+          "7s7adqx1[.]up[.]railway[.]app"
+        ],
+        "minimumTtl": 60,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "www[.]revolutpay[.]online",
+      "observedAt": "2026-08-29T07:20:55.339Z",
+      "registration": {
+        "domain": "revolutpay[.]online",
+        "expiresAt": "2027-06-28T14:33:59.793Z",
+        "registeredAt": "2026-06-28T14:33:59.793Z",
+        "registrar": "GoDaddy[.]com, LLC",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-renew-prohibited",
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-07-03T14:34:45.536Z"
+      },
+      "signalId": "c08995e1b7627132ab6e"
     },
     {
       "dns": {
