@@ -1,36 +1,36 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-29T23:09:31.403Z",
+  "generatedAt": "2026-08-29T23:20:26.058Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-28T23:09:31.403Z",
-      "to": "2026-08-29T23:09:31.403Z",
-      "events": 81,
-      "uniqueSignals": 41,
-      "firstPublications": 40,
+      "from": "2026-08-28T23:20:26.058Z",
+      "to": "2026-08-29T23:20:26.058Z",
+      "events": 79,
+      "uniqueSignals": 40,
+      "firstPublications": 39,
       "statusChanges": 0,
-      "observations": 41,
+      "observations": 40,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 81
+        "CertStream": 79
       },
       "byStatus": {
-        "suspected": 81
+        "suspected": 79
       },
       "byReason": {
-        "suspicious-context": 81,
-        "different-tld": 68,
-        "brand-exact-token": 63,
-        "multiple-hyphens": 46,
-        "first-publication": 40,
+        "suspicious-context": 79,
+        "different-tld": 66,
+        "brand-exact-token": 61,
+        "multiple-hyphens": 44,
+        "first-publication": 39,
         "brand-joined-affix": 18,
         "punycode": 2
       },
       "byBrand": {
-        "DHL": 42,
+        "DHL": 40,
         "Vinted": 10,
         "Revolut": 7,
         "Bigbank": 4,
@@ -46,8 +46,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-22T23:09:31.403Z",
-      "to": "2026-08-29T23:09:31.403Z",
+      "from": "2026-08-22T23:20:26.058Z",
+      "to": "2026-08-29T23:20:26.058Z",
       "events": 197,
       "uniqueSignals": 99,
       "firstPublications": 94,
