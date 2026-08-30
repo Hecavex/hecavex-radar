@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-30T17:44:53.890Z",
+  "generatedAt": "2026-08-30T18:45:10.596Z",
   "latestRun": {
-    "dnsNames": 0,
-    "endedAt": "2026-08-30T17:44:53.890Z",
+    "dnsNames": 2,
+    "endedAt": "2026-08-30T18:45:10.596Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 1,
+    "outcome": "partial",
+    "queriesAttempted": 2,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
-    "rowsProcessed": 0,
-    "startedAt": "2026-08-30T17:44:53.073Z"
+    "queriesCompleted": 1,
+    "rowsProcessed": 1,
+    "startedAt": "2026-08-30T18:44:36.584Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 4,
+    "consecutiveFailures": 5,
     "degradedSince": "2026-08-30T14:47:30.977Z",
     "lastSuccessAt": null,
-    "nextAttemptAt": "2026-08-30T18:24:53.890Z"
+    "nextAttemptAt": "2026-08-30T20:05:10.596Z"
   },
   "queries": {
     "brand:artea": {
@@ -92,8 +92,8 @@
       "brand": "Elektrum",
       "lastEntryAt": null,
       "lastId": 27835197032,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T17:44:53.073Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-30T18:44:36.584Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
@@ -101,7 +101,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T07:47:06.383Z",
+      "lastRunAt": "2026-08-30T18:44:36.584Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
@@ -393,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 8,
+  "queryCursor": 9,
   "schemaVersion": 1
 }
