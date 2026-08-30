@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-30T10:09:13.413Z",
+  "generatedAt": "2026-08-30T10:20:27.373Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-29T10:09:13.413Z",
-      "to": "2026-08-30T10:09:13.413Z",
-      "events": 102,
-      "uniqueSignals": 51,
-      "firstPublications": 51,
+      "from": "2026-08-29T10:20:27.373Z",
+      "to": "2026-08-30T10:20:27.373Z",
+      "events": 100,
+      "uniqueSignals": 50,
+      "firstPublications": 50,
       "statusChanges": 0,
-      "observations": 51,
+      "observations": 50,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 102
+        "CertStream": 100
       },
       "byStatus": {
-        "suspected": 102
+        "suspected": 100
       },
       "byReason": {
-        "suspicious-context": 100,
-        "different-tld": 92,
+        "suspicious-context": 98,
+        "different-tld": 90,
         "brand-exact-token": 72,
         "multiple-hyphens": 54,
-        "first-publication": 51,
-        "brand-joined-affix": 26,
+        "first-publication": 50,
+        "brand-joined-affix": 24,
         "punycode": 6,
         "brand-split-token": 4,
         "unicode-confusable": 2
@@ -43,14 +43,13 @@
         "Tele2": 4,
         "Bitė": 2,
         "DPD": 2,
-        "Swedbank": 2,
-        "Vinted": 2
+        "Swedbank": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-23T10:09:13.413Z",
-      "to": "2026-08-30T10:09:13.413Z",
+      "from": "2026-08-23T10:20:27.373Z",
+      "to": "2026-08-30T10:20:27.373Z",
       "events": 249,
       "uniqueSignals": 125,
       "firstPublications": 121,
