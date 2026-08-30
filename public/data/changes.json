@@ -1,38 +1,38 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-30T15:54:28.404Z",
+  "generatedAt": "2026-08-30T16:20:31.619Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-29T15:54:28.404Z",
-      "to": "2026-08-30T15:54:28.404Z",
-      "events": 96,
-      "uniqueSignals": 48,
-      "firstPublications": 48,
+      "from": "2026-08-29T16:20:31.619Z",
+      "to": "2026-08-30T16:20:31.619Z",
+      "events": 92,
+      "uniqueSignals": 46,
+      "firstPublications": 46,
       "statusChanges": 0,
-      "observations": 48,
+      "observations": 46,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 96
+        "CertStream": 92
       },
       "byStatus": {
-        "suspected": 96
+        "suspected": 92
       },
       "byReason": {
-        "suspicious-context": 94,
-        "different-tld": 86,
-        "brand-exact-token": 70,
-        "multiple-hyphens": 56,
-        "first-publication": 48,
+        "suspicious-context": 90,
+        "different-tld": 82,
+        "brand-exact-token": 66,
+        "multiple-hyphens": 52,
+        "first-publication": 46,
         "brand-joined-affix": 22,
         "punycode": 6,
         "brand-split-token": 4,
         "unicode-confusable": 2
       },
       "byBrand": {
-        "DHL": 48,
+        "DHL": 44,
         "Telia": 10,
         "ERGO": 6,
         "Revolut": 6,
@@ -47,8 +47,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-23T15:54:28.404Z",
-      "to": "2026-08-30T15:54:28.404Z",
+      "from": "2026-08-23T16:20:31.619Z",
+      "to": "2026-08-30T16:20:31.619Z",
       "events": 257,
       "uniqueSignals": 129,
       "firstPublications": 126,
