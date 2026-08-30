@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T10:09:13.413Z",
+  "generatedAt": "2026-08-30T11:11:16.950Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "59e9059139919a3a8caa",
+      "domain": "secure-trezr-wallet-dhl[.]pages[.]dev",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T11:05:43.504Z",
+      "lastSeen": "2026-08-30T11:05:43.504Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "966918159f802cf3b6318eed9cf5b3a7",
+          "observedAt": "2026-08-30T11:05:43.504Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "1584ae422d7176c672b3",
       "domain": "czlpihmr[.]xn--tl2mobile-b4ab[.]fr",

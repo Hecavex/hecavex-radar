@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T10:20:27.373Z",
+  "generatedAt": "2026-08-30T11:11:16.950Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T10:20:27.373Z",
-    "to": "2026-08-30T10:20:27.373Z"
+    "from": "2026-07-31T11:11:16.950Z",
+    "to": "2026-08-30T11:11:16.950Z"
   },
-  "totalAvailable": 140,
+  "totalAvailable": 141,
   "truncated": false,
   "events": [
+    {
+      "id": "cf6891dd80d9e283abb449b80e011f0a",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T11:05:43.504Z",
+      "signalId": "59e9059139919a3a8caa",
+      "signalPath": "/signals/59e9059139919a3a8caa/",
+      "domain": "secure-trezr-wallet-dhl[.]pages[.]dev",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f1cb2ece9a9977b1b4e2919eaae4c94e",
       "type": "first-publication",
