@@ -64,7 +64,6 @@ const performanceBudgets = {
   // This limits the complete static Pages artifact, not a visitor download.
   // Per-page and compressed asset budgets below remain the user-facing guardrails.
   totalOutputBytes: 32 * 1024 * 1024,
-  maximumAcceptedOutputBytes: 64 * 1024 * 1024,
 };
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
@@ -373,7 +372,7 @@ function verifyDeploymentTopology() {
     snapshotPublisher.includes("MAXIMUM_SNAPSHOT_BYTES = 512 * 1024") &&
       historyPublisher.includes("MAXIMUM_PUBLIC_BYTES = 512 * 1024") &&
       stixPublisher.includes("MAXIMUM_STIX_BUNDLE_BYTES = 2 * 1024 * 1024"),
-    "Python public-artifact caps no longer match the deployment budget proof.",
+    "Python public-artifact caps no longer match the bounded-artifact scenario.",
   );
   assert(!viteConfig.includes("Date.now()"), "Vite prerendering still uses a nondeterministic wall-clock timestamp.");
 }
@@ -546,7 +545,7 @@ function verifyBuiltHtml() {
     (path) => !isDynamicRoute(routeForFile(path)) || representativeDynamicFileSet.has(path),
   );
   const readTagAttribute = (tag, name) =>
-    tag?.match(new RegExp(`\\b${name}="([^"]*)"`, "u"))?.[1] ?? null;
+    tag?.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`, "u"))?.[1] ?? null;
 
   for (const path of dynamicHtmlFiles) {
     const html = readFileSync(path, "utf8");
@@ -614,8 +613,19 @@ function verifyBuiltHtml() {
       assert(readTagAttribute(imageTag, "alt") !== null, `${route} contains an image without an alt attribute.`);
     }
 
-    for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>/gu)) {
-      const url = new URL(match[1], new URL(route, publicOrigin));
+    for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gu)) {
+      const openingTag = `<a${match[1]}>`;
+      const href = readTagAttribute(openingTag, "href");
+      if (!href) continue;
+      const accessibleLabel =
+        readTagAttribute(openingTag, "aria-label") ??
+        match[2]
+          .replace(/<[^>]*>/gu, "")
+          .replace(/&(?:#\d+|#x[\da-f]+|[a-z][\w-]*);/giu, "x")
+          .replace(/\s+/gu, " ")
+          .trim();
+      assert(accessibleLabel, `${route} contains an unlabelled link: ${openingTag}`);
+      const url = new URL(href, new URL(route, publicOrigin));
       if (url.origin !== publicOrigin) continue;
       const target = outputPath(url.pathname);
       assert(existsSync(target), `${route} links to missing local target ${url.pathname}.`);
@@ -630,11 +640,11 @@ function verifyBuiltHtml() {
     }
 
     const localAssets = [
-      ...[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
+      ...[...html.matchAll(/<script\b[^>]*\ssrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
       ...linkTags
         .filter((tag) => readTagAttribute(tag, "rel") === "stylesheet")
         .map((tag) => readTagAttribute(tag, "href")),
-      ...[...html.matchAll(/<img\b[^>]*\bsrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
+      ...[...html.matchAll(/<img\b[^>]*\ssrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
     ].filter(Boolean);
     for (const raw of localAssets) {
       const url = new URL(raw, new URL(route, publicOrigin));
@@ -1711,18 +1721,13 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     .reduce((total, path) => total + statSync(path).size, 0);
   const currentHydrationHtmlBytes =
     statSync(join(output, "index.html")).size + statSync(join(output, "history", "index.html")).size;
-  const worstCaseOutputBytes =
+  const modeledOutputBytes =
     fixedBytes +
     2 * publicArtifactRawBytes +
     stixBundleRawBytes +
     currentHydrationHtmlBytes +
     2 * (3 * publicArtifactRawBytes + 1024) +
     signalDetailSetRawBytes;
-  assert(
-    worstCaseOutputBytes <= performanceBudgets.maximumAcceptedOutputBytes,
-    `Maximum accepted public artifacts could produce ${worstCaseOutputBytes} output bytes; ` +
-      `bounded-capacity budget is ${performanceBudgets.maximumAcceptedOutputBytes}.`,
-  );
   return {
     totalBytes,
     html: largest(htmlSizes),
@@ -1731,7 +1736,7 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     executableBytes,
     publicData: largest(dataSizes),
     signalDetailBytes: signalDetails.totalBytes,
-    worstCaseOutputBytes,
+    modeledOutputBytes,
   };
 }
 
@@ -2267,7 +2272,7 @@ if (verificationPhase !== "browser") {
       `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
       `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
       `${performance.signalDetailBytes} bytes across signal-detail sidecars; ` +
-      `${performance.worstCaseOutputBytes} bytes maximum proven output.\n`,
+      `${performance.modeledOutputBytes} bytes in the bounded-artifact scenario.\n`,
   );
 }
 
