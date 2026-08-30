@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T03:09:17.469Z",
-  "lastSuccessfulSyncAt": "2026-08-30T03:20:35.747Z",
+  "generatedAt": "2026-08-30T04:12:43.523Z",
+  "lastSuccessfulSyncAt": "2026-08-30T04:12:43.523Z",
   "signals": [
+    {
+      "id": "561e0ea11df2f486211d",
+      "url": "hxxps://www[.]dhl-delivery-home[.]ph",
+      "domain": "www[.]dhl-delivery-home[.]ph",
+      "firstSeen": "2026-08-30T04:10:38.888Z",
+      "lastSeen": "2026-08-30T04:10:38.888Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "94e71580eee10552af08",
       "url": "hxxps://dhl-tracking-deliveries[.]com[.]ph",
@@ -3410,8 +3442,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T03:20:35.747Z",
-      "records": 100,
+      "fetchedAt": "2026-08-30T04:12:43.523Z",
+      "records": 101,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -3421,12 +3453,12 @@
       "fetchedAt": "2026-08-30T02:41:14.552Z",
       "records": 9,
       "state": "healthy",
-      "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
+      "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 85 stable official asset hashes are pivot-eligible"
     },
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T03:20:35.747Z",
+      "fetchedAt": "2026-08-30T04:12:43.523Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

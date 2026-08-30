@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T03:09:17.469Z",
+  "generatedAt": "2026-08-30T04:12:43.523Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "561e0ea11df2f486211d",
+      "domain": "www[.]dhl-delivery-home[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T04:10:38.888Z",
+      "lastSeen": "2026-08-30T04:10:38.888Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "fe09e705710e173bad2cb5969b4a942d",
+          "observedAt": "2026-08-30T04:10:38.888Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "94e71580eee10552af08",
       "domain": "dhl-tracking-deliveries[.]com[.]ph",
