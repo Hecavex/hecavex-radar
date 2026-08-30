@@ -1,9 +1,104 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T19:54:15.245Z",
-  "lastSuccessfulSyncAt": "2026-08-30T20:20:36.612Z",
+  "generatedAt": "2026-08-30T20:54:32.953Z",
+  "lastSuccessfulSyncAt": "2026-08-30T20:54:32.953Z",
   "signals": [
+    {
+      "id": "944a0b0fa53f0edefbfa",
+      "url": "hxxps://dhl-client-fr[.]com[.]ph",
+      "domain": "dhl-client-fr[.]com[.]ph",
+      "firstSeen": "2026-08-30T20:53:25.892Z",
+      "lastSeen": "2026-08-30T20:53:25.892Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "6663c5c77c254c3901d5",
+      "url": "hxxps://dhl-help-parcel[.]com[.]ph",
+      "domain": "dhl-help-parcel[.]com[.]ph",
+      "firstSeen": "2026-08-30T20:53:05.557Z",
+      "lastSeen": "2026-08-30T20:53:05.557Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "bfa2ad00678eac1d30db",
+      "url": "hxxps://smartidverify[.]net",
+      "domain": "smartidverify[.]net",
+      "firstSeen": "2026-08-30T20:53:00.189Z",
+      "lastSeen": "2026-08-30T20:53:00.189Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Smart-ID",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "2f6fb9fe89633e3d6de0",
       "url": "hxxps://www[.]pondarosaranch[.]maximaonline[.]com",
@@ -4199,15 +4294,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T20:20:36.612Z",
-      "records": 125,
+      "fetchedAt": "2026-08-30T20:54:32.953Z",
+      "records": 128,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-30T18:41:19.022Z",
+      "fetchedAt": "2026-08-30T20:41:08.433Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 106 stable official asset hashes are pivot-eligible"
@@ -4215,7 +4310,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T20:20:36.612Z",
+      "fetchedAt": "2026-08-30T20:54:32.953Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

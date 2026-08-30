@@ -1,10 +1,119 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T19:54:15.245Z",
+  "generatedAt": "2026-08-30T20:54:32.953Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "944a0b0fa53f0edefbfa",
+      "domain": "dhl-client-fr[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T20:53:25.892Z",
+      "lastSeen": "2026-08-30T20:53:25.892Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "da8dd16aaf804cb316c593644f46444f",
+          "observedAt": "2026-08-30T20:53:25.892Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6663c5c77c254c3901d5",
+      "domain": "dhl-help-parcel[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T20:53:05.557Z",
+      "lastSeen": "2026-08-30T20:53:05.557Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "567de304890fd511557c8b2354b9b432",
+          "observedAt": "2026-08-30T20:53:05.557Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bfa2ad00678eac1d30db",
+      "domain": "smartidverify[.]net",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-08-30T20:53:00.189Z",
+      "lastSeen": "2026-08-30T20:53:00.189Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "69508ea1957b71ceb24f3229ef687bc8",
+          "observedAt": "2026-08-30T20:53:00.189Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "83646aea1b84245d54eb",
       "domain": "pondarosaranch[.]maximaonline[.]com",
