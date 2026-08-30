@@ -1,13 +1,13 @@
 {
-  "cursor": 20,
+  "cursor": 40,
   "dataset": "domain-context",
-  "generatedAt": "2026-08-29T19:21:13.710Z",
+  "generatedAt": "2026-08-30T01:21:08.952Z",
   "latestRun": {
     "attempted": 20,
     "completed": 19,
-    "endedAt": "2026-08-29T19:21:13.710Z",
+    "endedAt": "2026-08-30T01:21:08.952Z",
     "outcome": "partial",
-    "startedAt": "2026-08-29T19:21:03.307Z"
+    "startedAt": "2026-08-30T01:20:58.443Z"
   },
   "records": [
     {
@@ -37,6 +37,38 @@
     {
       "dns": {
         "a": [
+          "185[.]230[.]63[.]107",
+          "185[.]230[.]63[.]171",
+          "185[.]230[.]63[.]186"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 3600,
+        "mx": [],
+        "ns": [
+          "ns10[.]wixdns[.]net",
+          "ns11[.]wixdns[.]net"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "bigbankrefund[.]com",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": {
+        "domain": "bigbankrefund[.]com",
+        "expiresAt": "2027-01-13T04:24:17.000Z",
+        "registeredAt": "2026-01-13T04:24:17.000Z",
+        "registrar": "Wix[.]com Ltd.",
+        "statuses": [
+          "client-transfer-prohibited",
+          "client-update-prohibited"
+        ],
+        "updatedAt": "2026-01-13T04:24:19.000Z"
+      },
+      "signalId": "4178e3ccc2b50a49490e"
+    },
+    {
+      "dns": {
+        "a": [
           "89[.]145[.]164[.]98"
         ],
         "aaaa": [],
@@ -50,7 +82,7 @@
         "queriesCompleted": 5
       },
       "domain": "bite-staging-security[.]lt",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "623c9be6ca68ccf196f0"
     },
@@ -84,7 +116,7 @@
         "queriesCompleted": 5
       },
       "domain": "bsconseils[.]eso-online[.]fr",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": {
         "domain": "eso-online[.]fr",
         "expiresAt": "2026-10-16T16:47:38.000Z",
@@ -190,6 +222,21 @@
       "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
       "signalId": "a987a2e240dc6f49c844"
+    },
+    {
+      "dns": {
+        "a": [],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": null,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 4
+      },
+      "domain": "delivery-track-dhl[.]com[.]ph",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": null,
+      "signalId": "5333cc942fd542f9ea87"
     },
     {
       "dns": {
@@ -327,7 +374,7 @@
         "queriesCompleted": 5
       },
       "domain": "dhl-secure-express[.]com[.]ph",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "63f22ac8fd798f6a3ff4"
     },
@@ -593,6 +640,34 @@
     {
       "dns": {
         "a": [
+          "83[.]229[.]19[.]102"
+        ],
+        "aaaa": [],
+        "cname": [
+          "mail[.]teliapay[.]net"
+        ],
+        "minimumTtl": 3600,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "imap[.]teliapay[.]net",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": {
+        "domain": "teliapay[.]net",
+        "expiresAt": "2026-12-31T16:31:30.000Z",
+        "registeredAt": "2023-12-31T16:31:30.000Z",
+        "registrar": "Ligne Web Services SAS dba LWS",
+        "statuses": [
+          "active"
+        ],
+        "updatedAt": "2025-12-07T09:21:26.000Z"
+      },
+      "signalId": "4d894f9bdf81af06b273"
+    },
+    {
+      "dns": {
+        "a": [
           "45[.]79[.]222[.]138"
         ],
         "aaaa": [],
@@ -603,9 +678,26 @@
         "queriesCompleted": 5
       },
       "domain": "login-support-dhl[.]com[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "546c0bd84e3bd39248bb"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "login-vinted[.]ph",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": null,
+      "signalId": "6a61d5fc60a85ce628b6"
     },
     {
       "dns": {
@@ -650,7 +742,7 @@
         "queriesCompleted": 5
       },
       "domain": "maxima-bank[.]ru",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "54b7622ec9c57480f3dc"
     },
@@ -713,6 +805,23 @@
     {
       "dns": {
         "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "parcel-box-dhl[.]com[.]ph",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": null,
+      "signalId": "614b3a8c1edccfa6785f"
+    },
+    {
+      "dns": {
+        "a": [
           "172[.]198[.]64[.]88"
         ],
         "aaaa": [],
@@ -759,6 +868,34 @@
       "observedAt": "2026-08-29T01:20:52.536Z",
       "registration": null,
       "signalId": "89a29a0c2d2698fa8711"
+    },
+    {
+      "dns": {
+        "a": [
+          "83[.]229[.]19[.]102"
+        ],
+        "aaaa": [],
+        "cname": [
+          "mail[.]teliapay[.]net"
+        ],
+        "minimumTtl": 3600,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "pop[.]teliapay[.]net",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": {
+        "domain": "teliapay[.]net",
+        "expiresAt": "2026-12-31T16:31:30.000Z",
+        "registeredAt": "2023-12-31T16:31:30.000Z",
+        "registrar": "Ligne Web Services SAS dba LWS",
+        "statuses": [
+          "active"
+        ],
+        "updatedAt": "2025-12-07T09:21:26.000Z"
+      },
+      "signalId": "6ec7fb1234b236de3270"
     },
     {
       "dns": {
@@ -1022,7 +1159,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-dhl[.]ph",
-      "observedAt": "2026-08-29T19:21:03.307Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "4d6827c917c67a54c8c7"
     },
@@ -1049,7 +1186,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]net",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": {
         "domain": "support-vinted[.]net",
         "expiresAt": "2026-12-17T18:30:43.000Z",
@@ -1076,7 +1213,7 @@
         "queriesCompleted": 5
       },
       "domain": "support-vinted[.]ph",
-      "observedAt": "2026-08-28T21:33:49.468Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "5b0f8b137394c5f88ddf"
     },
@@ -1230,6 +1367,23 @@
     {
       "dns": {
         "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "vmi-materiel-nettoyage-account[.]ph",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": null,
+      "signalId": "6e3246d0d9b6e60d5c84"
+    },
+    {
+      "dns": {
+        "a": [
           "91[.]195[.]240[.]94"
         ],
         "aaaa": [],
@@ -1240,7 +1394,7 @@
         "queriesCompleted": 5
       },
       "domain": "webmail[.]secure-revolut[.]com",
-      "observedAt": "2026-08-29T19:21:03.307Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": {
         "domain": "secure-revolut[.]com",
         "expiresAt": "2027-02-09T23:16:59.000Z",
@@ -1370,6 +1524,23 @@
         "ns": [],
         "queriesCompleted": 5
       },
+      "domain": "www[.]dhl-secure-express[.]com[.]ph",
+      "observedAt": "2026-08-30T01:20:58.443Z",
+      "registration": null,
+      "signalId": "6b9da5027b0ed5b21c60"
+    },
+    {
+      "dns": {
+        "a": [
+          "45[.]79[.]222[.]138"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 86400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
       "domain": "www[.]en-dhl-support[.]com[.]ph",
       "observedAt": "2026-08-29T07:20:55.339Z",
       "registration": null,
@@ -1388,7 +1559,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]home-dhl-delivery[.]ph",
-      "observedAt": "2026-08-29T19:21:03.307Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": null,
       "signalId": "448542b6a073a872fbcc"
     },
@@ -1464,7 +1635,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]revolut-service[.]com",
-      "observedAt": "2026-08-29T01:20:52.536Z",
+      "observedAt": "2026-08-30T01:20:58.443Z",
       "registration": {
         "domain": "revolut-service[.]com",
         "expiresAt": "2027-08-28T05:18:21.000Z",
