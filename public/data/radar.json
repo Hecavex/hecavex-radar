@@ -1,9 +1,137 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T06:09:14.961Z",
-  "lastSuccessfulSyncAt": "2026-08-30T06:20:23.275Z",
+  "generatedAt": "2026-08-30T07:11:14.136Z",
+  "lastSuccessfulSyncAt": "2026-08-30T07:11:14.136Z",
   "signals": [
+    {
+      "id": "c961cbe2fc57d9c312af",
+      "url": "hxxps://dhl-tracking-order[.]com[.]ph",
+      "domain": "dhl-tracking-order[.]com[.]ph",
+      "firstSeen": "2026-08-30T07:01:48.021Z",
+      "lastSeen": "2026-08-30T07:01:48.021Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "f5c09205741ec279fde5",
+      "url": "hxxps://confirm-revolut[.]es",
+      "domain": "confirm-revolut[.]es",
+      "firstSeen": "2026-08-30T06:56:06.908Z",
+      "lastSeen": "2026-08-30T06:56:06.908Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "39fa10a5a086afd0d432",
+      "url": "hxxps://xn--ergo-kttigen-ilb[.]ch",
+      "domain": "xn--ergo-kttigen-ilb[.]ch",
+      "firstSeen": "2026-08-30T06:56:05.613Z",
+      "lastSeen": "2026-08-30T06:56:05.613Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "ERGO",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "1ac25e1c0f8108d66e73",
+      "url": "hxxps://dhl-live-tracking[.]com[.]ph",
+      "domain": "dhl-live-tracking[.]com[.]ph",
+      "firstSeen": "2026-08-30T06:54:29.421Z",
+      "lastSeen": "2026-08-30T06:54:29.421Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "2cc261b011c1d35aa68b",
       "url": "hxxps://www[.]ergo-support[.]be",
@@ -3630,15 +3758,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T06:20:23.275Z",
-      "records": 107,
+      "fetchedAt": "2026-08-30T07:11:14.136Z",
+      "records": 111,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-30T04:41:18.318Z",
+      "fetchedAt": "2026-08-30T06:41:24.766Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 85 stable official asset hashes are pivot-eligible"
@@ -3646,7 +3774,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T06:20:23.275Z",
+      "fetchedAt": "2026-08-30T07:11:14.136Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

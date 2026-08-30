@@ -1,10 +1,158 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T06:09:14.961Z",
+  "generatedAt": "2026-08-30T07:11:14.136Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c961cbe2fc57d9c312af",
+      "domain": "dhl-tracking-order[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T07:01:48.021Z",
+      "lastSeen": "2026-08-30T07:01:48.021Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c6743aece437f4fd42b8302a4709b5dc",
+          "observedAt": "2026-08-30T07:01:48.021Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f5c09205741ec279fde5",
+      "domain": "confirm-revolut[.]es",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-30T06:56:06.908Z",
+      "lastSeen": "2026-08-30T06:56:06.908Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "90971ae5c5558e00902271c4d3d7358c",
+          "observedAt": "2026-08-30T06:56:06.908Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "39fa10a5a086afd0d432",
+      "domain": "xn--ergo-kttigen-ilb[.]ch",
+      "brand": "ERGO",
+      "firstSeen": "2026-08-30T06:56:05.613Z",
+      "lastSeen": "2026-08-30T06:56:05.613Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ae61d2fbb7ad1de0c674469617f590be",
+          "observedAt": "2026-08-30T06:56:05.613Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1ac25e1c0f8108d66e73",
+      "domain": "dhl-live-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T06:54:29.421Z",
+      "lastSeen": "2026-08-30T06:54:29.421Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "7e106acc329655ab55deca882086f40b",
+          "observedAt": "2026-08-30T06:54:29.421Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5083e9288aa03edde1de",
       "domain": "ergo-support[.]be",

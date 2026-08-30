@@ -1,15 +1,71 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T06:20:23.275Z",
+  "generatedAt": "2026-08-30T07:11:14.136Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T06:20:23.275Z",
-    "to": "2026-08-30T06:20:23.275Z"
+    "from": "2026-07-31T07:11:14.136Z",
+    "to": "2026-08-30T07:11:14.136Z"
   },
-  "totalAvailable": 130,
+  "totalAvailable": 134,
   "truncated": false,
   "events": [
+    {
+      "id": "bbb10bc6fb5e6affb37635f450a98651",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T07:01:48.021Z",
+      "signalId": "c961cbe2fc57d9c312af",
+      "signalPath": "/signals/c961cbe2fc57d9c312af/",
+      "domain": "dhl-tracking-order[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "2b0d6c45b589c53928f3d3cdb8adb892",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T06:56:06.908Z",
+      "signalId": "f5c09205741ec279fde5",
+      "signalPath": "/signals/f5c09205741ec279fde5/",
+      "domain": "confirm-revolut[.]es",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "c4242ae1c85be42a051e0d1128252cff",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T06:56:05.613Z",
+      "signalId": "39fa10a5a086afd0d432",
+      "signalPath": "/signals/39fa10a5a086afd0d432/",
+      "domain": "xn--ergo-kttigen-ilb[.]ch",
+      "brand": "ERGO",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "33e02b33f932127d5469403fb030c575",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T06:54:29.421Z",
+      "signalId": "1ac25e1c0f8108d66e73",
+      "signalPath": "/signals/1ac25e1c0f8108d66e73/",
+      "domain": "dhl-live-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "6f117bec38788d84b60f0f6a302dc664",
       "type": "first-publication",
