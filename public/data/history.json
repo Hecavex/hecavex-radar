@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T11:11:16.950Z",
+  "generatedAt": "2026-08-30T12:09:37.770Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "1b247981cc25949779bd",
+      "domain": "wallet-telia[.]com[.]ph",
+      "brand": "Telia",
+      "firstSeen": "2026-08-30T11:41:31.935Z",
+      "lastSeen": "2026-08-30T11:41:31.935Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "231b673ec16f8b8a8724d3a4064cc09d",
+          "observedAt": "2026-08-30T11:41:31.935Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "29be4a0869ba3602c6f4",
+      "domain": "www[.]dhl-invoice-payment[.]diamantinapersianas[.]com[.]br",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T11:35:48.252Z",
+      "lastSeen": "2026-08-30T11:35:48.252Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c48001e3a4806298016f9c5b4474d898",
+          "observedAt": "2026-08-30T11:35:48.252Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "59e9059139919a3a8caa",
       "domain": "secure-trezr-wallet-dhl[.]pages[.]dev",

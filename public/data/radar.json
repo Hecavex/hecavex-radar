@@ -1,9 +1,72 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T11:11:16.950Z",
-  "lastSuccessfulSyncAt": "2026-08-30T11:20:30.321Z",
+  "generatedAt": "2026-08-30T12:09:37.770Z",
+  "lastSuccessfulSyncAt": "2026-08-30T12:09:37.770Z",
   "signals": [
+    {
+      "id": "1b247981cc25949779bd",
+      "url": "hxxps://wallet-telia[.]com[.]ph",
+      "domain": "wallet-telia[.]com[.]ph",
+      "firstSeen": "2026-08-30T11:41:31.935Z",
+      "lastSeen": "2026-08-30T11:41:31.935Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "29be4a0869ba3602c6f4",
+      "url": "hxxps://www[.]dhl-invoice-payment[.]diamantinapersianas[.]com[.]br",
+      "domain": "www[.]dhl-invoice-payment[.]diamantinapersianas[.]com[.]br",
+      "firstSeen": "2026-08-30T11:35:48.252Z",
+      "lastSeen": "2026-08-30T11:35:48.252Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "59e9059139919a3a8caa",
       "url": "hxxps://secure-trezr-wallet-dhl[.]pages[.]dev",
@@ -3981,8 +4044,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T11:20:30.321Z",
-      "records": 118,
+      "fetchedAt": "2026-08-30T12:09:37.770Z",
+      "records": 120,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -3997,7 +4060,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T11:20:30.321Z",
+      "fetchedAt": "2026-08-30T12:09:37.770Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
