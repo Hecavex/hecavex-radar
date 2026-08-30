@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from typing import cast
 
 from hypothesis import given
@@ -14,6 +15,7 @@ from hecavex_radar.publication import (
     MAXIMUM_SHARD_BYTES,
     _budget_candidate,
     _json_bytes,
+    _stix_validation_diagnostics,
     build_change_aggregate,
     build_pipeline_health,
     build_related_observations,
@@ -22,6 +24,23 @@ from hecavex_radar.publication import (
 )
 
 NOW = "2026-08-25T12:13:16.615Z"
+
+
+def test_stix_validation_diagnostics_flattens_file_and_object_errors() -> None:
+    result = SimpleNamespace(
+        fatal="invalid input",
+        object_results=(
+            SimpleNamespace(errors=("missing schema", "invalid identifier")),
+            SimpleNamespace(errors=("unexpected property",)),
+        ),
+    )
+
+    assert _stix_validation_diagnostics(result) == [
+        "invalid input",
+        "missing schema",
+        "invalid identifier",
+        "unexpected property",
+    ]
 
 
 def _signal(number: int, *, body_hash: str | None = None) -> RadarSignal:

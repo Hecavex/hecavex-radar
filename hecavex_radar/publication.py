@@ -174,6 +174,18 @@ def _validate(instance: object, schema: Mapping[str, object], label: str) -> Non
         raise ValueError(f"{label} failed JSON Schema validation: {'; '.join(errors[:8])}")
 
 
+def _stix_validation_diagnostics(result: object) -> list[str]:
+    diagnostics: list[str] = []
+    fatal = cast(object | None, getattr(result, "fatal", None))
+    if fatal is not None:
+        diagnostics.append(str(fatal))
+    object_results = cast(Sequence[object], getattr(result, "object_results", ()))
+    for object_result in object_results:
+        errors = cast(Sequence[object], getattr(object_result, "errors", ()))
+        diagnostics.extend(str(error) for error in errors)
+    return diagnostics
+
+
 def write_schema_documents() -> list[Path]:
     target_root = PUBLIC_DATA / "schemas"
     paths: list[Path] = []
@@ -1701,7 +1713,8 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
                 options=ValidationOptions(version="2.1"),
             )
             if not result.is_valid:
-                errors = "; ".join(str(error) for error in result.errors[:8])
+                diagnostics = _stix_validation_diagnostics(result)
+                errors = "; ".join(diagnostics[:8]) or "validator returned no diagnostics"
                 raise ValueError(f"{name} failed standard STIX 2.1 validation: {errors}")
 
 
