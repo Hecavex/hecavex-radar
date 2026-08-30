@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-30T15:17:25.842Z",
+  "generatedAt": "2026-08-30T15:54:28.404Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-30T14:47:34.384Z",
+      "stateGeneratedAt": "2026-08-30T15:45:31.739Z",
       "queryCursor": 8,
       "configuredQueries": 46
     },
@@ -371,13 +371,68 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 1,
-        "supportedByTwoRecentOfficialScans": 0,
+        "assetHashes": 12,
+        "supportedByTwoRecentOfficialScans": 3,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
         "hashSupport": [
           {
             "sha256": "1c86fccbf71d491db7ae13655b8c977e4ce87655eea1def65bcbf8c02e13e15c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "5ab84bf7fe0dc620e6731191d8ba86dcc1487b16b0a6c0bec4130350e05c6fe6",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "61cd5482fb1a3dfe10cce137b19da703fb8718f96dbe9f381ab48af22ce35822",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "9adf5448259c5f28b6ba8711353fe20f25bb9db4f58dfb3530eb724cb97e0570",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a22f7313982f7110cc6c35e82479ceab3a8c7e364c61e143363ebc6702c5db9c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c7b1b388a7c780dcd2166d12ee3372aea7565da188fb977c534cf4596508bde3",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "c912c0a775aa3de1a8edd8b9b4d1fabfc7e0e7a6a58d66195b1b5e69741a0257",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cec77f235b6b907f5d70934cb2c92e579ce1a419cf8c682a30c6998693288fb8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "d5a77ed6d721254ca7604f666341391694687fbdd550035ed73e2536359ea48c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "e5ffd491ab8d40585bb195f0985cccbfcb6bacc1e06eb45ab6dfff53ba06d785",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "ff1523fb7389539c84c65aba19260648793bb4f5e29329d2ee8804bc37a3fe6e",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "ff3db0816ded26869f1927d436671218d3b9866271f773d3b620ee9f6849d7df",
             "resourceType": "javascript",
             "twoRecentOfficialScans": false
           }
@@ -419,7 +474,7 @@
         "assetHashes": 13,
         "supportedByTwoRecentOfficialScans": 13,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
         "hashSupport": [
           {
             "sha256": "0483a80b1f7d423bdb5e92910a49f80e5e883b70bb0bb45975125381ad6435a2",
@@ -521,63 +576,68 @@
         "latestMatchAt": "2026-08-30T07:30:43.226Z"
       },
       "urlscanAssets": {
-        "assetHashes": 11,
-        "supportedByTwoRecentOfficialScans": 5,
-        "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "assetHashes": 12,
+        "supportedByTwoRecentOfficialScans": 12,
+        "allHashesHaveTwoRecentOfficialScans": true,
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
         "hashSupport": [
+          {
+            "sha256": "05c59d29bc25cc873454934f16fdb21c6e8271b2990b1aece5cbfe18354c4b7f",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
           {
             "sha256": "066c45dafcf58cbb505669340d55664f6acaf61aef7450e85a3e1be2c1b86340",
             "resourceType": "favicon",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "0ba190408a544105c0d8d80e4624c682db5f22f4f72bb61a218e5ae669a83d4e",
+            "sha256": "0ba34da024cfbaa93ddea1ca5e8c1d3ba3b56d22f278988b05215266f420df16",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "54cd611df9f3dacfd49259a43b77c1b482da4aed71a8e95fe94dc2f0798872c4",
+            "sha256": "0ea9ee368650de5ea918f967c3c52d170d40c3a666c2b6b005843b683c5fdf14",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "550bfe71af2608916b62a924ef4413dacb6bbbc91c8f4c2ee43162af76e8a634",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": false
+            "sha256": "20addb44854e976ce6ca2992ecdf2bbee6c88f65575f3d2407d9c44a37412099",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
           },
           {
-            "sha256": "67d9bdf85631e59202480e6d604d2343f7c29e305f0c20bbb4914df04b28533c",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": false
-          },
-          {
-            "sha256": "7c636f05e27c821b411159ee6b65e0467344e5e80526c03f487aaa803d87f4e1",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": false
-          },
-          {
-            "sha256": "9ec926092f03b8af097c602f23a9af93cf7ad853a2d37e8e90ba9c2812f0be3f",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": false
-          },
-          {
-            "sha256": "b3bda0d5691cab6fd37004cfca5a32e0819e1d2733a69f43d6e96a0c9893c7c2",
+            "sha256": "33312d0320fe12915a6fa19bbbe03f44d519578ae374d56d77b661d6053ea361",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "d393c10dc8a975aca9d19e9db8f2485afaa94c3c7b1c84f2f93cc7b28c8248db",
+            "sha256": "5658e66bf0e202f6fc0d3655c720d10f52e24ae4fcfcbc42df4856fdd1b5fd03",
             "resourceType": "javascript",
-            "twoRecentOfficialScans": false
+            "twoRecentOfficialScans": true
           },
           {
-            "sha256": "d3dfd3ab36c762cc2437ceb7fa4cc451bba7cc3476486815433bf006004f486a",
+            "sha256": "827e069f63d1df50ba4ec07b52abddb3ccf0ce81c231db3dfd3979519f7fced1",
             "resourceType": "javascript",
-            "twoRecentOfficialScans": false
+            "twoRecentOfficialScans": true
           },
           {
-            "sha256": "e456566ebe8079f91de4d2da36b3ad63575a5b981c7c6a69820443ca3b28116c",
+            "sha256": "8823245d9653ea03c946f3a622b141f2455f72cf2886f152f372e90294ddcd2b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "99e1761c92764dcaeec33df3e1773160344cc4aa6b8ddaee0477372279a2c424",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "a276a9618096b0a2c14730d50966c92cf8d454adc4c19d445f13492f48825179",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f4aae8054257e0bbed2d3479246c98ce4a6186a888a32e5f0024c744d2747f0b",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           }
@@ -619,7 +679,7 @@
         "assetHashes": 4,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
         "hashSupport": [
           {
             "sha256": "302241d9296af0ca2f51c6928051c40af14c501c0813605f0125a5cd0411c719",
@@ -669,7 +729,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 1,
-        "lastAttemptAt": "2026-08-30T07:47:06.383Z",
+        "lastAttemptAt": "2026-08-30T15:44:46.346Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -718,7 +778,7 @@
         "assetHashes": 3,
         "supportedByTwoRecentOfficialScans": 1,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
         "hashSupport": [
           {
             "sha256": "40f3ef92ccbb64ebc9bb7d42cd402e1485ebf3d6ec027a2c732fad309b9dc0ca",
@@ -770,11 +830,67 @@
         "latestMatchAt": "2026-08-30T06:56:05.613Z"
       },
       "urlscanAssets": {
-        "assetHashes": 0,
-        "supportedByTwoRecentOfficialScans": 0,
-        "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "assetHashes": 11,
+        "supportedByTwoRecentOfficialScans": 11,
+        "allHashesHaveTwoRecentOfficialScans": true,
+        "lastValidatedAt": "2026-08-30T15:49:37.315Z",
+        "hashSupport": [
+          {
+            "sha256": "01d50a3ea9721c05b7fd8f9f165eb140e45f49d7142dbe4cdd26d58f36ffa43a",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2762d0329fac5a4eb939e696b5a10f974b2e466d6cdec9c978aba5f87c22e1a7",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "2dbb30af18c1cc025d432f934a8b23478a3539d525bfa6100fb097e2dcdafe57",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "3494b341a471c1f1b8cfbd7d6a5d3794b08e8c511203a6a12cf74f100ac0d5ab",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "377e9731df07066631dc615291a3dbdbc923893629702f2e3b9b7a5775cc027b",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "50feba000aa40c81488c2febef3fc773624867fd2cef6d43643e6193f9e04ee1",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "72c3c1200f27520bb9fec73fb064f49fc019a960bec7d2b34f2cce1bab72a035",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "a7b1320bc607b69ba98dc5e4858820fededa81e4c1f06a12aff10181891d7fb0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "c084b47104c493fb377b6d35d8c08df67d773f6dcf8294c0a7360710cd8cacbd",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "c44372172fd63c732549fbb0778bd7a8a73211262f9c5bd5d4ae18193da67eff",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f3ac98a0ca421a725b108eb1ed40f622ed405b921e9e2db84c5f68d9b10421ac",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
