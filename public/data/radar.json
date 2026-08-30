@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T05:09:22.445Z",
-  "lastSuccessfulSyncAt": "2026-08-30T05:20:29.810Z",
+  "generatedAt": "2026-08-30T06:09:14.961Z",
+  "lastSuccessfulSyncAt": "2026-08-30T06:09:14.961Z",
   "signals": [
+    {
+      "id": "2cc261b011c1d35aa68b",
+      "url": "hxxps://www[.]ergo-support[.]be",
+      "domain": "www[.]ergo-support[.]be",
+      "firstSeen": "2026-08-30T05:26:52.275Z",
+      "lastSeen": "2026-08-30T05:26:52.275Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "ERGO",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "5083e9288aa03edde1de",
+      "url": "hxxps://ergo-support[.]be",
+      "domain": "ergo-support[.]be",
+      "firstSeen": "2026-08-30T05:26:52.275Z",
+      "lastSeen": "2026-08-30T05:26:52.275Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "ERGO",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "fa84088168732dc94112",
       "url": "hxxps://www[.]dhl-tracking-deliveries[.]com[.]ph",
@@ -3568,8 +3630,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T05:20:29.810Z",
-      "records": 105,
+      "fetchedAt": "2026-08-30T06:09:14.961Z",
+      "records": 107,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -3584,7 +3646,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T05:20:29.810Z",
+      "fetchedAt": "2026-08-30T06:09:14.961Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

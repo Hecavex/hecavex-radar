@@ -1,13 +1,18 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-30T05:20:29.810Z",
+  "generatedAt": "2026-08-30T06:09:14.961Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
       "signalId": "0d284af65210b0c1307e",
       "domain": "omada[.]delivery-dhl-uae[.]com",
       "clusterId": "cf734ba4d6fb168b"
+    },
+    {
+      "signalId": "2cc261b011c1d35aa68b",
+      "domain": "www[.]ergo-support[.]be",
+      "clusterId": "eebd271cd8f4c8b5"
     },
     {
       "signalId": "3fff5d4e13b79be1161d",
@@ -23,6 +28,11 @@
       "signalId": "4d894f9bdf81af06b273",
       "domain": "imap[.]teliapay[.]net",
       "clusterId": "393af156c2d4778a"
+    },
+    {
+      "signalId": "5083e9288aa03edde1de",
+      "domain": "ergo-support[.]be",
+      "clusterId": "eebd271cd8f4c8b5"
     },
     {
       "signalId": "6718a48a9d6c4669e8f5",
@@ -283,6 +293,26 @@
         {
           "type": "dns-a",
           "value": "20[.]71[.]52[.]50"
+        }
+      ]
+    },
+    {
+      "id": "239336a8ba400fe53c45",
+      "source": "2cc261b011c1d35aa68b",
+      "target": "5083e9288aa03edde1de",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "ergo-support[.]be"
+        },
+        {
+          "type": "certificate-san",
+          "value": "www[.]ergo-support[.]be"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "0692998a0477df9ff19a8470e3e70a5c514aec0ea7a64ef545fc7f64f05b145c"
         }
       ]
     },

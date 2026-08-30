@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T05:20:29.810Z",
+  "generatedAt": "2026-08-30T06:09:14.961Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T05:20:29.810Z",
-    "to": "2026-08-30T05:20:29.810Z"
+    "from": "2026-07-31T06:09:14.961Z",
+    "to": "2026-08-30T06:09:14.961Z"
   },
-  "totalAvailable": 128,
+  "totalAvailable": 130,
   "truncated": false,
   "events": [
+    {
+      "id": "6f117bec38788d84b60f0f6a302dc664",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T05:26:52.275Z",
+      "signalId": "2cc261b011c1d35aa68b",
+      "signalPath": "/signals/2cc261b011c1d35aa68b/",
+      "domain": "www[.]ergo-support[.]be",
+      "brand": "ERGO",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "423653ade6749efb12727dcd627fd40f",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T05:26:52.275Z",
+      "signalId": "5083e9288aa03edde1de",
+      "signalPath": "/signals/5083e9288aa03edde1de/",
+      "domain": "ergo-support[.]be",
+      "brand": "ERGO",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "601d332c2c210a771d20f994585e7aed",
       "type": "first-publication",

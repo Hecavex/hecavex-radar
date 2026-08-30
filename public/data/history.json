@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T05:09:22.445Z",
+  "generatedAt": "2026-08-30T06:09:14.961Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5083e9288aa03edde1de",
+      "domain": "ergo-support[.]be",
+      "brand": "ERGO",
+      "firstSeen": "2026-08-30T05:26:52.275Z",
+      "lastSeen": "2026-08-30T05:26:52.275Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3cdca0ad539be93ec64acd5c7e6f677c",
+          "observedAt": "2026-08-30T05:26:52.275Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2cc261b011c1d35aa68b",
+      "domain": "www[.]ergo-support[.]be",
+      "brand": "ERGO",
+      "firstSeen": "2026-08-30T05:26:52.275Z",
+      "lastSeen": "2026-08-30T05:26:52.275Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "dd2a044f6c3c6fbaf1134869b68585b8",
+          "observedAt": "2026-08-30T05:26:52.275Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "fa84088168732dc94112",
       "domain": "www[.]dhl-tracking-deliveries[.]com[.]ph",
