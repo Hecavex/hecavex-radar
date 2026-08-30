@@ -509,6 +509,14 @@ function parseFile(path) {
   return new JSDOM(readFileSync(path, "utf8"), { url: new URL(routeForFile(path), publicOrigin) }).window.document;
 }
 
+function readableTextFromHtml(markup) {
+  const fragment = JSDOM.fragment(markup);
+  for (const hiddenContent of fragment.querySelectorAll("script, style, template")) {
+    hiddenContent.remove();
+  }
+  return fragment.textContent ?? "";
+}
+
 let releasedDocumentCount = 0;
 
 function releaseDocument(document) {
@@ -521,6 +529,11 @@ function collectReleasedDocuments() {
 }
 
 function verifyBuiltHtml() {
+  assert(
+    readableTextFromHtml('<span>Signal &amp; details</span>') === "Signal & details" &&
+      readableTextFromHtml('<script>not a label</script><style>not a label</style>').trim() === "",
+    "HTML text extraction no longer follows parsed, non-executable text semantics.",
+  );
   const robots = readFileSync(join(output, "robots.txt"), "utf8");
   const llms = readFileSync(join(output, "llms.txt"), "utf8");
   assert(robots.includes("Content-Signal: search=yes, ai-input=yes, ai-train=no"), "Built robots.txt lost the reviewed content-use signal.");
@@ -787,8 +800,7 @@ function verifyBuiltHtml() {
       const href = readTagAttribute(openingTag, "href");
       const accessibleLabel =
         readTagAttribute(openingTag, "aria-label") ??
-        match[2]
-          .replace(/<[^>]*>/gu, "")
+        readableTextFromHtml(match[2])
           .replace(/&(?:#\d+|#x[\da-f]+|[a-z][\w-]*);/giu, "x")
           .replace(/\s+/gu, " ")
           .trim();
