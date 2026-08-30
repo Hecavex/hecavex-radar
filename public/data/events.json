@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T08:20:51.403Z",
+  "generatedAt": "2026-08-30T09:09:20.229Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T08:20:51.403Z",
-    "to": "2026-08-30T08:20:51.403Z"
+    "from": "2026-07-31T09:09:20.229Z",
+    "to": "2026-08-30T09:09:20.229Z"
   },
-  "totalAvailable": 136,
+  "totalAvailable": 138,
   "truncated": false,
   "events": [
+    {
+      "id": "ea422fc04fcf9c52ff909de9026a13cf",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T09:07:05.967Z",
+      "signalId": "e1119b1f441fcf1f6c61",
+      "signalPath": "/signals/e1119b1f441fcf1f6c61/",
+      "domain": "dhl-maya-auth[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "77179f7d0f1ee743f23b51a63fe2ac75",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T08:21:55.553Z",
+      "signalId": "5405689f14268d96580d",
+      "signalPath": "/signals/5405689f14268d96580d/",
+      "domain": "connect-parcels-dhl-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "54878d6c612435f727e175de31f7d4e6",
       "type": "first-publication",

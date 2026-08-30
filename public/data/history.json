@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T08:09:21.283Z",
+  "generatedAt": "2026-08-30T09:09:20.229Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e1119b1f441fcf1f6c61",
+      "domain": "dhl-maya-auth[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T09:07:05.967Z",
+      "lastSeen": "2026-08-30T09:07:05.967Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "b3a31ab5abf8f93ba7480f34561759f5",
+          "observedAt": "2026-08-30T09:07:05.967Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5405689f14268d96580d",
+      "domain": "connect-parcels-dhl-tracking[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T08:21:55.553Z",
+      "lastSeen": "2026-08-30T08:21:55.553Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bebd851c51012299052fa57317f90b6e",
+          "observedAt": "2026-08-30T08:21:55.553Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "2aff15c50b82bc726c2b",
       "domain": "www[.]dhl-delivery-tracking[.]info",
