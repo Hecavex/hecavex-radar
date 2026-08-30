@@ -1,20 +1,20 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-30T10:44:39.126Z",
+  "generatedAt": "2026-08-30T11:48:12.446Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-30T10:44:39.126Z",
+    "endedAt": "2026-08-30T11:48:12.446Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
+    "outcome": "partial",
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 2,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-30T10:44:34.810Z"
+    "startedAt": "2026-08-30T11:47:58.858Z"
   },
   "provider": "crt.sh",
   "queries": {
@@ -263,7 +263,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T03:45:02.115Z",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
@@ -271,7 +271,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T03:45:02.115Z",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "registrucentras"
     },
     "brand:regitra": {
@@ -279,7 +279,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T03:45:02.115Z",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "regitra"
     },
     "brand:revolut": {
@@ -287,23 +287,23 @@
       "lastEntryAt": "2026-08-28T20:22:13.947Z",
       "lastId": 29118779167,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T03:45:02.115Z",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "revolut"
     },
     "brand:rimilietuva": {
       "brand": "Rimi",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T04:47:51.249Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "rimilietuva"
     },
     "brand:sebbankas": {
       "brand": "SEB",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T04:47:51.249Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-08-30T11:47:58.858Z",
       "term": "sebbankas"
     },
     "brand:skelbiu": {
@@ -387,6 +387,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 30,
+  "queryCursor": 36,
   "schemaVersion": 1
 }
