@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T09:20:30.055Z",
+  "generatedAt": "2026-08-30T10:09:13.413Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T09:20:30.055Z",
-    "to": "2026-08-30T09:20:30.055Z"
+    "from": "2026-07-31T10:09:13.413Z",
+    "to": "2026-08-30T10:09:13.413Z"
   },
-  "totalAvailable": 138,
+  "totalAvailable": 140,
   "truncated": false,
   "events": [
+    {
+      "id": "f1cb2ece9a9977b1b4e2919eaae4c94e",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T09:47:26.218Z",
+      "signalId": "1584ae422d7176c672b3",
+      "signalPath": "/signals/1584ae422d7176c672b3/",
+      "domain": "czlpihmr[.]xn--tl2mobile-b4ab[.]fr",
+      "brand": "Tele2",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "ed2e6132956dc1c7d26f9623946fa39b",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T09:35:29.796Z",
+      "signalId": "5fb9d98e41bc8252dbdc",
+      "signalPath": "/signals/5fb9d98e41bc8252dbdc/",
+      "domain": "dhl-portal[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "ea422fc04fcf9c52ff909de9026a13cf",
       "type": "first-publication",
