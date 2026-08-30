@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T21:24:04.042Z",
+  "generatedAt": "2026-08-30T22:09:28.225Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T21:24:04.042Z",
-    "to": "2026-08-30T21:24:04.042Z"
+    "from": "2026-07-31T22:09:28.225Z",
+    "to": "2026-08-30T22:09:28.225Z"
   },
-  "totalAvailable": 152,
+  "totalAvailable": 153,
   "truncated": false,
   "events": [
+    {
+      "id": "c45420c95eaf3ee446597d84000f6591",
+      "type": "reobservation",
+      "occurredAt": "2026-08-30T22:07:46.107Z",
+      "signalId": "c5ee446f5f0dae3cd2ac",
+      "signalPath": "/signals/c5ee446f5f0dae3cd2ac/",
+      "domain": "bankartea[.]lt",
+      "brand": "Artea",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "7f0c988d02c0f1f3feaa66b95d599119",
       "type": "reobservation",
