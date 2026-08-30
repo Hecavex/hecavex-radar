@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-matcher-regression-corpus",
-  "reviewedAt": "2026-08-26",
+  "reviewedAt": "2026-08-30",
   "safety": "Synthetic reserved-domain examples and reviewed official domains only; no active victim URLs.",
   "unicodeProfile": {
     "uts46": "idna-3.19/nontransitional/std3",
@@ -53,6 +53,51 @@
       "expected": {
         "matched": false,
         "rejectionReason": "no-reviewed-brand-match"
+      }
+    },
+    {
+      "id": "short-alias-neutral-idn-decoration",
+      "brand": "SEB",
+      "domain": "chez-seb-et-l\u00e9a.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "punycode-is-not-suspicious-context"
+      }
+    },
+    {
+      "id": "short-alias-second-neutral-idn-decoration",
+      "brand": "ERGO",
+      "domain": "ergo-k\u00f6ttigen.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "non-alias-unicode-is-not-confusable-evidence"
+      }
+    },
+    {
+      "id": "confusable-substring-outside-exact-alias-token",
+      "brand": "SEB",
+      "domain": "seb-se\u13f4foo.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "confusable-substring-is-outside-matched-token"
+      }
+    },
+    {
+      "id": "fuzzy-alias-neutral-idn-decoration",
+      "brand": "Swedbank",
+      "domain": "swedback-\u017ealias.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "fuzzy-match-lacks-reviewed-context"
+      }
+    },
+    {
+      "id": "short-alias-joined-affix-rejected",
+      "brand": "SEB",
+      "domain": "secureseb.example",
+      "expected": {
+        "matched": false,
+        "rejectionReason": "short-token-requires-delimiter"
       }
     },
     {
@@ -143,6 +188,40 @@
           "unicode-confusable",
           "mixed-script",
           "restricted-identifier",
+          "different-tld"
+        ]
+      }
+    },
+    {
+      "id": "actual-confusable-without-generic-context",
+      "brand": "Swedbank",
+      "domain": "swedb\u0430nk.example",
+      "expected": {
+        "matched": true,
+        "brand": "Swedbank",
+        "scoreBand": [90, 100],
+        "reasonCodes": [
+          "brand-exact-token",
+          "punycode",
+          "unicode-confusable",
+          "mixed-script",
+          "restricted-identifier",
+          "different-tld"
+        ]
+      }
+    },
+    {
+      "id": "short-alias-actual-confusable-retained",
+      "brand": "DHL",
+      "domain": "\u1e13\u1e2bl.example",
+      "expected": {
+        "matched": true,
+        "brand": "DHL",
+        "scoreBand": [80, 90],
+        "reasonCodes": [
+          "brand-exact-token",
+          "punycode",
+          "unicode-confusable",
           "different-tld"
         ]
       }

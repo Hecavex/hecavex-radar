@@ -43,7 +43,7 @@ def _install_snapshot(root: Path, value: dict[str, object]) -> Path:
 
 def _empty_review(generated_at: str) -> dict[str, object]:
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "dataset": "radar-review-decisions",
         "generatedAt": generated_at,
         "suppressions": [],

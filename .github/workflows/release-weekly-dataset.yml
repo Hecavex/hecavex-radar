@@ -5,8 +5,16 @@ on:
     - cron: "29 6 * * 1"
   workflow_dispatch:
     inputs:
+      release_week:
+        description: "Optional ISO week to backfill (YYYY-Www); must match the selected snapshot"
+        required: false
+        type: string
+      source_sha:
+        description: "Optional full 40-character main-branch commit containing that immutable snapshot"
+        required: false
+        type: string
       correction_revision:
-        description: "Optional immutable correction revision (1-999) for this ISO week"
+        description: "Optional immutable correction revision (1-999)"
         required: false
         type: string
 
@@ -26,22 +34,70 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Check out the release revision
+      - name: Check out current trusted release tooling
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
-          fetch-depth: 1
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Select the ISO-week release
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
+          REQUESTED_RELEASE_WEEK: ${{ inputs.release_week || '' }}
+          REQUESTED_SOURCE_SHA: ${{ inputs.source_sha || '' }}
           CORRECTION_REVISION: ${{ inputs.correction_revision || '' }}
         shell: bash
         run: |
           set -euo pipefail
-          release_week="$(date -u +'%G-W%V')"
+          trusted_sha="$(git rev-parse HEAD)"
+          if [[ "${trusted_sha}" != "${GITHUB_SHA}" ]]; then
+            echo "::error::Trusted tooling checkout does not match the triggering main commit."
+            exit 1
+          fi
+          source_sha="${REQUESTED_SOURCE_SHA:-${trusted_sha}}"
+          if [[ -n "${REQUESTED_SOURCE_SHA}" ]]; then
+            if [[ ! "${REQUESTED_SOURCE_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::source_sha must be one full lowercase 40-character commit SHA."
+              exit 1
+            fi
+            compare_status="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${source_sha}...main" --jq '.status')"
+            if [[ "${compare_status}" != "ahead" && "${compare_status}" != "identical" ]]; then
+              echo "::error::source_sha must be an ancestor of the current main branch."
+              exit 1
+            fi
+            if ! git cat-file -e "${source_sha}^{commit}" 2>/dev/null || \
+              ! git merge-base --is-ancestor "${source_sha}" "${trusted_sha}"; then
+              echo "::error::source_sha is not available as an ancestor of the trusted tooling commit."
+              exit 1
+            fi
+          fi
+          manifest_entry="$(git ls-tree "${source_sha}" -- public/data/feed-manifest.json)"
+          IFS=$' \t' read -r manifest_mode manifest_type manifest_object manifest_path <<< "${manifest_entry}"
+          if [[ "${manifest_mode}" != "100644" || "${manifest_type}" != "blob" || \
+            "${manifest_path}" != "public/data/feed-manifest.json" ]]; then
+            echo "::error::The selected feed manifest is not one regular data blob."
+            exit 1
+          fi
+          manifest_bytes="$(git cat-file -s "${manifest_object}")"
+          if [[ ! "${manifest_bytes}" =~ ^[0-9]+$ ]] || (( manifest_bytes < 2 || manifest_bytes > 262144 )); then
+            echo "::error::The selected feed manifest is empty or exceeds 256 KiB."
+            exit 1
+          fi
+          snapshot_week="$(
+            git cat-file blob "${manifest_object}" |
+              python -c 'import json,sys; from datetime import datetime; value=json.load(sys.stdin)["generatedAt"]; parsed=datetime.fromisoformat(value.removesuffix("Z") + "+00:00"); year,week,_=parsed.isocalendar(); print(f"{year:04d}-W{week:02d}")'
+          )"
+          release_week="${REQUESTED_RELEASE_WEEK:-${snapshot_week}}"
+          if [[ ! "${release_week}" =~ ^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$ ]]; then
+            echo "::error::release_week must use canonical YYYY-Www syntax."
+            exit 1
+          fi
+          if [[ "${release_week}" != "${snapshot_week}" ]]; then
+            echo "::error::release_week ${release_week} does not match snapshot week ${snapshot_week} at ${source_sha}."
+            exit 1
+          fi
           base_tag="radar-data-${release_week}"
           tag="${base_tag}"
           release_label="${release_week}"
@@ -52,29 +108,85 @@ jobs:
             fi
             tag="${base_tag}-r${CORRECTION_REVISION}"
             release_label="${release_week}-r${CORRECTION_REVISION}"
+            base_release="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${base_tag}" 2>/dev/null || true)"
+            if [[ -z "${base_release}" ]] || [[ "$(jq -r '.draft' <<<"${base_release}")" != "false" ]] || \
+              [[ "$(jq -r '.immutable' <<<"${base_release}")" != "true" ]]; then
+              echo "::error::A published immutable ${base_tag} release is required before a correction."
+              exit 1
+            fi
           fi
-          existing="$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" |
-            jq -s -r --arg tag "${tag}" '
-              map(.[]) | map(select(.tag_name == $tag)) | first |
-              if . == null then "" else
-                [.id, (.draft | tostring), .target_commitish, (.immutable | tostring)] | @tsv
-              end
-            ')"
+          existing=""
+          existing_lookup_ok=false
+          for api_attempt in 1 2 3 4; do
+            if existing="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/releases?per_page=100" |
+              jq -s -r --arg tag "${tag}" '
+                map(.[]) | map(select(.tag_name == $tag)) | first |
+                if . == null then "" else
+                  [
+                    .id,
+                    (.draft | tostring),
+                    .target_commitish,
+                    (.immutable | tostring),
+                    (.assets | map(.name) | sort | join(","))
+                  ] | @tsv
+                end
+              ')"; then
+              existing_lookup_ok=true
+              break
+            fi
+            sleep "${api_attempt}"
+          done
+          if [[ "${existing_lookup_ok}" != "true" ]]; then
+            echo "::error::Could not determine whether ${tag} already exists after bounded retries."
+            exit 1
+          fi
 
           should_release=true
           resume_draft=false
           if [[ -n "${existing}" ]]; then
-            IFS=$'\t' read -r release_id is_draft target_commitish immutable <<< "${existing}"
+            IFS=$'\t' read -r release_id is_draft target_commitish immutable existing_assets <<< "${existing}"
             if [[ "${is_draft}" == "false" ]]; then
               if [[ "${immutable}" != "true" ]]; then
                 echo "::error::${tag} exists but is not immutable. Do not publish another weekly release until repository release immutability is enabled."
                 exit 1
               fi
+              expected_assets="$(printf '%s\n' \
+                SHA256SUMS \
+                "${tag}.manifest.json" \
+                "${tag}.spdx.json" \
+                "${tag}.tar.gz" | sort | paste -sd, -)"
+              if [[ "${existing_assets}" != "${expected_assets}" ]]; then
+                echo "::error::Immutable ${tag} has an unexpected asset inventory: ${existing_assets:-none}."
+                exit 1
+              fi
+              if [[ ! "${target_commitish}" =~ ^[0-9a-f]{40}$ ]]; then
+                echo "::error::Immutable ${tag} does not target one auditable commit SHA."
+                exit 1
+              fi
+              target_status="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${target_commitish}...main" --jq '.status')"
+              if [[ "${target_status}" != "ahead" && "${target_status}" != "identical" ]]; then
+                echo "::error::Immutable ${tag} does not target an ancestor of main."
+                exit 1
+              fi
+              target_week="$(
+                gh api "repos/${GITHUB_REPOSITORY}/contents/public/data/feed-manifest.json?ref=${target_commitish}" --jq '.content' |
+                  tr -d '\n' |
+                  base64 --decode |
+                  python -c 'import json,sys; from datetime import datetime; value=json.load(sys.stdin)["generatedAt"]; parsed=datetime.fromisoformat(value.removesuffix("Z") + "+00:00"); year,week,_=parsed.isocalendar(); print(f"{year:04d}-W{week:02d}")'
+              )"
+              if [[ "${target_week}" != "${release_week}" ]]; then
+                echo "::error::Immutable ${tag} targets snapshot week ${target_week}, not ${release_week}."
+                exit 1
+              fi
+              if [[ -n "${REQUESTED_SOURCE_SHA}" && "${target_commitish}" != "${source_sha}" ]]; then
+                echo "::error::Immutable ${tag} targets ${target_commitish}, not requested source ${source_sha}."
+                exit 1
+              fi
               echo "${tag} is already published and immutable; this run is a no-op."
               should_release=false
             else
-              if [[ "${target_commitish}" != "${GITHUB_SHA}" ]]; then
-                echo "::error::Draft ${tag} targets ${target_commitish}, not ${GITHUB_SHA}. Review the interrupted draft manually."
+              if [[ "${target_commitish}" != "${source_sha}" ]]; then
+                echo "::error::Draft ${tag} targets ${target_commitish}, not ${source_sha}. Review the interrupted draft manually."
                 exit 1
               fi
               resume_draft=true
@@ -86,6 +198,8 @@ jobs:
             echo "base_tag=${base_tag}"
             echo "tag=${tag}"
             echo "correction_revision=${CORRECTION_REVISION}"
+            echo "source_sha=${source_sha}"
+            echo "trusted_sha=${trusted_sha}"
             echo "should_release=${should_release}"
             echo "resume_draft=${resume_draft}"
           } >> "${GITHUB_OUTPUT}"
@@ -118,15 +232,46 @@ jobs:
           python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-ci-py312.lock
           python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
 
-      - name: Validate the checked-in publication
+      - name: Materialize the selected data-only release source
         if: steps.release.outputs.should_release == 'true'
-        run: python -m hecavex_radar.publication --stix
+        id: source
+        env:
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_source_root="$(mktemp -d "${RUNNER_TEMP}/radar-release-source.XXXXXXXX")"
+          rmdir "${release_source_root}"
+          python -m hecavex_radar.release_source \
+            --repository "${GITHUB_WORKSPACE}" \
+            --source-sha "${SOURCE_SHA}" \
+            --output "${release_source_root}"
+          echo "root=${release_source_root}" >> "${GITHUB_OUTPUT}"
+
+      - name: Validate selected publication data with current tooling
+        if: steps.release.outputs.should_release == 'true'
+        env:
+          RELEASE_SOURCE_ROOT: ${{ steps.source.outputs.root }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          from hecavex_radar.publication import validate_publication
+
+          validate_publication(Path(os.environ["RELEASE_SOURCE_ROOT"]), validate_stix=True)
+          PY
 
       - name: Build a reproducible dataset package
         if: steps.release.outputs.should_release == 'true'
         id: package
         env:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
+          TRUSTED_TOOLING_SHA: ${{ steps.release.outputs.trusted_sha }}
+          RELEASE_SOURCE_ROOT: ${{ steps.source.outputs.root }}
           URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED: ${{ vars.URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED || 'false' }}
         shell: bash
         run: |
@@ -139,8 +284,9 @@ jobs:
           import shutil
           from pathlib import Path, PurePosixPath
 
-          repository = Path.cwd()
-          public_root = repository / "public"
+          repository = Path.cwd().resolve()
+          source_repository = Path(os.environ["RELEASE_SOURCE_ROOT"]).resolve(strict=True)
+          public_root = source_repository / "public"
           data_root = public_root / "data"
           output_root = repository / "_release"
           tag = os.environ["RELEASE_TAG"]
@@ -149,9 +295,14 @@ jobs:
           maximum_files = 10_000
           maximum_bytes = 128 * 1024 * 1024
 
-          if output_root.parent != repository or output_root.name != "_release":
+          if output_root.parent.resolve() != repository or output_root.name != "_release":
               raise SystemExit("Refusing an unexpected release output path")
-          if public_root.is_symlink() or data_root.is_symlink():
+          if (
+              source_repository.is_symlink()
+              or public_root.is_symlink()
+              or data_root.is_symlink()
+              or not public_root.resolve(strict=True).is_relative_to(source_repository)
+          ):
               raise SystemExit("Refusing a symlinked public dataset root")
           if output_root.exists():
               shutil.rmtree(output_root)
@@ -299,7 +450,8 @@ jobs:
               "releaseWeek": release_week,
               "tag": tag,
               "sourceRepository": os.environ["GITHUB_REPOSITORY"],
-              "sourceCommit": os.environ["GITHUB_SHA"],
+              "sourceCommit": os.environ["SOURCE_SHA"],
+              "toolingCommit": os.environ["TRUSTED_TOOLING_SHA"],
               "snapshotGeneratedAt": feed_manifest["generatedAt"],
               "archiveRoot": tag,
               "license": "https://github.com/Hecavex/radar.hecavex.com/blob/main/DATA-LICENSE.md",
@@ -326,7 +478,9 @@ jobs:
           (assets_root / f"{tag}.manifest.json").write_bytes(manifest_payload)
           PY
 
-          python -m hecavex_radar.release_context_history --tag "${RELEASE_TAG}"
+          python -m hecavex_radar.release_context_history \
+            --tag "${RELEASE_TAG}" \
+            --source-repository "${RELEASE_SOURCE_ROOT}"
 
           archive_name="${RELEASE_TAG}.tar.gz"
           manifest_name="${RELEASE_TAG}.manifest.json"
@@ -346,7 +500,7 @@ jobs:
           python -m hecavex_radar.sbom \
             --tag "${RELEASE_TAG}" \
             --repository "${GITHUB_REPOSITORY}" \
-            --commit "${GITHUB_SHA}" \
+            --commit "${TRUSTED_TOOLING_SHA}" \
             --release-manifest "_release/assets/${manifest_name}" \
             --file "_release/assets/${archive_name}" \
             --file "_release/assets/${manifest_name}" \
@@ -369,12 +523,14 @@ jobs:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
           BASE_RELEASE_TAG: ${{ steps.release.outputs.base_tag }}
           CORRECTION_REVISION: ${{ steps.release.outputs.correction_revision }}
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
+          TRUSTED_TOOLING_SHA: ${{ steps.release.outputs.trusted_sha }}
         shell: bash
         run: |
           cat > _release/notes.md <<EOF
-          Weekly static export of the public HECAVEX Radar dataset at commit \`${GITHUB_SHA}\`.
+          Weekly static export of the public HECAVEX Radar dataset at commit \`${SOURCE_SHA}\`.
 
-          The archive contains the manifest-declared publication artifacts and checksums, index-declared shards, snapshot-declared signal sidecars, and up to 90 validated date partitions of the passive context-change journal as one point-in-time package. URLScan-derived journal rows remain excluded unless redistribution is explicitly confirmed. The independently replaced \`collection-health.json\` latest-attempt document is excluded. \`${RELEASE_TAG}.manifest.json\` records every packaged dataset and context file and digest; the identical in-archive manifest cannot recursively inventory itself. \`${RELEASE_TAG}.spdx.json\` is an SPDX 2.3 inventory generated from the pinned Python and pnpm repository inputs. \`SHA256SUMS\` covers the archive, standalone manifest, and SBOM.
+          The archive contains the manifest-declared publication artifacts and checksums, index-declared shards, snapshot-declared signal sidecars, and up to 90 validated date partitions of the passive context-change journal as one point-in-time package. URLScan-derived journal rows remain excluded unless redistribution is explicitly confirmed. The independently replaced \`collection-health.json\` latest-attempt document is excluded. \`${RELEASE_TAG}.manifest.json\` records every packaged dataset and context file and digest plus the selected data commit and trusted tooling commit \`${TRUSTED_TOOLING_SHA}\`; the identical in-archive manifest cannot recursively inventory itself. \`${RELEASE_TAG}.spdx.json\` is an SPDX 2.3 inventory generated from that trusted tooling commit's pinned Python and pnpm repository inputs. \`SHA256SUMS\` covers the archive, standalone manifest, and SBOM.
 
           Radar publishes sampled research leads, not maliciousness verdicts or comprehensive monitoring. Review the [methodology](https://radar.hecavex.com/methodology/) and [data terms](https://github.com/Hecavex/radar.hecavex.com/blob/main/DATA-LICENSE.md) before use.
 
@@ -394,19 +550,20 @@ jobs:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
           RELEASE_WEEK: ${{ steps.release.outputs.week }}
           RESUME_DRAFT: ${{ steps.release.outputs.resume_draft }}
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
         shell: bash
         run: |
           set -euo pipefail
           if [[ "${RESUME_DRAFT}" == "true" ]]; then
             gh release upload "${RELEASE_TAG}" _release/assets/* --clobber
             gh release edit "${RELEASE_TAG}" \
-              --target "${GITHUB_SHA}" \
+              --target "${SOURCE_SHA}" \
               --title "HECAVEX Radar dataset ${RELEASE_WEEK}" \
               --notes-file _release/notes.md \
               --draft
           else
             gh release create "${RELEASE_TAG}" _release/assets/* \
-              --target "${GITHUB_SHA}" \
+              --target "${SOURCE_SHA}" \
               --title "HECAVEX Radar dataset ${RELEASE_WEEK}" \
               --notes-file _release/notes.md \
               --latest=false \

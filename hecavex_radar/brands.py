@@ -89,6 +89,7 @@ UNICODE_SECURITY_PROFILE = {
     "uts39": "confusable-homoglyphs-3.3.1",
 }
 IGNORED_SCRIPT_ALIASES = frozenset({"COMMON", "INHERITED"})
+SHORT_ALIAS_MAXIMUM_LENGTH = 4
 
 
 @dataclass(frozen=True, slots=True)
@@ -320,23 +321,84 @@ def _uts39_skeleton(value: str) -> str:
     return unicodedata.normalize("NFD", "".join(pieces))
 
 
-def _unicode_evidence(label: str, aliases: list[str]) -> frozenset[str]:
+def _canonical_with_origins(value: str) -> tuple[str, tuple[int, ...]]:
+    """Return a comparison skeleton and the source index for each character.
+
+    The origin map lets Unicode evidence prove that a non-ASCII code point
+    contributed to the alias span. Non-ASCII decoration elsewhere in an IDN
+    must not turn an unchanged ASCII alias into a confusable match.
+    """
+
+    pieces: list[str] = []
+    origins: list[int] = []
+    for source_index, character in enumerate(value):
+        skeleton = _uts39_skeleton(unicodedata.normalize("NFKD", character).casefold())
+        canonical = "".join(
+            candidate
+            for candidate in skeleton
+            if not unicodedata.combining(candidate) and candidate.isascii() and candidate.isalnum()
+        )
+        pieces.append(canonical)
+        origins.extend([source_index] * len(canonical))
+    combined = "".join(pieces)
+    expected = _canonical(value)
+    if combined != expected:
+        # Be conservative if a future Unicode normalization rule introduces a
+        # cross-code-point mapping that cannot be attributed precisely.
+        return expected, ()
+    return combined, tuple(origins)
+
+
+def _unicode_evidence(
+    label: str,
+    alias: str,
+    *,
+    affix: str | None = None,
+    fold_label: bool = False,
+) -> frozenset[str]:
     if label.isascii():
         return frozenset()
-    scripts = categories.unique_aliases(label) - IGNORED_SCRIPT_ALIASES
-    label_parts = [part for item in label.split("-") if (part := _canonical(item))]
-    label_skeleton = "".join(label_parts)
-    confusable_alias = any(
-        _canonical(alias) in {*label_parts, label_skeleton}
-        for alias in aliases
-    )
+    label_skeleton, origins = _canonical_with_origins(label)
+    alias_skeleton = _canonical(alias)
+    if not alias_skeleton or len(origins) != len(label_skeleton):
+        return frozenset()
+
+    canonical_parts = [part for item in label.split("-") if (part := _canonical(item))]
+    part_offsets = [0]
+    for part in canonical_parts:
+        part_offsets.append(part_offsets[-1] + len(part))
+
+    eligible_spans: list[tuple[int, int]] = []
+    if affix is None:
+        alias_parts = [part for item in re.split(r"[\s._-]+", alias) if (part := _canonical(item))]
+        for index in range(len(canonical_parts) - len(alias_parts) + 1):
+            if canonical_parts[index : index + len(alias_parts)] == alias_parts:
+                eligible_spans.append((part_offsets[index], part_offsets[index + len(alias_parts)]))
+    elif fold_label:
+        compact = "".join(canonical_parts)
+        if compact == alias_skeleton + affix:
+            eligible_spans.append((0, len(alias_skeleton)))
+        elif compact == affix + alias_skeleton:
+            eligible_spans.append((len(affix), len(compact)))
+    else:
+        for index, part in enumerate(canonical_parts):
+            if part == alias_skeleton + affix:
+                eligible_spans.append((part_offsets[index], part_offsets[index] + len(alias_skeleton)))
+            elif part == affix + alias_skeleton:
+                eligible_spans.append((part_offsets[index] + len(affix), part_offsets[index + 1]))
+
     evidence: set[str] = set()
-    if confusable_alias:
-        evidence.add("unicode-confusable")
-    if len(scripts) > 1:
-        evidence.add("mixed-script")
-    if confusable_alias and (len(scripts) > 1 or scripts != {"LATIN"}):
-        evidence.add("restricted-identifier")
+    for match_start, match_end in eligible_spans:
+        source_indices = set(origins[match_start:match_end])
+        if source_indices and any(not label[index].isascii() for index in source_indices):
+            matched_span = "".join(label[index] for index in sorted(source_indices))
+            scripts = categories.unique_aliases(matched_span) - IGNORED_SCRIPT_ALIASES
+            evidence.add("unicode-confusable")
+            if len(scripts) > 1:
+                evidence.add("mixed-script")
+            if len(scripts) > 1 or scripts != {"LATIN"}:
+                evidence.add("restricted-identifier")
+
     return frozenset(evidence)
 
 
@@ -497,7 +559,6 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
     decoded_labels = [decoded for _, _, decoded in label_groups]
     canonical_parts = [part for group in grouped_parts for part in group]
     label_compacts = ["".join(group) for group in grouped_parts]
-    suspicious = [part for part in canonical_parts if part in SUSPICIOUS_WORDS]
     matches: list[CandidateMatch] = []
 
     for entry in registry.entries:
@@ -507,7 +568,6 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
             continue
         base = 0
         match_reason = ""
-        matched_alias_parts: list[str] = []
         attached_context: list[str] = []
         matched_punycode = False
         matched_unicode_evidence: set[str] = set()
@@ -519,39 +579,56 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
             exact_groups = [
                 index for index, group in enumerate(grouped_parts) if _contains_sequence(group, alias_parts)
             ]
-            if len(alias) <= 4:
-                has_context = any(_context_words(grouped_parts[index], set(alias_parts)) for index in exact_groups)
-                local_punycode = any(punycode_labels[index] for index in exact_groups)
-                if exact_groups and (has_context or local_punycode) and base < 70:
+            exact_context_by_group = {
+                index: _context_words(grouped_parts[index], set(alias_parts)) for index in exact_groups
+            }
+            unicode_evidence_by_group = {
+                index: _unicode_evidence(decoded_labels[index], raw_alias) for index in exact_groups
+            }
+            qualifying_exact_groups = [
+                index
+                for index in exact_groups
+                if exact_context_by_group[index]
+                or "unicode-confusable" in unicode_evidence_by_group[index]
+            ]
+            if len(alias) <= SHORT_ALIAS_MAXIMUM_LENGTH:
+                # Short aliases are collision-prone. Keep boundary-delimited
+                # candidates eligible for the CertStream threshold, but only
+                # with same-label context or a real in-span Unicode substitution.
+                if qualifying_exact_groups and base < 70:
                     base = 70
                     match_reason = f"exact short brand token: {raw_alias}"
-                    matched_alias_parts = alias_parts
-                    matched_punycode = local_punycode
+                    attached_context = list(
+                        dict.fromkeys(
+                            word
+                            for index in qualifying_exact_groups
+                            for word in exact_context_by_group[index]
+                        )
+                    )
+                    matched_punycode = any(punycode_labels[index] for index in qualifying_exact_groups)
                     matched_unicode_evidence = {
                         code
-                        for index in exact_groups
-                        for code in _unicode_evidence(decoded_labels[index], entry.aliases)
+                        for index in qualifying_exact_groups
+                        for code in unicode_evidence_by_group[index]
                     }
                 continue
-            if exact_groups:
+            if qualifying_exact_groups:
                 exact_context = list(
                     dict.fromkeys(
                         word
-                        for index in exact_groups
-                        for word in _context_words(grouped_parts[index], set(alias_parts))
+                        for index in qualifying_exact_groups
+                        for word in exact_context_by_group[index]
                     )
                 )
-                local_punycode = any(punycode_labels[index] for index in exact_groups)
-                if (exact_context or local_punycode) and base < 80:
+                if base < 80:
                     base = 80
                     match_reason = f"brand text match: {raw_alias}"
-                    matched_alias_parts = alias_parts
                     attached_context = exact_context
-                    matched_punycode = local_punycode
+                    matched_punycode = any(punycode_labels[index] for index in qualifying_exact_groups)
                     matched_unicode_evidence = {
                         code
-                        for index in exact_groups
-                        for code in _unicode_evidence(decoded_labels[index], entry.aliases)
+                        for index in qualifying_exact_groups
+                        for code in unicode_evidence_by_group[index]
                     }
                 continue
 
@@ -564,14 +641,15 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                 ),
                 None,
             )
-            if affix is not None and base < 78:
+            if len(alias) > SHORT_ALIAS_MAXIMUM_LENGTH and affix is not None and base < 78:
                 context, group_index = affix
                 base = 78
                 match_reason = f"brand text with suspicious affix: {raw_alias}"
-                matched_alias_parts = alias_parts
                 attached_context = [context]
                 matched_punycode = punycode_labels[group_index]
-                matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
+                matched_unicode_evidence = set(
+                    _unicode_evidence(decoded_labels[group_index], raw_alias, affix=context)
+                )
 
             # Attackers frequently split a brand across hyphen-delimited pieces.
             # Fold only one DNS label and require the remaining prefix or suffix
@@ -586,23 +664,29 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                 ),
                 None,
             )
-            if len(alias) > 4 and split_affix is not None and base < 78:
+            if len(alias) > SHORT_ALIAS_MAXIMUM_LENGTH and split_affix is not None and base < 78:
                 context, group_index = split_affix
                 base = 78
                 match_reason = f"brand text split across label: {raw_alias}"
-                matched_alias_parts = alias_parts
                 attached_context = [context]
                 matched_punycode = punycode_labels[group_index]
-                matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
+                matched_unicode_evidence = set(
+                    _unicode_evidence(
+                        decoded_labels[group_index],
+                        raw_alias,
+                        affix=context,
+                        fold_label=True,
+                    )
+                )
 
             # Fuzzy evidence is intentionally narrow: one edit (including one
             # adjacent transposition) in a single-word alias, plus a threat word
-            # in the same DNS label (or punycode).
+            # in the same DNS label. Punycode alone is never fuzzy context.
             if _canonical(raw_alias) not in fuzzy_aliases or len(alias_parts) != 1 or len(alias) < 5:
                 continue
             for group_index, group in enumerate(grouped_parts):
                 fuzzy_context = _context_words(group, set(alias_parts))
-                if not fuzzy_context and not punycode_labels[group_index]:
+                if not fuzzy_context:
                     continue
                 alias_digits = "".join(character for character in alias if character.isdigit())
                 fuzzy_parts = [
@@ -621,18 +705,15 @@ def _score_domain_matches(value: str, registry: BrandRegistry) -> list[Candidate
                 if closest == 1 and base < 68:
                     base = 68
                     match_reason = f"brand lookalike (edit distance {closest}): {raw_alias}"
-                    matched_alias_parts = alias_parts
                     attached_context = fuzzy_context
                     matched_punycode = punycode_labels[group_index]
-                    matched_unicode_evidence = set(_unicode_evidence(decoded_labels[group_index], entry.aliases))
+                    matched_unicode_evidence = set()
         if base == 0:
             continue
 
         confidence = base
         reasons = [match_reason]
-        effective_suspicious = [part for part in suspicious if part not in set(matched_alias_parts)]
-        effective_suspicious.extend(attached_context)
-        effective_suspicious = list(dict.fromkeys(effective_suspicious))
+        effective_suspicious = list(dict.fromkeys(attached_context))
         if effective_suspicious:
             confidence += 15
             reasons.append(f"suspicious token: {', '.join(effective_suspicious)}")

@@ -12,7 +12,8 @@ from pathlib import Path
 from typing import Any, Literal, cast
 
 CollectionOutcome = Literal["healthy-empty", "healthy-matches", "no-input", "partial", "failed"]
-ScheduleStatus = Literal["scheduled", "delayed", "manual", "unknown"]
+ScheduleStatus = Literal["scheduled", "delayed", "relayed", "manual", "unknown"]
+CollectionTrigger = Literal["schedule", "cadence-relay", "manual", "unknown"]
 
 MAXIMUM_HEALTH_BYTES = 32 * 1024
 MAXIMUM_COUNTER = 2_000_000_000
@@ -20,10 +21,12 @@ DEFAULT_HEALTH_PATH = "public/data/collection-health.json"
 DEFAULT_EXPECTED_INTERVAL_SECONDS = 15 * 60
 DEFAULT_STALE_AFTER_SECONDS = 45 * 60
 DEFAULT_DELAY_THRESHOLD_SECONDS = 5 * 60
+DEFAULT_DUE_TOLERANCE_SECONDS = 0
 DEFAULT_SCHEDULE_MINUTES = (8, 23, 38, 53)
 OUTCOMES = frozenset({"healthy-empty", "healthy-matches", "no-input", "partial", "failed"})
-SCHEDULE_STATUSES = frozenset({"scheduled", "delayed", "manual", "unknown"})
-TRIGGERS = frozenset({"schedule", "manual", "unknown"})
+SCHEDULE_STATUSES = frozenset({"scheduled", "delayed", "relayed", "manual", "unknown"})
+TRIGGERS = frozenset({"schedule", "cadence-relay", "manual", "unknown"})
+AUTOMATED_TRIGGERS = frozenset({"schedule", "cadence-relay"})
 FRESHNESS_STATUSES = frozenset({"current", "stale", "unavailable"})
 
 
@@ -82,10 +85,10 @@ def _bounded_path(value: str | Path | None = None) -> Path:
     return target
 
 
-def _trigger(value: str | None) -> Literal["schedule", "manual", "unknown"]:
+def _trigger(value: str | None) -> CollectionTrigger:
     normalized = (value or "").strip().lower()
-    if normalized == "schedule":
-        return "schedule"
+    if normalized in AUTOMATED_TRIGGERS:
+        return cast(CollectionTrigger, normalized)
     if normalized in {"manual", "workflow_dispatch"}:
         return "manual"
     return "unknown"
@@ -116,10 +119,12 @@ def _scheduled_slot(started_at: datetime, minutes: tuple[int, ...]) -> datetime:
 
 def _schedule(
     started_at: datetime,
-    trigger: Literal["schedule", "manual", "unknown"],
+    trigger: CollectionTrigger,
 ) -> tuple[str | None, ScheduleStatus, int | None]:
     if trigger == "manual":
         return None, "manual", None
+    if trigger == "cadence-relay":
+        return None, "relayed", None
     if trigger != "schedule":
         return None, "unknown", None
     scheduled_for = _scheduled_slot(started_at, _schedule_minutes(os.environ.get("CERTSTREAM_SCHEDULE_MINUTES")))
@@ -204,6 +209,14 @@ def _valid_attempt(value: object, allow_running: bool) -> bool:
         return False
     if collector_started_at is not None and ended_at is not None and collector_started_at > ended_at:
         return False
+    expected_statuses = {
+        "schedule": {"scheduled", "delayed"},
+        "cadence-relay": {"relayed"},
+        "manual": {"manual"},
+        "unknown": {"unknown"},
+    }
+    if value["scheduleStatus"] not in expected_statuses[value["trigger"]]:
+        return False
     if value["scheduleStatus"] in {"scheduled", "delayed"}:
         if (
             value["trigger"] != "schedule"
@@ -211,6 +224,13 @@ def _valid_attempt(value: object, allow_running: bool) -> bool:
             or scheduled_for > started_at
             or not _valid_counter(value["delaySeconds"])
             or value["delaySeconds"] != int((started_at - scheduled_for).total_seconds())
+        ):
+            return False
+    elif value["scheduleStatus"] == "relayed":
+        if (
+            value["trigger"] != "cadence-relay"
+            or value["scheduledFor"] is not None
+            or value["delaySeconds"] is not None
         ):
             return False
     elif (
@@ -403,6 +423,55 @@ def begin_attempt(
     return _write_collection_health(artifact, path, allow_running=True)
 
 
+def attempt_is_due(
+    path: str | Path | None = None,
+    *,
+    now: datetime | None = None,
+    trigger_value: str | None = None,
+) -> bool:
+    """Return whether an invocation may start a new bounded collection window.
+
+    Manual maintainer runs deliberately bypass cadence suppression. Automated
+    cron and completion-relay invocations share the persisted latest-attempt
+    clock, so a delayed native cron cannot duplicate a relay window (or vice
+    versa) after GitHub's concurrency queue releases it.
+    """
+
+    trigger = _trigger(trigger_value if trigger_value is not None else os.environ.get("CERTSTREAM_TRIGGER"))
+    if trigger == "manual":
+        return True
+    existing = read_collection_health(path, allow_running=True)
+    if existing is None or existing["latestAttempt"] is None:
+        return True
+    latest_started = _parse_timestamp(existing["latestAttempt"]["startedAt"])
+    if latest_started is None:
+        return True
+    expected_interval = cast(int, existing["expectedIntervalSeconds"])
+    tolerance = _enabled_integer(
+        os.environ.get("CERTSTREAM_DUE_TOLERANCE_SECONDS"),
+        DEFAULT_DUE_TOLERANCE_SECONDS,
+        0,
+        min(300, expected_interval - 1),
+    )
+    minimum_gap = max(1, expected_interval - tolerance)
+    return (_utc(now) - latest_started).total_seconds() >= minimum_gap
+
+
+def begin_attempt_if_due(
+    path: str | Path | None = None,
+    *,
+    now: datetime | None = None,
+    trigger_value: str | None = None,
+) -> tuple[bool, Path]:
+    """Atomically decide against persisted timing, then initialize when due."""
+
+    target = _bounded_path(path)
+    if not attempt_is_due(path, now=now, trigger_value=trigger_value):
+        return False, target
+    begin_attempt(path, now=now, trigger_value=trigger_value)
+    return True, target
+
+
 def _metrics_fields(metrics: CollectionMetrics, listening_seconds: float | None = None) -> dict[str, object]:
     observed_listening = listening_seconds if listening_seconds is not None else metrics.listening_seconds
     return {
@@ -517,17 +586,31 @@ def finalize_workflow(path: str | Path | None = None, *, now: datetime | None = 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Maintain bounded public CertStream collection-health metadata.")
-    parser.add_argument("action", choices=("begin", "finalize"))
+    parser.add_argument("action", choices=("begin", "begin-if-due", "finalize"))
     return parser
 
 
 def main(arguments: list[str] | None = None) -> int:
     action = _parser().parse_args(arguments).action
     try:
-        target = begin_attempt() if action == "begin" else finalize_workflow()
+        due = True
+        if action == "begin":
+            target = begin_attempt()
+        elif action == "begin-if-due":
+            due, target = begin_attempt_if_due()
+        else:
+            target = finalize_workflow()
     except Exception as error:
         print(f"Collection-health update failed: {error}", file=sys.stderr)
         return 1
+    if action == "begin-if-due":
+        github_output = os.environ.get("GITHUB_OUTPUT", "").strip()
+        if github_output:
+            with Path(github_output).open("a", encoding="utf-8") as output:
+                output.write(f"due={'true' if due else 'false'}\n")
+        if not due:
+            print("A recent persisted CertStream attempt already owns this cadence window.", flush=True)
+            return 0
     print(f"Updated {target.relative_to(Path.cwd())}.", flush=True)
     return 0
 

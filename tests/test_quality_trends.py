@@ -133,6 +133,28 @@ def test_quality_metrics_reject_more_than_one_year() -> None:
         build_quality_metrics({}, {}, GENERATED_AT, window_days=366)
 
 
+def test_quality_metrics_count_dated_negative_outcomes_without_claiming_population_precision() -> None:
+    signal_id = "d" * 20
+    history = {"signals": [_history_signal(signal_id, "2026-08-24T00:00:00.000Z")]}
+    negative = _assessment(
+        "5" * 24,
+        signal_id,
+        "2026-08-24T12:00:00.000Z",
+        state="false-positive",
+    )
+    negative["dispositionReason"] = "lexical-collision"
+    negative["evidenceCodes"] = ["rdap"]
+    negative["revoked"] = False
+    result = build_quality_metrics({"assessments": [negative], "suppressions": []}, history, GENERATED_AT)
+    sample = result["reviewSample"]
+    assert isinstance(sample, dict)
+    assert sample["outcomes"] == {"false-positive": 1}
+    precision = result["precision"]
+    assert isinstance(precision, dict)
+    assert precision["available"] is False
+    assert "probability sample" in str(precision["reason"])
+
+
 def _event(
     event_id: str,
     signal_id: str,

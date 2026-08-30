@@ -16,10 +16,11 @@ concurrency:
 jobs:
   relay:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
       (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
       github.event.client_payload.source_conclusion == 'success' &&
-      github.event.client_payload.source_ref == 'main')
+      github.event.client_payload.source_ref == 'main'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -28,6 +29,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           MINIMUM_SYNC_AGE_SECONDS: "2700"
+          COLLECTION_OUTCOME: ${{ github.event.client_payload.collection_outcome || 'manual' }}
         shell: bash
         run: |
           runs="$(gh api \
@@ -36,15 +38,20 @@ jobs:
             "/repos/${REPOSITORY}/actions/workflows/sync-radar.yml/runs?per_page=20")"
 
           active="$(jq '[.workflow_runs[] | select(.status != "completed")] | length' <<<"${runs}")"
-          if [[ "${active}" -gt 0 ]]; then
+          queued="$(jq '[.workflow_runs[] | select(.status != "completed" and .status != "in_progress")] | length' <<<"${runs}")"
+          if [[ "${active}" -gt 0 && "${COLLECTION_OUTCOME}" != "healthy-matches" ]]; then
             echo "A snapshot sync is already queued or running; no relay dispatch is needed."
+            exit 0
+          fi
+          if [[ "${COLLECTION_OUTCOME}" == "healthy-matches" && "${queued}" -gt 0 ]]; then
+            echo "A follow-up snapshot sync is already queued and will read the candidate-producing commit."
             exit 0
           fi
 
           latest_success="$(jq -r \
             '[.workflow_runs[] | select(.status == "completed" and .conclusion == "success")] | sort_by(.updated_at) | last | .updated_at // empty' \
             <<<"${runs}")"
-          if [[ -n "${latest_success}" ]]; then
+          if [[ -n "${latest_success}" && "${COLLECTION_OUTCOME}" != "healthy-matches" ]]; then
             latest_epoch="$(date -u -d "${latest_success}" +%s)"
             now_epoch="$(date -u +%s)"
             age_seconds="$((now_epoch - latest_epoch))"
@@ -52,6 +59,10 @@ jobs:
               echo "The latest successful snapshot sync is ${age_seconds}s old; it is not due yet."
               exit 0
             fi
+          fi
+
+          if [[ "${COLLECTION_OUTCOME}" == "healthy-matches" ]]; then
+            echo "A collection produced candidates; requesting an immediate bounded snapshot sync."
           fi
 
           gh api --method POST \

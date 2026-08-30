@@ -1,8 +1,9 @@
-/* global URL, console */
+/* global URL, console, structuredClone */
 
 import { readFile } from "node:fs/promises";
 
 import { parseSnapshot } from "../src/lib/data.ts";
+import { parseCollectionHealth } from "../src/lib/collectionHealth.ts";
 
 const readJson = async (relative) => JSON.parse(await readFile(new URL(relative, import.meta.url), "utf8"));
 const snapshots = [
@@ -31,4 +32,46 @@ for (const unsupportedVersion of [1, 3]) {
   }
 }
 
-console.log("Validated live snapshot v2 compatibility and unsupported-version rejection in the browser loader.");
+const relayedCollectionHealth = await readJson("../tests/fixtures/collection-health-v1-relayed.json");
+const parsedCollectionHealth = parseCollectionHealth(relayedCollectionHealth);
+if (
+  parsedCollectionHealth.latestAttempt?.trigger !== "cadence-relay" ||
+  parsedCollectionHealth.latestAttempt.scheduleStatus !== "relayed"
+) {
+  throw new Error("The browser loader did not preserve CertStream relay provenance.");
+}
+
+const scheduledCollectionHealth = structuredClone(relayedCollectionHealth);
+Object.assign(scheduledCollectionHealth.latestAttempt, {
+  trigger: "schedule",
+  scheduledFor: scheduledCollectionHealth.latestAttempt.startedAt,
+  scheduleStatus: "scheduled",
+  delaySeconds: 0,
+});
+parseCollectionHealth(scheduledCollectionHealth);
+
+const invalidCollectionHealth = [
+  ["schedule trigger with relay status", { trigger: "schedule", scheduleStatus: "relayed" }],
+  ["relay trigger with unknown status", { trigger: "cadence-relay", scheduleStatus: "unknown" }],
+  ["manual trigger with unknown status", { trigger: "manual", scheduleStatus: "unknown" }],
+  ["unknown trigger with manual status", { trigger: "unknown", scheduleStatus: "manual" }],
+  ["scheduled attempt with an inaccurate delay", {
+    trigger: "schedule",
+    scheduledFor: scheduledCollectionHealth.latestAttempt.startedAt,
+    scheduleStatus: "scheduled",
+    delaySeconds: 1,
+  }],
+];
+for (const [label, attemptPatch] of invalidCollectionHealth) {
+  const invalid = structuredClone(relayedCollectionHealth);
+  Object.assign(invalid.latestAttempt, attemptPatch);
+  let rejected = false;
+  try {
+    parseCollectionHealth(invalid);
+  } catch {
+    rejected = true;
+  }
+  if (!rejected) throw new Error(`The browser loader accepted ${label}.`);
+}
+
+console.log("Validated live snapshot v2 compatibility, exact collection-health scheduling provenance, and unsupported-version rejection in the browser loader.");

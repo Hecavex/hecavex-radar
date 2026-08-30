@@ -2,6 +2,7 @@ import { Archive, Database, Filter, History, RotateCcw, Search, ShieldCheck } fr
 import { useEffect, useMemo, useState } from "react";
 
 import { formatDateTime, formatNumber, formatRelativeTime, sentenceCase } from "../lib/format.ts";
+import { foldSearchText } from "../lib/searchText.ts";
 import { SIGNAL_STATUSES, type RadarHistory, type SignalStatus } from "../types.ts";
 
 const PAGE_SIZE = 25;
@@ -18,12 +19,12 @@ export function HistoryDashboard({ history, now = Date.now() }: { history: Radar
     [history.signals],
   );
   const filtered = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase();
+    const needle = foldSearchText(query.trim());
     return history.signals.filter(
       (signal) =>
         (brand === "all" || signal.brand === brand) &&
         (status === "all" || signal.latestStatus === status) &&
-        (!needle || `${signal.domain} ${signal.brand} ${signal.sources.join(" ")}`.toLocaleLowerCase().includes(needle)),
+        (!needle || foldSearchText(`${signal.domain} ${signal.brand} ${signal.sources.join(" ")}`).includes(needle)),
     );
   }, [brand, history.signals, query, status]);
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));

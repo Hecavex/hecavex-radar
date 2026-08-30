@@ -15,6 +15,8 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal, TypedDict, cast
 
+from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
+
 from .brands import (
     BrandRegistry,
     domain_match_brands,
@@ -25,6 +27,7 @@ from .brands import (
 )
 from .models import LithuanianRelevance, RadarSignal, RawSignal, ReviewState
 from .provenance import normalize_reason_codes, reason_codes_from_match
+from .public_schemas import RADAR_INDEX_SCHEMA, RADAR_SCHEMA, RADAR_SHARD_SCHEMA
 from .safety import defang_host, parse_and_defang_url, refang, stable_id
 
 MAXIMUM_PUBLIC_BYTES = 2 * 1024 * 1024
@@ -32,6 +35,14 @@ MAXIMUM_PUBLIC_RECORDS = 2_500
 MAXIMUM_NOTE_CHARACTERS = 2_000
 UTC_MILLISECONDS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 DECISION_ID = re.compile(r"^[a-f\d]{24}$")
+SIGNAL_ID = re.compile(r"^[a-f\d]{20}$")
+SHA256 = re.compile(r"^[a-f\d]{64}$")
+SHARD_PATH = re.compile(r"^/data/radar-shards/(?P<number>\d{4})\.json$")
+MAXIMUM_INDEX_BYTES = 256 * 1024
+MAXIMUM_SHARD_BYTES = 256 * 1024
+MAXIMUM_HISTORY_BYTES = 512 * 1024
+MAXIMUM_ADMISSION_SIGNALS = 25_000
+KNOWN_PUBLIC_SOURCES = frozenset({"CertStream", "URLScan", "HECAVEX"})
 LOCAL_ACTIONS = frozenset(
     {
         "false-positive",
@@ -44,6 +55,7 @@ LOCAL_ACTIONS = frozenset(
         "correct",
         "retract",
         "inconclusive",
+        "dismiss",
     }
 )
 SUPPRESSION_REASONS = frozenset(
@@ -86,7 +98,10 @@ CONFIRMATION_REASONS = frozenset(
 )
 INCONCLUSIVE_REASONS = frozenset({"insufficient-evidence", "conflicting-evidence", "review-expired"})
 RETRACTION_REASONS = frozenset({"incorrect-assessment", "superseded-evidence", "benign-after-review"})
-ASSESSMENT_REASONS = CONFIRMATION_REASONS | INCONCLUSIVE_REASONS | RETRACTION_REASONS
+NEGATIVE_ASSESSMENT_REASONS = SUPPRESSION_REASONS
+ASSESSMENT_REASONS = (
+    CONFIRMATION_REASONS | INCONCLUSIVE_REASONS | RETRACTION_REASONS | NEGATIVE_ASSESSMENT_REASONS
+)
 EVIDENCE_CODES = frozenset(
     {
         "certificate-transparency",
@@ -125,6 +140,15 @@ class PublicCandidate(TypedDict):
     reasonCodes: list[str]
 
 
+class AssessmentAdmissionSource(TypedDict):
+    signalId: str
+    domain: str
+    brand: str
+    observedAt: str
+    sources: list[str]
+    digest: str
+
+
 class PublicAssessment(TypedDict):
     id: str
     signalId: str
@@ -139,10 +163,11 @@ class PublicAssessment(TypedDict):
     expiresAt: str | None
     analystConfidence: int | None
     revoked: bool
+    admissionSource: AssessmentAdmissionSource
 
 
 class PublicReviewExport(TypedDict):
-    schemaVersion: Literal[2]
+    schemaVersion: Literal[3]
     dataset: Literal["radar-review-decisions"]
     generatedAt: str
     suppressions: list[PublicSuppression]
@@ -169,6 +194,7 @@ class LocalReviewEvent:
     lt_relevance: str | None
     analyst_confidence: int | None
     reviewed_at: str | None
+    admission_source: str | None
 
 
 @dataclass(slots=True)
@@ -243,7 +269,7 @@ class PublicReviewPolicy:
             state: ReviewState = selected["reviewState"]
             if selected["revoked"]:
                 state = "inconclusive"
-            elif state == "confirmed-suspicious" and expires_at is not None and expires_at <= now.astimezone(UTC):
+            elif state != "inconclusive" and expires_at is not None and expires_at <= now.astimezone(UTC):
                 state = "needs-review"
             signal["reviewState"] = state
             signal["evidenceTier"] = "reviewed"
@@ -266,6 +292,131 @@ def _timestamp(value: object) -> datetime | None:
         return None
     canonical = parsed.astimezone(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
     return parsed if canonical == value else None
+
+
+def _admission_body(
+    signal_id: str,
+    domain: str,
+    brand: str,
+    observed_at: str,
+    sources: list[str],
+) -> dict[str, object]:
+    return {
+        "signalId": signal_id,
+        "domain": domain,
+        "brand": brand,
+        "observedAt": observed_at,
+        "sources": sources,
+    }
+
+
+def _admission_digest(body: dict[str, object]) -> str:
+    canonical = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _build_admission_source(
+    *,
+    signal_id: str,
+    domain: str,
+    brand: str,
+    observed_at: str,
+    sources: list[str],
+) -> AssessmentAdmissionSource:
+    body = _admission_body(signal_id, domain, brand, observed_at, sources)
+    return cast(AssessmentAdmissionSource, {**body, "digest": _admission_digest(body)})
+
+
+def valid_admission_source(
+    value: object,
+    *,
+    signal_id: str | None = None,
+    domain: str | None = None,
+    brand: str | None = None,
+    reviewed_at: str | None = None,
+) -> bool:
+    """Validate the self-contained public-observation admission envelope.
+
+    The digest detects accidental mutation. It is deliberately not described
+    as a signature or as proof that the observation was malicious.
+    """
+
+    fields = {"signalId", "domain", "brand", "observedAt", "sources", "digest"}
+    if not isinstance(value, dict) or set(value) != fields:
+        return False
+    raw_signal_id = value.get("signalId")
+    raw_domain = value.get("domain")
+    raw_brand = value.get("brand")
+    observed_at = value.get("observedAt")
+    raw_sources = value.get("sources")
+    digest = value.get("digest")
+    normalized = normalize_domain(refang(raw_domain)) if isinstance(raw_domain, str) else None
+    observed_value = _timestamp(observed_at)
+    reviewed_value = _timestamp(reviewed_at) if reviewed_at is not None else None
+    sources = (
+        cast(list[str], raw_sources)
+        if isinstance(raw_sources, list) and all(isinstance(item, str) for item in raw_sources)
+        else []
+    )
+    body = _admission_body(
+        raw_signal_id if isinstance(raw_signal_id, str) else "",
+        raw_domain if isinstance(raw_domain, str) else "",
+        raw_brand if isinstance(raw_brand, str) else "",
+        observed_at if isinstance(observed_at, str) else "",
+        sources,
+    )
+    return bool(
+        isinstance(raw_signal_id, str)
+        and SIGNAL_ID.fullmatch(raw_signal_id)
+        and normalized is not None
+        and raw_domain == defang_host(normalized)
+        and raw_signal_id == stable_id(raw_domain.lower())
+        and isinstance(raw_brand, str)
+        and 0 < len(raw_brand) <= 120
+        and raw_brand.strip() == raw_brand
+        and all(character.isprintable() for character in raw_brand)
+        and observed_value is not None
+        and (reviewed_at is None or (reviewed_value is not None and observed_value <= reviewed_value))
+        and 0 < len(sources) <= len(KNOWN_PUBLIC_SOURCES)
+        and sources == sorted(set(sources))
+        and all(source in KNOWN_PUBLIC_SOURCES for source in sources)
+        and isinstance(digest, str)
+        and SHA256.fullmatch(digest)
+        and digest == _admission_digest(body)
+        and (signal_id is None or raw_signal_id == signal_id)
+        and (domain is None or raw_domain == domain)
+        and (brand is None or raw_brand == brand)
+    )
+
+
+def _serialize_admission_source(value: AssessmentAdmissionSource | str | None) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        try:
+            parsed: object = json.loads(value)
+        except json.JSONDecodeError as error:
+            raise ValueError("Assessment admission source is invalid JSON.") from error
+        canonical = json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if canonical != value or not valid_admission_source(parsed):
+            raise ValueError("Assessment admission source is invalid or non-canonical.")
+        return value
+    if not valid_admission_source(value):
+        raise ValueError("Assessment admission source is invalid.")
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _deserialize_admission_source(value: str | None) -> AssessmentAdmissionSource | None:
+    if value is None:
+        return None
+    try:
+        parsed: object = json.loads(value)
+    except json.JSONDecodeError:
+        return None
+    if not valid_admission_source(parsed):
+        return None
+    canonical = json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return cast(AssessmentAdmissionSource, parsed) if canonical == value else None
 
 
 def _default_database_path() -> Path:
@@ -324,6 +475,7 @@ def _connect(path: Path) -> sqlite3.Connection:
         ("lt_relevance", "TEXT"),
         ("analyst_confidence", "INTEGER"),
         ("reviewed_at", "TEXT"),
+        ("admission_source", "TEXT"),
     ):
         if name not in existing_columns:
             connection.execute(f"ALTER TABLE review_events ADD COLUMN {name} {declaration}")  # noqa: S608
@@ -372,6 +524,7 @@ def record_review_event(
     lt_relevance: str | None = None,
     analyst_confidence: int | None = None,
     reviewed_at: str | None = None,
+    admission_source: AssessmentAdmissionSource | str | None = None,
 ) -> LocalReviewEvent:
     if action not in LOCAL_ACTIONS:
         raise ValueError("Unknown review action.")
@@ -396,6 +549,20 @@ def record_review_event(
         raise ValueError("Analyst confidence must be an integer from 0 to 100.")
     if reviewed_at is not None and _timestamp(reviewed_at) is None:
         raise ValueError("Review origin must be a canonical UTC timestamp.")
+    canonical_admission = _serialize_admission_source(admission_source)
+    parsed_admission = _deserialize_admission_source(canonical_admission)
+    if canonical_admission is not None and (
+        brand is None
+        or reviewed_at is None
+        or not valid_admission_source(
+            parsed_admission,
+            signal_id=stable_id(defang_host(normalized).lower()),
+            domain=defang_host(normalized),
+            brand=brand,
+            reviewed_at=reviewed_at,
+        )
+    ):
+        raise ValueError("Assessment admission source does not match the review event.")
     canonical = json.dumps(
         {
             "recordedAt": timestamp,
@@ -412,6 +579,7 @@ def record_review_event(
             "ltRelevance": lt_relevance,
             "analystConfidence": analyst_confidence,
             "reviewedAt": reviewed_at,
+            "admissionSource": canonical_admission,
             "nonce": secrets.token_hex(8),
         },
         ensure_ascii=False,
@@ -425,8 +593,9 @@ def record_review_event(
             """
             INSERT INTO review_events (
                 event_id, recorded_at, action, domain, url, brand, scope, reason_code, confidence, note,
-                review_state, evidence_codes, expires_at, lt_relevance, analyst_confidence, reviewed_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                review_state, evidence_codes, expires_at, lt_relevance, analyst_confidence, reviewed_at,
+                admission_source
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 event_id,
@@ -445,6 +614,7 @@ def record_review_event(
                 lt_relevance,
                 analyst_confidence,
                 reviewed_at,
+                canonical_admission,
             ),
         )
         if cursor.lastrowid is None:
@@ -468,6 +638,7 @@ def record_review_event(
         lt_relevance=lt_relevance,
         analyst_confidence=analyst_confidence,
         reviewed_at=reviewed_at,
+        admission_source=canonical_admission,
     )
 
 
@@ -480,7 +651,7 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
             """
             SELECT sequence, event_id, recorded_at, action, domain, url, brand, scope,
                    reason_code, confidence, note, review_state, evidence_codes,
-                   expires_at, lt_relevance, analyst_confidence, reviewed_at
+                   expires_at, lt_relevance, analyst_confidence, reviewed_at, admission_source
             FROM review_events ORDER BY sequence ASC
             """
         ).fetchall()
@@ -501,6 +672,9 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
             code not in EVIDENCE_CODES for code in evidence_codes
         ):
             raise ValueError("Private review database contains unsupported evidence metadata.")
+        admission_source = row["admission_source"]
+        if admission_source is not None and _deserialize_admission_source(admission_source) is None:
+            raise ValueError("Private review database contains invalid assessment admission metadata.")
         events.append(
             LocalReviewEvent(
                 sequence=row["sequence"],
@@ -520,6 +694,7 @@ def read_review_events(database: str | Path) -> list[LocalReviewEvent]:
                 lt_relevance=row["lt_relevance"],
                 analyst_confidence=row["analyst_confidence"],
                 reviewed_at=row["reviewed_at"],
+                admission_source=admission_source,
             )
         )
     return events
@@ -546,10 +721,18 @@ def review_state(events: list[LocalReviewEvent]) -> LocalReviewState:
             state.candidates[event.domain] = event
         elif event.action == "remove":
             state.candidates.pop(event.domain, None)
-        elif event.action in {"confirm", "correct", "retract", "inconclusive"}:
+        elif event.action in {"confirm", "correct", "retract", "inconclusive", "dismiss"}:
+            lifecycle_key = (event.domain, event.reviewed_at) if event.reviewed_at is not None else None
+            previous_lifecycle = (
+                state.assessment_lifecycles.get(lifecycle_key) if lifecycle_key is not None else None
+            )
+            if event.action in {"correct", "retract"} and (
+                previous_lifecycle is None or event.admission_source != previous_lifecycle.admission_source
+            ):
+                raise ValueError("Assessment correction or retraction changed its immutable admission source.")
             state.assessments[event.domain] = event
-            if event.reviewed_at is not None:
-                state.assessment_lifecycles[(event.domain, event.reviewed_at)] = event
+            if lifecycle_key is not None:
+                state.assessment_lifecycles[lifecycle_key] = event
     return state
 
 
@@ -596,28 +779,47 @@ def _candidate(event: LocalReviewEvent, registry: BrandRegistry) -> PublicCandid
 
 
 def _assessment(event: LocalReviewEvent, registry: BrandRegistry) -> PublicAssessment | None:
-    match = score_domain(event.domain, registry)
+    # Assessments describe a signal that was actually reviewed.  Its stored
+    # brand is part of that dated review record, so later matcher tightening
+    # must not make the lifecycle impossible to export.  This is intentionally
+    # different from a new manual candidate, which still has to pass
+    # ``score_domain`` in ``_candidate`` and in the CLI admission path.
+    reviewed_brand = resolve_brand_name(event.brand, registry)
     reviewed_at = _timestamp(event.reviewed_at)
     modified_at = _timestamp(event.recorded_at)
     expires_at = _timestamp(event.expires_at) if event.expires_at is not None else None
+    admission = _deserialize_admission_source(event.admission_source)
     if (
-        match is None
-        or event.brand != match.brand
+        reviewed_brand is None
+        or event.brand != reviewed_brand
         or event.review_state not in REVIEW_STATES
-        or event.review_state in {"unreviewed", "false-positive", "benign-brand-reference"}
+        or event.review_state == "unreviewed"
         or event.reason_code not in ASSESSMENT_REASONS
         or event.lt_relevance not in LT_RELEVANCE
         or reviewed_at is None
         or modified_at is None
+        or admission is None
+        or not valid_admission_source(
+            admission,
+            signal_id=stable_id(defang_host(event.domain).lower()),
+            domain=defang_host(event.domain),
+            brand=reviewed_brand,
+            reviewed_at=event.reviewed_at,
+        )
         or reviewed_at > modified_at
         or (expires_at is not None and expires_at <= reviewed_at)
-        or (event.action in {"confirm", "correct", "retract"} and expires_at is None)
-        or (event.action in {"confirm", "correct", "retract"} and not event.evidence_codes)
+        or (event.action in {"confirm", "correct", "retract", "dismiss"} and expires_at is None)
+        or (event.action in {"confirm", "correct", "retract", "dismiss"} and not event.evidence_codes)
         or (event.action in {"confirm", "correct"} and event.review_state != "confirmed-suspicious")
         or (event.action in {"retract", "inconclusive"} and event.review_state != "inconclusive")
+        or (
+            event.action == "dismiss"
+            and event.review_state not in {"false-positive", "benign-brand-reference"}
+        )
+        or (event.action == "dismiss" and event.reason_code not in NEGATIVE_ASSESSMENT_REASONS)
     ):
         return None
-    signal_id = stable_id(defang_host(event.domain).lower())
+    signal_id = admission["signalId"]
     identity: dict[str, object] = {
         "signalId": signal_id,
         "domain": defang_host(event.domain),
@@ -629,7 +831,7 @@ def _assessment(event: LocalReviewEvent, registry: BrandRegistry) -> PublicAsses
             "id": _decision_identifier(identity),
             "signalId": signal_id,
             "domain": defang_host(event.domain),
-            "brand": match.brand,
+            "brand": reviewed_brand,
             "reviewState": cast(ReviewState, event.review_state),
             "dispositionReason": event.reason_code,
             "evidenceCodes": list(event.evidence_codes),
@@ -639,6 +841,7 @@ def _assessment(event: LocalReviewEvent, registry: BrandRegistry) -> PublicAsses
             "expiresAt": event.expires_at,
             "analystConfidence": event.analyst_confidence,
             "revoked": event.action == "retract",
+            "admissionSource": admission,
         },
     )
 
@@ -686,7 +889,7 @@ def build_public_export(
     if len(assessments) > MAXIMUM_PUBLIC_RECORDS:
         raise ValueError("Sanitized review export contains too many assessments.")
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "dataset": "radar-review-decisions",
         "generatedAt": timestamp,
         "suppressions": suppressions,
@@ -839,17 +1042,22 @@ def _valid_assessment(value: object, registry: BrandRegistry, now: datetime) -> 
         "expiresAt",
         "analystConfidence",
         "revoked",
+        "admissionSource",
     }
     if not isinstance(value, dict) or set(value) != fields:
         return False
     domain_value = value.get("domain")
     normalized = normalize_domain(refang(domain_value)) if isinstance(domain_value, str) else None
-    match = score_domain(normalized, registry) if normalized else None
+    brand_value = value.get("brand")
+    reviewed_brand = resolve_brand_name(brand_value, registry) if isinstance(brand_value, str) else None
     reviewed_at = _timestamp(value.get("reviewedAt"))
     modified_at = _timestamp(value.get("modifiedAt"))
     expires_at = _timestamp(value.get("expiresAt")) if value.get("expiresAt") is not None else None
     evidence = value.get("evidenceCodes")
     analyst_confidence = value.get("analystConfidence")
+    review_state_value = value.get("reviewState")
+    disposition_reason = value.get("dispositionReason")
+    revoked = value.get("revoked")
     identity = {
         "signalId": value.get("signalId"),
         "domain": value.get("domain"),
@@ -859,24 +1067,45 @@ def _valid_assessment(value: object, registry: BrandRegistry, now: datetime) -> 
         normalized
         and domain_value == defang_host(normalized)
         and value.get("signalId") == stable_id(domain_value.lower())
-        and match is not None
-        and value.get("brand") == match.brand
-        and value.get("reviewState") in REVIEW_STATES
-        and value.get("reviewState") not in {"unreviewed", "false-positive", "benign-brand-reference"}
-        and value.get("dispositionReason") in ASSESSMENT_REASONS
+        and reviewed_brand is not None
+        and brand_value == reviewed_brand
+        and valid_admission_source(
+            value.get("admissionSource"),
+            signal_id=value.get("signalId") if isinstance(value.get("signalId"), str) else None,
+            domain=domain_value if isinstance(domain_value, str) else None,
+            brand=brand_value if isinstance(brand_value, str) else None,
+            reviewed_at=value.get("reviewedAt") if isinstance(value.get("reviewedAt"), str) else None,
+        )
+        and review_state_value in REVIEW_STATES
+        and review_state_value != "unreviewed"
+        and disposition_reason in ASSESSMENT_REASONS
+        and (
+            (review_state_value == "confirmed-suspicious" and disposition_reason in CONFIRMATION_REASONS)
+            or (
+                review_state_value in {"false-positive", "benign-brand-reference"}
+                and disposition_reason in NEGATIVE_ASSESSMENT_REASONS
+            )
+            or (
+                review_state_value == "inconclusive"
+                and (
+                    (revoked is True and disposition_reason in RETRACTION_REASONS)
+                    or (revoked is False and disposition_reason in INCONCLUSIVE_REASONS)
+                )
+            )
+        )
         and isinstance(evidence, list)
         and evidence == sorted(set(evidence))
         and all(isinstance(item, str) and item in EVIDENCE_CODES for item in evidence)
-        and (value.get("reviewState") == "inconclusive" or bool(evidence))
+        and (review_state_value == "inconclusive" or bool(evidence))
         and value.get("ltRelevance") in LT_RELEVANCE
         and reviewed_at is not None
         and modified_at is not None
         and reviewed_at <= modified_at <= now.astimezone(UTC) + timedelta(minutes=5)
         and (expires_at is None or expires_at > reviewed_at)
         and (analyst_confidence is None or (type(analyst_confidence) is int and 0 <= analyst_confidence <= 100))
-        and type(value.get("revoked")) is bool
-        and (not value["revoked"] or value.get("reviewState") == "inconclusive")
-        and (value.get("reviewState") == "inconclusive" and not value["revoked"] or expires_at is not None)
+        and type(revoked) is bool
+        and (revoked is not True or review_state_value == "inconclusive")
+        and (review_state_value == "inconclusive" and revoked is False or expires_at is not None)
         and isinstance(value.get("id"), str)
         and DECISION_ID.fullmatch(value["id"])
         and value["id"] == _decision_identifier(identity)
@@ -909,19 +1138,20 @@ def load_public_review(
     if (
         not isinstance(value, dict)
         or set(value) != expected_keys
-        or schema_version not in {1, 2}
+        or schema_version not in {1, 2, 3}
         or value.get("dataset") != "radar-review-decisions"
         or _timestamp(value.get("generatedAt")) is None
         or not isinstance(value.get("suppressions"), list)
         or not isinstance(value.get("candidates"), list)
-        or (schema_version == 2 and not isinstance(value.get("assessments"), list))
+        or (schema_version in {2, 3} and not isinstance(value.get("assessments"), list))
         or len(value["suppressions"]) > MAXIMUM_PUBLIC_RECORDS
         or len(value["candidates"]) > MAXIMUM_PUBLIC_RECORDS
-        or (schema_version == 2 and len(value["assessments"]) > MAXIMUM_PUBLIC_RECORDS)
+        or (schema_version in {2, 3} and len(value["assessments"]) > MAXIMUM_PUBLIC_RECORDS)
+        or (schema_version == 2 and bool(value["assessments"]))
         or not all(_valid_suppression(item, brand_registry) for item in value["suppressions"])
         or not all(_valid_candidate(item, brand_registry, reference) for item in value["candidates"])
         or (
-            schema_version == 2
+            schema_version == 3
             and not all(_valid_assessment(item, brand_registry, reference) for item in value["assessments"])
         )
     ):
@@ -952,6 +1182,208 @@ def _indicator(value: str) -> tuple[str, str]:
     if normalized is None:
         raise ValueError("Indicator must contain a valid domain.")
     return normalized, refang(safe.display_url)
+
+
+def _read_bounded_json(path: Path, maximum_bytes: int) -> object | None:
+    try:
+        size = path.stat().st_size
+    except FileNotFoundError:
+        return None
+    except OSError as error:
+        raise ValueError(f"Could not inspect public admission artifact {path.name}.") from error
+    if not 0 < size <= maximum_bytes:
+        raise ValueError(f"Public admission artifact {path.name} is empty or oversized.")
+    try:
+        return cast(object, json.loads(path.read_text(encoding="utf-8")))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError(f"Public admission artifact {path.name} is unreadable or invalid JSON.") from error
+
+
+def _schema_matches(value: object, schema: dict[str, object]) -> bool:
+    return not any(Draft202012Validator(schema).iter_errors(value))
+
+
+def _complete_current_signals() -> list[dict[str, object]]:
+    public_data = (PROJECT_ROOT / "public" / "data").resolve()
+    index_path = public_data / "radar.index.json"
+    index = _read_bounded_json(index_path, MAXIMUM_INDEX_BYTES)
+    if index is None:
+        snapshot = _read_bounded_json(public_data / "radar.json", 512 * 1024)
+        if snapshot is None:
+            return []
+        if not _schema_matches(snapshot, RADAR_SCHEMA):
+            raise ValueError("The current public Radar snapshot cannot prove assessment admission.")
+        return cast(list[dict[str, object]], cast(dict[str, object], snapshot)["signals"])
+    if not _schema_matches(index, RADAR_INDEX_SCHEMA):
+        raise ValueError("The current public Radar signal index cannot prove assessment admission.")
+    typed_index = cast(dict[str, object], index)
+    signal_count = cast(int, typed_index["signalCount"])
+    raw_shards = cast(list[object], typed_index["shards"])
+    if signal_count > MAXIMUM_ADMISSION_SIGNALS or len(raw_shards) > MAXIMUM_ADMISSION_SIGNALS:
+        raise ValueError("The current public Radar signal index exceeds the admission boundary.")
+    signals: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for expected_number, raw_row in enumerate(raw_shards, start=1):
+        row = cast(dict[str, object], raw_row)
+        path_value = cast(str, row["path"])
+        path_match = SHARD_PATH.fullmatch(path_value)
+        if path_match is None or int(path_match.group("number")) != expected_number or row["number"] != expected_number:
+            raise ValueError("The current public Radar signal index contains an unsafe or non-sequential shard.")
+        shard_path = (PROJECT_ROOT / "public" / path_value.removeprefix("/")).resolve()
+        shard_root = (public_data / "radar-shards").resolve()
+        if shard_path.parent != shard_root:
+            raise ValueError("The current public Radar signal index contains an unsafe shard path.")
+        try:
+            body = shard_path.read_bytes()
+        except OSError as error:
+            raise ValueError("A current public Radar signal shard is unavailable.") from error
+        if (
+            not body
+            or len(body) > MAXIMUM_SHARD_BYTES
+            or len(body) != row["bytes"]
+            or hashlib.sha256(body).hexdigest() != row["sha256"]
+        ):
+            raise ValueError("A current public Radar signal shard does not match its index digest.")
+        try:
+            shard: object = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise ValueError("A current public Radar signal shard is not valid JSON.") from error
+        if not _schema_matches(shard, RADAR_SHARD_SCHEMA):
+            raise ValueError("A current public Radar signal shard cannot prove assessment admission.")
+        typed_shard = cast(dict[str, object], shard)
+        shard_signals = cast(list[dict[str, object]], typed_shard["signals"])
+        identifiers = [cast(str, signal["id"]) for signal in shard_signals]
+        if (
+            typed_shard["generatedAt"] != typed_index["generatedAt"]
+            or typed_shard["shard"] != expected_number
+            or len(shard_signals) != row["signals"]
+            or not identifiers
+            or identifiers[0] != row["firstSignalId"]
+            or identifiers[-1] != row["lastSignalId"]
+            or any(identifier in seen for identifier in identifiers)
+        ):
+            raise ValueError("A current public Radar signal shard conflicts with its index row.")
+        signals.extend(shard_signals)
+        seen.update(identifiers)
+    if len(signals) != signal_count:
+        raise ValueError("The current public Radar signal index count is inconsistent.")
+    return signals
+
+
+def _history_signals(registry: BrandRegistry) -> list[dict[str, object]]:
+    history = _read_bounded_json(PROJECT_ROOT / "public" / "data" / "history.json", MAXIMUM_HISTORY_BYTES)
+    if history is None:
+        return []
+    if (
+        not isinstance(history, dict)
+        or history.get("schemaVersion") != 1
+        or history.get("dataset") != "history"
+        or _timestamp(history.get("generatedAt")) is None
+        or not isinstance(history.get("signals"), list)
+        or len(history["signals"]) > MAXIMUM_ADMISSION_SIGNALS
+    ):
+        raise ValueError("The bounded public Radar history cannot prove assessment admission.")
+    generated = cast(datetime, _timestamp(history["generatedAt"]))
+    signals: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for raw in history["signals"]:
+        if not isinstance(raw, dict):
+            raise ValueError("The bounded public Radar history contains an invalid signal.")
+        signal_id = raw.get("id")
+        domain = raw.get("domain")
+        brand = raw.get("brand")
+        first_seen = _timestamp(raw.get("firstSeen"))
+        last_seen = _timestamp(raw.get("lastSeen"))
+        sources = raw.get("sources")
+        normalized = normalize_domain(refang(domain)) if isinstance(domain, str) else None
+        canonical_brand = resolve_brand_name(brand, registry) if isinstance(brand, str) else None
+        if (
+            not isinstance(signal_id, str)
+            or not SIGNAL_ID.fullmatch(signal_id)
+            or normalized is None
+            or domain != defang_host(normalized)
+            or signal_id != stable_id(domain.lower())
+            or signal_id in seen
+            or canonical_brand is None
+            or brand != canonical_brand
+            or first_seen is None
+            or last_seen is None
+            or first_seen > last_seen
+            or last_seen > generated + timedelta(minutes=5)
+            or not isinstance(sources, list)
+            or not sources
+            or sources != sorted(set(sources))
+            or any(not isinstance(source, str) or source not in KNOWN_PUBLIC_SOURCES for source in sources)
+        ):
+            raise ValueError("The bounded public Radar history contains an invalid signal identity.")
+        seen.add(signal_id)
+        signals.append(cast(dict[str, object], raw))
+    return signals
+
+
+def _admission_from_signal(
+    signal: dict[str, object],
+    domain: str,
+    registry: BrandRegistry,
+    reviewed_at: str,
+) -> AssessmentAdmissionSource | None:
+    display_domain = signal.get("domain")
+    if display_domain != defang_host(domain):
+        return None
+    signal_id = signal.get("id")
+    raw_brand = signal.get("brand")
+    canonical_brand = resolve_brand_name(raw_brand, registry) if isinstance(raw_brand, str) else None
+    sources = signal.get("sources")
+    reviewed_value = _timestamp(reviewed_at)
+    first_seen = _timestamp(signal.get("firstSeen"))
+    last_seen = _timestamp(signal.get("lastSeen"))
+    if (
+        reviewed_value is None
+        or not isinstance(signal_id, str)
+        or not SIGNAL_ID.fullmatch(signal_id)
+        or signal_id != stable_id(display_domain.lower())
+        or canonical_brand is None
+        or raw_brand != canonical_brand
+        or not isinstance(sources, list)
+        or not sources
+        or not all(isinstance(source, str) for source in sources)
+        or cast(list[str], sources) != sorted(set(cast(list[str], sources)))
+        or any(source not in KNOWN_PUBLIC_SOURCES for source in cast(list[str], sources))
+        or first_seen is None
+        or last_seen is None
+        or first_seen > last_seen
+    ):
+        raise ValueError("A published Radar observation has invalid assessment-admission metadata.")
+    observed = last_seen if last_seen <= reviewed_value else first_seen
+    if observed > reviewed_value:
+        return None
+    observed_at = observed.astimezone(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+    return _build_admission_source(
+        signal_id=signal_id,
+        domain=display_domain,
+        brand=canonical_brand,
+        observed_at=observed_at,
+        sources=cast(list[str], sources),
+    )
+
+
+def _assessment_admission(
+    domain: str,
+    registry: BrandRegistry,
+    reviewed_at: str,
+) -> AssessmentAdmissionSource | None:
+    for signals in (_complete_current_signals(), _history_signals(registry)):
+        admissions = [
+            admission
+            for signal in signals
+            if (admission := _admission_from_signal(signal, domain, registry, reviewed_at)) is not None
+        ]
+        unique = {admission["digest"]: admission for admission in admissions}
+        if len(unique) > 1:
+            raise ValueError("Published Radar observations conflict for this assessment target.")
+        if unique:
+            return next(iter(unique.values()))
+    return None
 
 
 def _current_brand(domain: str, registry: BrandRegistry) -> str | None:
@@ -1046,6 +1478,20 @@ def _parser() -> argparse.ArgumentParser:
     inconclusive.add_argument("--reason", choices=sorted(INCONCLUSIVE_REASONS), required=True)
     inconclusive.add_argument("--evidence", action="append", choices=sorted(EVIDENCE_CODES))
     inconclusive.add_argument("--lt-relevance", choices=sorted(LT_RELEVANCE), default="unknown")
+    dismiss = assessment(
+        "dismiss",
+        "Record a dated false-positive or benign brand-reference assessment without erasing the candidate history.",
+    )
+    dismiss.add_argument(
+        "--state",
+        choices=("false-positive", "benign-brand-reference"),
+        required=True,
+    )
+    dismiss.add_argument("--reason", choices=sorted(NEGATIVE_ASSESSMENT_REASONS), required=True)
+    dismiss.add_argument("--evidence", action="append", choices=sorted(EVIDENCE_CODES), required=True)
+    dismiss.add_argument("--expires-at", required=True, help="Canonical UTC timestamp with milliseconds.")
+    dismiss.add_argument("--lt-relevance", choices=sorted(LT_RELEVANCE), default="unknown")
+    dismiss.add_argument("--analyst-confidence", type=int)
     list_command = subparsers.add_parser("list", help="List active local review state without private notes.")
     list_command.add_argument("--events", action="store_true", help="List event metadata instead of active state.")
     export = subparsers.add_parser("export", help="Write sanitized public review state to Git data/review/.")
@@ -1151,16 +1597,38 @@ def main(argv: list[str] | None = None) -> int:
             if domain not in state.candidates:
                 raise ValueError("No active locally added candidate exists for this domain.")
             record_review_event(database, action=action, domain=domain, note=args.note)
-        elif action in {"confirm", "correct", "retract", "inconclusive"}:
-            inferred = _current_brand(domain, registry)
-            brand = _resolved_requested_brand(args.brand, inferred, registry)
-            if brand is None:
-                raise ValueError("Assessment targets must match the registry or current public snapshot.")
+        elif action in {"confirm", "correct", "retract", "inconclusive", "dismiss"}:
             current = state.assessments.get(domain)
             event_time = _now()
             event_value = _timestamp(event_time)
             if event_value is None:  # pragma: no cover - generated internally
                 raise ValueError("Could not create a canonical review timestamp.")
+            if action in {"correct", "retract"}:
+                if current is None:
+                    raise ValueError("A correction or retraction requires an existing assessment lifecycle.")
+                inferred = resolve_brand_name(current.brand, registry)
+                admission = _deserialize_admission_source(current.admission_source)
+                if (
+                    inferred is None
+                    or admission is None
+                    or current.reviewed_at is None
+                    or not valid_admission_source(
+                        admission,
+                        signal_id=stable_id(defang_host(domain).lower()),
+                        domain=defang_host(domain),
+                        brand=inferred,
+                        reviewed_at=current.reviewed_at,
+                    )
+                ):
+                    raise ValueError("The existing assessment has no verified immutable admission source.")
+                admission_source: AssessmentAdmissionSource | str = cast(str, current.admission_source)
+            else:
+                admission = _assessment_admission(domain, registry, event_time)
+                if admission is None:
+                    raise ValueError("Assessment targets must be an exact current or retained public Radar signal.")
+                inferred = admission["brand"]
+                admission_source = admission
+            brand = _resolved_requested_brand(args.brand, inferred, registry)
             current_expiry = _timestamp(current.expires_at) if current and current.expires_at else None
             current_expired = current_expiry is not None and current_expiry <= event_value
             if action == "confirm":
@@ -1188,6 +1656,7 @@ def main(argv: list[str] | None = None) -> int:
                     lt_relevance=args.lt_relevance,
                     analyst_confidence=args.analyst_confidence,
                     reviewed_at=event_time,
+                    admission_source=admission_source,
                 )
             elif action == "correct":
                 if (
@@ -1228,6 +1697,7 @@ def main(argv: list[str] | None = None) -> int:
                         args.analyst_confidence if args.analyst_confidence is not None else current.analyst_confidence
                     ),
                     reviewed_at=current.reviewed_at,
+                    admission_source=admission_source,
                 )
             elif action == "retract":
                 if current is None or current.review_state != "confirmed-suspicious" or current.action == "retract":
@@ -1246,8 +1716,9 @@ def main(argv: list[str] | None = None) -> int:
                     lt_relevance=current.lt_relevance,
                     analyst_confidence=current.analyst_confidence,
                     reviewed_at=current.reviewed_at,
+                    admission_source=admission_source,
                 )
-            else:
+            elif action == "inconclusive":
                 if (
                     current is not None
                     and current.review_state == "confirmed-suspicious"
@@ -1266,6 +1737,33 @@ def main(argv: list[str] | None = None) -> int:
                     evidence_codes=args.evidence or (),
                     lt_relevance=args.lt_relevance,
                     reviewed_at=event_time,
+                    admission_source=admission_source,
+                )
+            else:
+                if (
+                    current is not None
+                    and current.review_state == "confirmed-suspicious"
+                    and current.action != "retract"
+                ):
+                    raise ValueError("Use retract before recording a negative assessment for a confirmed signal.")
+                expires = _timestamp(args.expires_at)
+                if expires is None or expires <= event_value:
+                    raise ValueError("Negative assessment expiry must be a future canonical UTC timestamp.")
+                record_review_event(
+                    database,
+                    action=action,
+                    domain=domain,
+                    brand=brand,
+                    reason_code=args.reason,
+                    note=args.note,
+                    recorded_at=event_time,
+                    review_state=args.state,
+                    evidence_codes=args.evidence,
+                    expires_at=args.expires_at,
+                    lt_relevance=args.lt_relevance,
+                    analyst_confidence=args.analyst_confidence,
+                    reviewed_at=event_time,
+                    admission_source=admission_source,
                 )
         else:
             raise ValueError("Unknown review command.")

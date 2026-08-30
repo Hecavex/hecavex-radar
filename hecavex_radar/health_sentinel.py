@@ -156,23 +156,55 @@ def _evaluate_urlscan(repository: Path, now: datetime, findings: list[HealthFind
         return
     if state.get("configured") is not True:
         return
-    age = _age_seconds(state.get("lastRunAt"), now)
-    if age is None or age > 6 * 60 * 60:
+    attempt_age = _age_seconds(state.get("lastRunAt"), now)
+    consecutive = state.get("consecutiveFailures")
+    degraded_age = _age_seconds(state.get("degradedSince"), now)
+    success_age = _age_seconds(state.get("lastSuccessAt"), now)
+    has_persisted_health = any(
+        field in state for field in ("lastSuccessAt", "consecutiveFailures", "degradedSince")
+    )
+    persisted_health_valid = (
+        type(consecutive) is int
+        and 0 <= consecutive <= 2_000_000_000
+        and (
+            (consecutive == 0 and state.get("degradedSince") is None)
+            or (consecutive > 0 and degraded_age is not None)
+        )
+    )
+    freshness_age = (
+        success_age if success_age is not None else degraded_age
+    ) if has_persisted_health and persisted_health_valid else attempt_age
+    if freshness_age is None or freshness_age > 6 * 60 * 60:
         findings.append(
             HealthFinding(
                 code="urlscan-stale",
                 source="URLScan",
-                summary="The two-hour URLScan hunt has no valid run within six hours.",
-                observed="no valid attempt" if age is None else f"age {age // 60} minutes",
+                summary="The two-hour URLScan hunt has no valid successful run within six hours.",
+                observed=(
+                    "no valid success"
+                    if freshness_age is None
+                    else f"successful-source age {freshness_age // 60} minutes"
+                ),
             )
         )
-    if state.get("lastOutcome") == "failed" and (age is None or age > 3 * 60 * 60):
+    persistent_failure = (
+        not persisted_health_valid
+        or cast(int, consecutive) >= 2
+        or degraded_age is None
+        or degraded_age > 3 * 60 * 60
+    ) if has_persisted_health else (attempt_age is None or attempt_age > 3 * 60 * 60)
+    if state.get("lastOutcome") == "failed" and persistent_failure:
         findings.append(
             HealthFinding(
                 code="urlscan-failed",
                 source="URLScan",
                 summary="The latest URLScan hunt remains failed after the next scheduled opportunity.",
-                observed="latest outcome failed",
+                observed=(
+                    f"{consecutive} consecutive failed runs; degraded "
+                    f"{degraded_age // 60 if degraded_age is not None else 'unknown'} minutes"
+                    if has_persisted_health and persisted_health_valid
+                    else "latest outcome failed; persistent health unavailable"
+                ),
             )
         )
     coverage = state.get("checkpointCoverage")
@@ -229,25 +261,65 @@ def _evaluate_ct_search(repository: Path, now: datetime, findings: list[HealthFi
             )
         )
         codes = []
-    age = _age_seconds(latest.get("endedAt"), now)
-    if age is None or age > 3 * 60 * 60:
+    attempt_age = _age_seconds(latest.get("endedAt"), now)
+    provider_health = state.get("providerHealth")
+    has_provider_health = isinstance(provider_health, dict)
+    consecutive: object = None
+    degraded_age: int | None = None
+    success_age: int | None = None
+    persisted_health_valid = False
+    if isinstance(provider_health, dict):
+        consecutive = provider_health.get("consecutiveFailures")
+        degraded_age = _age_seconds(provider_health.get("degradedSince"), now)
+        success_age = _age_seconds(provider_health.get("lastSuccessAt"), now)
+        persisted_health_valid = (
+            type(consecutive) is int
+            and 0 <= consecutive <= 2_000_000_000
+            and (
+                (consecutive == 0 and provider_health.get("degradedSince") is None)
+                or (consecutive > 0 and degraded_age is not None)
+            )
+        )
+    freshness_age = (
+        success_age if success_age is not None else degraded_age
+    ) if persisted_health_valid else attempt_age
+    if freshness_age is None or freshness_age > 3 * 60 * 60:
         findings.append(
             HealthFinding(
                 code="ct-search-stale",
                 source="crt.sh",
-                summary="The hourly checkpointed CT search has no valid run within three hours.",
-                observed="no valid attempt" if age is None else f"age {age // 60} minutes",
+                summary="The hourly checkpointed CT search has no valid successful provider run within three hours.",
+                observed=(
+                    "no valid success"
+                    if freshness_age is None
+                    else f"successful-provider age {freshness_age // 60} minutes"
+                ),
             )
         )
     outcome = latest.get("outcome")
-    if outcome in {"failed", "partial"} and (age is None or age > 90 * 60):
+    if persisted_health_valid:
+        failure_count = cast(int, consecutive)
+        persistent_failure = failure_count > 0 and (
+            failure_count >= 2 or degraded_age is None or degraded_age > 90 * 60
+        )
+    elif has_provider_health:
+        persistent_failure = True
+    else:
+        persistent_failure = attempt_age is None or attempt_age > 90 * 60
+    if outcome in {"failed", "partial"} and persistent_failure:
         suffix = ",".join(cast(list[str], codes)) if codes else "unclassified-legacy"
         findings.append(
             HealthFinding(
                 code="ct-search-degraded",
                 source="crt.sh",
                 summary="The checkpointed CT search remains degraded after another scheduled opportunity.",
-                observed=f"outcome {outcome}; failure codes {suffix}",
+                observed=(
+                    f"outcome {outcome}; {consecutive} consecutive provider failures; "
+                    f"degraded {degraded_age // 60 if degraded_age is not None else 'unknown'} minutes; "
+                    f"failure codes {suffix}"
+                    if persisted_health_valid
+                    else f"outcome {outcome}; failure codes {suffix}"
+                ),
             )
         )
 

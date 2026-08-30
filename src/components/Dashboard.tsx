@@ -11,10 +11,11 @@ import { FilterBar } from "./FilterBar.tsx";
 import { SignalTable } from "./SignalTable.tsx";
 import type { SiteLanguage } from "./SiteHeader.tsx";
 
-export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
+export function Dashboard({ snapshot, now = Date.now(), language = "en", refreshError = null }: {
   snapshot: RadarSnapshot;
   now?: number;
   language?: SiteLanguage;
+  refreshError?: string | null;
 }) {
   const lt = language === "lt";
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
@@ -22,7 +23,7 @@ export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
   const summary = useMemo(() => dashboardMetrics(snapshot), [snapshot]);
   const filteredSignals = useMemo(() => sortSignals(filterSignals(snapshot.signals, filters, now), filters.sort), [snapshot.signals, filters, now]);
   const syncAgeMs = Math.max(0, now - Date.parse(snapshot.lastSuccessfulSyncAt));
-  const isStale = syncAgeMs > 2 * 60 * 60 * 1000;
+  const isStale = refreshError !== null || syncAgeMs > 2 * 60 * 60 * 1000;
   const dayAgo = now - 86_400_000;
   const newToday = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) >= dayAgo).length;
   const reobservedToday = snapshot.signals.filter((signal) => Date.parse(signal.firstSeen) < dayAgo && Date.parse(signal.lastSeen) >= dayAgo).length;
@@ -68,13 +69,24 @@ export function Dashboard({ snapshot, now = Date.now(), language = "en" }: {
             <a href={lt ? "/lt/metodologija/" : "/methodology/"}>{lt ? "Kaip renkami duomenys" : "How collection works"}</a>
           </div>
         </div>
-        <aside className={`freshness-card ${isStale ? "stale" : "fresh"}`} aria-label={lt ? "Suvestinės šviežumas" : "Snapshot freshness"}>
+        <aside
+          className={`freshness-card ${isStale ? "stale" : "fresh"}`}
+          aria-label={lt ? "Suvestinės šviežumas" : "Snapshot freshness"}
+          aria-live={refreshError ? "polite" : undefined}
+        >
           <span className="live-dot" aria-hidden="true" />
           <div>
-            <small>{lt ? (isStale ? "Suvestinės sinchronizavimas vėluoja" : "Suvestinė atnaujinta") : (isStale ? "Snapshot sync delayed" : "Snapshot current")}</small>
+            <small>
+              {refreshError
+                ? (lt ? "Atnaujinimas nepasiekiamas · rodoma įterpta suvestinė" : "Refresh unavailable · showing embedded snapshot")
+                : lt
+                  ? (isStale ? "Suvestinės sinchronizavimas vėluoja" : "Suvestinė atnaujinta")
+                  : (isStale ? "Snapshot sync delayed" : "Snapshot current")}
+            </small>
             <strong>{relativeTime(snapshot.lastSuccessfulSyncAt, now)}</strong>
             <span>{lt ? `Paskutinis sėkmingas sinchronizavimas ${dateTime(snapshot.lastSuccessfulSyncAt)} Lietuvos laiku` : `Last successful sync ${dateTime(snapshot.lastSuccessfulSyncAt)} UTC`}</span>
             <span>{lt ? `Duomenys pasikeitė ${relativeTime(snapshot.generatedAt, now)}` : `Data changed ${relativeTime(snapshot.generatedAt, now)}`}</span>
+            {refreshError ? <span>{lt ? "Atnaujinimo įspėjimas" : "Refresh warning"}: {refreshError}</span> : null}
           </div>
         </aside>
       </section>

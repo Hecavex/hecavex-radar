@@ -17,6 +17,7 @@ from typing import Any, Literal, TypedDict, cast
 from .brands import normalize_domain
 from .history import KNOWN_SOURCES, KNOWN_STATUSES, read_event_file
 from .provenance import normalize_reason_codes
+from .review import valid_admission_source
 from .safety import clean_text, defang_domains_in_text, defang_host, stable_id
 
 WINDOW_DAYS: Literal[30] = 30
@@ -258,10 +259,15 @@ def _snapshot_first_seen(snapshot: Mapping[str, object]) -> dict[str, str]:
 def _retraction_events(review: Mapping[str, object] | None) -> list[FeedEvent]:
     if review is None:
         return []
-    if review.get("schemaVersion") != 2 or review.get("dataset") != "radar-review-decisions":
-        raise ValueError("The review export must use schema version 2.")
+    schema_version = review.get("schemaVersion")
+    if schema_version not in {2, 3} or review.get("dataset") != "radar-review-decisions":
+        raise ValueError("The review export must use schema version 3 or an empty version 2 migration.")
     assessments = review.get("assessments")
-    if not isinstance(assessments, list) or len(assessments) > 2_500:
+    if (
+        not isinstance(assessments, list)
+        or len(assessments) > 2_500
+        or (schema_version == 2 and bool(assessments))
+    ):
         raise ValueError("The review export has an invalid or oversized assessment collection.")
     events: list[FeedEvent] = []
     for value in assessments:
@@ -272,6 +278,7 @@ def _retraction_events(review: Mapping[str, object] | None) -> list[FeedEvent]:
         domain = _canonical_domain(value.get("domain"))
         brand = _safe_brand(value.get("brand"))
         occurred_at = value.get("modifiedAt")
+        reviewed_at = value.get("reviewedAt")
         if (
             not isinstance(identifier, str)
             or not SIGNAL_ID.fullmatch(identifier)
@@ -281,6 +288,14 @@ def _retraction_events(review: Mapping[str, object] | None) -> list[FeedEvent]:
             or identifier != stable_id(domain.lower())
             or brand is None
             or _timestamp(occurred_at) is None
+            or _timestamp(reviewed_at) is None
+            or not valid_admission_source(
+                value.get("admissionSource"),
+                signal_id=identifier,
+                domain=domain,
+                brand=brand,
+                reviewed_at=cast(str, reviewed_at),
+            )
         ):
             raise ValueError("The review export contains an invalid revoked assessment.")
         events.append(

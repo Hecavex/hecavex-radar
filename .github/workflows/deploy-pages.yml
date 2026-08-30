@@ -27,8 +27,7 @@ jobs:
       ((github.event.client_payload.source_workflow == 'Sync radar snapshot' &&
       github.event.client_payload.source_conclusion == 'success') ||
       (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
-      (github.event.client_payload.source_conclusion == 'success' ||
-      github.event.client_payload.source_conclusion == 'failure'))))
+      github.event.client_payload.source_conclusion == 'failure')))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
@@ -63,7 +62,15 @@ jobs:
               should_deploy=false
             fi
           fi
-          if [[ "${should_deploy}" == "true" && "${TRIGGER_WORKFLOW}" == "Sync radar snapshot" ]]; then
+          if [[ "${should_deploy}" == "true" && "${TRIGGER_WORKFLOW}" == "CI" ]]; then
+            parent_sha="$(git rev-parse "${EXPECTED_SHA}^")"
+            material_paths="$(git diff --name-only "${parent_sha}..${EXPECTED_SHA}" | grep -Ev \
+              '^(data/(certstream|ct-search|enrichment|urlscan|history)/|data/coverage/brand-coverage\.json$|data/review/review-queue\.json$|public/data/)' || true)"
+            if [[ -z "${material_paths}" ]]; then
+              echo "The validated commit contains only collector state; the hourly snapshot will publish it."
+              should_deploy=false
+            fi
+          elif [[ "${should_deploy}" == "true" && "${TRIGGER_WORKFLOW}" == "Sync radar snapshot" ]]; then
             if [[ "${actual_sha}" == "${EXPECTED_SHA}" ]] ||
               git diff --quiet "${EXPECTED_SHA}..${actual_sha}" -- public/data/; then
               echo "The sync completed without changing public Radar data; deployment is unnecessary."

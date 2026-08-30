@@ -352,6 +352,7 @@ def package_context_history(
     tag: str,
     *,
     repository: Path | None = None,
+    source_repository: Path | None = None,
     allow_urlscan: bool = False,
 ) -> ContextHistorySummary:
     """Validate and add up to 90 days of context history to a release package."""
@@ -365,6 +366,8 @@ def package_context_history(
         raise ValueError("Weekly release tag names an invalid ISO week.") from error
     root = _absolute(repository or Path.cwd())
     _reject_linklike_path(root, root)
+    source_root = _absolute(source_repository or root)
+    _reject_linklike_path(source_root, source_root)
     package_root = root / "_release" / "stage" / tag
     package_manifest = package_root / "RELEASE-MANIFEST.json"
     standalone_manifest = root / "_release" / "assets" / f"{tag}.manifest.json"
@@ -386,7 +389,7 @@ def package_context_history(
     existing = _manifest_files(root, package_root, manifest)
     _verify_package_inventory(root, package_root, {cast(str, row["path"]) for row in existing})
     context_artifacts, summary = _history_files(
-        root,
+        source_root,
         anchor,
         allow_urlscan=allow_urlscan,
     )
@@ -430,6 +433,11 @@ def package_context_history(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Add bounded context history to a weekly Radar release.")
     parser.add_argument("--tag", required=True)
+    parser.add_argument(
+        "--source-repository",
+        type=Path,
+        help="Optional data-only repository root from which context history is read.",
+    )
     return parser
 
 
@@ -437,7 +445,11 @@ def main(arguments: list[str] | None = None) -> int:
     options = _parser().parse_args(arguments)
     allow_urlscan = os.environ.get("URLSCAN_DERIVED_REDISTRIBUTION_CONFIRMED") == "true"
     try:
-        summary = package_context_history(options.tag, allow_urlscan=allow_urlscan)
+        summary = package_context_history(
+            options.tag,
+            source_repository=options.source_repository,
+            allow_urlscan=allow_urlscan,
+        )
     except (OSError, ValueError) as error:
         print(f"Context history packaging failed: {error}")
         return 1

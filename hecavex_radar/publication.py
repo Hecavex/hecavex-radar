@@ -18,6 +18,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import cast
 
+import tldextract
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
 from . import __version__
@@ -51,6 +52,7 @@ from .public_schemas import (
     SCHEMA_BASE,
 )
 from .quality_metrics import build_quality_metrics
+from .safety import refang
 from .sharing import MISP_EVENT_UUID, build_misp_feed, build_official_domain_warninglist
 
 MAXIMUM_DASHBOARD_BYTES = 512 * 1024
@@ -92,6 +94,11 @@ SUPPORTING_FAMILY = {
     "dns-ns": "dns-authority",
     "dns-mx": "mail-routing",
 }
+RELATION_EXTRACT = tldextract.TLDExtract(
+    suffix_list_urls=(),
+    cache_dir=None,
+    include_psl_private_domains=True,
+)
 
 
 def _utc_timestamp(value: datetime) -> str:
@@ -878,6 +885,15 @@ def _detail_evidence(details: Mapping[str, SignalDetail]) -> dict[tuple[str, str
     return index
 
 
+def _relation_registrable_domain(domain: str) -> str:
+    """Return a stable eTLD+1 for an already validated defanged domain."""
+    raw = refang(domain).casefold()
+    extracted = RELATION_EXTRACT(raw)
+    if extracted.domain and extracted.suffix:
+        return f"{extracted.domain}.{extracted.suffix}"
+    return raw
+
+
 def _relation_nodes(
     edges: Sequence[Mapping[str, object]],
     signal_map: Mapping[str, RadarSignal],
@@ -932,6 +948,14 @@ def build_related_observations(
             high_fanout += 1
             continue
         for left, right in itertools.combinations(known_members, 2):
+            # Root and subdomain observations are different URLs, but they are
+            # not independent infrastructure. Publishing their shared
+            # certificate, IP, or hash as an association inflates the graph
+            # with a relationship already implied by the hostname itself.
+            if _relation_registrable_domain(signal_map[left]["domain"]) == _relation_registrable_domain(
+                signal_map[right]["domain"]
+            ):
+                continue
             left_time = _parse_timestamp(signal_map[left]["lastSeen"])
             right_time = _parse_timestamp(signal_map[right]["lastSeen"])
             if left_time is None or right_time is None or abs(left_time - right_time) > RELATION_WINDOW:
@@ -1143,7 +1167,7 @@ def publish_supplemental_artifacts(
             "signals": list(complete_signals)
         }
     effective_review: Mapping[str, object] = review_export or {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "dataset": "radar-review-decisions",
         "generatedAt": generated_at,
         "suppressions": [],

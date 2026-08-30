@@ -16,9 +16,10 @@ concurrency:
 jobs:
   relay:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
       (github.event.client_payload.source_workflow == 'Collect CertStream candidates' &&
-      github.event.client_payload.source_ref == 'main')
+      github.event.client_payload.source_ref == 'main'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: radar-certstream-cadence

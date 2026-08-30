@@ -38,12 +38,27 @@ def _healthy_repository(repository: Path) -> None:
     _write(
         repository,
         "data/urlscan/hunt-state.json",
-        {"configured": True, "lastRunAt": current, "lastOutcome": "completed"},
+        {
+            "configured": True,
+            "lastRunAt": current,
+            "lastOutcome": "completed",
+            "lastSuccessAt": current,
+            "consecutiveFailures": 0,
+            "degradedSince": None,
+        },
     )
     _write(
         repository,
         "data/ct-search/state.json",
-        {"latestRun": {"endedAt": current, "outcome": "completed", "failureCodes": []}},
+        {
+            "latestRun": {"endedAt": current, "outcome": "completed", "failureCodes": []},
+            "providerHealth": {
+                "lastSuccessAt": current,
+                "consecutiveFailures": 0,
+                "degradedSince": None,
+                "nextAttemptAt": None,
+            },
+        },
     )
     _write(
         repository,
@@ -102,6 +117,102 @@ def test_persistent_failures_use_only_controlled_aggregate_codes(tmp_path: Path)
     assert {"ct-search-degraded", "ct-search-stale", "urlscan-failed", "urlscan-stale"} <= codes
     assert "provider-timeout" in body
     assert "private" not in body.lower()
+
+
+def test_repeated_fresh_ct_failures_are_not_hidden_by_latest_attempt_time(tmp_path: Path) -> None:
+    _healthy_repository(tmp_path)
+    fresh = _timestamp(NOW - timedelta(minutes=5))
+    _write(
+        tmp_path,
+        "data/ct-search/state.json",
+        {
+            "latestRun": {
+                "endedAt": fresh,
+                "outcome": "failed",
+                "failureCodes": ["provider-http"],
+            },
+            "providerHealth": {
+                "lastSuccessAt": _timestamp(NOW - timedelta(hours=2)),
+                "consecutiveFailures": 2,
+                "degradedSince": _timestamp(NOW - timedelta(minutes=65)),
+                "nextAttemptAt": _timestamp(NOW + timedelta(minutes=5)),
+            },
+        },
+    )
+
+    report = evaluate(tmp_path, now=NOW)
+    finding = next(item for item in report["findings"] if item["code"] == "ct-search-degraded")
+
+    assert "2 consecutive provider failures" in finding["observed"]
+    assert not any(item["code"] == "ct-search-stale" for item in report["findings"])
+
+
+def test_repeated_fresh_urlscan_failures_are_not_hidden_by_latest_attempt_time(tmp_path: Path) -> None:
+    _healthy_repository(tmp_path)
+    fresh = _timestamp(NOW - timedelta(minutes=5))
+    _write(
+        tmp_path,
+        "data/urlscan/hunt-state.json",
+        {
+            "configured": True,
+            "lastRunAt": fresh,
+            "lastOutcome": "failed",
+            "lastSuccessAt": _timestamp(NOW - timedelta(hours=4)),
+            "consecutiveFailures": 2,
+            "degradedSince": _timestamp(NOW - timedelta(hours=2)),
+        },
+    )
+
+    report = evaluate(tmp_path, now=NOW)
+    finding = next(item for item in report["findings"] if item["code"] == "urlscan-failed")
+
+    assert "2 consecutive failed runs" in finding["observed"]
+    assert not any(item["code"] == "urlscan-stale" for item in report["findings"])
+
+
+def test_fresh_failures_use_last_success_for_staleness(tmp_path: Path) -> None:
+    _healthy_repository(tmp_path)
+    fresh = _timestamp(NOW - timedelta(minutes=5))
+    _write(
+        tmp_path,
+        "data/ct-search/state.json",
+        {
+            "latestRun": {"endedAt": fresh, "outcome": "failed", "failureCodes": ["provider-http"]},
+            "providerHealth": {
+                "lastSuccessAt": _timestamp(NOW - timedelta(hours=4)),
+                "consecutiveFailures": 1,
+                "degradedSince": _timestamp(NOW - timedelta(hours=2)),
+                "nextAttemptAt": None,
+            },
+        },
+    )
+
+    report = evaluate(tmp_path, now=NOW)
+    codes = {finding["code"] for finding in report["findings"]}
+
+    assert {"ct-search-degraded", "ct-search-stale"} <= codes
+
+
+def test_fresh_ct_backlog_without_provider_failures_is_not_provider_degradation(tmp_path: Path) -> None:
+    _healthy_repository(tmp_path)
+    current = _timestamp(NOW)
+    _write(
+        tmp_path,
+        "data/ct-search/state.json",
+        {
+            "latestRun": {"endedAt": current, "outcome": "partial", "failureCodes": []},
+            "providerHealth": {
+                "lastSuccessAt": current,
+                "consecutiveFailures": 0,
+                "degradedSince": None,
+                "nextAttemptAt": None,
+            },
+        },
+    )
+
+    report = evaluate(tmp_path, now=NOW)
+
+    assert not any(item["code"] == "ct-search-degraded" for item in report["findings"])
 
 
 def test_incompatible_snapshot_contract_is_reported_without_raising(tmp_path: Path) -> None:

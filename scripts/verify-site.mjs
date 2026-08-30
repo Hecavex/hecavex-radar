@@ -51,10 +51,15 @@ function mobileNavigationForPath(path) {
     ...portfolioNavigation,
   ];
 }
-const publicArtifactRawBytes = 512 * 1024;
 const stixBundleRawBytes = 2 * 1024 * 1024;
 const signalDetailFileRawBytes = 16 * 1024;
 const signalDetailSetRawBytes = 3 * 1024 * 1024;
+const outputCapacityBudgets = {
+  signalHtmlBytes: 12 * 1024 * 1024,
+  brandHtmlBytes: 4 * 1024 * 1024,
+  pairedStaticDataHtmlBytes: 8 * 1024 * 1024,
+  remainingOutputBytes: 8 * 1024 * 1024,
+};
 const performanceBudgets = {
   htmlGzip: 512 * 1024,
   javascriptFileGzip: 225 * 1024,
@@ -130,11 +135,15 @@ function verifyDeploymentTopology() {
   const ctSearch = readFileSync(join(root, ".github", "workflows", "poll-ct-search.yml"), "utf8");
   const domainContext = readFileSync(join(root, ".github", "workflows", "enrich-domain-context.yml"), "utf8");
   const healthEvaluator = readFileSync(join(root, ".github", "workflows", "evaluate-pipeline-health.yml"), "utf8");
+  const livePublication = readFileSync(join(root, ".github", "workflows", "verify-live-publication.yml"), "utf8");
+  const weeklyRelease = readFileSync(join(root, ".github", "workflows", "release-weekly-dataset.yml"), "utf8");
   const sync = readFileSync(join(root, ".github", "workflows", "sync-radar.yml"), "utf8");
   const historyPublisher = readFileSync(join(root, "hecavex_radar", "history.py"), "utf8");
   const snapshotPublisher = readFileSync(join(root, "hecavex_radar", "sync.py"), "utf8");
   const stixPublisher = readFileSync(join(root, "hecavex_radar", "stix.py"), "utf8");
   const viteConfig = readFileSync(join(root, "vite.config.ts"), "utf8");
+  const botGeneratedPathBoundary =
+    "data/(certstream|ct-search|enrichment|urlscan|history)/|data/coverage/brand-coverage\\.json$|data/review/review-queue\\.json$|public/data/";
 
   assert(
     /workflows:\s*\["CI"\]/u.test(deploy),
@@ -172,10 +181,23 @@ function verifyDeploymentTopology() {
       deploy.includes("data/(certstream|ct-search|enrichment|urlscan|history)/") &&
       deploy.includes("data/coverage/brand-coverage\\.json$") &&
       deploy.includes("data/review/review-queue\\.json$") &&
-      deploy.includes("public/data/"),
+      deploy.includes("public/data/") &&
+      deploy.split(botGeneratedPathBoundary).length === 3,
     "Pages deployment freshness checks no longer cover every staged public-data boundary.",
   );
   assert(!/^\s{2}workflow_dispatch:/mu.test(deploy), "Pages deployment must not bypass CI through manual dispatch.");
+  assert(
+    weeklyRelease.includes("Check out current trusted release tooling") &&
+      weeklyRelease.includes("ref: ${{ github.sha }}") &&
+      !weeklyRelease.includes("ref: ${{ inputs.source_sha || github.sha }}") &&
+      weeklyRelease.includes("python -m hecavex_radar.release_source") &&
+      weeklyRelease.includes('--source-repository "${RELEASE_SOURCE_ROOT}"') &&
+      weeklyRelease.includes('"sourceCommit": os.environ["SOURCE_SHA"]') &&
+      weeklyRelease.includes('"toolingCommit": os.environ["TRUSTED_TOOLING_SHA"]') &&
+      weeklyRelease.includes('--commit "${TRUSTED_TOOLING_SHA}"') &&
+      !weeklyRelease.includes('--commit "${SOURCE_SHA}"'),
+    "Weekly backfills must execute current trusted tooling against a separate data-only source.",
+  );
   assert(!/^\s{2}actions:\s*write\s*$/mu.test(collector), "CertStream collector retains unnecessary actions:write access.");
   assert(!collector.includes("gh workflow run deploy-pages.yml"), "CertStream collector still dispatches a duplicate Pages deployment.");
   assert(
@@ -207,16 +229,26 @@ function verifyDeploymentTopology() {
       snapshotCadence.includes("group: radar-snapshot-cadence") &&
       snapshotCadence.includes("cancel-in-progress: true") &&
       snapshotCadence.includes('MINIMUM_SYNC_AGE_SECONDS: "2700"') &&
+      snapshotCadence.includes("COLLECTION_OUTCOME: ${{ github.event.client_payload.collection_outcome || 'manual' }}") &&
       snapshotCadence.includes('select(.status != "completed")') &&
+      snapshotCadence.includes('select(.status != "completed" and .status != "in_progress")') &&
       snapshotCadence.includes('select(.status == "completed" and .conclusion == "success")') &&
+      snapshotCadence.includes('[[ "${active}" -gt 0 && "${COLLECTION_OUTCOME}" != "healthy-matches" ]]') &&
+      snapshotCadence.includes('[[ "${COLLECTION_OUTCOME}" == "healthy-matches" && "${queued}" -gt 0 ]]') &&
+      snapshotCadence.includes('[[ -n "${latest_success}" && "${COLLECTION_OUTCOME}" != "healthy-matches" ]]') &&
       snapshotCadence.includes("/actions/workflows/sync-radar.yml/dispatches") &&
       !snapshotCadence.includes("contents: write"),
     "Snapshot cadence relay permissions, age gate, or fixed dispatch boundary drifted.",
   );
   assert(
     collector.includes("cadence_relay:") &&
-      collector.includes("inputs.cadence_relay && 'schedule' || github.event_name") &&
+      collector.includes('CERTSTREAM_DUE_TOLERANCE_SECONDS: "0"') &&
+      collector.includes("inputs.cadence_relay && 'cadence-relay' || github.event_name") &&
+      collector.includes("collection_health begin-if-due") &&
       collector.includes("event_type=certstream_writer_completed") &&
+      !collector.includes("event_type=certstream_cadence_checked") &&
+      collector.includes("if: always() && steps.cadence.outputs.due == 'true'") &&
+      collector.includes("client_payload[collection_outcome]") &&
       collector.includes("client_payload[source_workflow]=Collect CertStream candidates") &&
       collector.includes("client_payload[source_conclusion]") &&
       collector.includes("client_payload[source_run_id]") &&
@@ -275,6 +307,29 @@ function verifyDeploymentTopology() {
       healthEvaluator.includes("gh issue list --state all") &&
       healthEvaluator.includes("gh issue close"),
     "The deduplicated aggregate pipeline-health issue evaluator drifted.",
+  );
+  assert(
+    livePublication.includes('cron: "37 */2 * * *"') &&
+      livePublication.includes("contents: read") &&
+      livePublication.includes("issues: write") &&
+      !livePublication.includes("contents: write") &&
+      livePublication.includes("group: radar-live-publication-health") &&
+      livePublication.includes("cancel-in-progress: false") &&
+      livePublication.includes("if: github.ref == 'refs/heads/main'") &&
+      livePublication.includes("persist-credentials: false") &&
+      livePublication.includes("python -m hecavex_radar.live_smoke") &&
+      livePublication.includes("--json-output") &&
+      livePublication.includes("--markdown-output") &&
+      livePublication.includes("--github-output") &&
+      livePublication.includes("continue-on-error: true") &&
+      livePublication.includes("unhealthy=(true|false)") &&
+      livePublication.includes("UNHEALTHY: ${{ steps.smoke.outputs.unhealthy || 'true' }}") &&
+      livePublication.includes('LABEL: "radar-live-health"') &&
+      livePublication.includes("gh issue list --state all") &&
+      livePublication.includes("gh issue close") &&
+      livePublication.includes("if: steps.smoke.outputs.unhealthy != 'false'") &&
+      livePublication.includes("run: exit 1"),
+    "The scheduled live-publication smoke check, durable report, or deduplicated issue reconciliation drifted.",
   );
   assert(
     ctSearch.includes('cron: "43 * * * *"') &&
@@ -546,6 +601,119 @@ function verifyBuiltHtml() {
   );
   const readTagAttribute = (tag, name) =>
     tag?.match(new RegExp(`(?:^|\\s)${name}="([^"]*)"`, "u"))?.[1] ?? null;
+  const localizedStaticRoutePairs = [
+    ["/", "/lt/"],
+    ["/changes/", "/lt/pokyciai/"],
+    ["/brands/", "/lt/prekes-zenklai/"],
+    ["/trends/", "/lt/tendencijos/"],
+    ["/associations/", "/lt/sasajos/"],
+    ["/tools/", "/lt/irankiai/"],
+    ["/dataset/", "/lt/duomenys/"],
+    ["/methodology/", "/lt/metodologija/"],
+    ["/docs/", "/lt/dokumentacija/"],
+  ];
+  const slugForBrand = (brand) => String(brand)
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/gu, "-")
+    .replace(/^-+|-+$/gu, "");
+  const localizedRoutePairs = [
+    ...localizedStaticRoutePairs,
+    ...[...signalIds].sort().map((id) => [`/signals/${id}/`, `/lt/signalai/${id}/`]),
+    ...brands.entries.map((entry) => {
+      const slug = slugForBrand(entry.brand);
+      return [`/brands/${slug}/`, `/lt/prekes-zenklai/${slug}/`];
+    }),
+  ];
+  const semanticTags = [
+    "main", "section", "nav", "aside", "h2", "dl", "dt", "dd", "table", "form", "input", "select", "textarea", "button",
+  ];
+  const coreSemanticClasses = new Set([
+    "activity-strip", "artifact-hero", "brand-candidates", "brand-history", "brand-hub-grid", "brand-profile-hero",
+    "brand-registry", "brand-scope-heading", "brand-scope-metrics", "brand-sources", "collection-disclosure",
+    "dataset-explanation", "dataset-summary", "docs-content", "docs-section", "docs-table", "download-grid", "event-section",
+    "feed-strip", "methodology-section", "metric-card", "metric-grid", "profile-aside", "profile-hero", "profile-layout",
+    "profile-main", "profile-summary", "quality-facets", "quality-grid", "radar-association-explorer",
+    "radar-association-summary", "radar-hero", "radar-ioc-checker", "radar-route-grid", "radar-tool",
+    "radar-tool-summary", "radar-tool-table", "related-route-card", "scope-boundaries", "signal-section", "trend-boundary",
+    "trend-section",
+  ]);
+  const htmlTagCount = (html, tag) => (html.match(new RegExp(`<${tag}\\b`, "gu")) ?? []).length;
+  const semanticSignature = (html, route) => {
+    const coreClassCounts = [...html.matchAll(/\sclass="([^"]*)"/gu)]
+      .flatMap((match) => match[1].split(/\s+/u).filter((name) => coreSemanticClasses.has(name)));
+    const countedCoreClasses = Object.fromEntries(
+      [...coreSemanticClasses]
+        .map((name) => [name, coreClassCounts.filter((candidate) => candidate === name).length])
+        .filter(([, count]) => count > 0),
+    );
+    const machineLinks = new Set();
+    for (const match of html.matchAll(/<a\b([^>]*)>[\s\S]*?<\/a>/gu)) {
+      const href = readTagAttribute(`<a${match[1]}>`, "href");
+      if (!href) continue;
+      const url = new URL(href, new URL(route, publicOrigin));
+      if (url.origin === publicOrigin && (url.pathname.startsWith("/data/") || url.pathname.startsWith("/feeds/"))) {
+        machineLinks.add(`anchor:${url.pathname}${url.search}${url.hash}`);
+      }
+    }
+    for (const match of html.matchAll(/<link\b[^>]*>/gu)) {
+      const tag = match[0];
+      if (readTagAttribute(tag, "rel") !== "alternate" || !readTagAttribute(tag, "type")) continue;
+      const href = readTagAttribute(tag, "href");
+      assert(href, `${route} has a typed machine alternate without an href.`);
+      const url = new URL(href, new URL(route, publicOrigin));
+      machineLinks.add(`alternate:${readTagAttribute(tag, "type")}:${url.href}`);
+    }
+    return JSON.stringify({
+      coreClassCounts: countedCoreClasses,
+      tagCounts: Object.fromEntries(semanticTags.map((tag) => [tag, htmlTagCount(html, tag)])),
+      machineLinks: [...machineLinks].sort(),
+    });
+  };
+  const verifyLocalizedParity = () => {
+    assert(
+      new Set(localizedRoutePairs.flat()).size === localizedRoutePairs.length * 2,
+      "Localized parity route pairs contain a duplicate route.",
+    );
+    for (const [englishRoute, lithuanianRoute] of localizedRoutePairs) {
+      const englishPath = outputPath(englishRoute);
+      const lithuanianPath = outputPath(lithuanianRoute);
+      assert(existsSync(englishPath), `Localized parity is missing ${englishRoute}.`);
+      assert(existsSync(lithuanianPath), `Localized parity is missing ${lithuanianRoute}.`);
+      const englishHtml = readFileSync(englishPath, "utf8");
+      const lithuanianHtml = readFileSync(lithuanianPath, "utf8");
+      const editions = [
+        [englishRoute, englishHtml, "en"],
+        [lithuanianRoute, lithuanianHtml, "lt"],
+      ];
+      for (const [route, html, language] of editions) {
+        const documentElementTag = html.match(/<html\b[^>]*>/u)?.[0];
+        const linkTags = [...html.matchAll(/<link\b[^>]*>/gu)].map((match) => match[0]);
+        const canonicalTags = linkTags.filter((tag) => readTagAttribute(tag, "rel") === "canonical");
+        const languageAlternates = linkTags.filter(
+          (tag) => readTagAttribute(tag, "rel") === "alternate" && readTagAttribute(tag, "hreflang"),
+        );
+        const alternateHref = (hreflang) => readTagAttribute(
+          languageAlternates.find((tag) => readTagAttribute(tag, "hreflang") === hreflang),
+          "href",
+        );
+        assert(readTagAttribute(documentElementTag, "lang") === language, `${route} has the wrong localized document language.`);
+        assert(
+          canonicalTags.length === 1 && readTagAttribute(canonicalTags[0], "href") === `${publicOrigin}${route}`,
+          `${route} does not canonicalize its localized route exactly once.`,
+        );
+        assert(languageAlternates.length === 3, `${route} does not expose exactly three language alternates.`);
+        assert(alternateHref("en") === `${publicOrigin}${englishRoute}`, `${route} has the wrong English alternate.`);
+        assert(alternateHref("lt") === `${publicOrigin}${lithuanianRoute}`, `${route} has the wrong Lithuanian alternate.`);
+        assert(alternateHref("x-default") === `${publicOrigin}${englishRoute}`, `${route} has the wrong x-default alternate.`);
+      }
+      assert(
+        semanticSignature(englishHtml, englishRoute) === semanticSignature(lithuanianHtml, lithuanianRoute),
+        `${englishRoute} and ${lithuanianRoute} no longer share core sections, metrics, tools, or machine links.`,
+      );
+    }
+  };
 
   for (const path of dynamicHtmlFiles) {
     const html = readFileSync(path, "utf8");
@@ -563,8 +731,12 @@ function verifyBuiltHtml() {
       (tag) => readTagAttribute(tag, "http-equiv") === "Content-Security-Policy",
     );
     const contentSecurityPolicy = readTagAttribute(contentSecurityPolicyTag, "content");
+    const documentElementTag = html.match(/<html\b[^>]*>/u)?.[0];
     assert(new Set(ids).size === ids.length, `${route} contains duplicate IDs.`);
-    assert(html.includes(`<html lang="${lithuanian ? "lt" : "en"}">`), `${route} has the wrong document language.`);
+    assert(
+      readTagAttribute(documentElementTag, "lang") === (lithuanian ? "lt" : "en"),
+      `${route} has the wrong document language.`,
+    );
     assert((html.match(/<main\b/gu) ?? []).length === 1, `${route} must contain exactly one main element.`);
     assert((html.match(/<h1\b/gu) ?? []).length === 1, `${route} must contain exactly one h1.`);
     assert(html.includes('class="skip-link" href="#main-content"'), `${route} has no usable skip link.`);
@@ -600,12 +772,7 @@ function verifyBuiltHtml() {
     if (route.startsWith("/signals/") || route.startsWith("/lt/signalai/")) {
       assert(payload?.signal?.id === routeKey && payload?.generatedAt, `${route} embeds invalid signal data.`);
     } else {
-      const brandSlug = String(payload?.brand?.brand ?? "")
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/gu, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/gu, "-")
-        .replace(/^-+|-+$/gu, "");
+      const brandSlug = slugForBrand(payload?.brand?.brand ?? "");
       assert(brandSlug === routeKey && Array.isArray(payload?.signals), `${route} embeds invalid brand data.`);
     }
 
@@ -613,10 +780,11 @@ function verifyBuiltHtml() {
       assert(readTagAttribute(imageTag, "alt") !== null, `${route} contains an image without an alt attribute.`);
     }
 
-    for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gu)) {
+    const anchorMatches = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gu)];
+    assert(anchorMatches.length === htmlTagCount(html, "a"), `${route} contains an anchor that cannot be inspected.`);
+    for (const match of anchorMatches) {
       const openingTag = `<a${match[1]}>`;
       const href = readTagAttribute(openingTag, "href");
-      if (!href) continue;
       const accessibleLabel =
         readTagAttribute(openingTag, "aria-label") ??
         match[2]
@@ -625,6 +793,7 @@ function verifyBuiltHtml() {
           .replace(/\s+/gu, " ")
           .trim();
       assert(accessibleLabel, `${route} contains an unlabelled link: ${openingTag}`);
+      if (!href) continue;
       const url = new URL(href, new URL(route, publicOrigin));
       if (url.origin !== publicOrigin) continue;
       const target = outputPath(url.pathname);
@@ -653,6 +822,8 @@ function verifyBuiltHtml() {
       }
     }
   }
+
+  verifyLocalizedParity();
 
   for (const path of fullDomHtmlFiles) {
     let document = parseFile(path);
@@ -1654,7 +1825,7 @@ function verifySyndicationFeeds() {
   }
 }
 
-function verifyPerformanceBudgets(signalDetails, stixBundle) {
+function verifyPerformanceBudgets(signalDetails) {
   const files = walk(output);
   const totalBytes = files.reduce((total, path) => total + statSync(path).size, 0);
   assert(
@@ -1708,26 +1879,46 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     const name = path.replace(/^data\//u, "");
     assert(size <= performanceBudgets.publicDataFileGzip, `data/${name} is ${size} gzip bytes; data budget is ${performanceBudgets.publicDataFileGzip}.`);
   }
-  const replaceable = new Set([
-    join(output, "data", "radar.json"),
-    stixBundle.path,
-    join(output, "data", "history.json"),
-    join(output, "index.html"),
-    join(output, "history", "index.html"),
-    ...signalDetails.files,
+  const pairedStaticDataRoutes = new Set([
+    "/changes/", "/lt/pokyciai/", "/trends/", "/lt/tendencijos/", "/associations/", "/lt/sasajos/",
+    "/tools/", "/lt/irankiai/", "/dataset/", "/lt/duomenys/",
   ]);
-  const fixedBytes = files
-    .filter((path) => !replaceable.has(path))
-    .reduce((total, path) => total + statSync(path).size, 0);
-  const currentHydrationHtmlBytes =
-    statSync(join(output, "index.html")).size + statSync(join(output, "history", "index.html")).size;
-  const modeledOutputBytes =
-    fixedBytes +
-    2 * publicArtifactRawBytes +
-    stixBundleRawBytes +
-    currentHydrationHtmlBytes +
-    2 * (3 * publicArtifactRawBytes + 1024) +
-    signalDetailSetRawBytes;
+  const signalHtmlFiles = files.filter((path) => {
+    if (!path.endsWith(".html")) return false;
+    const route = routeForFile(path);
+    return route.startsWith("/signals/") || route.startsWith("/lt/signalai/");
+  });
+  const brandHtmlFiles = files.filter((path) => {
+    if (!path.endsWith(".html")) return false;
+    const route = routeForFile(path);
+    return (route.startsWith("/brands/") && route !== "/brands/") ||
+      (route.startsWith("/lt/prekes-zenklai/") && route !== "/lt/prekes-zenklai/");
+  });
+  const pairedStaticDataHtmlFiles = files.filter(
+    (path) => path.endsWith(".html") && pairedStaticDataRoutes.has(routeForFile(path)),
+  );
+  const capacityClassifiedFiles = new Set([
+    ...signalHtmlFiles,
+    ...brandHtmlFiles,
+    ...pairedStaticDataHtmlFiles,
+  ]);
+  const sumRawBytes = (paths) => paths.reduce((total, path) => total + statSync(path).size, 0);
+  const capacity = {
+    signalHtmlBytes: sumRawBytes(signalHtmlFiles),
+    brandHtmlBytes: sumRawBytes(brandHtmlFiles),
+    pairedStaticDataHtmlBytes: sumRawBytes(pairedStaticDataHtmlFiles),
+    remainingOutputBytes: sumRawBytes(files.filter((path) => !capacityClassifiedFiles.has(path))),
+  };
+  const maximumCapacityBytes = Object.values(outputCapacityBudgets).reduce((total, bytes) => total + bytes, 0);
+  const classifiedOutputBytes = Object.values(capacity).reduce((total, bytes) => total + bytes, 0);
+  assert(
+    maximumCapacityBytes === performanceBudgets.totalOutputBytes,
+    `Output capacity allocations total ${maximumCapacityBytes} bytes instead of the ${performanceBudgets.totalOutputBytes}-byte tree gate.`,
+  );
+  assert(classifiedOutputBytes === totalBytes, "Output capacity classes do not cover the complete production tree exactly once.");
+  for (const [name, bytes] of Object.entries(capacity)) {
+    assert(bytes <= outputCapacityBudgets[name], `${name} uses ${bytes} bytes; capacity is ${outputCapacityBudgets[name]}.`);
+  }
   return {
     totalBytes,
     html: largest(htmlSizes),
@@ -1736,7 +1927,8 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     executableBytes,
     publicData: largest(dataSizes),
     signalDetailBytes: signalDetails.totalBytes,
-    modeledOutputBytes,
+    capacity,
+    maximumCapacityBytes,
   };
 }
 
@@ -2214,6 +2406,36 @@ async function verifyInBrowser() {
     await delayedPage.waitForLoadState("networkidle");
     await delayedContext.close();
 
+    for (const fallback of [
+      {
+        path: "/",
+        marker: "Sampled discovery, not continuous monitoring",
+        warning: "Refresh unavailable · showing embedded snapshot",
+      },
+      {
+        path: "/lt/",
+        marker: "Atrankinis aptikimas, o ne nuolatinė stebėsena",
+        warning: "Atnaujinimas nepasiekiamas · rodoma įterpta suvestinė",
+      },
+    ]) {
+      const fallbackContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+      const fallbackPage = await fallbackContext.newPage();
+      await fallbackPage.route("https://static.cloudflareinsights.com/beacon.min.js", fulfillAnalyticsScript);
+      await fallbackPage.route("**/data/radar.json", (route) => route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: '{"error":"temporary"}',
+      }));
+      await fallbackPage.goto(`${origin}${fallback.path}`, { waitUntil: "networkidle" });
+      await fallbackPage.getByText(fallback.warning, { exact: true }).waitFor();
+      const fallbackText = await fallbackPage.locator("#root").innerText();
+      const normalizedFallbackText = fallbackText.replace(/\s+/gu, " ");
+      assert(normalizedFallbackText.includes(fallback.marker), `${fallback.path} discards its embedded snapshot after a refresh failure.`);
+      assert(!normalizedFallbackText.includes("snapshot could not be loaded") && !normalizedFallbackText.includes("Nepavyko įkelti radaro suvestinės"), `${fallback.path} replaces last-known-good data with a fatal refresh error.`);
+      assert(await fallbackPage.locator("#root").getAttribute("data-hydrated") === "true", `${fallback.path} did not hydrate its fallback snapshot.`);
+      await fallbackContext.close();
+    }
+
     const dntContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
     await dntContext.addInitScript(() => {
       Object.defineProperty(navigator, "doNotTrack", { configurable: true, get: () => "1" });
@@ -2261,9 +2483,9 @@ if (verificationPhase !== "browser") {
   verifyIdentityArtwork();
   verifyReportingEvidencePack();
   const signalDetails = verifySignalDetails();
-  const stixBundle = verifyStixBundle();
+  verifyStixBundle();
   verifySyndicationFeeds();
-  const performance = verifyPerformanceBudgets(signalDetails, stixBundle);
+  const performance = verifyPerformanceBudgets(signalDetails);
   process.stdout.write(
     `Measured production sizes: ${performance.totalBytes} bytes total; ` +
       `${performance.html.path} ${performance.html.size} bytes gzip (largest HTML); ` +
@@ -2272,7 +2494,11 @@ if (verificationPhase !== "browser") {
       `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
       `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
       `${performance.signalDetailBytes} bytes across signal-detail sidecars; ` +
-      `${performance.modeledOutputBytes} bytes in the bounded-artifact scenario.\n`,
+      `${performance.capacity.signalHtmlBytes}/${outputCapacityBudgets.signalHtmlBytes} signal HTML bytes; ` +
+      `${performance.capacity.brandHtmlBytes}/${outputCapacityBudgets.brandHtmlBytes} brand HTML bytes; ` +
+      `${performance.capacity.pairedStaticDataHtmlBytes}/${outputCapacityBudgets.pairedStaticDataHtmlBytes} paired static-data HTML bytes; ` +
+      `${performance.capacity.remainingOutputBytes}/${outputCapacityBudgets.remainingOutputBytes} remaining bytes; ` +
+      `${performance.maximumCapacityBytes} bytes maximum allocated capacity.\n`,
   );
 }
 

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import { SiteHeader } from "../components/SiteHeader.tsx";
 import { brandEntries, brandPath, brandRegistryReviewedAt, defangDomain } from "../lib/brandRegistry.ts";
+import { foldSearchText } from "../lib/searchText.ts";
 import { LtFooter } from "./LtFooter.tsx";
 import { categoryLt, formatNumberLt } from "./formatLt.ts";
 
@@ -12,7 +13,7 @@ export function LtBrandRegistryPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const filteredEntries = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase("lt");
+    const normalizedQuery = foldSearchText(query.trim(), "lt");
     return brandEntries.filter((entry) => {
       const matchesQuery = normalizedQuery.length === 0 || [
         entry.brand,
@@ -20,7 +21,7 @@ export function LtBrandRegistryPage() {
         ...entry.aliases,
         ...(entry.fuzzyAliases ?? []),
         ...entry.officialDomains,
-      ].some((value) => value.toLocaleLowerCase("lt").includes(normalizedQuery));
+      ].some((value) => foldSearchText(value, "lt").includes(normalizedQuery));
       return matchesQuery && (category === "all" || entry.category === category);
     });
   }, [category, query]);

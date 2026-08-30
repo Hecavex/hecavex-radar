@@ -670,7 +670,7 @@ def synchronize() -> Path:
     if not isinstance(history_value, dict):
         raise ValueError("The freshly written public history is not a JSON object.")
     review_export: dict[str, object] = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "dataset": "radar-review-decisions",
         "generatedAt": now,
         "suppressions": list(review_policy.suppressions),

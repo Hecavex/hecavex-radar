@@ -1,0 +1,92 @@
+name: Verify live Radar publication
+
+on:
+  schedule:
+    - cron: "37 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: radar-live-publication-health
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Verify public data and routes
+        id: smoke
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python -m hecavex_radar.live_smoke \
+            --repository . \
+            --json-output "${RUNNER_TEMP}/radar-live-smoke.json" \
+            --markdown-output "${RUNNER_TEMP}/radar-live-smoke.md" \
+            --github-output "${GITHUB_OUTPUT}"
+          smoke_status="$?"
+          set -e
+          if [[ ! -s "${RUNNER_TEMP}/radar-live-smoke.md" ]]; then
+            cat > "${RUNNER_TEMP}/radar-live-smoke.md" <<'EOF'
+          # Radar live publication health
+
+          Status: **degraded**
+
+          - The live verifier stopped before it could create a structured report. Inspect this workflow run.
+          EOF
+          fi
+          if ! grep -Eq '^unhealthy=(true|false)$' "${GITHUB_OUTPUT}"; then
+            echo 'unhealthy=true' >> "${GITHUB_OUTPUT}"
+          fi
+          printf '\nWorkflow: https://github.com/%s/actions/runs/%s\n' \
+            "${GITHUB_REPOSITORY}" "${GITHUB_RUN_ID}" >> "${RUNNER_TEMP}/radar-live-smoke.md"
+          exit "${smoke_status}"
+      - name: Reconcile one live-publication issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UNHEALTHY: ${{ steps.smoke.outputs.unhealthy || 'true' }}
+          TITLE: "Radar live publication health"
+          LABEL: "radar-live-health"
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh label create "${LABEL}" --color D73A4A \
+            --description "Automated live Radar publication health" --force
+          issues="$(gh issue list --state all --label "${LABEL}" --limit 100 --json number,title,state,updatedAt)"
+          matching="$(jq -c --arg title "${TITLE}" \
+            '[.[] | select(.title == $title)] | sort_by(.updatedAt) | reverse' <<<"${issues}")"
+          issue_number="$(jq -r '.[0].number // empty' <<<"${matching}")"
+          issue_state="$(jq -r '.[0].state // empty' <<<"${matching}")"
+          if [[ "${UNHEALTHY}" == "true" ]]; then
+            if [[ -z "${issue_number}" ]]; then
+              gh issue create --title "${TITLE}" --label "${LABEL}" \
+                --body-file "${RUNNER_TEMP}/radar-live-smoke.md"
+            else
+              [[ "${issue_state}" == "OPEN" ]] || gh issue reopen "${issue_number}"
+              gh issue edit "${issue_number}" --body-file "${RUNNER_TEMP}/radar-live-smoke.md"
+            fi
+          else
+            while read -r recovered; do
+              [[ -z "${recovered}" ]] && continue
+              gh issue close "${recovered}" --reason completed \
+                --comment "The live publication, atomic data contract, bilingual routes, and custom 404 recovered."
+            done < <(jq -r '.[] | select(.state == "OPEN") | .number' <<<"${matching}")
+          fi
+      - name: Fail after issue reconciliation when unhealthy
+        if: steps.smoke.outputs.unhealthy != 'false'
+        run: exit 1

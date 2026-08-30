@@ -148,6 +148,24 @@ def test_release_history_is_deterministic_and_inventory_hashes_match(tmp_path: P
     assert row["sha256"] == hashlib.sha256(first_output.read_bytes()).hexdigest()
 
 
+def test_release_history_can_read_from_a_separate_data_only_source(tmp_path: Path) -> None:
+    output_root = tmp_path / "trusted-output"
+    source_root = tmp_path / "historical-data"
+    paths = _fixture(output_root, [])
+    source_journal = source_root / "data" / "history" / "context" / PARTITION / "events.ndjson"
+    source_journal.parent.mkdir(parents=True)
+    source_journal.write_bytes(_encoded_rows([_dns_event()]))
+
+    summary = package_context_history(
+        TAG,
+        repository=output_root,
+        source_repository=source_root,
+    )
+
+    assert summary.events == 1
+    assert _published_rows(paths) == [_dns_event()]
+
+
 def test_immutable_correction_tag_preserves_the_base_release_week(tmp_path: Path) -> None:
     paths = _fixture(tmp_path)
     corrected_package = tmp_path / "_release" / "stage" / CORRECTION_TAG

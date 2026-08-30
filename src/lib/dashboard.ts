@@ -1,4 +1,5 @@
 import type { EvidenceTier, Filters, RadarSignal, RadarSnapshot, ReasonCode } from "../types.ts";
+import { foldSearchText } from "./searchText.ts";
 
 export const DEFAULT_FILTERS: Filters = {
   query: "",
@@ -79,7 +80,7 @@ const EVIDENCE_TIER_LABELS: Record<DashboardLanguage, Record<EvidenceTier, strin
 };
 
 function includes(value: string | null, query: string): boolean {
-  return value?.toLocaleLowerCase().includes(query) ?? false;
+  return value ? foldSearchText(value).includes(query) : false;
 }
 
 function validChoice<Value extends string>(value: string | null, choices: ReadonlySet<Value>, fallback: Value): Value {
@@ -130,7 +131,7 @@ function matchesEvidence(signal: RadarSignal, evidence: Filters["evidence"]): bo
 }
 
 export function filterSignals(signals: RadarSignal[], filters: Filters, now = Date.now()): RadarSignal[] {
-  const query = filters.query.trim().toLocaleLowerCase();
+  const query = foldSearchText(filters.query.trim());
   const cutoff = cutoffForRange(filters.timeRange, now);
   return signals.filter((signal) => {
     const queryMatches =
@@ -140,7 +141,7 @@ export function filterSignals(signals: RadarSignal[], filters: Filters, now = Da
       includes(signal.brand, query) ||
       includes(signal.country, query) ||
       includes(signal.host, query) ||
-      signal.sources.some((source) => source.toLocaleLowerCase().includes(query));
+      signal.sources.some((source) => foldSearchText(source).includes(query));
 
     return (
       queryMatches &&

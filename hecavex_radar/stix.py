@@ -12,6 +12,7 @@ from urllib.parse import urlsplit
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from .provenance import normalize_reason_codes
+from .review import valid_admission_source
 from .safety import clean_text, parse_and_defang_url, refang, safe_reference_url, stable_id
 
 STIX_CYBER_OBSERVABLE_NAMESPACE = UUID("00abedb4-aa42-466c-9c01-fed23315a9b7")
@@ -349,6 +350,14 @@ def _reviewed_indicator(assessment: dict[str, object]) -> dict[str, object] | No
     modified_at, modified_value = _timestamp(assessment.get("modifiedAt"), "modifiedAt")
     if reviewed_value > modified_value:
         raise ValueError("Reviewed STIX export rejected an impossible review interval.")
+    if not valid_admission_source(
+        assessment.get("admissionSource"),
+        signal_id=signal_id,
+        domain=display_domain,
+        brand=brand,
+        reviewed_at=reviewed_at,
+    ):
+        raise ValueError("Reviewed STIX export requires verified public-observation admission provenance.")
     expires_at, expires_value = _timestamp(assessment.get("expiresAt"), "expiresAt")
     if expires_value <= reviewed_value:
         raise ValueError("Reviewed STIX export requires expiry after first confirmation.")

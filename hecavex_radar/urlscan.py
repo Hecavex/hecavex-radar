@@ -86,12 +86,18 @@ HUNT_STATE_FIELDS = frozenset(
         "selectedCandidates",
         "lastRunAt",
         "lastOutcome",
+        "lastSuccessAt",
+        "consecutiveFailures",
+        "degradedSince",
         "lastRunSearchRequests",
         "lastRunResultRequests",
         "checkpointCoverage",
     }
 )
-LEGACY_HUNT_STATE_FIELDS = HUNT_STATE_FIELDS - {"checkpointCoverage"}
+PRE_HEALTH_HUNT_STATE_FIELDS = HUNT_STATE_FIELDS - {
+    "lastSuccessAt", "consecutiveFailures", "degradedSince"
+}
+LEGACY_HUNT_STATE_FIELDS = PRE_HEALTH_HUNT_STATE_FIELDS - {"checkpointCoverage"}
 HUNT_OUTCOMES = frozenset({"skipped-not-configured", "completed", "budget-limited", "failed"})
 VILNIUS = ZoneInfo("Europe/Vilnius")
 
@@ -161,9 +167,9 @@ class _BudgetedRequester:
     def __call__(self, url: str, api_key: str) -> Any:
         kind = self._kind(url)
         if self.provider_exhausted:
-            if kind == "search":
-                raise SearchUnavailable("URLScan search was not performed after provider exhaustion.")
-            return {}
+            raise _URLScanRateLimitError(
+                "URLScan request was not performed after provider rate limiting."
+            )
         if kind == "search":
             if self.search_used >= self.daily_search_cap or self.run_search_requests >= self.run_search_cap:
                 self.exhausted = True
@@ -172,19 +178,20 @@ class _BudgetedRequester:
             self.exhausted = True
             return {}
 
+        # URLScan quotas count an attempted HTTP request, not only a response
+        # that our parser accepts. Reserve the local budget before sending so
+        # transient HTTP, transport, and validation failures cannot make a run
+        # under-report or exceed its configured allowance.
+        self._count(kind)
         try:
             payload = self._requester(url, api_key)
-        except _URLScanRateLimitError as error:
-            if error.successful_response:
-                self._count(kind)
-            self.exhausted = True
+        except _URLScanRateLimitError:
+            # A local cap is a controlled, successful partial run. A provider
+            # rate-limit response is different: the provider did not permit
+            # the bounded work to finish, so the run must remain degraded and
+            # must not refresh lastSuccessAt or advance a search checkpoint.
             self.provider_exhausted = True
-            if error.successful_response and error.payload is not None:
-                return error.payload
-            if kind == "search":
-                raise SearchUnavailable("URLScan search was not completed after rate limiting.") from error
-            return {}
-        self._count(kind)
+            raise
         return payload
 
     def _count(self, kind: str) -> None:
@@ -231,16 +238,7 @@ class _URLScanFatalError(RuntimeError):
 
 
 class _URLScanRateLimitError(_URLScanFatalError):
-    def __init__(
-        self,
-        message: str,
-        *,
-        successful_response: bool = False,
-        payload: Any | None = None,
-    ) -> None:
-        super().__init__(message)
-        self.successful_response = successful_response
-        self.payload = payload
+    pass
 
 
 class _URLScanAccessError(_URLScanFatalError):
@@ -346,11 +344,7 @@ def _request_json(url: str, api_key: str) -> Any:
     except json.JSONDecodeError as error:
         raise ValueError("URLScan returned invalid JSON.") from error
     if rate_limit_exhausted:
-        raise _URLScanRateLimitError(
-            "URLScan response reported an exhausted request window.",
-            successful_response=True,
-            payload=payload,
-        )
+        raise _URLScanRateLimitError("URLScan response reported an exhausted request window.")
     return payload
 
 
@@ -1414,7 +1408,11 @@ def _archive_signal(
             "hashes": hashes,
             "brandEvidence": [cast(BrandEvidence, label) for label in brand_evidence],
             "matchScore": confidence,
-            "evidenceTier": "corroborated",
+            "evidenceTier": (
+                "corroborated"
+                if {"title", "verdict", "primary-html-sha256"}.intersection(brand_evidence)
+                else "name-only"
+            ),
             "reviewState": "unreviewed",
             "ltRelevance": "lithuanian-brand-relevance",
             "confidence": confidence,
@@ -1686,6 +1684,14 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
                 "oldestBacklogProgressAt": None,
             },
         }
+    if set(value) == PRE_HEALTH_HUNT_STATE_FIELDS:
+        failed = value.get("lastOutcome") == "failed"
+        value = {
+            **value,
+            "lastSuccessAt": None if failed or value.get("configured") is not True else value.get("lastRunAt"),
+            "consecutiveFailures": 1 if failed else 0,
+            "degradedSince": value.get("lastRunAt") if failed else None,
+        }
     if set(value) != HUNT_STATE_FIELDS:
         return None
     integers = (
@@ -1696,6 +1702,7 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
         "selectedCandidates",
         "lastRunSearchRequests",
         "lastRunResultRequests",
+        "consecutiveFailures",
     )
     if (
         value.get("schemaVersion") != 1
@@ -1707,12 +1714,20 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
         return None
     generated = value.get("generatedAt")
     last_run = value.get("lastRunAt")
+    last_success = value.get("lastSuccessAt")
+    degraded_since = value.get("degradedSince")
     budget_day = value.get("budgetDay")
     if (
         not isinstance(generated, str)
         or not UTC_MILLISECOND_TIMESTAMP.fullmatch(generated)
         or not isinstance(last_run, str)
         or not UTC_MILLISECOND_TIMESTAMP.fullmatch(last_run)
+        or (last_success is not None and (
+            not isinstance(last_success, str) or not UTC_MILLISECOND_TIMESTAMP.fullmatch(last_success)
+        ))
+        or (degraded_since is not None and (
+            not isinstance(degraded_since, str) or not UTC_MILLISECOND_TIMESTAMP.fullmatch(degraded_since)
+        ))
         or not isinstance(budget_day, str)
         or not _valid_day(budget_day)
     ):
@@ -1721,6 +1736,14 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
         if _timestamp(datetime.fromisoformat(generated.replace("Z", "+00:00"))) != generated:
             return None
         if _timestamp(datetime.fromisoformat(last_run.replace("Z", "+00:00"))) != last_run:
+            return None
+        if last_success is not None and (
+            _timestamp(datetime.fromisoformat(last_success.replace("Z", "+00:00"))) != last_success
+        ):
+            return None
+        if degraded_since is not None and (
+            _timestamp(datetime.fromisoformat(degraded_since.replace("Z", "+00:00"))) != degraded_since
+        ):
             return None
     except ValueError:
         return None
@@ -1733,6 +1756,7 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
     last_result = value["lastRunResultRequests"]
     configured = value["configured"]
     outcome = value["lastOutcome"]
+    consecutive_failures = value["consecutiveFailures"]
     coverage = value["checkpointCoverage"]
     if (
         not 0 <= search_requests <= PROVIDER_DAILY_SEARCH_LIMIT
@@ -1744,8 +1768,28 @@ def _validated_hunt_state(value: object) -> dict[str, Any] | None:
         or not 0 <= last_search <= PROVIDER_MINUTE_LIMIT
         or not 0 <= last_result <= PROVIDER_MINUTE_LIMIT
         or (outcome == "skipped-not-configured") != (configured is False)
+        or not 0 <= consecutive_failures <= 2_000_000_000
         or generated != last_run
         or datetime.fromisoformat(generated.replace("Z", "+00:00")).date().isoformat() != budget_day
+    ):
+        return None
+    if outcome == "failed":
+        if consecutive_failures == 0 or degraded_since is None:
+            return None
+        if datetime.fromisoformat(degraded_since.replace("Z", "+00:00")) > datetime.fromisoformat(
+            last_run.replace("Z", "+00:00")
+        ):
+            return None
+    elif consecutive_failures != 0 or degraded_since is not None:
+        return None
+    if configured and outcome != "failed" and last_success != last_run:
+        return None
+    if not configured and last_success is not None:
+        return None
+    if (
+        last_success is not None
+        and datetime.fromisoformat(last_success.replace("Z", "+00:00"))
+        > datetime.fromisoformat(last_run.replace("Z", "+00:00"))
     ):
         return None
     if not isinstance(coverage, dict) or set(coverage) != {
@@ -1828,8 +1872,25 @@ def _state_for_run(
     last_search_requests: int,
     last_result_requests: int,
     checkpoint_coverage: dict[str, object] | None = None,
+    previous: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     timestamp = _timestamp(now)
+    if outcome == "failed":
+        last_success_at = previous.get("lastSuccessAt") if previous else None
+        consecutive_failures = min(
+            2_000_000_000,
+            (cast(int, previous["consecutiveFailures"]) if previous else 0) + 1,
+        )
+        degraded_since = previous.get("degradedSince") if previous else None
+        degraded_since = degraded_since or timestamp
+    elif configured:
+        last_success_at = timestamp
+        consecutive_failures = 0
+        degraded_since = None
+    else:
+        last_success_at = None
+        consecutive_failures = 0
+        degraded_since = None
     state = {
         "schemaVersion": 1,
         "dataset": "urlscan-hunt-state",
@@ -1843,6 +1904,9 @@ def _state_for_run(
         "selectedCandidates": selected_candidates,
         "lastRunAt": timestamp,
         "lastOutcome": outcome,
+        "lastSuccessAt": last_success_at,
+        "consecutiveFailures": consecutive_failures,
+        "degradedSince": degraded_since,
         "lastRunSearchRequests": last_search_requests,
         "lastRunResultRequests": last_result_requests,
         "checkpointCoverage": checkpoint_coverage
@@ -1863,6 +1927,7 @@ def main() -> int:
     now = datetime.now(UTC)
     root = os.environ.get("URLSCAN_ARCHIVE_ROOT", "").strip() or "data/urlscan"
     previous = read_urlscan_hunt_state(root)
+    api_key = os.environ.get("URLSCAN_API_KEY", "").strip()
     budget_day = now.date().isoformat()
     same_day = previous is not None and previous["budgetDay"] == budget_day
     if same_day and previous is not None:
@@ -1878,12 +1943,43 @@ def main() -> int:
             _bounded_archive_root(root) / "search-checkpoints.json",
             now=now,
         )
-    except Exception as error:
-        message = str(error).splitlines()[0] if str(error) else type(error).__name__
-        print(f"URLScan checkpoint state failed: {message}")
+    except Exception:
+        # A missing checkpoint is a valid first-run bootstrap and is handled
+        # by SearchCheckpointStore.load. Reaching this branch means existing
+        # state is malformed or unreadable. Do not print the exception: a
+        # future provider implementation could include a private query in it.
+        recorded = False
+        if previous is not None and api_key:
+            try:
+                recorded = _write_hunt_state_if_changed(
+                    root,
+                    previous,
+                    _state_for_run(
+                        now,
+                        configured=True,
+                        outcome="failed",
+                        search_requests=search_used,
+                        result_requests=result_used,
+                        candidate_cursor=previous_cursor if previous_count else 0,
+                        candidate_count=previous_count,
+                        selected_candidates=0,
+                        last_search_requests=0,
+                        last_result_requests=0,
+                        checkpoint_coverage=cast(
+                            dict[str, object], previous["checkpointCoverage"]
+                        ),
+                        previous=previous,
+                    ),
+                )
+            except Exception:
+                print("URLScan checkpoint failure state could not be recorded safely.")
+        suffix = "failed health state recorded" if recorded else "no safe prior state available"
+        print(
+            "URLScan checkpoint state is malformed or unreadable; "
+            f"no provider request was made; {suffix}."
+        )
         return 1
     initial_checkpoint_coverage = checkpoints.summary()
-    api_key = os.environ.get("URLSCAN_API_KEY", "").strip()
     if not api_key:
         try:
             changed = _write_hunt_state_if_changed(
@@ -1901,6 +1997,7 @@ def main() -> int:
                     last_search_requests=0,
                     last_result_requests=0,
                     checkpoint_coverage=initial_checkpoint_coverage,
+                    previous=previous,
                 ),
             )
             print(
@@ -1963,6 +2060,7 @@ def main() -> int:
                 last_search_requests=requester.run_search_requests,
                 last_result_requests=requester.run_result_requests,
                 checkpoint_coverage=checkpoints.summary(),
+                previous=previous,
             ),
         )
         print(
@@ -1989,6 +2087,7 @@ def main() -> int:
                     last_search_requests=requester.run_search_requests,
                     last_result_requests=requester.run_result_requests,
                     checkpoint_coverage=initial_checkpoint_coverage,
+                    previous=previous,
                 ),
             )
         except Exception as state_error:

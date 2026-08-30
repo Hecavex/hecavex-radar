@@ -9,20 +9,25 @@ import { LtFooter } from "./LtFooter.tsx";
 
 type LoadState =
   | { status: "loading" }
-  | { status: "ready"; snapshot: RadarSnapshot; renderedAt: number }
+  | { status: "ready"; snapshot: RadarSnapshot; renderedAt: number; refreshError: string | null }
   | { status: "error"; message: string };
 
 export function LtRadarApp({ initialSnapshot, initialNow }: { initialSnapshot?: RadarSnapshot; initialNow?: number } = {}) {
   const [state, setState] = useState<LoadState>(initialSnapshot
-    ? { status: "ready", snapshot: initialSnapshot, renderedAt: initialNow ?? Date.now() }
+    ? { status: "ready", snapshot: initialSnapshot, renderedAt: initialNow ?? Date.now(), refreshError: null }
     : { status: "loading" });
 
   useEffect(() => {
     const controller = new AbortController();
     void loadSnapshot(controller.signal)
-      .then((snapshot) => setState({ status: "ready", snapshot, renderedAt: Date.now() }))
+      .then((snapshot) => setState({ status: "ready", snapshot, renderedAt: Date.now(), refreshError: null }))
       .catch((error: unknown) => {
-        if (!controller.signal.aborted) setState({ status: "error", message: error instanceof Error ? error.message : "Nežinoma duomenų klaida." });
+        if (!controller.signal.aborted) {
+          const message = error instanceof Error ? error.message : "Nežinoma duomenų klaida.";
+          setState((current) => current.status === "ready"
+            ? { ...current, renderedAt: Date.now(), refreshError: message }
+            : { status: "error", message });
+        }
       });
     return () => controller.abort();
   }, []);
@@ -32,7 +37,9 @@ export function LtRadarApp({ initialSnapshot, initialNow }: { initialSnapshot?: 
       <SiteHeader currentPage="radar" language="lt" alternateHref="/" />
       {state.status === "loading" && <main className="state-page" id="main-content" aria-live="polite"><RadioTower className="state-icon pulse" aria-hidden="true" /><p className="eyebrow">Gaunama suvestinė</p><h1>Kraunami naujausi signalai</h1></main>}
       {state.status === "error" && <main className="state-page" id="main-content" aria-live="assertive"><AlertTriangle className="state-icon danger" aria-hidden="true" /><p className="eyebrow">Duomenys nepasiekiami</p><h1>Nepavyko įkelti radaro suvestinės</h1><p>{state.message}</p><button className="button" type="button" onClick={() => window.location.reload()}>Bandyti dar kartą</button></main>}
-      {state.status === "ready" && <Dashboard snapshot={state.snapshot} now={state.renderedAt} language="lt" />}
+      {state.status === "ready" && (
+        <Dashboard snapshot={state.snapshot} now={state.renderedAt} language="lt" refreshError={state.refreshError} />
+      )}
       <LtFooter />
     </div>
   );

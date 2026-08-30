@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { SiteFooter } from "./components/SiteFooter.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
 import { brandEntries as entries, brandPath, brandRegistryReviewedAt, defangDomain } from "./lib/brandRegistry.ts";
+import { foldSearchText } from "./lib/searchText.ts";
 // Keep prerendering deterministic across Node and browser ICU implementations.
 const categories = [...new Set(entries.map((entry) => entry.category))].sort();
 
@@ -11,7 +12,7 @@ export function BrandScopePage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const filteredEntries = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const normalizedQuery = foldSearchText(query.trim());
     return entries.filter((entry) => {
       const matchesQuery = normalizedQuery.length === 0 || [
         entry.brand,
@@ -19,7 +20,7 @@ export function BrandScopePage() {
         ...entry.aliases,
         ...(entry.fuzzyAliases ?? []),
         ...entry.officialDomains,
-      ].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
+      ].some((value) => foldSearchText(value).includes(normalizedQuery));
       return matchesQuery && (category === "all" || entry.category === category);
     });
   }, [category, query]);

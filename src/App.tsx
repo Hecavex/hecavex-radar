@@ -9,7 +9,7 @@ import type { RadarSnapshot } from "./types.ts";
 
 type LoadState =
   | { status: "loading" }
-  | { status: "ready"; snapshot: RadarSnapshot; renderedAt: number }
+  | { status: "ready"; snapshot: RadarSnapshot; renderedAt: number; refreshError: string | null }
   | { status: "error"; message: string };
 
 export function App(
@@ -17,17 +17,20 @@ export function App(
 ) {
   const [state, setState] = useState<LoadState>(
     initialSnapshot
-      ? { status: "ready", snapshot: initialSnapshot, renderedAt: initialNow ?? Date.now() }
+      ? { status: "ready", snapshot: initialSnapshot, renderedAt: initialNow ?? Date.now(), refreshError: null }
       : { status: "loading" },
   );
 
   useEffect(() => {
     const controller = new AbortController();
     void loadSnapshot(controller.signal)
-      .then((snapshot) => setState({ status: "ready", snapshot, renderedAt: Date.now() }))
+      .then((snapshot) => setState({ status: "ready", snapshot, renderedAt: Date.now(), refreshError: null }))
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
-          setState({ status: "error", message: error instanceof Error ? error.message : "Unknown data error." });
+          const message = error instanceof Error ? error.message : "Unknown data error.";
+          setState((current) => current.status === "ready"
+            ? { ...current, renderedAt: Date.now(), refreshError: message }
+            : { status: "error", message });
         }
       });
     return () => controller.abort();
@@ -57,7 +60,9 @@ export function App(
         </main>
       )}
 
-      {state.status === "ready" && <Dashboard snapshot={state.snapshot} now={state.renderedAt} />}
+      {state.status === "ready" && (
+        <Dashboard snapshot={state.snapshot} now={state.renderedAt} refreshError={state.refreshError} />
+      )}
 
       <SiteFooter />
     </div>

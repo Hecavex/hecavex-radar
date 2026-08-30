@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   collect:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -28,8 +29,9 @@ jobs:
       CERTSTREAM_EXPECTED_INTERVAL_SECONDS: "900"
       CERTSTREAM_STALE_AFTER_SECONDS: "2700"
       CERTSTREAM_DELAY_THRESHOLD_SECONDS: "300"
+      CERTSTREAM_DUE_TOLERANCE_SECONDS: "0"
       CERTSTREAM_SCHEDULE_MINUTES: "8,23,38,53"
-      CERTSTREAM_TRIGGER: ${{ inputs.cadence_relay && 'schedule' || github.event_name }}
+      CERTSTREAM_TRIGGER: ${{ inputs.cadence_relay && 'cadence-relay' || github.event_name }}
       CERTSTREAM_HEALTH_PATH: public/data/collection-health.json
     steps:
       - name: Check out repository
@@ -46,17 +48,19 @@ jobs:
           cache-dependency-path: |
             pyproject.toml
             requirements/automation-runtime-py312.lock
-      - name: Initialize public collection health
-        run: python -m hecavex_radar.collection_health begin
+      - name: Initialize public collection health when due
+        id: cadence
+        run: python -m hecavex_radar.collection_health begin-if-due
       - name: Install Python dependencies
         id: dependencies
+        if: steps.cadence.outputs.due == 'true'
         continue-on-error: true
         run: |
           python -m pip install --disable-pip-version-check --require-hashes -r requirements/automation-runtime-py312.lock
           python -m pip install --disable-pip-version-check --no-deps --no-build-isolation .
       - name: Prepare CertStream source
         id: source
-        if: always() && steps.dependencies.outcome == 'success'
+        if: always() && steps.cadence.outputs.due == 'true' && steps.dependencies.outcome == 'success'
         continue-on-error: true
         env:
           CERTSTREAM_SOURCE_URL: ${{ secrets.CERTSTREAM_URL || vars.CERTSTREAM_URL }}
@@ -85,7 +89,7 @@ jobs:
           exit 1
       - name: Collect a bounded CertStream window
         id: collector
-        if: always() && steps.source.outcome == 'success'
+        if: always() && steps.cadence.outputs.due == 'true' && steps.source.outcome == 'success'
         continue-on-error: true
         env:
           CERTSTREAM_FLUSH_SECONDS: "15"
@@ -95,19 +99,19 @@ jobs:
           CERTSTREAM_ARCHIVE_ROOT: data/certstream
         run: python -m hecavex_radar.collect_certstream
       - name: Stop local CertStream source
-        if: always()
+        if: always() && steps.cadence.outputs.due == 'true'
         shell: bash
         run: docker rm --force certstream-source 2> /dev/null || true
       - name: Finalize public collection health
         id: health
-        if: always()
+        if: always() && steps.cadence.outputs.due == 'true'
         env:
           CERTSTREAM_INSTALL_OUTCOME: ${{ steps.dependencies.outcome }}
           CERTSTREAM_PREPARE_OUTCOME: ${{ steps.source.outcome }}
           CERTSTREAM_COLLECTOR_OUTCOME: ${{ steps.collector.outcome }}
         run: python -m hecavex_radar.collection_health finalize
       - name: Commit the attempt atomically
-        if: always() && steps.health.outcome == 'success'
+        if: always() && steps.cadence.outputs.due == 'true' && steps.health.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -146,7 +150,7 @@ jobs:
             sleep $((attempt * 2))
           done
       - name: Fail an unsuccessful collection attempt
-        if: always()
+        if: always() && steps.cadence.outputs.due == 'true'
         env:
           INSTALL_OUTCOME: ${{ steps.dependencies.outcome }}
           PREPARE_OUTCOME: ${{ steps.source.outcome }}
@@ -162,7 +166,7 @@ jobs:
             exit 1
           fi
       - name: Notify bounded writer completion
-        if: always()
+        if: always() && steps.cadence.outputs.due == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
@@ -172,6 +176,11 @@ jobs:
           SOURCE_REF: ${{ github.ref_name }}
         shell: bash
         run: |
+          collection_outcome="$(jq -r '.latestAttempt.outcome // "failed"' public/data/collection-health.json)"
+          case "${collection_outcome}" in
+            healthy-empty|healthy-matches|no-input|partial|failed) ;;
+            *) echo "Unexpected collection outcome: ${collection_outcome}" >&2; exit 1 ;;
+          esac
           gh api --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -181,4 +190,5 @@ jobs:
             -f "client_payload[source_conclusion]=${SOURCE_CONCLUSION}" \
             -f "client_payload[source_run_id]=${SOURCE_RUN_ID}" \
             -f "client_payload[source_ref]=${SOURCE_REF}" \
+            -f "client_payload[collection_outcome]=${collection_outcome}" \
             -f "client_payload[head_sha]=${SOURCE_SHA}"

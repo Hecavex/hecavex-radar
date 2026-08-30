@@ -11,7 +11,15 @@ from .review import ASSESSMENT_REASONS, EVIDENCE_CODES, SUPPRESSION_REASONS
 
 MAXIMUM_WINDOW_DAYS = 365
 KNOWN_SOURCES = frozenset({"CertStream", "URLScan", "HECAVEX"})
-KNOWN_OUTCOMES = frozenset({"confirmed-suspicious", "inconclusive", "retracted"})
+KNOWN_OUTCOMES = frozenset(
+    {
+        "confirmed-suspicious",
+        "false-positive",
+        "benign-brand-reference",
+        "inconclusive",
+        "retracted",
+    }
+)
 
 
 def _timestamp(value: object) -> datetime | None:
@@ -109,10 +117,11 @@ def build_quality_metrics(
 ) -> dict[str, object]:
     """Build public quality metrics without publishing review subjects.
 
-    The sanitized review export does not currently contain a dated negative
-    label for every reviewed candidate. The artifact therefore reports review
-    dispositions and current exclusions, but deliberately leaves precision and
-    false-positive rate unavailable.
+    The sanitized review contract supports dated positive and negative labels,
+    but it does not claim that the reviewed worklist is a probability sample.
+    The artifact therefore reports review dispositions and current exclusions,
+    while deliberately leaving population precision and false-positive rate
+    unavailable until a defensible sample design is linked to the decisions.
     """
 
     generated = _timestamp(generated_at)
@@ -269,8 +278,9 @@ def build_quality_metrics(
             "sampleSize": 0,
             "estimatePercent": None,
             "reason": (
-                "The current public contract does not provide a complete, dated positive and negative review "
-                "sample. A precision or false-positive estimate would therefore be misleading."
+                "Dated positive and negative outcomes are supported, but no completed probability sample or "
+                "review census is linked to the current decisions. A population precision estimate would "
+                "therefore be misleading."
             ),
         },
         "privacy": "Aggregate counters only; no domains, URLs, signal identifiers, analyst identity or private notes.",

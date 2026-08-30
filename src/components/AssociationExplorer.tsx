@@ -20,6 +20,7 @@ import {
   type RelationStrength,
 } from "../lib/relatedObservations.ts";
 import { formatDateTime } from "../lib/format.ts";
+import { foldSearchText } from "../lib/searchText.ts";
 import { formatDateTimeLt, statusLt } from "../lt/formatLt.ts";
 import type { RadarSignal } from "../types.ts";
 
@@ -174,7 +175,7 @@ export function AssociationExplorer({
   }, [activeArtifact]);
 
   const filteredEdges = useMemo(() => {
-    const needle = query.trim().toLowerCase();
+    const needle = foldSearchText(query.trim(), language);
     const edges = (activeArtifact?.edges ?? []).filter((edge) => {
       const source = nodesById.get(edge.source);
       const target = nodesById.get(edge.target);
@@ -193,7 +194,7 @@ export function AssociationExplorer({
         targetBrand,
         edge.id,
         ...edge.evidence.flatMap((item) => [item.type, evidenceLabels[language][item.type], item.value]),
-      ].some((value) => value.toLowerCase().includes(needle));
+      ].some((value) => foldSearchText(value, language).includes(needle));
     });
 
     return edges.sort((left, right) => {

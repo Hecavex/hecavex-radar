@@ -7,8 +7,13 @@ from urllib.parse import parse_qs, urlsplit
 
 import pytest
 
-from hecavex_radar import urlscan_checkpoint
-from hecavex_radar.urlscan import _BudgetedRequester
+from hecavex_radar import urlscan, urlscan_checkpoint
+from hecavex_radar.urlscan import (
+    _BudgetedRequester,
+    _state_for_run,
+    _URLScanRateLimitError,
+    _validated_hunt_state,
+)
 from hecavex_radar.urlscan_checkpoint import SearchCheckpointStore, SearchUnavailable, _sort_token
 
 QUERY = "task.visibility:public AND date:>now-7d AND domain:example"
@@ -108,6 +113,259 @@ def test_budgeted_requester_uses_explicit_search_exhaustion_signal() -> None:
     with pytest.raises(SearchUnavailable):
         requester("https://urlscan.io/api/v1/search/?q=test", "unused")
     assert requester.exhausted is True
+
+
+def test_budgeted_requester_counts_a_provider_attempt_that_fails() -> None:
+    def unavailable(_url: str, _key: str) -> object:
+        raise RuntimeError("temporary provider failure")
+
+    requester = _BudgetedRequester(
+        unavailable,
+        search_used=0,
+        result_used=0,
+        daily_search_cap=10,
+        daily_result_cap=10,
+        run_search_cap=10,
+        run_result_cap=10,
+    )
+
+    with pytest.raises(RuntimeError, match="temporary provider failure"):
+        requester("https://urlscan.io/api/v1/search/?q=test", "unused")
+
+    assert requester.search_used == 1
+    assert requester.run_search_requests == 1
+
+
+def test_provider_rate_limit_is_not_local_budget_exhaustion() -> None:
+    def rate_limited(_url: str, _key: str) -> object:
+        raise _URLScanRateLimitError("provider limited")
+
+    requester = _BudgetedRequester(
+        rate_limited,
+        search_used=0,
+        result_used=0,
+        daily_search_cap=10,
+        daily_result_cap=10,
+        run_search_cap=10,
+        run_result_cap=10,
+    )
+
+    with pytest.raises(_URLScanRateLimitError, match="provider limited"):
+        requester("https://urlscan.io/api/v1/search/?q=test", "unused")
+
+    assert requester.search_used == 1
+    assert requester.run_search_requests == 1
+    assert requester.exhausted is False
+    assert requester.provider_exhausted is True
+
+    with pytest.raises(_URLScanRateLimitError, match="not performed"):
+        requester("https://urlscan.io/api/v1/search/?q=test", "unused")
+    assert requester.search_used == 1
+
+
+def test_provider_rate_limit_persists_failed_health_without_refreshing_success(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("URLSCAN_ARCHIVE_ROOT", "data/urlscan")
+    monkeypatch.setenv("URLSCAN_API_KEY", "test-key")
+    prior = _state_for_run(
+        datetime(2026, 8, 29, 10, tzinfo=UTC),
+        configured=True,
+        outcome="completed",
+        search_requests=1,
+        result_requests=0,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=0,
+    )
+    urlscan.write_urlscan_hunt_state("data/urlscan", prior)
+
+    def rate_limited(_url: str, _key: str) -> object:
+        raise _URLScanRateLimitError("provider limited")
+
+    def hunt(*_args: object, **kwargs: object) -> list[object]:
+        requester = kwargs["requester"]
+        assert callable(requester)
+        requester("https://urlscan.io/api/v1/search/?q=test", "unused")
+        return []
+
+    monkeypatch.setattr(urlscan, "_request_json", rate_limited)
+    monkeypatch.setattr(urlscan, "hunt_urlscan", hunt)
+
+    assert urlscan.main() == 1
+    state = urlscan.read_urlscan_hunt_state("data/urlscan")
+    assert state is not None
+    assert state["lastOutcome"] == "failed"
+    assert state["lastSuccessAt"] == prior["lastSuccessAt"]
+    assert state["consecutiveFailures"] == 1
+    assert state["degradedSince"] == state["lastRunAt"]
+    assert state["lastRunSearchRequests"] == 1
+
+
+def test_malformed_checkpoint_records_bounded_failure_without_leaking_contents(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("URLSCAN_ARCHIVE_ROOT", "data/urlscan")
+    monkeypatch.setenv("URLSCAN_API_KEY", "test-key")
+    prior = _state_for_run(
+        datetime(2026, 8, 29, 10, tzinfo=UTC),
+        configured=True,
+        outcome="completed",
+        search_requests=1,
+        result_requests=2,
+        candidate_cursor=2,
+        candidate_count=4,
+        selected_candidates=4,
+        last_search_requests=1,
+        last_result_requests=2,
+    )
+    urlscan.write_urlscan_hunt_state("data/urlscan", prior)
+    checkpoint = tmp_path / "data/urlscan/search-checkpoints.json"
+    checkpoint.write_text('{"private-query":"do-not-log"', encoding="utf-8")
+
+    assert urlscan.main() == 1
+
+    output = capsys.readouterr().out
+    assert "malformed or unreadable" in output
+    assert "no provider request was made" in output
+    assert "failed health state recorded" in output
+    assert "private-query" not in output
+    assert "do-not-log" not in output
+    state = urlscan.read_urlscan_hunt_state("data/urlscan")
+    assert state is not None
+    assert state["lastOutcome"] == "failed"
+    assert state["lastSuccessAt"] == prior["lastSuccessAt"]
+    assert state["consecutiveFailures"] == 1
+    assert state["candidateCursor"] == 2
+    assert state["candidateCount"] == 4
+    assert state["checkpointCoverage"] == prior["checkpointCoverage"]
+    assert state["lastRunSearchRequests"] == 0
+    assert state["lastRunResultRequests"] == 0
+
+
+def test_missing_checkpoint_bootstraps_instead_of_becoming_malformed_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("URLSCAN_ARCHIVE_ROOT", "data/urlscan")
+    monkeypatch.setenv("URLSCAN_API_KEY", "test-key")
+    monkeypatch.setattr(urlscan, "hunt_urlscan", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(urlscan, "write_urlscan_archive", lambda *_args, **_kwargs: 0)
+    monkeypatch.setattr(
+        urlscan,
+        "write_urlscan_intelligence_archive",
+        lambda *_args, **_kwargs: 0,
+    )
+
+    assert urlscan.main() == 0
+
+    state = urlscan.read_urlscan_hunt_state("data/urlscan")
+    assert state is not None
+    assert state["lastOutcome"] == "completed"
+    assert state["consecutiveFailures"] == 0
+    assert state["lastSuccessAt"] == state["lastRunAt"]
+
+
+def test_urlscan_source_health_persists_repeated_failure_duration() -> None:
+    first_at = datetime(2026, 8, 26, 10, tzinfo=UTC)
+    first = _state_for_run(
+        first_at,
+        configured=True,
+        outcome="failed",
+        search_requests=1,
+        result_requests=0,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=0,
+    )
+    second = _state_for_run(
+        first_at + timedelta(hours=2),
+        configured=True,
+        outcome="failed",
+        search_requests=2,
+        result_requests=0,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=0,
+        previous=first,
+    )
+
+    assert second["consecutiveFailures"] == 2
+    assert second["degradedSince"] == "2026-08-26T10:00:00.000Z"
+    assert second["lastSuccessAt"] is None
+
+
+def test_urlscan_success_resets_persisted_failure_health() -> None:
+    failed_at = datetime(2026, 8, 26, 10, tzinfo=UTC)
+    failed = _state_for_run(
+        failed_at,
+        configured=True,
+        outcome="failed",
+        search_requests=1,
+        result_requests=0,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=0,
+    )
+    recovered_at = failed_at + timedelta(hours=2)
+    recovered = _state_for_run(
+        recovered_at,
+        configured=True,
+        outcome="completed",
+        search_requests=2,
+        result_requests=0,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=0,
+        previous=failed,
+    )
+
+    assert recovered["consecutiveFailures"] == 0
+    assert recovered["degradedSince"] is None
+    assert recovered["lastSuccessAt"] == "2026-08-26T12:00:00.000Z"
+
+
+def test_urlscan_pre_health_state_is_migrated_on_read() -> None:
+    current = _state_for_run(
+        datetime(2026, 8, 26, 12, tzinfo=UTC),
+        configured=True,
+        outcome="completed",
+        search_requests=1,
+        result_requests=1,
+        candidate_cursor=0,
+        candidate_count=0,
+        selected_candidates=0,
+        last_search_requests=1,
+        last_result_requests=1,
+    )
+    legacy = {
+        key: value
+        for key, value in current.items()
+        if key not in {"lastSuccessAt", "consecutiveFailures", "degradedSince"}
+    }
+
+    migrated = _validated_hunt_state(legacy)
+
+    assert migrated is not None
+    assert migrated["lastSuccessAt"] == "2026-08-26T12:00:00.000Z"
+    assert migrated["consecutiveFailures"] == 0
+    assert migrated["degradedSince"] is None
 
 
 @pytest.mark.parametrize(

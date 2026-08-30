@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "dataset": "certstream-collection-health",
+  "generatedAt": "2026-08-30T12:08:01.000Z",
+  "expectedIntervalSeconds": 900,
+  "staleAfterSeconds": 2700,
+  "lastSuccessAt": "2026-08-30T12:08:01.000Z",
+  "freshness": {
+    "status": "current",
+    "referenceAt": "2026-08-30T12:08:01.000Z",
+    "ageSeconds": 0
+  },
+  "latestAttempt": {
+    "startedAt": "2026-08-30T12:00:00.000Z",
+    "collectorStartedAt": "2026-08-30T12:00:01.000Z",
+    "endedAt": "2026-08-30T12:08:01.000Z",
+    "trigger": "cadence-relay",
+    "scheduledFor": null,
+    "scheduleStatus": "relayed",
+    "delaySeconds": null,
+    "expectedListeningSeconds": 480,
+    "listeningSeconds": 480,
+    "messages": 1,
+    "dnsNames": 1,
+    "matches": 0,
+    "newRecords": 0,
+    "connectionAttempts": 1,
+    "connections": 1,
+    "outcome": "healthy-empty",
+    "summary": "Input was processed successfully; no candidate matched the publication heuristic."
+  }
+}

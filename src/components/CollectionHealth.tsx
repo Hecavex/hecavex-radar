@@ -75,6 +75,7 @@ function listeningSeconds(value: number, language: SiteLanguage): string {
 function scheduleLabel(attempt: CollectionAttempt, language: SiteLanguage): string {
   const lt = language === "lt";
   if (attempt.scheduleStatus === "manual") return lt ? "Rankinis paleidimas" : "Manual run";
+  if (attempt.scheduleStatus === "relayed") return lt ? "Tvarkaraščio tęsinys" : "Cadence relay";
   if (attempt.scheduleStatus === "unknown") return lt ? "Tvarkaraštis nežinomas" : "Schedule unknown";
   if (attempt.scheduleStatus === "delayed") {
     return lt

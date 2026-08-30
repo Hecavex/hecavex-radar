@@ -11,13 +11,13 @@ export const COLLECTION_OUTCOMES = [
 ] as const;
 
 export type CollectionOutcome = (typeof COLLECTION_OUTCOMES)[number];
-export type CollectionScheduleStatus = "scheduled" | "delayed" | "manual" | "unknown";
+export type CollectionScheduleStatus = "scheduled" | "delayed" | "relayed" | "manual" | "unknown";
 
 export type CollectionAttempt = {
   startedAt: string;
   collectorStartedAt: string | null;
   endedAt: string;
-  trigger: "schedule" | "manual" | "unknown";
+  trigger: "schedule" | "cadence-relay" | "manual" | "unknown";
   scheduledFor: string | null;
   scheduleStatus: CollectionScheduleStatus;
   delaySeconds: number | null;
@@ -108,16 +108,34 @@ function isAttempt(value: unknown): value is CollectionAttempt {
   const endedAt = timestampValue(value.endedAt);
   const scheduledFor = value.scheduledFor === null ? null : timestampValue(value.scheduledFor);
   const scheduled = value.scheduleStatus === "scheduled" || value.scheduleStatus === "delayed";
+  const validScheduleProvenance =
+    (value.trigger === "schedule" &&
+      scheduled &&
+      startedAt !== null &&
+      scheduledFor !== null &&
+      scheduledFor <= startedAt &&
+      isCounter(value.delaySeconds, 86_400) &&
+      value.delaySeconds === Math.trunc((startedAt - scheduledFor) / 1_000)) ||
+    (value.trigger === "cadence-relay" &&
+      value.scheduleStatus === "relayed" &&
+      value.scheduledFor === null &&
+      value.delaySeconds === null) ||
+    (value.trigger === "manual" &&
+      value.scheduleStatus === "manual" &&
+      value.scheduledFor === null &&
+      value.delaySeconds === null) ||
+    (value.trigger === "unknown" &&
+      value.scheduleStatus === "unknown" &&
+      value.scheduledFor === null &&
+      value.delaySeconds === null);
   return (
     startedAt !== null &&
     validCollectorStart &&
     endedAt !== null &&
     (collectorStartedAt === null || (startedAt <= collectorStartedAt && collectorStartedAt <= endedAt)) &&
-    (value.trigger === "schedule" || value.trigger === "manual" || value.trigger === "unknown") &&
-    (scheduled || value.scheduleStatus === "manual" || value.scheduleStatus === "unknown") &&
-    (scheduled
-      ? scheduledFor !== null && isCounter(value.delaySeconds, 86_400)
-      : value.scheduledFor === null && value.delaySeconds === null) &&
+    (value.trigger === "schedule" || value.trigger === "cadence-relay" || value.trigger === "manual" || value.trigger === "unknown") &&
+    (scheduled || value.scheduleStatus === "relayed" || value.scheduleStatus === "manual" || value.scheduleStatus === "unknown") &&
+    validScheduleProvenance &&
     isSeconds(value.expectedListeningSeconds) &&
     isSeconds(value.listeningSeconds) &&
     isCounter(value.messages) &&

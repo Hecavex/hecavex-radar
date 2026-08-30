@@ -124,10 +124,19 @@ class _AssetHuntResult:
     selected_asset_hashes: int
 
 
-def _main_official_domains(registry: BrandRegistry) -> list[_OfficialDomain]:
-    """Use the first reviewed domain as the stable main website for each brand."""
+def _reviewed_official_domains(registry: BrandRegistry) -> list[_OfficialDomain]:
+    """Return every reviewed official domain in deterministic registry order.
+
+    A brand can legitimately use several country or product domains. Sampling
+    only the first one leaves the asset baseline biased toward a single site
+    and can miss a favicon or JavaScript bundle used on another reviewed
+    property. Ambiguous domains are still rejected later by
+    :func:`_official_for_result` rather than being assigned to either brand.
+    """
     return [
-        _OfficialDomain(brand=entry.brand, domain=entry.official_domains[0], entry=entry) for entry in registry.entries
+        _OfficialDomain(brand=entry.brand, domain=domain, entry=entry)
+        for entry in registry.entries
+        for domain in entry.official_domains
     ]
 
 
@@ -493,7 +502,7 @@ def hunt_official_asset_hashes(
 ) -> _AssetHuntResult:
     """Derive and pivot hashes using only existing public URLScan reports."""
     lookback = _bounded(os.environ.get("URLSCAN_ASSET_LOOKBACK_DAYS"), 30, 1, 90)
-    official_limit = _bounded(os.environ.get("URLSCAN_ASSET_OFFICIAL_DOMAINS_PER_RUN"), 20, 1, 46)
+    official_limit = _bounded(os.environ.get("URLSCAN_ASSET_OFFICIAL_DOMAINS_PER_RUN"), 20, 1, 500)
     official_batch = _bounded(os.environ.get("URLSCAN_ASSET_OFFICIAL_BATCH_SIZE"), 1, 1, 20)
     official_search_size = _bounded(os.environ.get("URLSCAN_ASSET_OFFICIAL_SEARCH_LIMIT"), 100, 1, 200)
     official_detail_limit = _bounded(os.environ.get("URLSCAN_ASSET_OFFICIAL_DETAIL_LIMIT"), 40, 1, 80)
@@ -501,7 +510,7 @@ def hunt_official_asset_hashes(
     pivot_search_size = _bounded(os.environ.get("URLSCAN_ASSET_HASH_RESULT_LIMIT"), 5, 1, 50)
     pivot_detail_limit = _bounded(os.environ.get("URLSCAN_ASSET_HASH_DETAIL_LIMIT"), 60, 1, 80)
 
-    official_domains = _main_official_domains(registry)
+    official_domains = _reviewed_official_domains(registry)
     official_start = max(0, official_cursor) % len(official_domains) if official_domains else 0
     selected_official, _ = _rotating_window(official_domains, official_cursor, official_limit)
     attempted_official_domains = 0
@@ -948,7 +957,10 @@ def _read_state(root: str | Path, registry: BrandRegistry, now: datetime) -> dic
     if len(keys) != len(set(keys)):
         raise ValueError("Official brand asset state contains duplicate assets.")
     reconciled_eligible_count = len(_eligible_assets(validated_assets))
-    registry_changed = official_count != len(_main_official_domains(registry)) or len(validated_assets) != len(assets)
+    registry_changed = (
+        official_count != len(_reviewed_official_domains(registry))
+        or len(validated_assets) != len(assets)
+    )
     if not registry_changed and eligible_count != reconciled_eligible_count:
         raise ValueError("Official brand asset state has an inconsistent eligible count.")
     validated_blocks = [_validated_blocked_hash(value, now) for value in blocked_hashes]
@@ -979,7 +991,7 @@ def _read_state(root: str | Path, registry: BrandRegistry, now: datetime) -> dic
         owner.sha256 in blocked_digests for owner in owners
     ) or any(owner.sha256 in asset_digests for owner in owners):
         raise ValueError("Official brand asset state retains overlapping active, owner, or blocked hashes.")
-    current_official_count = len(_main_official_domains(registry))
+    current_official_count = len(_reviewed_official_domains(registry))
     payload["assets"] = validated_assets
     payload["hashOwners"] = owners
     payload["blockedHashes"] = blocks
@@ -1083,7 +1095,7 @@ def _write_state(
         generated.date().isoformat() != serializable["budgetDay"]
         or (serializable["lastOutcome"] == "skipped-not-configured")
         != (serializable["configured"] is False)
-        or official_count != len(_main_official_domains(registry))
+        or official_count != len(_reviewed_official_domains(registry))
         or not 0 <= eligible_count <= len(assets)
         or (official_count == 0 and official_cursor != 0)
         or (official_count > 0 and not 0 <= official_cursor < official_count)
@@ -1167,7 +1179,7 @@ def main() -> int:
                 current_blocked_hashes,
                 now,
             )
-            official_count = len(_main_official_domains(registry))
+            official_count = len(_reviewed_official_domains(registry))
             eligible_count = len(_eligible_assets(assets))
             skipped = _AssetHuntResult(
                 signals=[],
@@ -1219,7 +1231,7 @@ def main() -> int:
         )
         return 0
     except Exception as error:
-        official_count = len(_main_official_domains(registry))
+        official_count = len(_reviewed_official_domains(registry))
         eligible_count = len(_eligible_assets(current_assets))
         fallback = _AssetHuntResult(
             signals=[],

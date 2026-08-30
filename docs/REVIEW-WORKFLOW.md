@@ -89,6 +89,8 @@ hecavex-review confirm support-vinted.ph \
   --note "private evidence references"
 ```
 
+The assessment target must already exist as an exact signal in the validated complete `radar.index.json` shard set or in bounded `history.json`. The dashboard prefix is not the admission boundary, and a current matcher hit by itself is insufficient. On the first lifecycle event, the CLI records the published signal ID, defanged domain, canonical brand, observation time, sorted collection sources, and a canonical SHA-256 integrity digest. The digest detects accidental mutation; it is not a signature or a maliciousness verdict. Corrections and retractions copy that original admission envelope byte-for-byte. A direct programmatic ledger event without this provenance remains private and cannot be exported or emitted as reviewed STIX.
+
 `confirm` is the only action that can create an active `confirmed-suspicious` assessment and make the row eligible for the separate reviewed STIX Indicator feed. It requires a future expiry, a controlled disposition reason, and at least one controlled evidence code. The evidence code states what the analyst used; raw screenshots, case notes, identities, and evidence values stay private. `--analyst-confidence`, when supplied, is separate from the automated domain `matchScore`.
 
 Correct public assessment metadata without changing its stable Indicator identity:
@@ -116,7 +118,28 @@ hecavex-review inconclusive support-vinted.ph \
   --evidence certificate-transparency
 ```
 
-After a confirmation expires, the dashboard presents it as `needs-review`; expiry is not silently represented as a false positive or STIX revocation. Renew an active assessment before expiry with `correct --expires-at ...`. An already expired assessment must be confirmed again so the new explicit review boundary is recorded.
+When the evidence supports a dated negative classification, record it separately from suppression:
+
+```sh
+hecavex-review dismiss secure-swedbank-login.example \
+  --state false-positive \
+  --reason lexical-collision \
+  --evidence certificate-transparency \
+  --evidence rdap \
+  --lt-relevance global-brand-reference \
+  --analyst-confidence 95 \
+  --expires-at 2026-09-25T12:00:00.000Z
+```
+
+Use `benign-brand-reference` when the brand reference is real but the reviewed evidence does not support impersonation.
+`dismiss` creates a dated, expiring assessment and does not silently delete the candidate. Use the separate
+`false-positive` command only when an exact suppression is also required. Negative assessments are excluded from the
+reviewed STIX Indicator feed and remain available for aggregate quality measurement.
+
+After a positive or negative assessment expires, the dashboard presents it as `needs-review`; expiry is not silently
+represented as a false positive or STIX revocation. Renew an active positive assessment before expiry with
+`correct --expires-at ...`. Record a fresh `dismiss` after rechecking an expired negative assessment. An already expired
+positive assessment must be confirmed again so the new explicit review boundary is recorded.
 
 Inspect active state, then export:
 
@@ -138,4 +161,4 @@ Before committing an export:
 4. Search the diff for private notes, names, credentials, tokens, email addresses, and case references.
 5. Run `pnpm check`.
 
-The public file contains only deterministic decision IDs, defanged domains and URLs, scope, resolved brand, controlled reason and evidence codes, observation/review/expiry times, matcher and optional analyst scores, Lithuanian relevance, and explicit review/revocation state. Synchronization fails closed if the file is malformed, cross-brand, future-dated, oversized, duplicated, or inconsistent with the current matcher. Inspect `public/data/radar-reviewed.stix.json` as part of the publication diff whenever an assessment changes.
+The version 3 public file contains only deterministic decision IDs, defanged domains and URLs, scope, resolved brand, controlled reason and evidence codes, observation/admission/review/expiry times, matcher and optional analyst scores, Lithuanian relevance, and explicit review/revocation state. Synchronization fails closed if the file is malformed, cross-brand, future-dated, oversized, duplicated, missing its assessment admission envelope, or if a new manual candidate is inconsistent with the current matcher. A dated assessment preserves the canonical brand and exact public observation recorded at review time; later matcher changes do not erase the historical decision, while its admission digest, domain, deterministic signal ID, evidence codes, and timestamps remain strictly validated. Version 2 is read only as an empty-assessment migration shape. Inspect `public/data/radar-reviewed.stix.json` as part of the publication diff whenever an assessment changes.

@@ -216,3 +216,5 @@ def test_weekly_workflow_uploads_checksums_sbom_and_attests_all_assets() -> None
     assert '"${RELEASE_TAG}.spdx.json" "${RELEASE_TAG}.tar.gz"' in workflow
     assert "${{ steps.package.outputs.sbom_path }}" in workflow
     assert "${{ steps.package.outputs.checksums_path }}" in workflow
+    assert '--commit "${TRUSTED_TOOLING_SHA}"' in workflow
+    assert '--commit "${SOURCE_SHA}"' not in workflow

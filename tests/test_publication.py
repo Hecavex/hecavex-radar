@@ -190,6 +190,21 @@ def test_dns_context_can_form_a_two_family_infrastructure_association() -> None:
     assert {item["type"] for item in evidence} == {"dns-a", "dns-ns"}
 
 
+def test_relationships_do_not_treat_same_registrable_domain_as_independent_infrastructure() -> None:
+    shared_hash = "c" * 64
+    first = _signal(10, body_hash=shared_hash)
+    second = _signal(11, body_hash=shared_hash)
+    first["domain"] = "login[.]candidate[.]pages[.]dev"
+    first["url"] = "hxxps://login[.]candidate[.]pages[.]dev"
+    second["domain"] = "www[.]login[.]candidate[.]pages[.]dev"
+    second["url"] = "hxxps://www[.]login[.]candidate[.]pages[.]dev"
+
+    artifact = build_related_observations([first, second], {}, NOW)
+
+    assert artifact["edges"] == []
+    assert artifact["nodes"] == []
+
+
 def test_relation_byte_trimming_recomputes_connected_components(monkeypatch: MonkeyPatch) -> None:
     first = _signal(7, body_hash="a" * 64)
     second = _signal(8, body_hash="a" * 64)

@@ -17,6 +17,7 @@ from hecavex_radar.event_feeds import (
     build_event_feeds_from_files,
     write_event_feeds,
 )
+from hecavex_radar.review import _build_admission_source
 from hecavex_radar.safety import stable_id
 
 NOW = "2026-08-25T12:00:00.000Z"
@@ -100,7 +101,7 @@ def test_builds_distinct_events_without_publishing_a_raw_url() -> None:
         ),
     ]
     review = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "dataset": "radar-review-decisions",
         "assessments": [
             {
@@ -108,8 +109,16 @@ def test_builds_distinct_events_without_publishing_a_raw_url() -> None:
                 "signalId": signal_identifier,
                 "domain": domain,
                 "brand": "Example & <Bank>",
+                "reviewedAt": "2026-08-25T11:30:00.000Z",
                 "modifiedAt": "2026-08-25T11:45:00.000Z",
                 "revoked": True,
+                "admissionSource": _build_admission_source(
+                    signal_id=signal_identifier,
+                    domain=domain,
+                    brand="Example & <Bank>",
+                    observed_at="2026-08-25T09:00:00.000Z",
+                    sources=["CertStream"],
+                ),
             }
         ],
     }

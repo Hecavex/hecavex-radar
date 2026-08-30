@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-30T14:11:28.002Z",
+  "generatedAt": "2026-08-30T14:47:34.384Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-30T13:44:57.084Z",
-      "queryCursor": 2,
+      "stateGeneratedAt": "2026-08-30T14:47:34.384Z",
+      "queryCursor": 8,
       "configuredQueries": 46
     },
     "urlscanHunt": {
-      "stateGeneratedAt": "2026-08-30T12:41:20.602Z",
-      "lastRunAt": "2026-08-30T12:41:20.602Z",
+      "stateGeneratedAt": "2026-08-30T14:41:16.570Z",
+      "lastRunAt": "2026-08-30T14:41:16.570Z",
       "lastOutcome": "completed",
-      "candidateCursor": 4,
-      "candidateCount": 125
+      "candidateCursor": 64,
+      "candidateCount": 127
     }
   },
   "unicodeProfile": {
@@ -96,7 +96,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T06:44:42.926Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -174,7 +174,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T06:44:42.926Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -269,7 +269,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T06:44:42.926Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -364,7 +364,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T06:44:42.926Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -409,11 +409,11 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T07:47:06.383Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
-        "latestMatchAt": "2026-08-30T11:35:48.252Z"
+        "latestMatchAt": "2026-08-30T14:50:20.850Z"
       },
       "urlscanAssets": {
         "assetHashes": 13,
@@ -490,9 +490,9 @@
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
-        "cases": 0,
-        "passing": 0,
-        "status": "not-covered"
+        "cases": 1,
+        "passing": 1,
+        "status": "passing"
       }
     },
     {
@@ -514,7 +514,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T07:47:06.383Z",
+        "lastAttemptAt": "2026-08-30T14:47:30.977Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
@@ -778,9 +778,9 @@
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
-        "cases": 0,
-        "passing": 0,
-        "status": "not-covered"
+        "cases": 1,
+        "passing": 1,
+        "status": "passing"
       }
     },
     {
@@ -1697,7 +1697,7 @@
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
-        "latestMatchAt": "2026-08-30T13:25:12.430Z"
+        "latestMatchAt": "2026-08-30T14:35:04.720Z"
       },
       "urlscanAssets": {
         "assetHashes": 11,
@@ -1893,9 +1893,9 @@
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
-        "cases": 0,
-        "passing": 0,
-        "status": "not-covered"
+        "cases": 3,
+        "passing": 3,
+        "status": "passing"
       }
     },
     {
@@ -2242,8 +2242,8 @@
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
-        "cases": 7,
-        "passing": 7,
+        "cases": 9,
+        "passing": 9,
         "status": "passing"
       }
     },

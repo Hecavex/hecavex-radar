@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from hecavex_radar.brands import BrandEntry, BrandRegistry, score_domain
 from hecavex_radar.certstream_archive import CandidateArchiveWriter, candidate_from_match, read_recent_candidates
-from hecavex_radar.ct_search import build_queries, parse_row, poll, read_state
+from hecavex_radar.ct_search import (
+    CTSearchRequestError,
+    _retry_after_seconds,
+    build_queries,
+    parse_row,
+    poll,
+    read_state,
+)
 
 
 def _registry() -> BrandRegistry:
@@ -204,6 +211,60 @@ def test_provider_failures_are_persisted_as_controlled_codes(tmp_path, monkeypat
     assert result["failureCodes"] == ["provider-timeout"]
     assert state["latestRun"]["failureCodes"] == ["provider-timeout"]
     assert "private provider detail" not in str(state)
+
+
+def test_provider_failure_trips_circuit_and_honors_retry_after(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    started = datetime(2026, 8, 25, 12, 0, tzinfo=UTC)
+    calls = 0
+
+    def unavailable(_url: str) -> object:
+        nonlocal calls
+        calls += 1
+        raise CTSearchRequestError("provider-http", "controlled", retry_after_seconds=2 * 60 * 60)
+
+    first = poll(unavailable, now=started, registry=_registry(), queries_per_run=6)
+    first_state = read_state()
+    second = poll(unavailable, now=started + timedelta(hours=1), registry=_registry(), queries_per_run=6)
+    second_state = read_state()
+
+    assert first["queriesAttempted"] == 1
+    assert second["queriesAttempted"] == 0
+    assert second["outcome"] == "failed"
+    assert calls == 1
+    assert first_state["providerHealth"] == {
+        "lastSuccessAt": None,
+        "consecutiveFailures": 1,
+        "degradedSince": "2026-08-25T12:00:00.000Z",
+        "nextAttemptAt": "2026-08-25T14:00:00.000Z",
+    }
+    assert second_state["providerHealth"] == first_state["providerHealth"]
+
+
+def test_retry_after_parser_accepts_delta_or_http_date_and_caps_delay() -> None:
+    now = datetime(2026, 8, 25, 10, 0, tzinfo=UTC)
+
+    assert _retry_after_seconds("7200", now=now) == 7200
+    assert _retry_after_seconds("Tue, 25 Aug 2026 12:00:00 GMT", now=now) == 7200
+    assert _retry_after_seconds("999999999", now=now) == 6 * 60 * 60
+    assert _retry_after_seconds("not-a-delay", now=now) is None
+
+
+def test_provider_backoff_grows_only_after_real_bounded_attempts(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    started = datetime(2026, 8, 25, 12, 0, tzinfo=UTC)
+
+    def unavailable(_url: str) -> object:
+        raise CTSearchRequestError("provider-http", "controlled")
+
+    poll(unavailable, now=started, registry=_registry(), queries_per_run=6)
+    first_health = read_state()["providerHealth"]
+    poll(unavailable, now=started + timedelta(hours=1), registry=_registry(), queries_per_run=6)
+    second_health = read_state()["providerHealth"]
+
+    assert first_health["nextAttemptAt"] == "2026-08-25T12:05:00.000Z"
+    assert second_health["consecutiveFailures"] == 2
+    assert second_health["nextAttemptAt"] == "2026-08-25T13:10:00.000Z"
 
 
 def test_non_array_provider_payload_is_an_invalid_response(tmp_path, monkeypatch) -> None:

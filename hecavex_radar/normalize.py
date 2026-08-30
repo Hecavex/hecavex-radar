@@ -141,19 +141,30 @@ def _corroboration_methods(values: object, reasons: Sequence[str]) -> list[Corro
 def _evidence_tier(signal: RadarSignal) -> EvidenceTier:
     """Describe evidence strength without turning it into a verdict.
 
-    A second source, a bounded provider assessment/title match, or a reusable
-    asset is corroboration. Analyst review is applied later by the private
-    review policy because it is not source evidence.
+    A second source, a bounded provider assessment/title match, or a proven
+    cross-observation hash pivot is corroboration. A hash captured in the same
+    provider observation is context, not independent evidence. Analyst review
+    is applied later by the private review policy because it is not source
+    evidence.
     """
 
     evidence = set(signal.get("brandEvidence", []))
     reasons = set(signal.get("reasonCodes", []))
+    corroboration = set(signal.get("corroboratedBy", []))
     if (
         len(signal["sources"]) > 1
         or "title" in evidence
         or "verdict" in evidence
         or "primary-html-sha256" in evidence
-        or bool(signal.get("hashes"))
+        or bool(
+            corroboration.intersection(
+                {
+                    "urlscan-page-title",
+                    "urlscan-provider-verdict",
+                    "urlscan-primary-html-sha256",
+                }
+            )
+        )
         or "brand-title-match" in reasons
         or "provider-verdict" in reasons
         or "primary-html-hash-pivot" in reasons

@@ -33,8 +33,8 @@ const workflows = [
   ["Official asset pivot", "03:47 and 15:47 UTC", "Collision-aware first-party hashes and independently qualified public reports"],
   ["DNS and RDAP context", "13 minutes past 01, 07, 13, and 19 UTC", "Bounded context for already-published candidates"],
   ["Temporal passive context", "31 minutes past 01, 07, 13, and 19 UTC", "Bounded DNS/RDAP/routing baselines and context-change journal"],
-  ["Snapshot synchronization", "17 minutes past each UTC hour", "Validated snapshots, sharing artifacts, history, quality, coverage, and review queue"],
-  ["Pages deployment", "Verified code or changed public snapshot/health", "Static GitHub Pages artifact"],
+  ["Snapshot synchronization", "17 minutes past each UTC hour; immediately after a candidate-producing collection", "Validated snapshots, sharing artifacts, history, quality, coverage, and review queue"],
+  ["Pages deployment", "Verified code, changed public snapshot, or collector failure", "Static GitHub Pages artifact"],
   ["Pipeline health evaluation", "11 minutes past every second UTC hour", "One deduplicated aggregate health issue that closes after recovery"],
   ["Sanitized review proposal", "Maintainer-only manual dispatch", "Draft pull request; never a review decision"],
   ["Weekly dataset release", "Monday at 06:29 UTC", "Gated archive, manifest, SPDX 2.3 inventory, checksums, and attestations"],
@@ -608,6 +608,7 @@ export function Documentation({ language = "en" }: { language?: "en" | "lt" }) {
           <p className="eyebrow">Operations and deployment</p>
           <h2 id="operations-title">Scheduled GitHub Pages publication</h2>
           <p>Schedules are UTC and can start late. Manual dispatch remains available for collection and synchronization.</p>
+          <p>Routine collector-only commits wait for the hourly snapshot. A collection that produces candidates requests an immediate snapshot, while a collector failure can publish its health directly.</p>
         </div>
         <div className="docs-table-wrap" role="region" aria-label="Workflow schedule" tabIndex={0}>
           <table className="docs-table">
