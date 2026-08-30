@@ -1,22 +1,28 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-30T14:47:34.384Z",
+  "generatedAt": "2026-08-30T15:45:31.739Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-30T14:47:34.384Z",
+    "endedAt": "2026-08-30T15:45:31.739Z",
     "failureCodes": [
-      "provider-http"
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
     "outcome": "failed",
-    "queriesAttempted": 6,
+    "queriesAttempted": 1,
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-30T14:47:30.977Z"
+    "startedAt": "2026-08-30T15:44:46.346Z"
   },
   "provider": "crt.sh",
+  "providerHealth": {
+    "consecutiveFailures": 2,
+    "degradedSince": "2026-08-30T14:47:30.977Z",
+    "lastSuccessAt": null,
+    "nextAttemptAt": "2026-08-30T15:55:31.739Z"
+  },
   "queries": {
     "brand:artea": {
       "brand": "Artea",
@@ -87,7 +93,7 @@
       "lastEntryAt": null,
       "lastId": 27835197032,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T07:47:06.383Z",
+      "lastRunAt": "2026-08-30T15:44:46.346Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
