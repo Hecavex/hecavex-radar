@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T16:39:06.475Z",
+  "generatedAt": "2026-08-30T17:09:36.018Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "effa52ffca0c634fd6a6",
+      "domain": "tele2service[.]online",
+      "brand": "Tele2",
+      "firstSeen": "2026-08-30T17:06:49.776Z",
+      "lastSeen": "2026-08-30T17:06:49.776Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1719f46cb40237af80d2e468c527b527",
+          "observedAt": "2026-08-30T17:06:49.776Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e575f3d57186bfac3331",
       "domain": "dhl-portal[.]ph",

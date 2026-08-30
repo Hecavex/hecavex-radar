@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-30T16:39:06.475Z",
+  "generatedAt": "2026-08-30T17:09:36.018Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 129,
+  "availableUnreviewed": 130,
   "selected": 24,
   "candidates": [
     {
@@ -213,21 +213,20 @@
       "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
-      "signalId": "b1158b011aa853ba4989",
-      "recordPath": "/signals/b1158b011aa853ba4989/",
-      "brand": "DHL",
+      "signalId": "f168e7f8b118abe0feaf",
+      "recordPath": "/signals/f168e7f8b118abe0feaf/",
+      "brand": "Telia",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "85-94",
+      "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
-        "multiple-hyphens",
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-28T17:00:25.875Z"
+      "firstSeen": "2026-08-29T02:31:22.724Z"
     },
     {
       "signalId": "3d179a68c89e521dc72c",
@@ -245,20 +244,21 @@
       "firstSeen": "2026-08-23T02:00:48.622Z"
     },
     {
-      "signalId": "f168e7f8b118abe0feaf",
-      "recordPath": "/signals/f168e7f8b118abe0feaf/",
-      "brand": "Telia",
+      "signalId": "13d06a7efa04f6696a4e",
+      "recordPath": "/signals/13d06a7efa04f6696a4e/",
+      "brand": "DHL",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "95-100",
+      "scoreBand": "85-94",
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
+        "multiple-hyphens",
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T02:31:22.724Z"
+      "firstSeen": "2026-08-29T18:46:20.904Z"
     },
     {
       "signalId": "4178e3ccc2b50a49490e",

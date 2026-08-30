@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-30T16:39:06.475Z",
+  "generatedAt": "2026-08-30T17:09:36.018Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-29T16:39:06.475Z",
-      "to": "2026-08-30T16:39:06.475Z",
+      "from": "2026-08-29T17:09:36.018Z",
+      "to": "2026-08-30T17:09:36.018Z",
       "events": 94,
       "uniqueSignals": 47,
       "firstPublications": 47,
@@ -23,53 +23,53 @@
       "byReason": {
         "suspicious-context": 92,
         "different-tld": 84,
-        "brand-exact-token": 68,
-        "multiple-hyphens": 52,
+        "brand-exact-token": 66,
+        "multiple-hyphens": 50,
         "first-publication": 47,
-        "brand-joined-affix": 22,
+        "brand-joined-affix": 24,
         "punycode": 6,
         "brand-split-token": 4,
         "unicode-confusable": 2
       },
       "byBrand": {
-        "DHL": 46,
+        "DHL": 44,
         "Telia": 10,
         "ERGO": 6,
         "Revolut": 6,
+        "Tele2": 6,
         "VMI": 6,
         "Bigbank": 4,
         "Luminor": 4,
         "Smart-ID": 4,
-        "Tele2": 4,
         "DPD": 2,
         "Swedbank": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-23T16:39:06.475Z",
-      "to": "2026-08-30T16:39:06.475Z",
-      "events": 259,
-      "uniqueSignals": 130,
-      "firstPublications": 127,
+      "from": "2026-08-23T17:09:36.018Z",
+      "to": "2026-08-30T17:09:36.018Z",
+      "events": 261,
+      "uniqueSignals": 131,
+      "firstPublications": 128,
       "statusChanges": 0,
-      "observations": 132,
+      "observations": 133,
       "reobservations": 2,
       "bySource": {
-        "CertStream": 245,
+        "CertStream": 247,
         "URLScan": 12,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 259
+        "suspected": 261
       },
       "byReason": {
-        "suspicious-context": 239,
-        "different-tld": 214,
+        "suspicious-context": 241,
+        "different-tld": 216,
         "brand-exact-token": 203,
         "multiple-hyphens": 137,
-        "first-publication": 127,
-        "brand-joined-affix": 38,
+        "first-publication": 128,
+        "brand-joined-affix": 40,
         "punycode": 12,
         "brand-title-match": 8,
         "unicode-confusable": 8,
@@ -90,11 +90,11 @@
         "ERGO": 6,
         "ESO": 6,
         "Smart-ID": 6,
+        "Tele2": 6,
         "Bigbank": 4,
         "Luminor": 4,
         "MAXIMA": 4,
         "Swedbank": 4,
-        "Tele2": 4,
         "Artea": 2,
         "BTA": 2
       }
