@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T07:11:14.136Z",
+  "generatedAt": "2026-08-30T08:09:21.283Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "2aff15c50b82bc726c2b",
+      "domain": "www[.]dhl-delivery-tracking[.]info",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T07:40:34.571Z",
+      "lastSeen": "2026-08-30T07:40:34.571Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2d4027db3c465b1db6fe569638b5aeb8",
+          "observedAt": "2026-08-30T07:40:34.571Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7dd1c3d34d729d88056a",
+      "domain": "dpd-tracking[.]oskar-campus[.]eu",
+      "brand": "DPD",
+      "firstSeen": "2026-08-30T07:30:43.226Z",
+      "lastSeen": "2026-08-30T07:30:43.226Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "913f5abd7220f0dfdde52df906b88ba1",
+          "observedAt": "2026-08-30T07:30:43.226Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c961cbe2fc57d9c312af",
       "domain": "dhl-tracking-order[.]com[.]ph",
