@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-30T17:44:53.890Z",
+  "generatedAt": "2026-08-30T18:45:10.596Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-30T17:44:53.890Z",
-      "queryCursor": 8,
+      "stateGeneratedAt": "2026-08-30T18:45:10.596Z",
+      "queryCursor": 9,
       "configuredQueries": 46
     },
     "urlscanHunt": {
-      "stateGeneratedAt": "2026-08-30T14:41:16.570Z",
-      "lastRunAt": "2026-08-30T14:41:16.570Z",
+      "stateGeneratedAt": "2026-08-30T18:41:19.022Z",
+      "lastRunAt": "2026-08-30T18:41:19.022Z",
       "lastOutcome": "completed",
-      "candidateCursor": 64,
-      "candidateCount": 127
+      "candidateCursor": 124,
+      "candidateCount": 128
     }
   },
   "unicodeProfile": {
@@ -723,14 +723,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 1,
-        "lastAttemptAt": "2026-08-30T17:44:53.073Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-08-30T18:44:36.584Z",
+        "lastSuccessfulQueryAt": "2026-08-30T18:44:36.584Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -918,7 +918,7 @@
         "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-08-30T07:47:06.383Z",
+        "lastAttemptAt": "2026-08-30T18:44:36.584Z",
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
