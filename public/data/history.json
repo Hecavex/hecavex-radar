@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T17:39:12.609Z",
+  "generatedAt": "2026-08-30T19:54:15.245Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "83646aea1b84245d54eb",
+      "domain": "pondarosaranch[.]maximaonline[.]com",
+      "brand": "MAXIMA",
+      "firstSeen": "2026-08-30T19:49:21.657Z",
+      "lastSeen": "2026-08-30T19:49:21.657Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "6a574f47aa5f96573dc0ff9b8c5f1246",
+          "observedAt": "2026-08-30T19:49:21.657Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2f6fb9fe89633e3d6de0",
+      "domain": "www[.]pondarosaranch[.]maximaonline[.]com",
+      "brand": "MAXIMA",
+      "firstSeen": "2026-08-30T19:49:21.657Z",
+      "lastSeen": "2026-08-30T19:49:21.657Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d6d80a04f683d37149d3775aecbee293",
+          "observedAt": "2026-08-30T19:49:21.657Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d04043e1e8a45b43729b",
       "domain": "www[.]revolut-user-support[.]ph",

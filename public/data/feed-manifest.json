@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-feed-manifest",
-  "generatedAt": "2026-08-30T19:20:39.352Z",
+  "generatedAt": "2026-08-30T19:54:15.245Z",
   "generator": {
     "name": "hecavex-radar",
     "version": "0.1.0",
-    "revision": "d6bfc1b5547c4b878ef39b70261a280dfbda1aa9"
+    "revision": "ff3319de2cd0ee7d986e0b440689ac73b78b03ee"
   },
   "sourceFetchedAt": {
-    "CertStream": "2026-08-30T19:20:39.352Z",
-    "HECAVEX": "2026-08-30T19:20:39.352Z",
+    "CertStream": "2026-08-30T19:54:15.245Z",
+    "HECAVEX": "2026-08-30T19:54:15.245Z",
     "URLScan": "2026-08-30T18:41:19.022Z"
   },
   "counts": {
-    "completeSignals": 131,
-    "dashboardSignals": 131,
+    "completeSignals": 133,
+    "dashboardSignals": 133,
     "dashboardOmitted": 0,
     "artifacts": 171
   },
@@ -24,14 +24,14 @@
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/brand-feeds-v1.schema.json",
       "bytes": 12164,
-      "sha256": "85ffb8727f6ae1429bccdddd64bd89801d031a7106ed4e7e439d423aeb0a106b"
+      "sha256": "0d9a9fa9051dfffb12ef932072f1c9d67a1cc79ca9ea723a61853786c815931c"
     },
     {
       "path": "/data/brands/artea/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 838,
-      "sha256": "7c7e700cc4756e8ef3ed913344e7ece40a093b2ecdd1755a038105f47392b0d5"
+      "sha256": "d8d8082d63f0a2d6f621e27ef4fed8731441333585b1badce1c1e932f5cd81bc"
     },
     {
       "path": "/data/brands/artea/events.feed.json",
@@ -45,14 +45,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 767,
-      "sha256": "f6eaf123e00c0b2df45d81cd7714cc9af5fd2d8e4e1025956c43c599e7e6c931"
+      "sha256": "8b861ea6dc269343ce33e21455353d5255d686fdfa31f126cdeedf5873716d53"
     },
     {
       "path": "/data/brands/bigbank/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1278,
-      "sha256": "fd40028429c0ee3f0306581787ca54baaced86f73c2f9cfa6fa6ffe559ac4413"
+      "sha256": "f2ce0077e61d2ddc46b348e312ea87944e1efc795220cfa0d122167f3c977655"
     },
     {
       "path": "/data/brands/bigbank/events.feed.json",
@@ -66,14 +66,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1236,
-      "sha256": "de0c630bc44ee61e61ca8d8fae55831c8c3027ebfe95192a8f8b61aefbe0b927"
+      "sha256": "1cc8cda5ef87c0fb1fb67fc4a30811338700ccafadadb3e84c39dc90a73d02b1"
     },
     {
       "path": "/data/brands/bite/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 2117,
-      "sha256": "25bdd750b7c42a07b2c3e57c4db56f6e632ff7caff0b65bf9ba5b33af1725b0c"
+      "sha256": "37df15ed48e5da8d97353055fe75d6396830e23d9ec4aab6b08ba08b72e04bea"
     },
     {
       "path": "/data/brands/bite/events.feed.json",
@@ -87,14 +87,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 2147,
-      "sha256": "136b9038db5722cb136f979dcfd086119e8d2d895beea4d338b319b82fca608f"
+      "sha256": "2434a20f883f0717267cb40b24526f15a1b2bd61f80da2dd65bf23a64cbbc7d6"
     },
     {
       "path": "/data/brands/bta/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 868,
-      "sha256": "4d7a777abadf3d890d91524ffe361cdb0d3eb0fb861bec8cf0ccd6f4f5ad205a"
+      "sha256": "a3ba92168cb423911310d6ca3d3908ec0c2cf1d54b021f3c2cc676d86fb492f7"
     },
     {
       "path": "/data/brands/bta/events.feed.json",
@@ -108,14 +108,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 801,
-      "sha256": "7ec80ef60f0bc5e55ae189bc52c92a3c95907379184cd1e5501617412af77cc0"
+      "sha256": "c4e97202af97c1bb7a38c9575376b9329c78471041c607efba625ee7f3ce02ec"
     },
     {
       "path": "/data/brands/cgates/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 446,
-      "sha256": "5c30e9cf6e6ddee069545e1261f89741511b21d58149d700de2c878d79b261f8"
+      "sha256": "84c884e98aa7de90abb090caad88e6bb1b071ea45272a03033afa31481d984c0"
     },
     {
       "path": "/data/brands/cgates/events.feed.json",
@@ -129,14 +129,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 340,
-      "sha256": "5aec01b6d41da91e7fc620442d5bd9cceaec9876e4c7a88e50559f292fd8dd3e"
+      "sha256": "f336901d0552a9634677481c3ce869c6ea12502a7727925fefcc0f862b4d297e"
     },
     {
       "path": "/data/brands/citadele/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 454,
-      "sha256": "6244f21219000c55817a93e22f4e5cf9d8c6b90b98f518cef4d3390da355f2e3"
+      "sha256": "657e5e0de105038dbb7f4866620f84e3dca8d4ea1dfcb7f2246e2724ac6d2647"
     },
     {
       "path": "/data/brands/citadele/events.feed.json",
@@ -150,14 +150,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 344,
-      "sha256": "873d31156c9c83e5a1574862b07171e6d5f7425ce52d7e14571f69f319d0e96f"
+      "sha256": "4038d62cc85acd4f56e978c6c1647a6fffa25d26df702c998ca51623ba85d52b"
     },
     {
       "path": "/data/brands/dhl/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 23962,
-      "sha256": "667d301ee88f02a75f91fdcaadd358d15ba6d82f8ae6fa959d007639c5d9e4a8"
+      "sha256": "99ddf82af0d3f43dd812bc2ad2d1601ad68210cab1fefde9255c437657923157"
     },
     {
       "path": "/data/brands/dhl/events.feed.json",
@@ -171,14 +171,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 25677,
-      "sha256": "be88c956a2bf8af00e151513c1f5c3fb12ff499a4e1492990a9b8639715659e2"
+      "sha256": "1210793523c9972d519a0ca547f51a5e5dfb05302dc577f3361f7da6f542f997"
     },
     {
       "path": "/data/brands/dpd/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 2477,
-      "sha256": "6e987bfb8d09d0da1e83791a4abafdb481641713edcbbfc278ef9a864d20baac"
+      "sha256": "21070435c12e354149245525dfce1b167fab8c932020017700f5b82fd6ec24e3"
     },
     {
       "path": "/data/brands/dpd/events.feed.json",
@@ -192,14 +192,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 2542,
-      "sha256": "6bf7697302b5fb4a98ed1afc0084d59c7cec2a873bd81257a71508a176f344b1"
+      "sha256": "7ec1b283b35187bdaecdea07658cef830e8ac1969520952ed5821719658c90ed"
     },
     {
       "path": "/data/brands/e-sveikata/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 463,
-      "sha256": "92154b29a7b1317f7b03175b6712ef0fd238008e5f4ec20f9a2dcff46b768ee4"
+      "sha256": "4f89ea58ed8e313aad38fd089f87da49e60e0d91cbf06371e8f4bddbf86a76de"
     },
     {
       "path": "/data/brands/e-sveikata/events.feed.json",
@@ -213,14 +213,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 349,
-      "sha256": "2c03448e0c1c6744ee62680b2220ac3e9fe3bd62ab3f844b1665b071c2abeb0d"
+      "sha256": "316d3cd000cadaa42d7e32f5aef1ecf8f7882d02d7b2cc79a06b66ffc29add3a"
     },
     {
       "path": "/data/brands/elektroniniai-valdzios-vartai/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 539,
-      "sha256": "85cbe5310896353cab3281772254bfeec7979250cc9927bf27117f200c8def05"
+      "sha256": "b9cdb89aa72d6bf043b2181e73e906981e6a0587b7db3e574038fee858f2b5b5"
     },
     {
       "path": "/data/brands/elektroniniai-valdzios-vartai/events.feed.json",
@@ -234,14 +234,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 387,
-      "sha256": "49db3e7feaedd14191eb043c1a12eee03f7d6b35e967010a79e6aa6db7c7beed"
+      "sha256": "af55a36fb648ba233ae2828b782dd8c22f1789141d7238e0ab97e0f1227f0297"
     },
     {
       "path": "/data/brands/elektrum/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 454,
-      "sha256": "27270ea7ba16902bb8f9c1fe550a4e8b08f0c359549a2d8b3a4f71e467fb5db7"
+      "sha256": "41fa94ea72dee1afc166539e5962901a60bf51a71a80527e6e8b9e9d6ff27413"
     },
     {
       "path": "/data/brands/elektrum/events.feed.json",
@@ -255,14 +255,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 344,
-      "sha256": "b3619fc7f4a615a7c301ed98e6270c0ede8d8522e84a34c15f6c620194f5860a"
+      "sha256": "bcaaf08c773034ca9146731546c80d6eb9f85711fe011614840722cd01162b81"
     },
     {
       "path": "/data/brands/epolicija/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 458,
-      "sha256": "585c2a9d001299bc980d5a0abcb43a0ce1dc5e80dc0377d2962ab9530f076fcc"
+      "sha256": "42d7fb2ed2665c495574eb30c664c95e0907d13b0a8d04d37207ad856d152920"
     },
     {
       "path": "/data/brands/epolicija/events.feed.json",
@@ -276,14 +276,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 346,
-      "sha256": "db57707d4b946002179e46a179b74bcf5708ff4267b5361ad710a536af973abf"
+      "sha256": "7eb981ffab6d22d27d985ffccf18dcdb16ee636cf25cc777e32617c9055c86ba"
     },
     {
       "path": "/data/brands/epristatymas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 470,
-      "sha256": "bc929e40e771fafea7838af6fef47fdb817d3b5889324d71906a9487627ca67f"
+      "sha256": "ae16f23c92be75143242eaf501d1d55de94d65ec71aad87cbe34cd985bac5855"
     },
     {
       "path": "/data/brands/epristatymas/events.feed.json",
@@ -297,14 +297,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 352,
-      "sha256": "b1929effc7b1b8dc308b5db4a2250e11ba1fa13e039ed7a3076cfa701eb07fdc"
+      "sha256": "537b0fde5bd54b254bd8d3bacd6d98a0307f3dfd21cc1049d209a19c28ce62a8"
     },
     {
       "path": "/data/brands/ergo/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1252,
-      "sha256": "f6d6d5a061e83e91085866859f8f0cd11b295af4db1a5177dd84b8868814c610"
+      "sha256": "a873b81f6815968f0e7e003023c72c69aff6a3023df98c36a54436b44f02af02"
     },
     {
       "path": "/data/brands/ergo/events.feed.json",
@@ -318,14 +318,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1216,
-      "sha256": "8a2fb5bdd27976fec40f61ce1cdd691ada8ff69b4919d5c576a45c55802e9b78"
+      "sha256": "d90d11d236a0b88e56987ce3f9955c1a886b6f3a18c93b6a4094f303a7f6b480"
     },
     {
       "path": "/data/brands/eso/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1758,
-      "sha256": "5e126a6687042de2401f6074699a75c13ff28f7c53f17fa4e13e2e5f315696ac"
+      "sha256": "58820536fbbebe285b06c621d9530c4d9296bacc61559d3eb4d99cd5827fa3c8"
     },
     {
       "path": "/data/brands/eso/events.feed.json",
@@ -339,14 +339,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1757,
-      "sha256": "da384800f84c2bc4864390fbce197deded83bf5ba7903316ebef5bb1448c587e"
+      "sha256": "a768367a32ff2631da15e0f0c82c21a863a13d24ce67f6d0fec8e821e7b9f417"
     },
     {
       "path": "/data/brands/gjensidige/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 462,
-      "sha256": "cda0ed4833066a767a8e8622d7548140cc14510c21692599b88b40334f1a46c5"
+      "sha256": "c7086f49d44a3b22174b55ca2d160f61d50a2442da1548f3f425bb03333c6d82"
     },
     {
       "path": "/data/brands/gjensidige/events.feed.json",
@@ -360,14 +360,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 348,
-      "sha256": "a1315021fb0617057f51ca88301c98f515d888a4628b25b20f5b18f0417a005c"
+      "sha256": "e79ab0ffbfd1c85e648bd7d14bf9f9b3d4db0ddf608fef07cfdea6ea136c31e9"
     },
     {
       "path": "/data/brands/ignitis/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 450,
-      "sha256": "524ae79f75ad1a409996e7db8a7e478cf94f346144818c0d26236dd885a72490"
+      "sha256": "ba64986d89dfcbb1343db387b1b9381182e0c28d06b4f1f8dc62b76e1a9e0058"
     },
     {
       "path": "/data/brands/ignitis/events.feed.json",
@@ -381,14 +381,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 342,
-      "sha256": "1a02bc509a30be5751c287b9f7eb6da017ee32dfad56bd125cb42833b14465a8"
+      "sha256": "06a21e30db5b1d6dedc9794b0c164560469c1832dbb0e435edda651c4b1b2184"
     },
     {
       "path": "/data/brands/iki/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 434,
-      "sha256": "7a6092ab271ab9f672925bc7286fca30fd65e15226614ff8ff020563b8560eb2"
+      "sha256": "a9cc1e1a2ad4bf95a61a324d76220d3acf60d2662b7a8989b1fa30a74d555744"
     },
     {
       "path": "/data/brands/iki/events.feed.json",
@@ -402,14 +402,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 334,
-      "sha256": "17cd3a90720f9d45c3b7b7dde25ecefb4699f6183fd2fed465cd9958ff060964"
+      "sha256": "44ff7abab7bccad271f47453642487b043de34b874573a47d7521dbefa4069b2"
     },
     {
       "path": "/data/brands/lidl-lietuva/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 470,
-      "sha256": "5a98fff2cfa6c5f8e85a933c3beadda1f7c912cb63c99f04b20a69df348e16c8"
+      "sha256": "0fa96211df92042b9800a989fec88c0161047fd954e4a5c71b3a410727b38431"
     },
     {
       "path": "/data/brands/lidl-lietuva/events.feed.json",
@@ -423,14 +423,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 352,
-      "sha256": "06bc97ecb25735114808b28afa9d9335a982feabb21a92099bc817e087f2ff29"
+      "sha256": "cf758dca6ca37c6cad64d439158d6006848c95f6eb706c3fe7e9092aaa55d3c0"
     },
     {
       "path": "/data/brands/lietuvos-bankas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 482,
-      "sha256": "d14d63de32c2f5ae9c03c81b234604ba230370edede96e7668f7d8415351fe44"
+      "sha256": "70c1c5524443804cd2c5dd7334971e2855f44a1055ad7a91039a16c7bbf7127b"
     },
     {
       "path": "/data/brands/lietuvos-bankas/events.feed.json",
@@ -444,14 +444,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 358,
-      "sha256": "7bd2c8d9a756d85060ad487fde3feee24c5ef6769e460e04317edff57e34f559"
+      "sha256": "e206b8945ca5e7e369f9418b7499f66a72734254d35f7d013a6c5e0f957732da"
     },
     {
       "path": "/data/brands/lietuvos-draudimas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 494,
-      "sha256": "b057d991df2f7421243574da897b85252f4c787e34426eb47720fbd14619d8af"
+      "sha256": "23afe4b0cd125b0606a8f9249065fa5f7703a4f7de2f56fd467da04b7ede6c2e"
     },
     {
       "path": "/data/brands/lietuvos-draudimas/events.feed.json",
@@ -465,14 +465,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 364,
-      "sha256": "10016af290ab8ecd6c3b3e06707504da2c076be05c107f510b55d549df56d49f"
+      "sha256": "21fed193c48527ff4ce98fb35a4a84b4675aef1d8db457edb2bf85b02a43a9f7"
     },
     {
       "path": "/data/brands/lietuvos-pastas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 483,
-      "sha256": "2d9548042b88d8c04e76d7a3e2eeea864ef86857cad2ba0b261f7d3ca1dc4541"
+      "sha256": "7bb5b1a1554b3a428fb8e697025847fbb3a0380e2d55d05c07ca665762cbd86c"
     },
     {
       "path": "/data/brands/lietuvos-pastas/events.feed.json",
@@ -486,14 +486,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 359,
-      "sha256": "b6c3470f2bd9c819798955f49330d03dc5fa9c61139dac0d87794e5003fbe3de"
+      "sha256": "8d88304330527c2156d8bcd6f23db5d4b904e31e77b832622a28887bb46562d6"
     },
     {
       "path": "/data/brands/lp-express/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 462,
-      "sha256": "76875cf994dd71888169258429319c5e24eba0280d4446bf47467d5c86c23a2b"
+      "sha256": "a53cedcbc6095c427c45c1e47d1b9372f2c05cda2e037f8be62c4b5f80dd0948"
     },
     {
       "path": "/data/brands/lp-express/events.feed.json",
@@ -507,14 +507,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 348,
-      "sha256": "23ad3b038eab800791eedc1905110bf7d5514a92a9ff182338d4ef76afafab38"
+      "sha256": "34ffb460cad1d6ab93e192c682284d388fee0d3424233b61612b9a9541e89c95"
     },
     {
       "path": "/data/brands/luminor/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1274,
-      "sha256": "ed7c09e263e2eb6cc939b81eaa9f48be547f74507d3829cec402c744e9f7cbdc"
+      "sha256": "897ece866e1bcf3816a1adbadc2bfc7ba5fb7d8952aa7f2b5746b7e30fffa711"
     },
     {
       "path": "/data/brands/luminor/events.feed.json",
@@ -528,14 +528,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1232,
-      "sha256": "47263c021621d7dd4f734c2f374d72148a6d6d111ebf2bd0e2c77290ddc841e6"
+      "sha256": "418a53a2b7efb3328090f053d14db1ebad74eb3e5ed3e4108d9bce6ef54116b8"
     },
     {
       "path": "/data/brands/mano-bankas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 466,
-      "sha256": "8dd3f903e8f806e5bbadd6bc2d35526f964b1f1172593503f727a5e0d02b9f2e"
+      "sha256": "11005e731c9e9847fd13bece92ac29052ef85fde6d6663209ace90a30e0877d5"
     },
     {
       "path": "/data/brands/mano-bankas/events.feed.json",
@@ -549,35 +549,35 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 350,
-      "sha256": "1cd6863b62a3cde0f11a2c21c7516ad87a2278fd7088db405f7f22b23f058a18"
+      "sha256": "2ede7ae223714cd5dc4a8516fa37f9e29a6aac267cb7040c5eb3d8f18195a6b4"
     },
     {
       "path": "/data/brands/maxima/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
-      "bytes": 2134,
-      "sha256": "7b1d97feca5efd47bc2ff74b47987f0dc434831ca3d9dfcc3bd5fa43e8db564d"
+      "bytes": 3024,
+      "sha256": "b113deb21ee21bad141c04a18f0bf4dfab04077c6eddefd0d6f3d1142a2c6495"
     },
     {
       "path": "/data/brands/maxima/events.feed.json",
       "mediaType": "application/feed+json",
       "schema": "https://radar.hecavex.com/data/schemas/json-feed-v1.schema.json",
-      "bytes": 2199,
-      "sha256": "cfa65fb2a1c2e6a99ee6caea3d65a8ab71ab123f1338ed66888eff87b641cf59"
+      "bytes": 3207,
+      "sha256": "2f2060e2392cbb320c5a20976c09e53ea3a1016903fc04fb22ba865dcf4f7acf"
     },
     {
       "path": "/data/brands/maxima/events.rss.xml",
       "mediaType": "application/rss+xml",
       "schema": null,
-      "bytes": 2160,
-      "sha256": "69052ac73095d77f6cf578639e4b7f28b51431401edcae12a21d2dc5855ac579"
+      "bytes": 3116,
+      "sha256": "177e4a786394b5ff42ea52c21523169a4d96c2f219c2ccbf75d1afd129f2bb35"
     },
     {
       "path": "/data/brands/migracijos-departamentas/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 518,
-      "sha256": "99a2e6892a0a8858559d9ec99ec06a5ff9e9a63b87632d20cad4192dc01b0325"
+      "sha256": "ab9022af94d03a366e8ed6667515db5fa5f67d4df08b0081e9ff3c1a55a9ba18"
     },
     {
       "path": "/data/brands/migracijos-departamentas/events.feed.json",
@@ -591,14 +591,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 376,
-      "sha256": "e5d877430a63b8d48bf2cb9f377fe216760a0be82f0b355e414b4599eeedb870"
+      "sha256": "42c6f93943ce365ac68e1594802fca06515ac6ebdffa617fb7339a97d9cb6601"
     },
     {
       "path": "/data/brands/omniva/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 446,
-      "sha256": "5802be05f1e37f6ae81cfa1f3fede5136437cf4c670924ab8492645446b00e97"
+      "sha256": "2efbf9915a35fa77365526add78c6b1bbed1f3dbabec24a80e658e483c4732b7"
     },
     {
       "path": "/data/brands/omniva/events.feed.json",
@@ -612,14 +612,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 340,
-      "sha256": "3b3f0a3878e4ffcd8b12ee970fd7d498ad54f90bf78078fc2ca4e7a03964f83d"
+      "sha256": "1308af6f3fe6d7bedfc28cafa7cd29f1938728f1f6eb24d6624c853a350003a4"
     },
     {
       "path": "/data/brands/paysera/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 450,
-      "sha256": "5b16b8acf5626056331e1e690b27a146a7323f5cc30d1a29f514174c3baa69dd"
+      "sha256": "e687d28b043b8f313aa71166e3586ad318de4cb7d44740769017609f6cf5a623"
     },
     {
       "path": "/data/brands/paysera/events.feed.json",
@@ -633,14 +633,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 342,
-      "sha256": "9a0c1db8d442d2aebef68125a52614a2af1f3bc7c1bae5cd94d075efcc93883b"
+      "sha256": "80eefc45e045be2d103cb62559475180da306bab4558cc9395b5e384bf938ee1"
     },
     {
       "path": "/data/brands/registru-centras/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 487,
-      "sha256": "2f70f8b200a170c7315f47868fff745a4131efef11f7029c927237c5eb173f22"
+      "sha256": "3200530f37932cdc17986046ea30c654110267d23ae407492cfdeb9369bf959a"
     },
     {
       "path": "/data/brands/registru-centras/events.feed.json",
@@ -654,14 +654,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 361,
-      "sha256": "ab526cd011d1037829edf34c740d642427c50134a8a324cbebc58dbed027a0ad"
+      "sha256": "858ea763ffd5d1540b40e445a79058df65e92d992ddf492c7783573cb020c864"
     },
     {
       "path": "/data/brands/regitra/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 450,
-      "sha256": "bb12751c8f37657504d3dd2b2875330f1576e843c2194034009197fb8e137e2a"
+      "sha256": "62e9a1f59dd8c226e1a2ae9811096e783a88f42311d690932a5cf34dae648656"
     },
     {
       "path": "/data/brands/regitra/events.feed.json",
@@ -675,14 +675,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 342,
-      "sha256": "2029a5d694d65608c9bf2e578d652e47969a996899baa38adfd66c03f6ddf237"
+      "sha256": "2948404b067bfe27a85664080381d548fe5f609f907bf2c41ef36eb34537a945"
     },
     {
       "path": "/data/brands/revolut/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 11381,
-      "sha256": "3c1d1085f1845d0a19e0b6651cb335b30a5d59a4844ab5527be2b29d1b48343c"
+      "sha256": "3105d9f282ee316ef762fdec03733545907bee219d2bcc75d6ef89ec26d25e74"
     },
     {
       "path": "/data/brands/revolut/events.feed.json",
@@ -696,14 +696,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 12131,
-      "sha256": "61c4375a25a4838c96422aa9c86feb11f9679bff46c62856c45ebdc94e6f3435"
+      "sha256": "55d1d69132c3ce5511a6c038f983dc69c90d2c20893b483aeaa8d94a0ece099b"
     },
     {
       "path": "/data/brands/rimi/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 438,
-      "sha256": "0058b7b00856e85019c1373b9a5af1991b74f2e2fcb4c49328a0a0d3c1530bcc"
+      "sha256": "2eeca387d8cb45b5f55ee74944e785f4669fc8e3473c1f866fc742a0b6d65100"
     },
     {
       "path": "/data/brands/rimi/events.feed.json",
@@ -717,14 +717,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 336,
-      "sha256": "273151c2e7a2948ae4806735fd775ec51fe0b8e111405c6ff64eca689ed9de21"
+      "sha256": "7315d66f676a9815e7b4be8b3766f4f5d1555e4665f0e2d568826e5809a55186"
     },
     {
       "path": "/data/brands/seb/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1678,
-      "sha256": "4ab660d445b6d5806b20f9c5e8088aa168d818339afa8922fab691c58a8875c6"
+      "sha256": "ca3873598a35a6b5c4ad29a45b0e5ee544c4cd722ea2f96257c2a580d041fbf6"
     },
     {
       "path": "/data/brands/seb/events.feed.json",
@@ -738,14 +738,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1677,
-      "sha256": "7d083a5986a2cca5d1ed00aff24081673836028cbc804d750d17477696e53d2a"
+      "sha256": "703e639411b225a4e28e918a60c29c21d0c83a9783e687b460ab0ec43196f39e"
     },
     {
       "path": "/data/brands/skelbiu-lt/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 464,
-      "sha256": "0c561aac0c220a10da38801140b68647e55c85439062021d575e5835db86001b"
+      "sha256": "806a774ced4b552021e9c1518d7ecbac62f8a021d004dd1066d74d0d02351260"
     },
     {
       "path": "/data/brands/skelbiu-lt/events.feed.json",
@@ -759,14 +759,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 350,
-      "sha256": "dd454e4a1930e6b54fe41372a99692049d39a94ab0e16fb97e7c9f05bf9178ec"
+      "sha256": "e3815d2ff12a4afe24d02cab8ba06c08f2ac871fe8f55b429c007075d6d73446"
     },
     {
       "path": "/data/brands/smart-id/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 2522,
-      "sha256": "aa02c20aa62cf12e138af84f348014849dd7af5b7f3e9ff71620905c96f134ff"
+      "sha256": "c70884b236c2bb8543362b1761a43fa56a80ae38241d5dd4f2cd4e0112375809"
     },
     {
       "path": "/data/brands/smart-id/events.feed.json",
@@ -780,14 +780,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 2577,
-      "sha256": "86d72a348daa82d59fff021eed46e26731f67e1553a468125a3455e616612792"
+      "sha256": "9c1ddc8f5ce359a16b752a24231ebf4962ea8717347de4e6dd79553eda9bc849"
     },
     {
       "path": "/data/brands/smartposti/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 462,
-      "sha256": "a4ddde81bc635e35d0fc9b6f47a709e6048d81148b563dd76823e1f3b131bbb6"
+      "sha256": "cd6bd903a2ae9a07232fb230cf6a8b6c4e725d57b19c87a940a1c77c00b4260e"
     },
     {
       "path": "/data/brands/smartposti/events.feed.json",
@@ -801,14 +801,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 348,
-      "sha256": "69a71621fcd13c3ce81a46509cad18597780a1d83dd6461cc7fa3028cd051ca9"
+      "sha256": "5bddd72b1221f9a26389c328e4850791fb8b8dfd960d01203317d172541f5966"
     },
     {
       "path": "/data/brands/sodra/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 442,
-      "sha256": "7b803218c989e34a561685ba60098243bbc474da75615a6072bbecd479f3c6a3"
+      "sha256": "a78c5bc59747d396ac1db52518c5279dec375a2f24c28e0fea85735be64a7db5"
     },
     {
       "path": "/data/brands/sodra/events.feed.json",
@@ -822,14 +822,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 338,
-      "sha256": "9f1e21268f752985a4ddae84e92dd31dc140d89c51141255af8c0760440bc050"
+      "sha256": "fef9d11583b3aec6b4be243fdc184fb9beb403480773626d3911625b44492d56"
     },
     {
       "path": "/data/brands/swedbank/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1730,
-      "sha256": "d57534cb6f1c7d21984cc1e8ac4324d362c89f5a87353d3fb109f1dd8d85ead0"
+      "sha256": "133fd08cf16dcc938891b643115ba496c07e80bd7031df0ad3f37663a585ba87"
     },
     {
       "path": "/data/brands/swedbank/events.feed.json",
@@ -843,14 +843,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1719,
-      "sha256": "84638e70eb2a62a274d1311a45d99611f04dcc0b94db222635370ae6e215d314"
+      "sha256": "2e11b2a49e054df658d237b4ef2997cbc2ecd585a473ca6c2b37854a9dd44b66"
     },
     {
       "path": "/data/brands/tele2/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 1726,
-      "sha256": "69e62a73b4f88535e3ee6eb0058b8ae0d977e58d45b1be1699bd5c2ed7de53e2"
+      "sha256": "77a6693eab6e5b99fb168c42434a850020ad1da44b55a180774bbb3c1c8b414f"
     },
     {
       "path": "/data/brands/tele2/events.feed.json",
@@ -864,14 +864,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 1721,
-      "sha256": "2e47b739c0351dbff0b3743ecaa121206a22dbc79a72e98e61e704b4ca836779"
+      "sha256": "ebf68ff1ce6374f74929ce3cf6bdbd4cc5749600505dfedc9df43d3e505e2637"
     },
     {
       "path": "/data/brands/telia/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 4146,
-      "sha256": "1f7cced46e382af6d65b3fce1494dba422afaeb55d40f15ce29a0d354a9068b0"
+      "sha256": "441133544786d7d8e2bcba7f1ba09a7d29294b724259fc0977c1fc311d65a6a6"
     },
     {
       "path": "/data/brands/telia/events.feed.json",
@@ -885,14 +885,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 4339,
-      "sha256": "e631ef8e98fe2fd1cf7e80a48414e97853039d4d39791ae9c68df68c3bdbcea2"
+      "sha256": "cde514f39a44bde2dbf6d5fd651332bfe866a6e2c611213db0489aba52c7d24f"
     },
     {
       "path": "/data/brands/unipark/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 450,
-      "sha256": "796f9577a508db4d81767bbe73d92034c6794f234bf78b7f588b8f742ff7945a"
+      "sha256": "6424e98730c2bfa6ef2c9ccafbd3079273f400fcb2939d0613a9e81cb390b412"
     },
     {
       "path": "/data/brands/unipark/events.feed.json",
@@ -906,14 +906,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 342,
-      "sha256": "41cbdbe8cde82727ab3d513ca26eaadf8b5e376daa74589946c1c5be5b03037e"
+      "sha256": "7e9490c1ad873c15eea686650cc94bac54da9fe12fa9ba0db56d37a7bcd38e49"
     },
     {
       "path": "/data/brands/urbo/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 438,
-      "sha256": "caeb52837dc87b56b8688186d4b8b64bfeb1eae1f3444a2a6599eee243faaf12"
+      "sha256": "e03824b61471877ef7fc2a8acd8be0f1fc6b910e52111d5fcb130a05deecfb9a"
     },
     {
       "path": "/data/brands/urbo/events.feed.json",
@@ -927,14 +927,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 336,
-      "sha256": "e67d432d00db978e77de65afaeca6fae483f34a820f1f7271b4c8f8ba76d3d1d"
+      "sha256": "512cfdddd10c2481580b905d65f6ee12dfa2296e46440e333bbe6a9eef915341"
     },
     {
       "path": "/data/brands/venipak/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 450,
-      "sha256": "879b4f3adacdffe3559a6e126da7dcbf2b40bd6fb0638380c6a364198f73c89d"
+      "sha256": "c30ead185a1ea6fefacfc0c77009952a0783bedf34edac5a7df11c6cc5ab8b51"
     },
     {
       "path": "/data/brands/venipak/events.feed.json",
@@ -948,14 +948,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 342,
-      "sha256": "8c1c853ea9e40a4bce3261595a6b3f7c7e4e8e8553b9e1b3f7b8d199f11550f3"
+      "sha256": "a8c3f006db477ce7e0169056a353a45dbb758fef63020ebee41b588208225428"
     },
     {
       "path": "/data/brands/vinted/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 5368,
-      "sha256": "e4b1593faaf43b3e39c686a276ec736611cb199729dbcf236d447f5ffa231648"
+      "sha256": "4983306de5da65938f9a3505aa0cb27c801cf9ea62c0ee6f9fb3837f8a1a85ae"
     },
     {
       "path": "/data/brands/vinted/events.feed.json",
@@ -969,14 +969,14 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 5658,
-      "sha256": "cb1fea44ee8c7ef19cf8a6895f6717602cd4f419f50621111fa172d493a8f10f"
+      "sha256": "fccdb8a50d542969216dd6fbfed56dffd5e7b13ce0d67a02dee53afd2d81e97c"
     },
     {
       "path": "/data/brands/vmi/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
       "bytes": 3078,
-      "sha256": "c96d2d81ec5855bf5ac789b4f854fb3df8bdc4334350922207e30bc77ed133a1"
+      "sha256": "e7527508052496eb3dff4cb1873bdc67e773de384f5becc5d473a2e8fd68cfe9"
     },
     {
       "path": "/data/brands/vmi/events.feed.json",
@@ -990,56 +990,56 @@
       "mediaType": "application/rss+xml",
       "schema": null,
       "bytes": 3176,
-      "sha256": "c21d68c15c3334144e27c860fba61948d707157a314be679472b3aaf6a035bc6"
+      "sha256": "53dbff7b7cedaa42b5b8dc2488a7ea7fc2316987d592caa31853edfb680a6c37"
     },
     {
       "path": "/data/changes.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/changes-v1.schema.json",
-      "bytes": 2400,
-      "sha256": "2f855258ba8b0199624380353b5dccc865eda0f5308751f3ac4a2f37677485a5"
+      "bytes": 2421,
+      "sha256": "033d78ae4a16448b1e55056c49f6f474b48e2c1289cca76fcec8e5406b351aee"
     },
     {
       "path": "/data/daily-trends.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/daily-trends-v1.schema.json",
-      "bytes": 15267,
-      "sha256": "f4eda10de6e99b4255fd0f69cc4fd51427a2cfc04c0a461df4ee895a69e46c24"
+      "bytes": 15291,
+      "sha256": "402dc3ee6e1468e1bbf7e75f98df0507b230e24a3fab5891e21bf8f76c4440a8"
     },
     {
       "path": "/data/events.atom.xml",
       "mediaType": "application/atom+xml",
       "schema": null,
-      "bytes": 62035,
-      "sha256": "3de917d523afdf0dd96f3d5b862027d4691c5be48b534b6eaffbb0d784e67811"
+      "bytes": 62925,
+      "sha256": "f64a3f8b4cc270d73a39dcbfb5f92a02eb81f73efcb58144983dacfb03cc7600"
     },
     {
       "path": "/data/events.feed.json",
       "mediaType": "application/feed+json",
       "schema": "https://radar.hecavex.com/data/schemas/json-feed-v1.schema.json",
-      "bytes": 70297,
-      "sha256": "1bdf6740ba16ff25271c9d2ed06f68823e0934d73b4c6ddef758ec5a672d37f7"
+      "bytes": 71305,
+      "sha256": "dac35b6dd9a772f314c4f0e48fb2046204943e4835c399f40a748d4590ebc544"
     },
     {
       "path": "/data/events.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/events-v1.schema.json",
-      "bytes": 61316,
-      "sha256": "bba85d3f12bf241c4b1f72a9b80d59068bafe79fde19c959bca91b132b22f5aa"
+      "bytes": 62176,
+      "sha256": "454e142425c5c81b24ab256d7220528f375323061b8fdbbb0549632cec08609d"
     },
     {
       "path": "/data/events.rss.xml",
       "mediaType": "application/rss+xml",
       "schema": null,
-      "bytes": 66774,
-      "sha256": "db201c256074126e9a4de5d2fe1dc9d12279780e60c50d0c917575e5027a1a85"
+      "bytes": 67730,
+      "sha256": "667db764dfdb74273a5d3960a751abda0a26fed9267afd86573f4b516b1e36f6"
     },
     {
       "path": "/data/history.json",
       "mediaType": "application/json",
       "schema": null,
-      "bytes": 130582,
-      "sha256": "461aa9426f36339b1b02f680a96fd09bf36142dee21f69875468b878d7c23127"
+      "bytes": 132472,
+      "sha256": "d8009ca03927e386e514a58fd9ceda5b4c5925ad1e458dc2ea9e67029eca82c9"
     },
     {
       "path": "/data/misp-warninglists/hecavex-official-domains/list.json",
@@ -1066,50 +1066,50 @@
       "path": "/data/pipeline-health.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/pipeline-health-v1.schema.json",
-      "bytes": 4599,
-      "sha256": "569cec275d0342007695b8ebb79a986c8d7b337c7849aada0950f306085e558c"
+      "bytes": 4602,
+      "sha256": "b9a0f4dc12095e2aecf1f6eb56c057ccbe8dd11bc1fd00419b09ccc62a3c35ae"
     },
     {
       "path": "/data/quality-metrics.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/quality-metrics-v1.schema.json",
       "bytes": 1713,
-      "sha256": "c7cc4f1ae8287af2eeb3fd33a9a54f1bbfcaba0a4e2ab5899b740d577ef610ec"
+      "sha256": "f161e777895f06b58d46173663a4351f3cdd7a2d47d48e0542457dd99d0d187f"
     },
     {
       "path": "/data/radar-reviewed.stix.json",
       "mediaType": "application/stix+json",
       "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
       "bytes": 389,
-      "sha256": "16f2849ac860987ec3a0b1c79ad61ba706dc5db36e8a9714f5b49eafffac01d9"
+      "sha256": "be0a1ab0e74faa10c13ce7c1e487cfe3d02e9631c261367e11db921d889ae33b"
     },
     {
       "path": "/data/radar.index.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/radar-index-v1.schema.json",
       "bytes": 474,
-      "sha256": "5e15ec5d63aa313ffd9edbe6c481e936c659139b265667469f8a38eec42b887f"
+      "sha256": "a3cfa4dcb0e687763b50b64ea9c596844d8da6fcf3d8a5ec0e1845e9d1eac8f1"
     },
     {
       "path": "/data/radar.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/radar-v2.schema.json",
-      "bytes": 114789,
-      "sha256": "aa7ca421aa4ec9f301353be17ac705e7d165f37f95beadbc6113c1e8b3a0d706"
+      "bytes": 116511,
+      "sha256": "46e3c1140ceafcfe114c70f9ef5b1ea101559f48219c28872827be649f02afb5"
     },
     {
       "path": "/data/radar.stix.json",
       "mediaType": "application/stix+json",
       "schema": "https://docs.oasis-open.org/cti/stix/v2.1/os/stix-v2.1-os.html",
-      "bytes": 180014,
-      "sha256": "fd2e6d49dcf5f71eeeef14cf0f5fb1d9fb032cfd0591dac04778970d67cc9317"
+      "bytes": 182738,
+      "sha256": "467ca2366e0cce1e7b6fda6ce9821976e058ddf80dfa6bf94db021f4db2c7360"
     },
     {
       "path": "/data/related-observations.json",
       "mediaType": "application/json",
       "schema": "https://radar.hecavex.com/data/schemas/related-observations-v1.schema.json",
-      "bytes": 1298,
-      "sha256": "7d48ae7c0825d52c7b0962116f6858d973c40c8e2487bb731a938c4dc762a5bb"
+      "bytes": 2005,
+      "sha256": "dde3d5fb742c2438198c48db7555519e6a098305c1681ff9f04c693571b5d633"
     },
     {
       "path": "/data/schemas/brand-feeds-v1.schema.json",

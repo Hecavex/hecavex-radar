@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T19:20:39.352Z",
+  "generatedAt": "2026-08-30T19:54:15.245Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T19:20:39.352Z",
-    "to": "2026-08-30T19:20:39.352Z"
+    "from": "2026-07-31T19:54:15.245Z",
+    "to": "2026-08-30T19:54:15.245Z"
   },
-  "totalAvailable": 146,
+  "totalAvailable": 148,
   "truncated": false,
   "events": [
+    {
+      "id": "5652b6e7e059f2c0cd1ab85e56f5bccd",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T19:49:21.657Z",
+      "signalId": "2f6fb9fe89633e3d6de0",
+      "signalPath": "/signals/2f6fb9fe89633e3d6de0/",
+      "domain": "www[.]pondarosaranch[.]maximaonline[.]com",
+      "brand": "MAXIMA",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "3e156c62087ec7a821409f5e0f5e8433",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T19:49:21.657Z",
+      "signalId": "83646aea1b84245d54eb",
+      "signalPath": "/signals/83646aea1b84245d54eb/",
+      "domain": "pondarosaranch[.]maximaonline[.]com",
+      "brand": "MAXIMA",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "51d0d04eeec3b77497c4732c4a659350",
       "type": "first-publication",

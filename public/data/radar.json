@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T17:39:12.609Z",
-  "lastSuccessfulSyncAt": "2026-08-30T19:20:39.352Z",
+  "generatedAt": "2026-08-30T19:54:15.245Z",
+  "lastSuccessfulSyncAt": "2026-08-30T19:54:15.245Z",
   "signals": [
+    {
+      "id": "2f6fb9fe89633e3d6de0",
+      "url": "hxxps://www[.]pondarosaranch[.]maximaonline[.]com",
+      "domain": "www[.]pondarosaranch[.]maximaonline[.]com",
+      "firstSeen": "2026-08-30T19:49:21.657Z",
+      "lastSeen": "2026-08-30T19:49:21.657Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "MAXIMA",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "83646aea1b84245d54eb",
+      "url": "hxxps://pondarosaranch[.]maximaonline[.]com",
+      "domain": "pondarosaranch[.]maximaonline[.]com",
+      "firstSeen": "2026-08-30T19:49:21.657Z",
+      "lastSeen": "2026-08-30T19:49:21.657Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "MAXIMA",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "d04043e1e8a45b43729b",
       "url": "hxxps://www[.]revolut-user-support[.]ph",
@@ -4137,8 +4199,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T19:20:39.352Z",
-      "records": 123,
+      "fetchedAt": "2026-08-30T19:54:15.245Z",
+      "records": 125,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4153,7 +4215,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T19:20:39.352Z",
+      "fetchedAt": "2026-08-30T19:54:15.245Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
