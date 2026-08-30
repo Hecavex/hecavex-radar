@@ -1,15 +1,57 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T23:20:37.017Z",
+  "generatedAt": "2026-08-30T23:54:25.295Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T23:20:37.017Z",
-    "to": "2026-08-30T23:20:37.017Z"
+    "from": "2026-07-31T23:54:25.295Z",
+    "to": "2026-08-30T23:54:25.295Z"
   },
-  "totalAvailable": 153,
+  "totalAvailable": 156,
   "truncated": false,
   "events": [
+    {
+      "id": "a33ee083756831f618b7a7520cdf7bf8",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T23:53:41.513Z",
+      "signalId": "7c4c83ffb6d7e56dc177",
+      "signalPath": "/signals/7c4c83ffb6d7e56dc177/",
+      "domain": "www1[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "d92baf64d9cbee45540294e1b0983be0",
+      "type": "reobservation",
+      "occurredAt": "2026-08-30T23:52:40.138Z",
+      "signalId": "6663c5c77c254c3901d5",
+      "signalPath": "/signals/6663c5c77c254c3901d5/",
+      "domain": "dhl-help-parcel[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "21ff3fe40dae8ec2339338821e4c029d",
+      "type": "reobservation",
+      "occurredAt": "2026-08-30T23:50:05.494Z",
+      "signalId": "bfa2ad00678eac1d30db",
+      "signalPath": "/signals/bfa2ad00678eac1d30db/",
+      "domain": "smartidverify[.]net",
+      "brand": "Smart-ID",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "c45420c95eaf3ee446597d84000f6591",
       "type": "reobservation",

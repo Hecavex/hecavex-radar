@@ -1,10 +1,117 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T22:09:28.225Z",
+  "generatedAt": "2026-08-30T23:54:25.295Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "7c4c83ffb6d7e56dc177",
+      "domain": "www1[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-30T23:53:41.513Z",
+      "lastSeen": "2026-08-30T23:53:41.513Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ef49ad3b052cf6867e2fd6c86e37cd94",
+          "observedAt": "2026-08-30T23:53:41.513Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6663c5c77c254c3901d5",
+      "domain": "dhl-help-parcel[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T20:53:05.557Z",
+      "lastSeen": "2026-08-30T23:52:40.138Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "567de304890fd511557c8b2354b9b432",
+          "observedAt": "2026-08-30T20:53:05.557Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bfa2ad00678eac1d30db",
+      "domain": "smartidverify[.]net",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-08-30T20:53:00.189Z",
+      "lastSeen": "2026-08-30T23:50:05.494Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "69508ea1957b71ceb24f3229ef687bc8",
+          "observedAt": "2026-08-30T20:53:00.189Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c5ee446f5f0dae3cd2ac",
       "domain": "bankartea[.]lt",
@@ -107,78 +214,6 @@
             "suspicious-context",
             "different-tld",
             "multiple-hyphens",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "6663c5c77c254c3901d5",
-      "domain": "dhl-help-parcel[.]com[.]ph",
-      "brand": "DHL",
-      "firstSeen": "2026-08-30T20:53:05.557Z",
-      "lastSeen": "2026-08-30T20:53:05.557Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld",
-        "multiple-hyphens",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "567de304890fd511557c8b2354b9b432",
-          "observedAt": "2026-08-30T20:53:05.557Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "suspicious-context",
-            "different-tld",
-            "multiple-hyphens",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "bfa2ad00678eac1d30db",
-      "domain": "smartidverify[.]net",
-      "brand": "Smart-ID",
-      "firstSeen": "2026-08-30T20:53:00.189Z",
-      "lastSeen": "2026-08-30T20:53:00.189Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context",
-        "different-tld",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "69508ea1957b71ceb24f3229ef687bc8",
-          "observedAt": "2026-08-30T20:53:00.189Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-joined-affix",
-            "suspicious-context",
-            "different-tld",
             "first-publication"
           ]
         }
