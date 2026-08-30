@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T02:09:08.069Z",
+  "generatedAt": "2026-08-30T03:09:17.469Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "94e71580eee10552af08",
+      "domain": "dhl-tracking-deliveries[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T02:52:42.404Z",
+      "lastSeen": "2026-08-30T02:52:42.404Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "133502f3d28117e435a3cc2d23de8996",
+          "observedAt": "2026-08-30T02:52:42.404Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "cfb47fddc71fa6cd7cca",
       "domain": "luminor-bank[.]com",
