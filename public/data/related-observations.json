@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-30T13:20:31.882Z",
+  "generatedAt": "2026-08-30T14:11:28.002Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -133,7 +133,7 @@
       ]
     },
     {
-      "id": "aaf93f42712ca0476801",
+      "id": "a6efdd402676dec5030f",
       "source": "4d894f9bdf81af06b273",
       "target": "91429c0bcb940acf970d",
       "strength": "strong",
@@ -157,39 +157,19 @@
         {
           "type": "certificate-sha256",
           "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
-        }
-      ]
-    },
-    {
-      "id": "0e4aff65e3d593e5a44b",
-      "source": "4d894f9bdf81af06b273",
-      "target": "9ba43e9c15b26e21f915",
-      "strength": "strong",
-      "evidence": [
-        {
-          "type": "certificate-san",
-          "value": "imap[.]teliapay[.]net"
         },
         {
-          "type": "certificate-san",
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
+        },
+        {
+          "type": "dns-cname",
           "value": "mail[.]teliapay[.]net"
-        },
-        {
-          "type": "certificate-san",
-          "value": "pop[.]teliapay[.]net"
-        },
-        {
-          "type": "certificate-san",
-          "value": "smtp[.]teliapay[.]net"
-        },
-        {
-          "type": "certificate-sha256",
-          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
         }
       ]
     },
     {
-      "id": "4c57937f1834c9149b56",
+      "id": "acbee82bacb327a473de",
       "source": "6ec7fb1234b236de3270",
       "target": "91429c0bcb940acf970d",
       "strength": "strong",
@@ -213,11 +193,51 @@
         {
           "type": "certificate-sha256",
           "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        },
+        {
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
+        },
+        {
+          "type": "dns-cname",
+          "value": "mail[.]teliapay[.]net"
         }
       ]
     },
     {
-      "id": "ce33087310752586d025",
+      "id": "c914f2bfed2b9babf53e",
+      "source": "4d894f9bdf81af06b273",
+      "target": "9ba43e9c15b26e21f915",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        },
+        {
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
+        }
+      ]
+    },
+    {
+      "id": "38796dc3d1ab73e96127",
       "source": "6ec7fb1234b236de3270",
       "target": "9ba43e9c15b26e21f915",
       "strength": "strong",
@@ -241,11 +261,15 @@
         {
           "type": "certificate-sha256",
           "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        },
+        {
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
         }
       ]
     },
     {
-      "id": "8ec254be9759bf04b6bc",
+      "id": "2f34f9efb5d190fcc431",
       "source": "91429c0bcb940acf970d",
       "target": "9ba43e9c15b26e21f915",
       "strength": "strong",
@@ -269,6 +293,10 @@
         {
           "type": "certificate-sha256",
           "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        },
+        {
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
         }
       ]
     },
@@ -431,7 +459,7 @@
   ],
   "suppressedEvidence": {
     "highFanoutValues": 1,
-    "temporalPairs": 2,
+    "temporalPairs": 4,
     "edgeLimit": 0
   }
 }

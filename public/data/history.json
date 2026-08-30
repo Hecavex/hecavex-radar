@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T12:09:37.770Z",
+  "generatedAt": "2026-08-30T14:11:28.002Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e84a95949a4014e42895",
+      "domain": "revolut-ncun-online[.]com[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-30T13:25:12.430Z",
+      "lastSeen": "2026-08-30T13:25:12.430Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bc0033f570f1a5c9ade881b641974dd8",
+          "observedAt": "2026-08-30T13:25:12.430Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "1b247981cc25949779bd",
       "domain": "wallet-telia[.]com[.]ph",
