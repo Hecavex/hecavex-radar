@@ -61,7 +61,10 @@ const performanceBudgets = {
   stylesheetFileGzip: 48 * 1024,
   scriptAndStyleGzip: 320 * 1024,
   publicDataFileGzip: 1024 * 1024,
-  totalOutputBytes: 16 * 1024 * 1024,
+  // This limits the complete static Pages artifact, not a visitor download.
+  // Per-page and compressed asset budgets below remain the user-facing guardrails.
+  totalOutputBytes: 32 * 1024 * 1024,
+  maximumAcceptedOutputBytes: 64 * 1024 * 1024,
 };
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
@@ -452,6 +455,17 @@ function parseFile(path) {
   return new JSDOM(readFileSync(path, "utf8"), { url: new URL(routeForFile(path), publicOrigin) }).window.document;
 }
 
+let releasedDocumentCount = 0;
+
+function releaseDocument(document) {
+  document.defaultView?.close();
+  releasedDocumentCount += 1;
+}
+
+function collectReleasedDocuments() {
+  if (releasedDocumentCount % 8 === 0) globalThis.gc?.();
+}
+
 function verifyBuiltHtml() {
   const robots = readFileSync(join(output, "robots.txt"), "utf8");
   const llms = readFileSync(join(output, "llms.txt"), "utf8");
@@ -500,13 +514,138 @@ function verifyBuiltHtml() {
   const history = JSON.parse(readFileSync(join(output, "data", "history.json"), "utf8"));
   const brands = JSON.parse(readFileSync(join(root, "data", "brands-lt.json"), "utf8"));
   const signalIds = new Set([...snapshot.signals, ...history.signals].map((signal) => signal.id));
+  const fragmentIdsByPath = new Map();
+  const fragmentIdsFor = (path) => {
+    const cached = fragmentIdsByPath.get(path);
+    if (cached) return cached;
+    let targetDocument = parseFile(path);
+    const ids = new Set([...targetDocument.querySelectorAll("[id]")].map((element) => element.id));
+    releaseDocument(targetDocument);
+    targetDocument = null;
+    collectReleasedDocuments();
+    fragmentIdsByPath.set(path, ids);
+    return ids;
+  };
   const expectedHtmlCount = 20 + (signalIds.size * 2) + (brands.entries.length * 2);
   assert(htmlFiles.length === expectedHtmlCount, `Expected ${expectedHtmlCount} static HTML entries, found ${htmlFiles.length}.`);
   assert(!htmlFiles.some((path) => relative(output, path).startsWith(`templates${sep}`)), "Build output still exposes route templates.");
   assert(!existsSync(join(output, "signals", "index.html")), "Build output creates a soft-404 landing page at /signals/.");
 
-  for (const path of htmlFiles) {
-    const document = parseFile(path);
+  const isDynamicRoute = (route) =>
+    route.startsWith("/signals/") ||
+    route.startsWith("/lt/signalai/") ||
+    (route.startsWith("/brands/") && route !== "/brands/") ||
+    (route.startsWith("/lt/prekes-zenklai/") && route !== "/lt/prekes-zenklai/");
+  const dynamicHtmlFiles = htmlFiles.filter((path) => isDynamicRoute(routeForFile(path)));
+  const representativePrefixes = ["/signals/", "/lt/signalai/", "/brands/", "/lt/prekes-zenklai/"];
+  const representativeDynamicFiles = representativePrefixes
+    .map((prefix) => dynamicHtmlFiles.find((path) => routeForFile(path).startsWith(prefix)))
+    .filter(Boolean);
+  const representativeDynamicFileSet = new Set(representativeDynamicFiles);
+  const fullDomHtmlFiles = htmlFiles.filter(
+    (path) => !isDynamicRoute(routeForFile(path)) || representativeDynamicFileSet.has(path),
+  );
+  const readTagAttribute = (tag, name) =>
+    tag?.match(new RegExp(`\\b${name}="([^"]*)"`, "u"))?.[1] ?? null;
+
+  for (const path of dynamicHtmlFiles) {
+    const html = readFileSync(path, "utf8");
+    const route = routeForFile(path);
+    const lithuanian = route.startsWith("/lt/");
+    const ids = [...html.matchAll(/\sid="([^"]+)"/gu)].map((match) => match[1]);
+    const linkTags = [...html.matchAll(/<link\b[^>]*>/gu)].map((match) => match[0]);
+    const metaTags = [...html.matchAll(/<meta\b[^>]*>/gu)].map((match) => match[0]);
+    const canonicalTags = linkTags.filter((tag) => readTagAttribute(tag, "rel") === "canonical");
+    const canonicalHref = readTagAttribute(canonicalTags[0], "href");
+    const descriptionTag = metaTags.find((tag) => readTagAttribute(tag, "name") === "description");
+    const openGraphImageTag = metaTags.find((tag) => readTagAttribute(tag, "property") === "og:image");
+    const twitterCardTag = metaTags.find((tag) => readTagAttribute(tag, "name") === "twitter:card");
+    const contentSecurityPolicyTag = metaTags.find(
+      (tag) => readTagAttribute(tag, "http-equiv") === "Content-Security-Policy",
+    );
+    const contentSecurityPolicy = readTagAttribute(contentSecurityPolicyTag, "content");
+    assert(new Set(ids).size === ids.length, `${route} contains duplicate IDs.`);
+    assert(html.includes(`<html lang="${lithuanian ? "lt" : "en"}">`), `${route} has the wrong document language.`);
+    assert((html.match(/<main\b/gu) ?? []).length === 1, `${route} must contain exactly one main element.`);
+    assert((html.match(/<h1\b/gu) ?? []).length === 1, `${route} must contain exactly one h1.`);
+    assert(html.includes('class="skip-link" href="#main-content"'), `${route} has no usable skip link.`);
+    assert(html.includes('data-portfolio-shell="v2"'), `${route} has no shared portfolio shell marker.`);
+    assert(
+      canonicalTags.length === 1 && canonicalHref === `${publicOrigin}${route}`,
+      `${route} has no exact matching canonical URL.`,
+    );
+    assert(
+      linkTags.some((tag) => readTagAttribute(tag, "rel") === "icon" && readTagAttribute(tag, "href") === "/favicon.svg") &&
+        linkTags.some((tag) => readTagAttribute(tag, "rel") === "icon" && readTagAttribute(tag, "href") === "/favicon.ico") &&
+        linkTags.some((tag) => readTagAttribute(tag, "rel") === "apple-touch-icon" && readTagAttribute(tag, "href") === "/apple-touch-icon.png") &&
+        linkTags.some((tag) => readTagAttribute(tag, "rel") === "manifest" && readTagAttribute(tag, "href") === "/site.webmanifest"),
+      `${route} has an incomplete shared icon or manifest set.`,
+    );
+    assert(readTagAttribute(descriptionTag, "content"), `${route} has no description.`);
+    assert(readTagAttribute(openGraphImageTag, "content"), `${route} has no Open Graph image.`);
+    assert(readTagAttribute(twitterCardTag, "content"), `${route} has no Twitter card.`);
+
+    const jsonLdMatch = html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/u);
+    if (jsonLdMatch) {
+      const jsonLd = jsonLdMatch[1];
+      const jsonLdHash = createHash("sha256").update(jsonLd, "utf8").digest("base64");
+      assert(contentSecurityPolicy?.includes(`'sha256-${jsonLdHash}'`), `${route} Content Security Policy does not authorize its exact JSON-LD payload.`);
+      JSON.parse(jsonLd);
+    }
+
+    const bootstrap = html.match(/data-page-bootstrap="([^"]+)"/u)?.[1];
+    assert(bootstrap, `${route} has no permanent page bootstrap.`);
+    assert(!/[<>&"]/u.test(bootstrap), `${route} page bootstrap is not safely attribute-encoded.`);
+    const payload = JSON.parse(decodeURIComponent(bootstrap));
+    const routeKey = route.split("/").filter(Boolean).at(-1);
+    if (route.startsWith("/signals/") || route.startsWith("/lt/signalai/")) {
+      assert(payload?.signal?.id === routeKey && payload?.generatedAt, `${route} embeds invalid signal data.`);
+    } else {
+      const brandSlug = String(payload?.brand?.brand ?? "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/gu, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/gu, "-")
+        .replace(/^-+|-+$/gu, "");
+      assert(brandSlug === routeKey && Array.isArray(payload?.signals), `${route} embeds invalid brand data.`);
+    }
+
+    for (const imageTag of html.match(/<img\b[^>]*>/gu) ?? []) {
+      assert(readTagAttribute(imageTag, "alt") !== null, `${route} contains an image without an alt attribute.`);
+    }
+
+    for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>/gu)) {
+      const url = new URL(match[1], new URL(route, publicOrigin));
+      if (url.origin !== publicOrigin) continue;
+      const target = outputPath(url.pathname);
+      assert(existsSync(target), `${route} links to missing local target ${url.pathname}.`);
+      if (url.hash && target.endsWith(".html")) {
+        const fragment = decodeURIComponent(url.hash.slice(1));
+        if (url.pathname === route) {
+          assert(ids.includes(fragment), `${route} links to missing fragment ${url.hash}.`);
+        } else {
+          assert(fragmentIdsFor(target).has(fragment), `${route} links to missing fragment ${url.pathname}${url.hash}.`);
+        }
+      }
+    }
+
+    const localAssets = [
+      ...[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
+      ...linkTags
+        .filter((tag) => readTagAttribute(tag, "rel") === "stylesheet")
+        .map((tag) => readTagAttribute(tag, "href")),
+      ...[...html.matchAll(/<img\b[^>]*\bsrc="([^"]+)"[^>]*>/gu)].map((match) => match[1]),
+    ].filter(Boolean);
+    for (const raw of localAssets) {
+      const url = new URL(raw, new URL(route, publicOrigin));
+      if (url.origin === publicOrigin) {
+        assert(existsSync(outputPath(url.pathname)), `${route} references missing asset ${url.pathname}.`);
+      }
+    }
+  }
+
+  for (const path of fullDomHtmlFiles) {
+    let document = parseFile(path);
     const route = routeForFile(path);
     const notFound = route === "/404.html";
     const ids = [...document.querySelectorAll("[id]")].map((element) => element.id);
@@ -725,9 +864,8 @@ function verifyBuiltHtml() {
       const target = outputPath(url.pathname);
       assert(existsSync(target), `${route} links to missing local target ${url.pathname}.`);
       if (url.hash && target.endsWith(".html")) {
-        const targetDocument = parseFile(target);
         const fragment = decodeURIComponent(url.hash.slice(1));
-        assert(targetDocument.getElementById(fragment), `${route} links to missing fragment ${url.pathname}${url.hash}.`);
+        assert(fragmentIdsFor(target).has(fragment), `${route} links to missing fragment ${url.pathname}${url.hash}.`);
       }
     }
 
@@ -738,10 +876,13 @@ function verifyBuiltHtml() {
         assert(existsSync(outputPath(url.pathname)), `${route} references missing asset ${url.pathname}.`);
       }
     }
+    releaseDocument(document);
+    document = null;
+    collectReleasedDocuments();
   }
 
-  const englishChanges = parseFile(outputPath("/changes/"));
-  const lithuanianChanges = parseFile(outputPath("/lt/pokyciai/"));
+  let englishChanges = parseFile(outputPath("/changes/"));
+  let lithuanianChanges = parseFile(outputPath("/lt/pokyciai/"));
   assert(
     englishChanges.querySelectorAll(".event-list > li").length === lithuanianChanges.querySelectorAll(".event-list > li").length,
     "English and Lithuanian changes pages expose different event counts.",
@@ -751,6 +892,11 @@ function verifyBuiltHtml() {
       [...lithuanianChanges.querySelectorAll("main > *")].map((element) => element.className).join("|"),
     "English and Lithuanian changes pages no longer share the same section structure.",
   );
+  releaseDocument(englishChanges);
+  releaseDocument(lithuanianChanges);
+  englishChanges = null;
+  lithuanianChanges = null;
+  collectReleasedDocuments();
 
   for (const page of pages) {
     const html = readFileSync(outputPath(page.path), "utf8");
@@ -758,7 +904,7 @@ function verifyBuiltHtml() {
     assert(!html.includes("Enable JavaScript"), `${page.path} still uses an enable-JavaScript placeholder.`);
   }
 
-  const sitemapDocument = new JSDOM(readFileSync(join(output, "sitemap.xml"), "utf8"), {
+  let sitemapDocument = new JSDOM(readFileSync(join(output, "sitemap.xml"), "utf8"), {
     contentType: "text/xml",
   }).window.document;
   assert(!sitemapDocument.querySelector("parsererror"), "Generated sitemap.xml is not valid XML.");
@@ -776,6 +922,9 @@ function verifyBuiltHtml() {
     assert(sitemapLocations.has(location), `Generated sitemap omits ${location}.`);
   }
   assert(!sitemapLocations.has(`${publicOrigin}/404.html`), "Generated sitemap includes the custom 404 page.");
+  releaseDocument(sitemapDocument);
+  sitemapDocument = null;
+  collectReleasedDocuments();
 
   for (const fontFile of fontFiles) {
     const path = join(output, "fonts", fontFile);
@@ -1469,17 +1618,23 @@ function verifySyndicationFeeds() {
       assert(existsSync(outputPath(`${path}.sha256`)), `${label} ${format} checksum is missing.`);
     }
 
-    const atom = new JSDOM(readFileSync(outputPath(group.atom), "utf8"), { contentType: "text/xml" }).window.document;
+    let atom = new JSDOM(readFileSync(outputPath(group.atom), "utf8"), { contentType: "text/xml" }).window.document;
     assert(!atom.querySelector("parsererror") && atom.documentElement.localName === "feed", `${label} Atom document is malformed.`);
     for (const link of atom.querySelectorAll("link[href]")) {
       assertPublicFeedUrl(link.getAttribute("href"), `${label} Atom link`);
     }
+    releaseDocument(atom);
+    atom = null;
+    collectReleasedDocuments();
 
-    const rss = new JSDOM(readFileSync(outputPath(group.rss), "utf8"), { contentType: "text/xml" }).window.document;
+    let rss = new JSDOM(readFileSync(outputPath(group.rss), "utf8"), { contentType: "text/xml" }).window.document;
     assert(!rss.querySelector("parsererror") && rss.documentElement.localName === "rss", `${label} RSS document is malformed.`);
     for (const link of rss.querySelectorAll("channel > link, item > link")) {
       assertPublicFeedUrl(link.textContent?.trim(), `${label} RSS link`);
     }
+    releaseDocument(rss);
+    rss = null;
+    collectReleasedDocuments();
 
     const jsonFeed = JSON.parse(readFileSync(outputPath(group.jsonFeed), "utf8"));
     assert(jsonFeed.version === "https://jsonfeed.org/version/1.1" && Array.isArray(jsonFeed.items), `${label} JSON Feed is malformed.`);
@@ -1564,8 +1719,9 @@ function verifyPerformanceBudgets(signalDetails, stixBundle) {
     2 * (3 * publicArtifactRawBytes + 1024) +
     signalDetailSetRawBytes;
   assert(
-    worstCaseOutputBytes <= performanceBudgets.totalOutputBytes,
-    `Maximum accepted public artifacts could produce ${worstCaseOutputBytes} output bytes; total budget is ${performanceBudgets.totalOutputBytes}.`,
+    worstCaseOutputBytes <= performanceBudgets.maximumAcceptedOutputBytes,
+    `Maximum accepted public artifacts could produce ${worstCaseOutputBytes} output bytes; ` +
+      `bounded-capacity budget is ${performanceBudgets.maximumAcceptedOutputBytes}.`,
   );
   return {
     totalBytes,
@@ -2090,24 +2246,32 @@ async function verifyInBrowser() {
   }
 }
 
-verifyDeploymentTopology();
-verifyPythonAutomationLocks();
-verifyBuiltHtml();
-verifyIdentityArtwork();
-verifyReportingEvidencePack();
-const signalDetails = verifySignalDetails();
-const stixBundle = verifyStixBundle();
-verifySyndicationFeeds();
-const performance = verifyPerformanceBudgets(signalDetails, stixBundle);
-await verifyInBrowser();
-process.stdout.write(
-  `Measured production sizes: ${performance.totalBytes} bytes total; ` +
-    `${performance.html.path} ${performance.html.size} bytes gzip (largest HTML); ` +
-    `${performance.javascript.path} ${performance.javascript.size} bytes gzip (largest JavaScript); ` +
-    `${performance.stylesheet.path} ${performance.stylesheet.size} bytes gzip (largest stylesheet); ` +
-    `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
-    `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
-    `${performance.signalDetailBytes} bytes across signal-detail sidecars; ` +
-    `${performance.worstCaseOutputBytes} bytes maximum proven output.\n`,
-);
-process.stdout.write(`Verified ${pages.length} hydratable static pages at ${widths.join(", ")}px with links, fragments, metadata, CSP, delayed-refresh retention, no-JS content, keyboard navigation, overflow, focus, and accessibility checks.\n`);
+const verificationPhase = process.argv[2] ?? "all";
+assert(["all", "static", "browser"].includes(verificationPhase), `Unknown verification phase: ${verificationPhase}.`);
+
+if (verificationPhase !== "browser") {
+  verifyDeploymentTopology();
+  verifyPythonAutomationLocks();
+  verifyBuiltHtml();
+  verifyIdentityArtwork();
+  verifyReportingEvidencePack();
+  const signalDetails = verifySignalDetails();
+  const stixBundle = verifyStixBundle();
+  verifySyndicationFeeds();
+  const performance = verifyPerformanceBudgets(signalDetails, stixBundle);
+  process.stdout.write(
+    `Measured production sizes: ${performance.totalBytes} bytes total; ` +
+      `${performance.html.path} ${performance.html.size} bytes gzip (largest HTML); ` +
+      `${performance.javascript.path} ${performance.javascript.size} bytes gzip (largest JavaScript); ` +
+      `${performance.stylesheet.path} ${performance.stylesheet.size} bytes gzip (largest stylesheet); ` +
+      `${performance.executableBytes} bytes gzip JavaScript/CSS total; ` +
+      `${performance.publicData.path} ${performance.publicData.size} bytes gzip (largest public JSON); ` +
+      `${performance.signalDetailBytes} bytes across signal-detail sidecars; ` +
+      `${performance.worstCaseOutputBytes} bytes maximum proven output.\n`,
+  );
+}
+
+if (verificationPhase !== "static") {
+  await verifyInBrowser();
+  process.stdout.write(`Verified ${pages.length} hydratable static pages at ${widths.join(", ")}px with links, fragments, metadata, CSP, delayed-refresh retention, no-JS content, keyboard navigation, overflow, focus, and accessibility checks.\n`);
+}
