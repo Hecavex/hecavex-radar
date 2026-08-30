@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-29T23:20:26.058Z",
+  "generatedAt": "2026-08-30T00:08:59.573Z",
   "retentionDays": 365,
-  "from": "2025-08-30",
-  "to": "2026-08-29",
+  "from": "2025-08-31",
+  "to": "2026-08-30",
   "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
   "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
   "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
-  "omittedZeroDays": 354,
+  "omittedZeroDays": 353,
   "collectorSchedule": {
     "expectedIntervalSeconds": 900,
     "expectedListeningSeconds": 480,
@@ -460,58 +460,101 @@
     },
     {
       "date": "2026-08-29",
-      "partialDay": true,
+      "partialDay": false,
       "collectorCoverage": {
-        "windowSeconds": 84026,
-        "scheduledSlots": 93,
-        "recordedAttempts": 116,
-        "healthyAttempts": 116,
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 120,
+        "healthyAttempts": 120,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 66.26,
-        "scheduledListeningCeilingPercent": 53.13,
-        "listeningSeconds": 55671.801,
+        "listeningCoveragePercent": 66.66,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 57591.796,
         "outcomes": {
-          "healthy-empty": 76,
-          "healthy-matches": 40
+          "healthy-empty": 78,
+          "healthy-matches": 42
         }
       },
       "discovery": {
-        "events": 75,
-        "uniqueSignals": 38,
-        "observations": 38,
+        "events": 81,
+        "uniqueSignals": 41,
+        "observations": 41,
         "reobservations": 0,
-        "firstPublications": 37,
+        "firstPublications": 40,
         "statusChanges": 0,
-        "facetSampleSize": 38,
-        "evidenceClassifiedSignals": 38,
+        "facetSampleSize": 41,
+        "evidenceClassifiedSignals": 41,
         "byBrand": {
-          "DHL": 19,
+          "DHL": 20,
           "Vinted": 5,
           "Revolut": 4,
+          "Smart-ID": 3,
           "Bigbank": 2,
           "VMI": 2,
           "Artea": 1,
           "Bitė": 1,
-          "Smart-ID": 1,
           "Swedbank": 1,
           "Tele2": 1,
           "Telia": 1
         },
         "bySource": {
-          "CertStream": 38
+          "CertStream": 41
         },
         "byEvidenceTier": {
-          "name-only": 37,
+          "name-only": 40,
           "corroborated": 1
         },
         "byReason": {
-          "suspicious-context": 38,
-          "first-publication": 37,
-          "different-tld": 31,
-          "brand-exact-token": 29,
-          "multiple-hyphens": 20,
-          "brand-joined-affix": 9,
+          "suspicious-context": 41,
+          "first-publication": 40,
+          "different-tld": 33,
+          "brand-exact-token": 30,
+          "multiple-hyphens": 21,
+          "brand-joined-affix": 11,
           "punycode": 1
+        }
+      }
+    },
+    {
+      "date": "2026-08-30",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 539,
+        "scheduledSlots": 0,
+        "recordedAttempts": 1,
+        "healthyAttempts": 1,
+        "recordedSchedulePercent": null,
+        "listeningCoveragePercent": 89.05,
+        "scheduledListeningCeilingPercent": 0.0,
+        "listeningSeconds": 479.998,
+        "outcomes": {
+          "healthy-matches": 1
+        }
+      },
+      "discovery": {
+        "events": 2,
+        "uniqueSignals": 1,
+        "observations": 1,
+        "reobservations": 0,
+        "firstPublications": 1,
+        "statusChanges": 0,
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "VMI": 1
+        },
+        "bySource": {
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-exact-token": 1,
+          "different-tld": 1,
+          "first-publication": 1,
+          "multiple-hyphens": 1,
+          "suspicious-context": 1
         }
       }
     }

@@ -1,10 +1,152 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-29T23:09:31.403Z",
+  "generatedAt": "2026-08-30T00:08:59.573Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "6e3246d0d9b6e60d5c84",
+      "domain": "vmi-materiel-nettoyage-account[.]ph",
+      "brand": "VMI",
+      "firstSeen": "2026-08-30T00:07:07.969Z",
+      "lastSeen": "2026-08-30T00:07:07.969Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "873306b90b06d532c6145087a9e60315",
+          "observedAt": "2026-08-30T00:07:07.969Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf763895e63322a10e1a",
+      "domain": "smartidcard[.]de",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-08-29T23:21:00.138Z",
+      "lastSeen": "2026-08-29T23:21:00.138Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "831dde9997dee494cf33a681a27c18c0",
+          "observedAt": "2026-08-29T23:21:00.138Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "95c8fa6f0bbba4e27a05",
+      "domain": "www[.]smartidcard[.]de",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-08-29T23:21:00.138Z",
+      "lastSeen": "2026-08-29T23:21:00.138Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9342526ce380e030239ccb2eff304463",
+          "observedAt": "2026-08-29T23:21:00.138Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bdc9d729f1302718231a",
+      "domain": "32[.]delivery-dhl-uae[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-08-29T23:15:47.761Z",
+      "lastSeen": "2026-08-29T23:15:47.761Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "834c0c2294f494ffa68de72fba164dbf",
+          "observedAt": "2026-08-29T23:15:47.761Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "00e3650db7666b86bde4",
       "domain": "online[.]dev[.]swedbankpay[.]tech",

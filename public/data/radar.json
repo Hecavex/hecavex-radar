@@ -1,9 +1,134 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-29T23:09:31.403Z",
-  "lastSuccessfulSyncAt": "2026-08-29T23:20:26.058Z",
+  "generatedAt": "2026-08-30T00:08:59.573Z",
+  "lastSuccessfulSyncAt": "2026-08-30T00:08:59.573Z",
   "signals": [
+    {
+      "id": "6e3246d0d9b6e60d5c84",
+      "url": "hxxps://vmi-materiel-nettoyage-account[.]ph",
+      "domain": "vmi-materiel-nettoyage-account[.]ph",
+      "firstSeen": "2026-08-30T00:07:07.969Z",
+      "lastSeen": "2026-08-30T00:07:07.969Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "VMI",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "95c8fa6f0bbba4e27a05",
+      "url": "hxxps://www[.]smartidcard[.]de",
+      "domain": "www[.]smartidcard[.]de",
+      "firstSeen": "2026-08-29T23:21:00.138Z",
+      "lastSeen": "2026-08-29T23:21:00.138Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Smart-ID",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "cf763895e63322a10e1a",
+      "url": "hxxps://smartidcard[.]de",
+      "domain": "smartidcard[.]de",
+      "firstSeen": "2026-08-29T23:21:00.138Z",
+      "lastSeen": "2026-08-29T23:21:00.138Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Smart-ID",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "bdc9d729f1302718231a",
+      "url": "hxxps://32[.]delivery-dhl-uae[.]com",
+      "domain": "32[.]delivery-dhl-uae[.]com",
+      "firstSeen": "2026-08-29T23:15:47.761Z",
+      "lastSeen": "2026-08-29T23:15:47.761Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "00e3650db7666b86bde4",
       "url": "hxxps://online[.]dev[.]swedbankpay[.]tech",
@@ -3037,8 +3162,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-29T23:20:26.058Z",
-      "records": 88,
+      "fetchedAt": "2026-08-30T00:08:59.573Z",
+      "records": 92,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
@@ -3053,7 +3178,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-29T23:20:26.058Z",
+      "fetchedAt": "2026-08-30T00:08:59.573Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

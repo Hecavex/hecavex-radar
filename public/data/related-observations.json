@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-29T23:20:26.058Z",
+  "generatedAt": "2026-08-30T00:08:59.573Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -30,6 +30,11 @@
       "clusterId": "12ccea743184fe36"
     },
     {
+      "signalId": "95c8fa6f0bbba4e27a05",
+      "domain": "www[.]smartidcard[.]de",
+      "clusterId": "4d8266370c2123a8"
+    },
+    {
       "signalId": "b1158b011aa853ba4989",
       "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
       "clusterId": "cf734ba4d6fb168b"
@@ -38,6 +43,11 @@
       "signalId": "be142d686c54ab530aa8",
       "domain": "revolut-service[.]com",
       "clusterId": "6be5cc106937b73f"
+    },
+    {
+      "signalId": "cf763895e63322a10e1a",
+      "domain": "smartidcard[.]de",
+      "clusterId": "4d8266370c2123a8"
     },
     {
       "signalId": "f244770fd730a8f8f74a",
@@ -87,6 +97,26 @@
         {
           "type": "certificate-sha256",
           "value": "f94e5596ac1783323c851b41d2feb2831a514d4defda5fe4781405ef801abcfe"
+        }
+      ]
+    },
+    {
+      "id": "0f99b01ce2585b28c614",
+      "source": "95c8fa6f0bbba4e27a05",
+      "target": "cf763895e63322a10e1a",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "smartidcard[.]de"
+        },
+        {
+          "type": "certificate-san",
+          "value": "www[.]smartidcard[.]de"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "66ba876877e13166ae7ddd3486f639017b203e852e027a2d00d78223ed7602c9"
         }
       ]
     },
