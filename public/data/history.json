@@ -1,10 +1,154 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T04:12:43.523Z",
+  "generatedAt": "2026-08-30T05:09:22.445Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "fa84088168732dc94112",
+      "domain": "www[.]dhl-tracking-deliveries[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T05:07:29.319Z",
+      "lastSeen": "2026-08-30T05:07:29.319Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "02108fc943a1c2b73a1f5de29c104050",
+          "observedAt": "2026-08-30T05:07:29.319Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "df770db3211e73351d44",
+      "domain": "www[.]dhlexpress-auth[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T05:06:06.198Z",
+      "lastSeen": "2026-08-30T05:06:06.198Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1a2eb8291d621624d49292f6377f08b0",
+          "observedAt": "2026-08-30T05:06:06.198Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-split-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e42075ba699aa4354145",
+      "domain": "www[.]dhl-expresstracking[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T05:05:51.125Z",
+      "lastSeen": "2026-08-30T05:05:51.125Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d5ff8db81555ed4052c05d7b1b45c490",
+          "observedAt": "2026-08-30T05:05:51.125Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-split-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5eb9b05fa08843fb314e",
+      "domain": "audo-vmi-cliente-2-portal[.]tport[.]audolabs[.]com",
+      "brand": "VMI",
+      "firstSeen": "2026-08-30T04:40:54.308Z",
+      "lastSeen": "2026-08-30T04:40:54.308Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "58e9e215e3f38fcc9e1e8a0ae70f4494",
+          "observedAt": "2026-08-30T04:40:54.308Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "561e0ea11df2f486211d",
       "domain": "www[.]dhl-delivery-home[.]ph",

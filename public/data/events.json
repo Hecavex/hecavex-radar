@@ -1,15 +1,71 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T04:20:27.010Z",
+  "generatedAt": "2026-08-30T05:09:22.445Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T04:20:27.010Z",
-    "to": "2026-08-30T04:20:27.010Z"
+    "from": "2026-07-31T05:09:22.445Z",
+    "to": "2026-08-30T05:09:22.445Z"
   },
-  "totalAvailable": 124,
+  "totalAvailable": 128,
   "truncated": false,
   "events": [
+    {
+      "id": "601d332c2c210a771d20f994585e7aed",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T05:07:29.319Z",
+      "signalId": "fa84088168732dc94112",
+      "signalPath": "/signals/fa84088168732dc94112/",
+      "domain": "www[.]dhl-tracking-deliveries[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "3b5bccca7a7b3e439c0e7be728525435",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T05:06:06.198Z",
+      "signalId": "df770db3211e73351d44",
+      "signalPath": "/signals/df770db3211e73351d44/",
+      "domain": "www[.]dhlexpress-auth[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "00d5a626feb40c4e522f953e372056a7",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T05:05:51.125Z",
+      "signalId": "e42075ba699aa4354145",
+      "signalPath": "/signals/e42075ba699aa4354145/",
+      "domain": "www[.]dhl-expresstracking[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "866780d0b78d9d98f91f2b4c0a76eb65",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T04:40:54.308Z",
+      "signalId": "5eb9b05fa08843fb314e",
+      "signalPath": "/signals/5eb9b05fa08843fb314e/",
+      "domain": "audo-vmi-cliente-2-portal[.]tport[.]audolabs[.]com",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "2193a12403252316bf2f50ecab4643de",
       "type": "first-publication",
