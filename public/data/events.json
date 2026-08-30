@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T01:20:26.956Z",
+  "generatedAt": "2026-08-30T02:09:08.069Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T01:20:26.956Z",
-    "to": "2026-08-30T01:20:26.956Z"
+    "from": "2026-07-31T02:09:08.069Z",
+    "to": "2026-08-30T02:09:08.069Z"
   },
-  "totalAvailable": 120,
+  "totalAvailable": 122,
   "truncated": false,
   "events": [
+    {
+      "id": "55e00ae80d9eb4d64ce9a4589647f703",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T02:05:16.483Z",
+      "signalId": "80d5f4133dadcaed6649",
+      "signalPath": "/signals/80d5f4133dadcaed6649/",
+      "domain": "www[.]luminor-bank[.]com",
+      "brand": "Luminor",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "1ef789456f24448402f4047645eb3d49",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T02:05:16.483Z",
+      "signalId": "cfb47fddc71fa6cd7cca",
+      "signalPath": "/signals/cfb47fddc71fa6cd7cca/",
+      "domain": "luminor-bank[.]com",
+      "brand": "Luminor",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "11210761f768736bb7521f93eefe8145",
       "type": "first-publication",

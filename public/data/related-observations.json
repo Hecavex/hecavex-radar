@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-30T01:20:26.956Z",
+  "generatedAt": "2026-08-30T02:09:08.069Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -40,6 +40,11 @@
       "clusterId": "12ccea743184fe36"
     },
     {
+      "signalId": "80d5f4133dadcaed6649",
+      "domain": "www[.]luminor-bank[.]com",
+      "clusterId": "fc869b0b340223ae"
+    },
+    {
       "signalId": "91429c0bcb940acf970d",
       "domain": "smtp[.]teliapay[.]net",
       "clusterId": "393af156c2d4778a"
@@ -70,6 +75,11 @@
       "clusterId": "4d8266370c2123a8"
     },
     {
+      "signalId": "cfb47fddc71fa6cd7cca",
+      "domain": "luminor-bank[.]com",
+      "clusterId": "fc869b0b340223ae"
+    },
+    {
       "signalId": "f244770fd730a8f8f74a",
       "domain": "xn--chez-seb-et-la-nkb[.]fr",
       "clusterId": "aae83e99b565144e"
@@ -77,7 +87,7 @@
   ],
   "edges": [
     {
-      "id": "38712b9206e700022351",
+      "id": "e74e872caff303195b62",
       "source": "4d894f9bdf81af06b273",
       "target": "6ec7fb1234b236de3270",
       "strength": "strong",
@@ -101,6 +111,14 @@
         {
           "type": "certificate-sha256",
           "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        },
+        {
+          "type": "dns-a",
+          "value": "83[.]229[.]19[.]102"
+        },
+        {
+          "type": "dns-cname",
+          "value": "mail[.]teliapay[.]net"
         }
       ]
     },
@@ -285,6 +303,26 @@
         {
           "type": "certificate-sha256",
           "value": "f94e5596ac1783323c851b41d2feb2831a514d4defda5fe4781405ef801abcfe"
+        }
+      ]
+    },
+    {
+      "id": "47d6ae12567596bae293",
+      "source": "80d5f4133dadcaed6649",
+      "target": "cfb47fddc71fa6cd7cca",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "luminor-bank[.]com"
+        },
+        {
+          "type": "certificate-san",
+          "value": "www[.]luminor-bank[.]com"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "4d30cfcb5b5a6362f3b99833ef86248c3f901163f15142038df4e4f45b82ccd8"
         }
       ]
     },

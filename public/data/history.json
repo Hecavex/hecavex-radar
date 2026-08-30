@@ -1,10 +1,76 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T01:11:15.097Z",
+  "generatedAt": "2026-08-30T02:09:08.069Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "cfb47fddc71fa6cd7cca",
+      "domain": "luminor-bank[.]com",
+      "brand": "Luminor",
+      "firstSeen": "2026-08-30T02:05:16.483Z",
+      "lastSeen": "2026-08-30T02:05:16.483Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bd490f6e58dcab7ce652264f39c4098b",
+          "observedAt": "2026-08-30T02:05:16.483Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "80d5f4133dadcaed6649",
+      "domain": "www[.]luminor-bank[.]com",
+      "brand": "Luminor",
+      "firstSeen": "2026-08-30T02:05:16.483Z",
+      "lastSeen": "2026-08-30T02:05:16.483Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "69bff8c11d31d54b5c3825c11ebf18da",
+          "observedAt": "2026-08-30T02:05:16.483Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c3a482acbb6071d4092c",
       "domain": "www[.]vmi-materiel-nettoyage-account[.]ph",
