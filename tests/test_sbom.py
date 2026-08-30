@@ -202,7 +202,7 @@ def test_repository_locks_produce_a_complete_hybrid_inventory(tmp_path: Path) ->
         for package in packages
         for reference in package.get("externalRefs", [])
     }
-    assert "pkg:pypi/jsonschema@4.25.1" in purls
+    assert "pkg:pypi/jsonschema@4.26.0" in purls
     assert "pkg:npm/react@19.2.8" in purls
     assert "pkg:npm/typescript@6.0.3" in purls
 

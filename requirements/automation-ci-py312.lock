@@ -375,9 +375,9 @@ jsonpointer==3.1.1 \
     --hash=sha256:0b801c7db33a904024f6004d526dcc53bbb8a4a0f4e32bfd10beadf60adf1900 \
     --hash=sha256:8ff8b95779d071ba472cf5bc913028df06031797532f08a7d5b602d8b2a488ca
     # via jsonschema
-jsonschema==4.25.1 \
-    --hash=sha256:3fba0169e345c7175110351d456342c364814cfcf3b964ba4587f22915230a63 \
-    --hash=sha256:e4a9655ce0da0c0b67a085847e00a3a51449e1157f4f75e9fb5aa545e122eb85
+jsonschema==4.26.0 \
+    --hash=sha256:0c26707e2efad8aa1bfc5b7ce170f3fccc2e4918ff85989ba9ffa9facb2be326 \
+    --hash=sha256:d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce
     # via
     #   -r requirements/automation-runtime.in
     #   stix2-validator
@@ -602,9 +602,9 @@ pygments==2.21.0 \
     --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9 \
     --hash=sha256:610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c
     # via pytest
-pytest==9.0.3 \
-    --hash=sha256:2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9 \
-    --hash=sha256:b86ada508af81d19edeb213c681b1d48246c1a91d304c6c81a427674c17eb91c
+pytest==9.1.1 \
+    --hash=sha256:1088fbde8f2b49d95a549a195707afa7a76a3ce9bcadc26b6d71f0ffda5fe313 \
+    --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
     # via -r requirements/automation-ci.in
 python-dateutil==2.9.0.post0 \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
@@ -897,9 +897,9 @@ stix2-patterns==2.1.2 \
     --hash=sha256:b2059d36c1fd87740f3facc22a4147cde1e2b0acb8d5e4c08fbf04b1dc553185 \
     --hash=sha256:e164e162936303c2e141760130e54f0d247d6272ebf4e1153b8e99e8a42c82ca
     # via stix2-validator
-stix2-validator==3.2.0 \
-    --hash=sha256:bc632ab94d157a6e03ecac8e6ec664ab444e765787efa7aa9926c71db1c97fb3 \
-    --hash=sha256:e7653c6f54b6cc460d05342c59f631bebe35d191ea5670d66a9464fb46a246f6
+stix2-validator==3.3.1 \
+    --hash=sha256:90484bfd8f5e216a4587bb26500bb4503e320b266e3d250281e04db47cb1e441 \
+    --hash=sha256:9dd5615524e34b15f98d565b17f33974c420b7a69350597a4f2ba955e3f489ab
     # via -r requirements/automation-ci.in
 tldextract==5.3.2 \
     --hash=sha256:6c90d2a259f5c89f4fcf01f97af15708416a59ffedddff006d67222ab30d0fb0 \
