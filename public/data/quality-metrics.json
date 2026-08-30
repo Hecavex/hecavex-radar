@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-quality-metrics",
-  "generatedAt": "2026-08-30T14:20:29.039Z",
+  "generatedAt": "2026-08-30T15:17:25.842Z",
   "window": {
     "days": 365,
-    "from": "2025-08-30T14:20:29.039Z",
-    "to": "2026-08-30T14:20:29.039Z"
+    "from": "2025-08-30T15:17:25.842Z",
+    "to": "2026-08-30T15:17:25.842Z"
   },
   "semantics": "Review metrics describe the bounded public analyst sample, not the accuracy of all Radar candidates and not phishing prevalence in Lithuania.",
   "reviewSample": {
@@ -20,7 +20,7 @@
     "byDetectionReason": {}
   },
   "reviewCoverage": {
-    "eligiblePublishedSignals": 136,
+    "eligiblePublishedSignals": 135,
     "assessedSignals": 0,
     "percent": 0.0,
     "scope": "Signals first published inside the stated window and represented in public history."
@@ -44,7 +44,7 @@
     "available": false,
     "sampleSize": 0,
     "estimatePercent": null,
-    "reason": "The current public contract does not provide a complete, dated positive and negative review sample. A precision or false-positive estimate would therefore be misleading."
+    "reason": "Dated positive and negative outcomes are supported, but no completed probability sample or review census is linked to the current decisions. A population precision estimate would therefore be misleading."
   },
   "privacy": "Aggregate counters only; no domains, URLs, signal identifiers, analyst identity or private notes."
 }

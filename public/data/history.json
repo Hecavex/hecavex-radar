@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T14:11:28.002Z",
+  "generatedAt": "2026-08-30T15:17:25.842Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "949983865f57c296e1e6",
+      "domain": "dhl-secure-redelivery[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-30T14:50:20.850Z",
+      "lastSeen": "2026-08-30T14:50:20.850Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "83bd67d4d3be9a7a430020fd9be19ef2",
+          "observedAt": "2026-08-30T14:50:20.850Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "49f2f473d2537bda912f",
+      "domain": "www[.]revolut-ncun-online[.]com[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-30T14:35:04.720Z",
+      "lastSeen": "2026-08-30T14:35:04.720Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "463524215c5c5884e3ec2a101a576b93",
+          "observedAt": "2026-08-30T14:35:04.720Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e84a95949a4014e42895",
       "domain": "revolut-ncun-online[.]com[.]ph",
@@ -438,45 +512,6 @@
             "brand-exact-token",
             "suspicious-context",
             "different-tld",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "39fa10a5a086afd0d432",
-      "domain": "xn--ergo-kttigen-ilb[.]ch",
-      "brand": "ERGO",
-      "firstSeen": "2026-08-30T06:56:05.613Z",
-      "lastSeen": "2026-08-30T06:56:05.613Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "punycode",
-        "unicode-confusable",
-        "different-tld",
-        "multiple-hyphens",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "ae61d2fbb7ad1de0c674469617f590be",
-          "observedAt": "2026-08-30T06:56:05.613Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "punycode",
-            "unicode-confusable",
-            "different-tld",
-            "multiple-hyphens",
             "first-publication"
           ]
         }
@@ -2906,84 +2941,6 @@
             "brand-split-token",
             "suspicious-context",
             "different-tld",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "f244770fd730a8f8f74a",
-      "domain": "xn--chez-seb-et-la-nkb[.]fr",
-      "brand": "SEB",
-      "firstSeen": "2026-08-28T13:52:51.226Z",
-      "lastSeen": "2026-08-28T13:52:51.226Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "punycode",
-        "unicode-confusable",
-        "different-tld",
-        "multiple-hyphens",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "5155c2035ce160a77ba3dc00b74b84a6",
-          "observedAt": "2026-08-28T13:52:51.226Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "punycode",
-            "unicode-confusable",
-            "different-tld",
-            "multiple-hyphens",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "3fff5d4e13b79be1161d",
-      "domain": "www[.]xn--chez-seb-et-la-nkb[.]fr",
-      "brand": "SEB",
-      "firstSeen": "2026-08-28T13:52:51.226Z",
-      "lastSeen": "2026-08-28T13:52:51.226Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "punycode",
-        "unicode-confusable",
-        "different-tld",
-        "multiple-hyphens",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "37082bd6b15040ab2878ea41a9e170a2",
-          "observedAt": "2026-08-28T13:52:51.226Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "punycode",
-            "unicode-confusable",
-            "different-tld",
-            "multiple-hyphens",
             "first-publication"
           ]
         }

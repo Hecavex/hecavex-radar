@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T14:20:29.039Z",
+  "generatedAt": "2026-08-30T15:17:25.842Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T14:20:29.039Z",
-    "to": "2026-08-30T14:20:29.039Z"
+    "from": "2026-07-31T15:17:25.842Z",
+    "to": "2026-08-30T15:17:25.842Z"
   },
-  "totalAvailable": 144,
+  "totalAvailable": 146,
   "truncated": false,
   "events": [
+    {
+      "id": "f38de93a1719921340f16faef8be5989",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T14:50:20.850Z",
+      "signalId": "949983865f57c296e1e6",
+      "signalPath": "/signals/949983865f57c296e1e6/",
+      "domain": "dhl-secure-redelivery[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "c314ad4f153ec5b2564926e5dbfdfe37",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T14:35:04.720Z",
+      "signalId": "49f2f473d2537bda912f",
+      "signalPath": "/signals/49f2f473d2537bda912f/",
+      "domain": "www[.]revolut-ncun-online[.]com[.]ph",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "4aa3df6323c2b2f943e92bd1639403f2",
       "type": "first-publication",

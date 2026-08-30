@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-30T14:20:29.039Z",
+  "generatedAt": "2026-08-30T15:17:25.842Z",
   "retentionDays": 365,
   "from": "2025-08-31",
   "to": "2026-08-30",
@@ -121,8 +121,8 @@
           "URLScan": 5
         },
         "byEvidenceTier": {
-          "corroborated": 3,
-          "name-only": 2
+          "name-only": 4,
+          "corroborated": 1
         },
         "byReason": {
           "brand-domain-match": 5,
@@ -165,8 +165,8 @@
           "CertStream": 1
         },
         "byEvidenceTier": {
-          "corroborated": 3,
-          "name-only": 2
+          "name-only": 4,
+          "corroborated": 1
         },
         "byReason": {
           "brand-domain-match": 4,
@@ -213,7 +213,8 @@
           "URLScan": 6
         },
         "byEvidenceTier": {
-          "corroborated": 4
+          "name-only": 3,
+          "corroborated": 1
         },
         "byReason": {
           "brand-domain-match": 6,
@@ -426,7 +427,7 @@
         "firstPublications": 30,
         "statusChanges": 0,
         "facetSampleSize": 31,
-        "evidenceClassifiedSignals": 31,
+        "evidenceClassifiedSignals": 29,
         "byBrand": {
           "DHL": 16,
           "DPD": 3,
@@ -443,7 +444,7 @@
           "CertStream": 31
         },
         "byEvidenceTier": {
-          "name-only": 31
+          "name-only": 29
         },
         "byReason": {
           "first-publication": 30,
@@ -519,50 +520,50 @@
       "date": "2026-08-30",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 51629,
-        "scheduledSlots": 57,
-        "recordedAttempts": 70,
-        "healthyAttempts": 70,
+        "windowSeconds": 55045,
+        "scheduledSlots": 61,
+        "recordedAttempts": 74,
+        "healthyAttempts": 74,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 65.08,
-        "scheduledListeningCeilingPercent": 52.99,
-        "listeningSeconds": 33597.888,
+        "listeningCoveragePercent": 64.53,
+        "scheduledListeningCeilingPercent": 53.19,
+        "listeningSeconds": 35517.883,
         "outcomes": {
-          "healthy-empty": 42,
-          "healthy-matches": 28
+          "healthy-empty": 44,
+          "healthy-matches": 30
         }
       },
       "discovery": {
-        "events": 60,
-        "uniqueSignals": 30,
-        "observations": 30,
+        "events": 64,
+        "uniqueSignals": 32,
+        "observations": 32,
         "reobservations": 0,
-        "firstPublications": 30,
+        "firstPublications": 32,
         "statusChanges": 0,
-        "facetSampleSize": 30,
-        "evidenceClassifiedSignals": 30,
+        "facetSampleSize": 32,
+        "evidenceClassifiedSignals": 31,
         "byBrand": {
-          "DHL": 13,
+          "DHL": 14,
           "Telia": 5,
           "ERGO": 3,
+          "Revolut": 3,
           "VMI": 3,
           "Luminor": 2,
-          "Revolut": 2,
           "DPD": 1,
           "Tele2": 1
         },
         "bySource": {
-          "CertStream": 30
+          "CertStream": 32
         },
         "byEvidenceTier": {
-          "name-only": 30
+          "name-only": 31
         },
         "byReason": {
-          "first-publication": 30,
-          "suspicious-context": 29,
-          "different-tld": 28,
-          "brand-exact-token": 23,
-          "multiple-hyphens": 16,
+          "first-publication": 32,
+          "suspicious-context": 31,
+          "different-tld": 30,
+          "brand-exact-token": 25,
+          "multiple-hyphens": 18,
           "brand-joined-affix": 5,
           "brand-split-token": 2,
           "punycode": 2,
