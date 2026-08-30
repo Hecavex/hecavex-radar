@@ -1,15 +1,85 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-30T00:20:23.223Z",
+  "generatedAt": "2026-08-30T01:11:15.097Z",
   "window": {
     "days": 30,
-    "from": "2026-07-31T00:20:23.223Z",
-    "to": "2026-08-30T00:20:23.223Z"
+    "from": "2026-07-31T01:11:15.097Z",
+    "to": "2026-08-30T01:11:15.097Z"
   },
-  "totalAvailable": 115,
+  "totalAvailable": 120,
   "truncated": false,
   "events": [
+    {
+      "id": "11210761f768736bb7521f93eefe8145",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T00:25:23.945Z",
+      "signalId": "c3a482acbb6071d4092c",
+      "signalPath": "/signals/c3a482acbb6071d4092c/",
+      "domain": "www[.]vmi-materiel-nettoyage-account[.]ph",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "ffbe429f9613e8c3262c28be104eee4d",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T00:18:16.213Z",
+      "signalId": "9ba43e9c15b26e21f915",
+      "signalPath": "/signals/9ba43e9c15b26e21f915/",
+      "domain": "mail[.]teliapay[.]net",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "cad4b43ce140703c1454afc12b0b79b8",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T00:18:16.213Z",
+      "signalId": "4d894f9bdf81af06b273",
+      "signalPath": "/signals/4d894f9bdf81af06b273/",
+      "domain": "imap[.]teliapay[.]net",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "289d33fedb538ba848243bd77b0f79c3",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T00:18:16.213Z",
+      "signalId": "91429c0bcb940acf970d",
+      "signalPath": "/signals/91429c0bcb940acf970d/",
+      "domain": "smtp[.]teliapay[.]net",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "0724db914f2ccd2efca78d0da4b20efe",
+      "type": "first-publication",
+      "occurredAt": "2026-08-30T00:18:16.213Z",
+      "signalId": "6ec7fb1234b236de3270",
+      "signalPath": "/signals/6ec7fb1234b236de3270/",
+      "domain": "pop[.]teliapay[.]net",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f81935a3b086ed2dcbe4d71ace33262d",
       "type": "first-publication",

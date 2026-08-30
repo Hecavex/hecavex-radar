@@ -1,9 +1,165 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T00:08:59.573Z",
-  "lastSuccessfulSyncAt": "2026-08-30T00:20:23.223Z",
+  "generatedAt": "2026-08-30T01:11:15.097Z",
+  "lastSuccessfulSyncAt": "2026-08-30T01:11:15.097Z",
   "signals": [
+    {
+      "id": "c3a482acbb6071d4092c",
+      "url": "hxxps://www[.]vmi-materiel-nettoyage-account[.]ph",
+      "domain": "www[.]vmi-materiel-nettoyage-account[.]ph",
+      "firstSeen": "2026-08-30T00:25:23.945Z",
+      "lastSeen": "2026-08-30T00:25:23.945Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "VMI",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "4d894f9bdf81af06b273",
+      "url": "hxxps://imap[.]teliapay[.]net",
+      "domain": "imap[.]teliapay[.]net",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "6ec7fb1234b236de3270",
+      "url": "hxxps://pop[.]teliapay[.]net",
+      "domain": "pop[.]teliapay[.]net",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "91429c0bcb940acf970d",
+      "url": "hxxps://smtp[.]teliapay[.]net",
+      "domain": "smtp[.]teliapay[.]net",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "9ba43e9c15b26e21f915",
+      "url": "hxxps://mail[.]teliapay[.]net",
+      "domain": "mail[.]teliapay[.]net",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "6e3246d0d9b6e60d5c84",
       "url": "hxxps://vmi-materiel-nettoyage-account[.]ph",
@@ -3162,15 +3318,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-30T00:20:23.223Z",
-      "records": 92,
+      "fetchedAt": "2026-08-30T01:11:15.097Z",
+      "records": 97,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-29T22:41:15.867Z",
+      "fetchedAt": "2026-08-30T00:41:28.169Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 84 stable official asset hashes are pivot-eligible"
@@ -3178,7 +3334,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-30T00:20:23.223Z",
+      "fetchedAt": "2026-08-30T01:11:15.097Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

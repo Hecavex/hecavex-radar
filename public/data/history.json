@@ -1,10 +1,187 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T00:08:59.573Z",
+  "generatedAt": "2026-08-30T01:11:15.097Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c3a482acbb6071d4092c",
+      "domain": "www[.]vmi-materiel-nettoyage-account[.]ph",
+      "brand": "VMI",
+      "firstSeen": "2026-08-30T00:25:23.945Z",
+      "lastSeen": "2026-08-30T00:25:23.945Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c91266feccc89f42cf500208aeff7386",
+          "observedAt": "2026-08-30T00:25:23.945Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9ba43e9c15b26e21f915",
+      "domain": "mail[.]teliapay[.]net",
+      "brand": "Telia",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "7a7b61fd2a11eaeba72c41c93d630f9a",
+          "observedAt": "2026-08-30T00:18:16.213Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "91429c0bcb940acf970d",
+      "domain": "smtp[.]teliapay[.]net",
+      "brand": "Telia",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "827c7a0eb88b5ad642d761a29bfa5dfc",
+          "observedAt": "2026-08-30T00:18:16.213Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6ec7fb1234b236de3270",
+      "domain": "pop[.]teliapay[.]net",
+      "brand": "Telia",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "0b49b1015a5339ae70e50c6994d0bc3a",
+          "observedAt": "2026-08-30T00:18:16.213Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4d894f9bdf81af06b273",
+      "domain": "imap[.]teliapay[.]net",
+      "brand": "Telia",
+      "firstSeen": "2026-08-30T00:18:16.213Z",
+      "lastSeen": "2026-08-30T00:18:16.213Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "127ec25a7ca4e2f4888c80cd44129c11",
+          "observedAt": "2026-08-30T00:18:16.213Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "6e3246d0d9b6e60d5c84",
       "domain": "vmi-materiel-nettoyage-account[.]ph",

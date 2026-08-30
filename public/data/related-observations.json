@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-30T00:20:23.223Z",
+  "generatedAt": "2026-08-30T01:11:15.097Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -20,9 +20,19 @@
       "clusterId": "12ccea743184fe36"
     },
     {
+      "signalId": "4d894f9bdf81af06b273",
+      "domain": "imap[.]teliapay[.]net",
+      "clusterId": "393af156c2d4778a"
+    },
+    {
       "signalId": "6718a48a9d6c4669e8f5",
       "domain": "www[.]revolut-service[.]com",
       "clusterId": "6be5cc106937b73f"
+    },
+    {
+      "signalId": "6ec7fb1234b236de3270",
+      "domain": "pop[.]teliapay[.]net",
+      "clusterId": "393af156c2d4778a"
     },
     {
       "signalId": "80c59f76ae51fa144141",
@@ -30,9 +40,19 @@
       "clusterId": "12ccea743184fe36"
     },
     {
+      "signalId": "91429c0bcb940acf970d",
+      "domain": "smtp[.]teliapay[.]net",
+      "clusterId": "393af156c2d4778a"
+    },
+    {
       "signalId": "95c8fa6f0bbba4e27a05",
       "domain": "www[.]smartidcard[.]de",
       "clusterId": "4d8266370c2123a8"
+    },
+    {
+      "signalId": "9ba43e9c15b26e21f915",
+      "domain": "mail[.]teliapay[.]net",
+      "clusterId": "393af156c2d4778a"
     },
     {
       "signalId": "b1158b011aa853ba4989",
@@ -56,6 +76,174 @@
     }
   ],
   "edges": [
+    {
+      "id": "38712b9206e700022351",
+      "source": "4d894f9bdf81af06b273",
+      "target": "6ec7fb1234b236de3270",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
+    {
+      "id": "aaf93f42712ca0476801",
+      "source": "4d894f9bdf81af06b273",
+      "target": "91429c0bcb940acf970d",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
+    {
+      "id": "0e4aff65e3d593e5a44b",
+      "source": "4d894f9bdf81af06b273",
+      "target": "9ba43e9c15b26e21f915",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
+    {
+      "id": "4c57937f1834c9149b56",
+      "source": "6ec7fb1234b236de3270",
+      "target": "91429c0bcb940acf970d",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
+    {
+      "id": "ce33087310752586d025",
+      "source": "6ec7fb1234b236de3270",
+      "target": "9ba43e9c15b26e21f915",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
+    {
+      "id": "8ec254be9759bf04b6bc",
+      "source": "91429c0bcb940acf970d",
+      "target": "9ba43e9c15b26e21f915",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-san",
+          "value": "imap[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "mail[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "pop[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-san",
+          "value": "smtp[.]teliapay[.]net"
+        },
+        {
+          "type": "certificate-sha256",
+          "value": "e2a6c323a27e76f6c01bc0591ea452ec0476160140fbdffc17a1108071a21fbd"
+        }
+      ]
+    },
     {
       "id": "d28414f75146be496963",
       "source": "3fff5d4e13b79be1161d",
