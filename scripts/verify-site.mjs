@@ -1010,13 +1010,20 @@ function verifyBuiltHtml() {
       const payload = JSON.parse(decodeURIComponent(staticBootstrap));
       assert(payload?.snapshot?.dataset === "live" && payload?.history?.dataset === "history", `${route} embeds the wrong static data.`);
       if (route === "/changes/" || route === "/lt/pokyciai/") {
-        assert(payload?.events?.dataset === "radar-events", `${route} does not embed the canonical event record.`);
+        assert(payload?.events?.dataset === "radar-events" && payload.events.schemaVersion === 1, `${route} does not embed the canonical event v1 record.`);
         assert(document.querySelector(".artifact-hero"), `${route} omits the shared changes hero.`);
         assert(document.querySelectorAll(".feed-strip > a").length === 4, `${route} omits a changes feed link.`);
         assert(document.querySelector(".event-section"), `${route} omits the shared event log.`);
         assert(document.querySelector(".related-route-card"), `${route} omits the retained-history route.`);
         const signalPrefix = route.startsWith("/lt/") ? "/lt/signalai/" : "/signals/";
-        assert(document.querySelector(`.event-list a[href^="${signalPrefix}"]`), `${route} uses the wrong localized signal routes.`);
+        for (const event of payload.events.events) {
+          assert(signalIds.has(event.signalId), `${route} exposes an event outside the emitted signal-route set.`);
+          assert(event.signalPath === `/signals/${event.signalId}/`, `${route} embeds an invalid signal path.`);
+        }
+        assert(
+          Boolean(document.querySelector(`.event-list a[href^="${signalPrefix}"]`)) === (payload.events.events.length > 0),
+          `${route} uses the wrong localized signal-route projection.`,
+        );
       }
     } else if (route === "/docs/" || route === "/lt/dokumentacija/") {
       assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong documentation language.`);

@@ -140,10 +140,40 @@ def test_builds_distinct_events_without_publishing_a_raw_url() -> None:
         event["signalPath"] == f"/signals/{signal_identifier}/"
         for event in bundle.artifact["events"]
     )
+    assert bundle.artifact["schemaVersion"] == 1
     assert b"login-example.test" not in (
         bundle.event_json + bundle.atom + bundle.rss + bundle.json_feed
     )
     assert b"login-example[.]test" in bundle.event_json
+
+
+def test_current_policy_projection_omits_events_without_a_public_signal_route() -> None:
+    current = "current[.]example"
+    removed = "removed-after-revalidation[.]example"
+    current_id = stable_id(current.lower())
+    removed_id = stable_id(removed.lower())
+    events = [
+        _history_event(current, "2026-08-25T10:00:00.000Z", event_type="status-transition", brand="Example"),
+        _history_event(removed, "2026-08-25T09:00:00.000Z", event_type="status-transition", brand="Example"),
+    ]
+
+    bundle = build_event_feeds(
+        events,
+        _snapshot((current, "Example", "2026-08-25T10:00:00.000Z")),
+        NOW,
+        available_signal_ids={current_id},
+    )
+    assert [event["signalId"] for event in bundle.artifact["events"]] == [current_id]
+    assert bundle.artifact["events"][0]["signalPath"] == f"/signals/{current_id}/"
+    assert f"https://radar.hecavex.com/signals/{removed_id}/".encode() not in (
+        bundle.atom + bundle.rss + bundle.json_feed
+    )
+
+    brand_feed = build_brand_event_feeds(bundle.artifact, ["Example"])[0]
+    assert f"https://radar.hecavex.com/signals/{removed_id}/".encode() not in (
+        brand_feed.atom + brand_feed.rss + brand_feed.json_feed
+    )
+    assert brand_feed.event_count == 1
 
 
 def test_xml_is_escaped_and_every_item_link_is_a_stable_signal_path() -> None:

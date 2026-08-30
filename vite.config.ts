@@ -174,7 +174,7 @@ function staticPagePlugin() {
           { parseHistory },
           { encodeSnapshotBootstrap },
           { encodeHistoryBootstrap },
-          { encodeStaticPageBootstrap },
+          { encodeStaticPageBootstrap, parseEventArtifact },
           { parseRelatedObservations },
           { renderLithuanianPage, renderPrerenderedPage, renderStaticPage },
         ] = await Promise.all([
@@ -192,10 +192,14 @@ function staticPagePlugin() {
         let staticMarkup: string;
         let bootstrap = "";
         if (staticPage) {
+          const availableSignalIds = new Set([
+            ...snapshot.signals.map((signal) => signal.id),
+            ...history.signals.map((signal) => signal.id),
+          ]);
           const data = {
             snapshot,
             history,
-            events: readJson(eventsPath),
+            events: parseEventArtifact(readJson(eventsPath), availableSignalIds),
             trends: readJson(trendsPath),
             quality: readJson(qualityPath),
             related: parseRelatedObservations(readJson(relatedPath)),
@@ -245,6 +249,7 @@ function dynamicRoutesPlugin() {
         { brandEntries, brandPath, brandSlug, findBrand },
         { signalPath },
         { encodePageBootstrap },
+        { parseEventArtifact },
         { renderBrandPage, renderSignalPage },
       ] = await Promise.all([
         import("./src/lib/data.ts"),
@@ -254,6 +259,7 @@ function dynamicRoutesPlugin() {
         import("./src/lib/brandRegistry.ts"),
         import("./src/lib/signalRoutes.ts"),
         import("./src/lib/pageBootstrap.ts"),
+        import("./src/lib/staticPageBootstrap.ts"),
         import("./src/prerender.ts"),
       ]);
       const snapshot = parseSnapshot(readJson(snapshotPath));
@@ -281,6 +287,7 @@ function dynamicRoutesPlugin() {
           reasonCodes: record.reasonCodes,
         });
       }
+      parseEventArtifact(readJson(eventsPath), new Set(allSignals.keys()));
       const nodesById = new Map(related.nodes.map((node) => [node.signalId, node]));
       const sitemapUrls = new Set<string>([
         "/", "/changes/", "/history/", "/brands/", "/trends/", "/associations/", "/tools/",

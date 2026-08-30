@@ -7,6 +7,7 @@ import hashlib
 import itertools
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -1175,8 +1176,29 @@ def publish_supplemental_artifacts(
         "assessments": [],
     }
 
+    history_signals = effective_history.get("signals")
+    if not isinstance(history_signals, list) or len(history_signals) > 25_000:
+        raise ValueError("Supplemental publication requires bounded public history signals.")
+    route_signals = [*dashboard_signals, *history_signals]
+    if any(
+        not isinstance(signal, dict)
+        or not isinstance(signal.get("id"), str)
+        or re.fullmatch(r"[a-f0-9]{20}", cast(str, signal["id"])) is None
+        for signal in route_signals
+    ):
+        raise ValueError("Supplemental publication route inputs contain an invalid signal identity.")
+    route_signal_ids = {
+        cast(str, cast(dict[str, object], signal)["id"])
+        for signal in route_signals
+    }
     recent_events = read_recent_history_events(repository / "data/history", generated_at)
-    event_bundle = build_event_feeds(recent_events, snapshot, generated_at, effective_review)
+    event_bundle = build_event_feeds(
+        recent_events,
+        snapshot,
+        generated_at,
+        effective_review,
+        available_signal_ids=route_signal_ids,
+    )
     _validate(event_bundle.artifact, EVENTS_SCHEMA, "event stream")
     events_path = _atomic_bytes(PUBLIC_DATA / "events.json", event_bundle.event_json, MAXIMUM_EVENT_JSON_BYTES)
     atom_path = _atomic_bytes(PUBLIC_DATA / "events.atom.xml", event_bundle.atom, MAXIMUM_SYNDICATION_BYTES)
@@ -1187,7 +1209,6 @@ def publish_supplemental_artifacts(
         PUBLIC_DATA / "events.feed.json", event_bundle.json_feed, MAXIMUM_SYNDICATION_BYTES
     )
 
-    history_signals = effective_history.get("signals")
     registry = load_brand_registry(repository / "data" / "brands-lt.json")
     brand_values = [entry.brand for entry in registry.entries] + [
         brand
@@ -1446,6 +1467,30 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         or dashboard_ids != complete_ids[: len(dashboard_ids)]
     ):
         raise ValueError("Signal index counts or dashboard-prefix ordering do not match the published signal sets.")
+    history_artifact = _load_required_json(repository / PUBLIC_DATA / "history.json", 512 * 1024)
+    if not isinstance(history_artifact, dict) or not isinstance(history_artifact.get("signals"), list):
+        raise ValueError("Public history does not provide a bounded signal collection.")
+    history_ids = {
+        cast(str, signal.get("id"))
+        for signal in cast(list[object], history_artifact["signals"])
+        if isinstance(signal, dict)
+        and isinstance(signal.get("id"), str)
+        and re.fullmatch(r"[a-f0-9]{20}", cast(str, signal["id"]))
+    }
+    if len(history_ids) != len(cast(list[object], history_artifact["signals"])):
+        raise ValueError("Public history contains an invalid or duplicate signal identity.")
+    route_signal_ids = set(dashboard_ids) | history_ids
+    event_stream = cast(
+        dict[str, object],
+        _load_required_json(repository / PUBLIC_DATA / "events.json", MAXIMUM_EVENT_JSON_BYTES),
+    )
+    for raw_event in cast(list[object], event_stream["events"]):
+        event = cast(dict[str, object], raw_event)
+        identifier = cast(str, event["signalId"])
+        if identifier not in route_signal_ids or event["signalPath"] != f"/signals/{identifier}/":
+            raise ValueError(
+                "An event references a signal outside the dashboard and retained-history route set."
+            )
     manifest = cast(dict[str, object], _load_required_json(repository / PUBLIC_DATA / "feed-manifest.json", 256 * 1024))
     successful_sync_at = snapshot["lastSuccessfulSyncAt"]
     generation_artifacts = {
@@ -1463,10 +1508,7 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
             dict[str, object],
             _load_required_json(repository / PUBLIC_DATA / "related-observations.json", MAXIMUM_RELATION_BYTES),
         ),
-        "event stream": cast(
-            dict[str, object],
-            _load_required_json(repository / PUBLIC_DATA / "events.json", MAXIMUM_EVENT_JSON_BYTES),
-        ),
+        "event stream": event_stream,
         "brand feed directory": cast(
             dict[str, object],
             _load_required_json(
@@ -1573,16 +1615,38 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
             + ",".join(unexpected)
         )
 
-    xml_paths = [
-        repository / PUBLIC_DATA / "events.atom.xml",
-        repository / PUBLIC_DATA / "events.rss.xml",
-        *[
-            repository / "public" / cast(str, row[field]).removeprefix("/")
-            for row in brand_rows
-            for field in ("atom", "rss")
-        ],
+    expected_event_urls = [
+        "https://radar.hecavex.com" + cast(str, event["signalPath"])
+        for event in cast(list[dict[str, object]], event_stream["events"])
     ]
-    for path in xml_paths:
+    global_json_feed = cast(
+        dict[str, object],
+        _load_required_json(
+            repository / PUBLIC_DATA / "events.feed.json", MAXIMUM_SYNDICATION_BYTES
+        ),
+    )
+    global_json_urls = [
+        cast(dict[str, object], item).get("url")
+        for item in cast(list[object], global_json_feed["items"])
+    ]
+    if global_json_urls != expected_event_urls:
+        raise ValueError("Global JSON Feed links do not match canonical event destinations.")
+
+    expected_xml_urls: dict[Path, list[str]] = {
+        repository / PUBLIC_DATA / "events.atom.xml": expected_event_urls,
+        repository / PUBLIC_DATA / "events.rss.xml": expected_event_urls,
+    }
+    for row in brand_rows:
+        expected_brand_urls = [
+            "https://radar.hecavex.com" + cast(str, event["signalPath"])
+            for event in cast(list[dict[str, object]], event_stream["events"])
+            if event["brand"] == row["brand"]
+        ]
+        for field in ("atom", "rss"):
+            expected_xml_urls[
+                repository / "public" / cast(str, row[field]).removeprefix("/")
+            ] = expected_brand_urls
+    for path, expected_urls in expected_xml_urls.items():
         try:
             root = ET.fromstring(path.read_bytes())  # noqa: S314 - generated local static publication.
         except (OSError, ET.ParseError) as error:
@@ -1590,13 +1654,33 @@ def validate_publication(repository: Path, validate_stix: bool = False) -> None:
         expected_root = "feed" if path.name.endswith(".atom.xml") else "rss"
         if root.tag.rsplit("}", 1)[-1] != expected_root:
             raise ValueError(f"{path.as_posix()} has an unexpected syndication root element.")
+        if expected_root == "feed":
+            links: list[str] = []
+            for entry in root.findall("{http://www.w3.org/2005/Atom}entry"):
+                link = entry.find("{http://www.w3.org/2005/Atom}link")
+                href = link.get("href") if link is not None else None
+                if not isinstance(href, str):
+                    raise ValueError(f"{path.as_posix()} contains an event without a canonical link.")
+                links.append(href)
+        else:
+            links = [cast(str, item.findtext("link")) for item in root.findall("channel/item")]
+        if links != expected_urls:
+            raise ValueError(f"{path.as_posix()} links do not match canonical event destinations.")
     for row in brand_rows:
         feed_path = repository / "public" / cast(str, row["jsonFeed"]).removeprefix("/")
         feed = _load_required_json(feed_path, MAXIMUM_SYNDICATION_BYTES)
         _validate(feed, JSON_FEED_SCHEMA, feed_path.as_posix())
         items = cast(list[object], cast(dict[str, object], feed)["items"])
-        if len(items) != row["eventCount"]:
-            raise ValueError(f"{feed_path.as_posix()} does not match its brand-feed directory count.")
+        expected_brand_urls = [
+            "https://radar.hecavex.com" + cast(str, event["signalPath"])
+            for event in cast(list[dict[str, object]], event_stream["events"])
+            if event["brand"] == row["brand"]
+        ]
+        if (
+            len(items) != row["eventCount"]
+            or [cast(dict[str, object], item).get("url") for item in items] != expected_brand_urls
+        ):
+            raise ValueError(f"{feed_path.as_posix()} does not match its brand event projection.")
     feed_manifest_path = repository / PUBLIC_DATA / "feed-manifest.json"
     manifest_checksum = feed_manifest_path.with_name(feed_manifest_path.name + CHECKSUM_SUFFIX)
     expected_manifest_checksum = f"{_sha256(feed_manifest_path)}  {feed_manifest_path.name}\n"

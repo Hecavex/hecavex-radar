@@ -123,13 +123,16 @@ size-limited view. Event types are:
 
 Each event contains a deterministic 32-character ID, canonical time, public signal ID and stable retained signal path,
 defanged domain, reviewed registry brand, current and previous status where applicable, and supported public source labels.
-It contains no clickable candidate URL, query, fragment, analyst identity, or private note. Absence from a later collection
-window never creates an event.
+The event stream is a current-policy projection of durable history: a row is emitted only while its signal ID belongs to
+the dashboard snapshot or filtered public history. Matcher, registry, or review revalidation can therefore remove
+a row from this projection without deleting the underlying bounded history or asserting that the domain is benign. It
+contains no clickable candidate URL, query, fragment, analyst identity, or private note. Absence from a later collection
+window never creates a retraction or status event.
 
 `public/data/events.atom.xml`, `public/data/events.rss.xml`, and `public/data/events.feed.json` are Atom, RSS 2.0, and JSON
 Feed 1.1 projections of exactly the selected global event set. Feed links are absolute same-origin HTTPS URLs to signal
-records retained under the public history policy;
-indicator text remains defanged. The event JSON is capped at 1 MiB and each syndication document at 2 MiB.
+records that exist in the same static release; indicator text remains defanged. The event JSON is capped at 1 MiB and each
+syndication document at 2 MiB.
 
 `public/data/brand-feeds.json` is the deterministic directory for per-brand Atom, RSS, and JSON Feed files below
 `public/data/brands/<slug>/`. A feed is emitted for every reviewed registry brand, including a valid empty feed. Each brand

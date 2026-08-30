@@ -499,6 +499,7 @@ def build_event_feeds(
     snapshot: Mapping[str, object],
     generated_at: str,
     review: Mapping[str, object] | None = None,
+    available_signal_ids: Iterable[str] | None = None,
 ) -> EventFeedBundle:
     """Build deterministic 30-day public event and syndication artifacts.
 
@@ -510,6 +511,11 @@ def build_event_feeds(
     if now is None:
         raise ValueError("generated_at must be a canonical UTC millisecond timestamp.")
     snapshot_first_seen = _snapshot_first_seen(snapshot)
+    route_signal_ids = set(snapshot_first_seen) if available_signal_ids is None else set(available_signal_ids)
+    if (
+        any(not isinstance(identifier, str) or not SIGNAL_ID.fullmatch(identifier) for identifier in route_signal_ids)
+    ):
+        raise ValueError("available_signal_ids must contain only valid signal IDs.")
     validated: list[Mapping[str, object]] = []
     history_identifiers: set[str] = set()
     for value in history_events:
@@ -527,7 +533,11 @@ def build_event_feeds(
         validated.append(value)
 
     cutoff = now - timedelta(days=WINDOW_DAYS)
-    candidates = _classify_events(validated, snapshot_first_seen) + _retraction_events(review)
+    candidates = [
+        event
+        for event in _classify_events(validated, snapshot_first_seen) + _retraction_events(review)
+        if event["signalId"] in route_signal_ids
+    ]
     if any(cast(datetime, _timestamp(event["occurredAt"])) > now for event in candidates):
         raise ValueError("An event-feed input contains an event after generated_at.")
     in_window = [
@@ -677,6 +687,7 @@ def build_event_feeds_from_files(
     *,
     generated_at: str | None = None,
     review_path: str | Path | None = None,
+    available_signal_ids: Iterable[str] | None = None,
 ) -> EventFeedBundle:
     snapshot = _read_json(Path(snapshot_path))
     effective_generated_at = generated_at
@@ -687,7 +698,13 @@ def build_event_feeds_from_files(
         effective_generated_at = candidate
     review = _read_json(Path(review_path)) if review_path is not None else None
     events = read_recent_history_events(history_root, effective_generated_at)
-    return build_event_feeds(events, snapshot, effective_generated_at, review)
+    return build_event_feeds(
+        events,
+        snapshot,
+        effective_generated_at,
+        review,
+        available_signal_ids=available_signal_ids,
+    )
 
 
 def _atomic_write(path: Path, body: bytes) -> None:

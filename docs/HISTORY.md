@@ -25,6 +25,11 @@ After the detail window, events compact into `data/history/summary.json`. The su
 
 `public/data/history.json` is a bounded projection of the compacted summary and retained detail. It is revalidated against the current brand registry and sanitized review decisions on every synchronization. The default row cap is 5,000 hosts, while a separate 512 KiB publication cap ensures the static deployment remains bounded. Synchronization fails instead of silently truncating when either limit is exceeded.
 
+The separate 30-day publication-event stream is filtered through the current matcher, registry, and review policy. Only
+events whose IDs still have an emitted route in the dashboard snapshot or filtered public history reach the Changes
+page and feeds. Filtering this projection does not erase daily or compacted history and is not a benign verdict, status
+transition, or analyst retraction.
+
 Configuration:
 
 | Variable | Default | Range |
