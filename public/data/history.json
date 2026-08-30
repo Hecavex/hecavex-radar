@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-30T17:09:36.018Z",
+  "generatedAt": "2026-08-30T17:39:12.609Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d04043e1e8a45b43729b",
+      "domain": "www[.]revolut-user-support[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-30T17:31:51.746Z",
+      "lastSeen": "2026-08-30T17:31:51.746Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "aec6f49c80ce1a98da0fe34b5f7e5194",
+          "observedAt": "2026-08-30T17:31:51.746Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "effa52ffca0c634fd6a6",
       "domain": "tele2service[.]online",
