@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-31T21:20:51.145Z",
+  "generatedAt": "2026-08-31T22:09:25.361Z",
   "window": {
     "days": 30,
-    "from": "2026-08-01T21:20:51.145Z",
-    "to": "2026-08-31T21:20:51.145Z"
+    "from": "2026-08-01T22:09:25.361Z",
+    "to": "2026-08-31T22:09:25.361Z"
   },
-  "totalAvailable": 178,
+  "totalAvailable": 180,
   "truncated": false,
   "events": [
+    {
+      "id": "5987eb49ebcc4b8dc6b44c62bbeece99",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T22:03:04.566Z",
+      "signalId": "d2d14e7ca052465d6f58",
+      "signalPath": "/signals/d2d14e7ca052465d6f58/",
+      "domain": "revolut-pl-support[.]ph",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "d02433195312aa9c35fce2164300d995",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T22:01:42.331Z",
+      "signalId": "0eac0cc5633d1f67a89f",
+      "signalPath": "/signals/0eac0cc5633d1f67a89f/",
+      "domain": "secure-box-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "34fd9db5e227a505a079719f8e03e0d7",
       "type": "first-publication",

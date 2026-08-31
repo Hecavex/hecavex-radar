@@ -1,9 +1,73 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T21:09:37.672Z",
-  "lastSuccessfulSyncAt": "2026-08-31T21:20:51.145Z",
+  "generatedAt": "2026-08-31T22:09:25.361Z",
+  "lastSuccessfulSyncAt": "2026-08-31T22:09:25.361Z",
   "signals": [
+    {
+      "id": "d2d14e7ca052465d6f58",
+      "url": "hxxps://revolut-pl-support[.]ph",
+      "domain": "revolut-pl-support[.]ph",
+      "firstSeen": "2026-08-31T22:03:04.566Z",
+      "lastSeen": "2026-08-31T22:03:04.566Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "0eac0cc5633d1f67a89f",
+      "url": "hxxps://secure-box-dhl[.]com[.]ph",
+      "domain": "secure-box-dhl[.]com[.]ph",
+      "firstSeen": "2026-08-31T22:01:42.331Z",
+      "lastSeen": "2026-08-31T22:01:42.331Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "d542b4778aeeac180c73",
       "url": "hxxps://revolut-update-security[.]ph",
@@ -4955,8 +5019,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T21:20:51.145Z",
-      "records": 149,
+      "fetchedAt": "2026-08-31T22:09:25.361Z",
+      "records": 151,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4971,7 +5035,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T21:20:51.145Z",
+      "fetchedAt": "2026-08-31T22:09:25.361Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T18:54:40.096Z",
+  "generatedAt": "2026-08-31T22:09:25.361Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d2d14e7ca052465d6f58",
+      "domain": "revolut-pl-support[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-31T22:03:04.566Z",
+      "lastSeen": "2026-08-31T22:03:04.566Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a74059a493d76f06f85ea81eb6bf4b65",
+          "observedAt": "2026-08-31T22:03:04.566Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0eac0cc5633d1f67a89f",
+      "domain": "secure-box-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-31T22:01:42.331Z",
+      "lastSeen": "2026-08-31T22:01:42.331Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1b22a2f84194938a5742ac136919de1a",
+          "observedAt": "2026-08-31T22:01:42.331Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d542b4778aeeac180c73",
       "domain": "revolut-update-security[.]ph",
