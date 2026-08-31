@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-08-31T16:44:38.537Z",
+  "generatedAt": "2026-08-31T17:45:25.990Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-08-31T16:44:38.537Z",
+    "endedAt": "2026-08-31T17:45:25.990Z",
     "failureCodes": [
-      "provider-network"
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
     "outcome": "failed",
-    "queriesAttempted": 0,
+    "queriesAttempted": 1,
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-08-31T16:44:38.532Z"
+    "startedAt": "2026-08-31T17:44:40.383Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 9,
+    "consecutiveFailures": 10,
     "degradedSince": "2026-08-30T14:47:30.977Z",
     "lastSuccessAt": null,
-    "nextAttemptAt": "2026-08-31T17:05:18.227Z"
+    "nextAttemptAt": "2026-08-31T23:05:25.990Z"
   },
   "queries": {
     "brand:artea": {
@@ -101,7 +101,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-31T11:44:32.990Z",
+      "lastRunAt": "2026-08-31T17:44:40.383Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
