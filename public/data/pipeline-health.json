@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-31T09:54:29.291Z",
+  "generatedAt": "2026-08-31T10:20:25.567Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 151,
@@ -81,21 +81,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T09:54:29.291Z",
-      "to": "2026-08-31T09:54:29.291Z",
+      "from": "2026-08-30T10:20:25.567Z",
+      "to": "2026-08-31T10:20:25.567Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 71,
-        "healthyAttempts": 71,
-        "recordedSchedulePercent": 74.0,
-        "listeningCoveragePercent": 39.44,
+        "recordedAttempts": 70,
+        "healthyAttempts": 70,
+        "recordedSchedulePercent": 72.9,
+        "listeningCoveragePercent": 38.89,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 34080,
-        "listeningSeconds": 34076.879,
-        "messages": 10642296,
-        "dnsNames": 18418289,
+        "expectedListeningSeconds": 33600,
+        "listeningSeconds": 33596.881,
+        "messages": 10494039,
+        "dnsNames": 18146529,
         "outcomes": {
-          "healthy-empty": 43,
+          "healthy-empty": 42,
           "healthy-matches": 28
         }
       },
@@ -108,12 +108,12 @@
         }
       },
       "enrichment": {
-        "observations": 34,
-        "uniqueSignals": 29,
-        "page": 31,
-        "network": 30,
-        "assessment": 34,
-        "certificate": 28,
+        "observations": 32,
+        "uniqueSignals": 28,
+        "page": 29,
+        "network": 28,
+        "assessment": 32,
+        "certificate": 26,
         "dns": 0,
         "rdap": 0
       },
@@ -126,8 +126,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-24T09:54:29.291Z",
-      "to": "2026-08-31T09:54:29.291Z",
+      "from": "2026-08-24T10:20:25.567Z",
+      "to": "2026-08-31T10:20:25.567Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 437,
@@ -155,12 +155,12 @@
         }
       },
       "enrichment": {
-        "observations": 215,
-        "uniqueSignals": 114,
-        "page": 203,
-        "network": 193,
-        "assessment": 215,
-        "certificate": 190,
+        "observations": 214,
+        "uniqueSignals": 113,
+        "page": 202,
+        "network": 192,
+        "assessment": 214,
+        "certificate": 189,
         "dns": 0,
         "rdap": 0
       },
