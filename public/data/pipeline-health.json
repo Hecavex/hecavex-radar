@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-31T16:09:44.507Z",
+  "generatedAt": "2026-08-31T16:20:42.863Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 155,
@@ -81,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T16:09:44.507Z",
-      "to": "2026-08-31T16:09:44.507Z",
+      "from": "2026-08-30T16:20:42.863Z",
+      "to": "2026-08-31T16:20:42.863Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 59,
@@ -126,21 +126,21 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-24T16:09:44.507Z",
-      "to": "2026-08-31T16:09:44.507Z",
+      "from": "2026-08-24T16:20:42.863Z",
+      "to": "2026-08-31T16:20:42.863Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 448,
-        "healthyAttempts": 448,
-        "recordedSchedulePercent": 66.7,
-        "listeningCoveragePercent": 35.11,
+        "recordedAttempts": 447,
+        "healthyAttempts": 447,
+        "recordedSchedulePercent": 66.5,
+        "listeningCoveragePercent": 35.07,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 212400,
-        "listeningSeconds": 212360.215,
-        "messages": 68641312,
-        "dnsNames": 123946658,
+        "expectedListeningSeconds": 212160,
+        "listeningSeconds": 212123.224,
+        "messages": 68547753,
+        "dnsNames": 123776522,
         "outcomes": {
-          "healthy-empty": 308,
+          "healthy-empty": 307,
           "healthy-matches": 140
         }
       },
@@ -155,12 +155,12 @@
         }
       },
       "enrichment": {
-        "observations": 209,
-        "uniqueSignals": 108,
-        "page": 199,
-        "network": 189,
-        "assessment": 209,
-        "certificate": 186,
+        "observations": 207,
+        "uniqueSignals": 106,
+        "page": 197,
+        "network": 187,
+        "assessment": 207,
+        "certificate": 184,
         "dns": 0,
         "rdap": 0
       },
