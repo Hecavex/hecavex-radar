@@ -1,10 +1,49 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T02:39:02.083Z",
+  "generatedAt": "2026-08-31T03:39:14.986Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "05e404acdaff12d84922",
+      "domain": "dfhnwrjy[.]xn--tl2mobile-b4ab[.]fr",
+      "brand": "Tele2",
+      "firstSeen": "2026-08-31T03:35:52.377Z",
+      "lastSeen": "2026-08-31T03:35:52.377Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "421f7ae16e88a673aeef8ba0a559161f",
+          "observedAt": "2026-08-31T03:35:52.377Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e25d19d18389a9b3c0db",
       "domain": "revolut-web-login[.]ph",
