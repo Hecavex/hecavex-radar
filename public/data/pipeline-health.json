@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-08-31T18:54:40.096Z",
+  "generatedAt": "2026-08-31T19:20:38.340Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 159,
@@ -81,21 +81,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T18:54:40.096Z",
-      "to": "2026-08-31T18:54:40.096Z",
+      "from": "2026-08-30T19:20:38.340Z",
+      "to": "2026-08-31T19:20:38.340Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 59,
-        "healthyAttempts": 59,
-        "recordedSchedulePercent": 61.5,
-        "listeningCoveragePercent": 32.77,
+        "recordedAttempts": 58,
+        "healthyAttempts": 58,
+        "recordedSchedulePercent": 60.4,
+        "listeningCoveragePercent": 32.22,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 28320,
-        "listeningSeconds": 28314.894,
-        "messages": 9368665,
-        "dnsNames": 16045602,
+        "expectedListeningSeconds": 27840,
+        "listeningSeconds": 27834.895,
+        "messages": 9230359,
+        "dnsNames": 15806810,
         "outcomes": {
-          "healthy-empty": 37,
+          "healthy-empty": 36,
           "healthy-matches": 22
         }
       },
@@ -126,8 +126,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-24T18:54:40.096Z",
-      "to": "2026-08-31T18:54:40.096Z",
+      "from": "2026-08-24T19:20:38.340Z",
+      "to": "2026-08-31T19:20:38.340Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 453,
