@@ -1,13 +1,28 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-08-31T19:20:38.340Z",
+  "generatedAt": "2026-08-31T20:20:29.434Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
+    {
+      "signalId": "05e404acdaff12d84922",
+      "domain": "dfhnwrjy[.]xn--tl2mobile-b4ab[.]fr",
+      "clusterId": "e43f9f541a402674"
+    },
     {
       "signalId": "0d284af65210b0c1307e",
       "domain": "omada[.]delivery-dhl-uae[.]com",
       "clusterId": "c55dce4cbe638900"
+    },
+    {
+      "signalId": "1584ae422d7176c672b3",
+      "domain": "czlpihmr[.]xn--tl2mobile-b4ab[.]fr",
+      "clusterId": "e43f9f541a402674"
+    },
+    {
+      "signalId": "2433e05eef18ae892030",
+      "domain": "redbynih[.]xn--tl2mobile-b4ab[.]com",
+      "clusterId": "e43f9f541a402674"
     },
     {
       "signalId": "b1158b011aa853ba4989",
@@ -145,11 +160,43 @@
           "value": "ina3[.]registrar[.]eu"
         }
       ]
+    },
+    {
+      "id": "1e2de3545949a334d6b5",
+      "source": "05e404acdaff12d84922",
+      "target": "2433e05eef18ae892030",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "185[.]53[.]179[.]200"
+        },
+        {
+          "type": "dns-cname",
+          "value": "845192[.]parkingcrew[.]net"
+        }
+      ]
+    },
+    {
+      "id": "76494f6dea6e54748122",
+      "source": "1584ae422d7176c672b3",
+      "target": "2433e05eef18ae892030",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "185[.]53[.]179[.]200"
+        },
+        {
+          "type": "dns-cname",
+          "value": "845192[.]parkingcrew[.]net"
+        }
+      ]
     }
   ],
   "suppressedEvidence": {
     "highFanoutValues": 1,
-    "temporalPairs": 8,
+    "temporalPairs": 12,
     "edgeLimit": 0
   }
 }
