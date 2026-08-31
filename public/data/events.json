@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-31T00:39:52.384Z",
+  "generatedAt": "2026-08-31T01:09:30.567Z",
   "window": {
     "days": 30,
-    "from": "2026-08-01T00:39:52.384Z",
-    "to": "2026-08-31T00:39:52.384Z"
+    "from": "2026-08-01T01:09:30.567Z",
+    "to": "2026-08-31T01:09:30.567Z"
   },
-  "totalAvailable": 157,
+  "totalAvailable": 158,
   "truncated": false,
   "events": [
+    {
+      "id": "93bfa5eec6a1afb8fe8dc70f40b39bb5",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T01:07:42.313Z",
+      "signalId": "c0e93b1e91128fe92c2b",
+      "signalPath": "/signals/c0e93b1e91128fe92c2b/",
+      "domain": "www[.]vmi-materiel-nettoyage-login[.]ph",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "bb1b3158c5747cf24a8cbc6654df7e0e",
       "type": "first-publication",

@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T00:39:52.384Z",
+  "generatedAt": "2026-08-31T01:09:30.567Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c0e93b1e91128fe92c2b",
+      "domain": "www[.]vmi-materiel-nettoyage-login[.]ph",
+      "brand": "VMI",
+      "firstSeen": "2026-08-31T01:07:42.313Z",
+      "lastSeen": "2026-08-31T01:07:42.313Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9e600cae156a6dc70236bc78512bd340",
+          "observedAt": "2026-08-31T01:07:42.313Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "48900c17595837fb1066",
       "domain": "swedbank-confirm[.]ph",
