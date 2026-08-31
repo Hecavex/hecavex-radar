@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T06:09:35.455Z",
+  "generatedAt": "2026-08-31T08:39:26.759Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5be02e73dc65d61079be",
+      "domain": "www3[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-31T08:37:04.273Z",
+      "lastSeen": "2026-08-31T08:37:04.273Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "06564b49304f89a040c350fd17b27084",
+          "observedAt": "2026-08-31T08:37:04.273Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e1f8cca98d48da9ba816",
       "domain": "www[.]xn--arta-dpa[.]com",

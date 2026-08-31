@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-31T08:20:26.262Z",
+  "generatedAt": "2026-08-31T08:39:26.759Z",
   "window": {
     "days": 30,
-    "from": "2026-08-01T08:20:26.262Z",
-    "to": "2026-08-31T08:20:26.262Z"
+    "from": "2026-08-01T08:39:26.759Z",
+    "to": "2026-08-31T08:39:26.759Z"
   },
-  "totalAvailable": 169,
+  "totalAvailable": 170,
   "truncated": false,
   "events": [
+    {
+      "id": "7048a870a0f62b05525276d4116d3c50",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T08:37:04.273Z",
+      "signalId": "5be02e73dc65d61079be",
+      "signalPath": "/signals/5be02e73dc65d61079be/",
+      "domain": "www3[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "868db21419b1732086d0fd71395536da",
       "type": "first-publication",
