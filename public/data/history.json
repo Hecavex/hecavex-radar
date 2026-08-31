@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T14:09:54.212Z",
+  "generatedAt": "2026-08-31T16:54:41.014Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "9391b8744e8463392dca",
+      "domain": "dhlexpress-auth[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-31T16:49:35.296Z",
+      "lastSeen": "2026-08-31T16:49:35.296Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bd33956dabe50a460aaa3f69dc6dc376",
+          "observedAt": "2026-08-31T16:49:35.296Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-split-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "2caead7bbe946be4c107",
       "domain": "dhl-delivery-package[.]com[.]ph",
