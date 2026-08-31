@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T03:54:42.678Z",
+  "generatedAt": "2026-08-31T05:09:36.641Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "f743747476f62d77f1a7",
+      "domain": "vinted-online[.]vip",
+      "brand": "Vinted",
+      "firstSeen": "2026-08-31T05:01:33.777Z",
+      "lastSeen": "2026-08-31T05:01:33.777Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "cb0bd93d9358657f28f64a6ed6e93071",
+          "observedAt": "2026-08-31T05:01:33.777Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "43349e25703ae7344924",
       "domain": "www[.]tracking-dhl[.]com",
