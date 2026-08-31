@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-31T15:09:37.220Z",
+  "generatedAt": "2026-08-31T15:49:38.357Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-31T14:44:48.380Z",
+      "stateGeneratedAt": "2026-08-31T15:45:00.926Z",
       "queryCursor": 9,
       "configuredQueries": 46
     },
@@ -1367,7 +1367,7 @@
         "assetHashes": 11,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-31T15:49:38.357Z",
         "hashSupport": [
           {
             "sha256": "168adf7c1aaa7f74ca2e0b5779dc276c41ffb4f77355a30e0db8673484310596",
@@ -1501,7 +1501,7 @@
         "assetHashes": 4,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-29T03:49:28.662Z",
+        "lastValidatedAt": "2026-08-31T15:49:38.357Z",
         "hashSupport": [
           {
             "sha256": "101b13f114a69ce98e4c0baa9a1274279537b4abe515f99845820af02f2d0248",
@@ -1561,7 +1561,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-29T03:49:28.662Z",
+        "lastValidatedAt": "2026-08-31T15:49:38.357Z",
         "hashSupport": [
           {
             "sha256": "1bdab79161ce45a807c47a0df76a2e37be0114217153e5338bdb1e39af33efe5",
@@ -1686,11 +1686,22 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
+        "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-31T15:49:38.357Z",
+        "hashSupport": [
+          {
+            "sha256": "8b9658f1349dcd3d571c60552e49f3f90e3dcb18a66470aed4682eef4396c3f2",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "cb24d38c9915806684239853e4ad93be64b90a8b04cfa9500a455d83419221a0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
