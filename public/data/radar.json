@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-30T23:54:25.295Z",
-  "lastSuccessfulSyncAt": "2026-08-31T00:20:40.614Z",
+  "generatedAt": "2026-08-31T00:39:52.384Z",
+  "lastSuccessfulSyncAt": "2026-08-31T00:39:52.384Z",
   "signals": [
+    {
+      "id": "48900c17595837fb1066",
+      "url": "hxxps://swedbank-confirm[.]ph",
+      "domain": "swedbank-confirm[.]ph",
+      "firstSeen": "2026-08-31T00:37:42.117Z",
+      "lastSeen": "2026-08-31T00:37:42.117Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Swedbank",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "7c4c83ffb6d7e56dc177",
       "url": "hxxps://www1[.]revolutbank[.]info",
@@ -4325,8 +4356,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T00:20:40.614Z",
-      "records": 129,
+      "fetchedAt": "2026-08-31T00:39:52.384Z",
+      "records": 130,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4341,7 +4372,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T00:20:40.614Z",
+      "fetchedAt": "2026-08-31T00:39:52.384Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-31T00:20:40.614Z",
+  "generatedAt": "2026-08-31T00:39:52.384Z",
   "retentionDays": 365,
   "from": "2025-09-01",
   "to": "2026-08-31",
@@ -578,29 +578,43 @@
       "date": "2026-08-31",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 1240,
-        "scheduledSlots": 1,
-        "recordedAttempts": 0,
-        "healthyAttempts": 0,
-        "recordedSchedulePercent": 0.0,
-        "listeningCoveragePercent": 0.0,
-        "scheduledListeningCeilingPercent": 38.71,
-        "listeningSeconds": 0.0,
-        "outcomes": {}
+        "windowSeconds": 2392,
+        "scheduledSlots": 2,
+        "recordedAttempts": 2,
+        "healthyAttempts": 2,
+        "recordedSchedulePercent": 100.0,
+        "listeningCoveragePercent": 40.13,
+        "scheduledListeningCeilingPercent": 40.13,
+        "listeningSeconds": 959.998,
+        "outcomes": {
+          "healthy-empty": 1,
+          "healthy-matches": 1
+        }
       },
       "discovery": {
-        "events": 0,
-        "uniqueSignals": 0,
-        "observations": 0,
+        "events": 2,
+        "uniqueSignals": 1,
+        "observations": 1,
         "reobservations": 0,
-        "firstPublications": 0,
+        "firstPublications": 1,
         "statusChanges": 0,
-        "facetSampleSize": 0,
-        "evidenceClassifiedSignals": 0,
-        "byBrand": {},
-        "bySource": {},
-        "byEvidenceTier": {},
-        "byReason": {}
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "Swedbank": 1
+        },
+        "bySource": {
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-exact-token": 1,
+          "different-tld": 1,
+          "first-publication": 1,
+          "suspicious-context": 1
+        }
       }
     }
   ],
