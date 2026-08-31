@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T17:24:36.702Z",
-  "lastSuccessfulSyncAt": "2026-08-31T18:20:51.190Z",
+  "generatedAt": "2026-08-31T18:54:40.096Z",
+  "lastSuccessfulSyncAt": "2026-08-31T18:54:40.096Z",
   "signals": [
+    {
+      "id": "d542b4778aeeac180c73",
+      "url": "hxxps://revolut-update-security[.]ph",
+      "domain": "revolut-update-security[.]ph",
+      "firstSeen": "2026-08-31T18:51:41.511Z",
+      "lastSeen": "2026-08-31T18:51:41.511Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "c6aa5e7478ddc6aa82f3",
       "url": "hxxps://vintedsupport-14526[.]zendesk[.]com",
@@ -4985,15 +5017,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T18:20:51.190Z",
-      "records": 150,
+      "fetchedAt": "2026-08-31T18:54:40.096Z",
+      "records": 151,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-31T16:41:27.172Z",
+      "fetchedAt": "2026-08-31T18:41:27.884Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 106 stable official asset hashes are pivot-eligible"
@@ -5001,7 +5033,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T18:20:51.190Z",
+      "fetchedAt": "2026-08-31T18:54:40.096Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

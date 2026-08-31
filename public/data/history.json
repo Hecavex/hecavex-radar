@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T17:24:36.702Z",
+  "generatedAt": "2026-08-31T18:54:40.096Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d542b4778aeeac180c73",
+      "domain": "revolut-update-security[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-31T18:51:41.511Z",
+      "lastSeen": "2026-08-31T18:51:41.511Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "547d7f79781d6f6b235dca6a8c308a4d",
+          "observedAt": "2026-08-31T18:51:41.511Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c6aa5e7478ddc6aa82f3",
       "domain": "vintedsupport-14526[.]zendesk[.]com",
