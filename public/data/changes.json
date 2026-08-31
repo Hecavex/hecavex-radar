@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-31T10:20:25.567Z",
+  "generatedAt": "2026-08-31T11:10:00.427Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T10:20:25.567Z",
-      "to": "2026-08-31T10:20:25.567Z",
+      "from": "2026-08-30T11:10:00.427Z",
+      "to": "2026-08-31T11:10:00.427Z",
       "events": 62,
       "uniqueSignals": 31,
       "firstPublications": 29,
@@ -31,42 +31,42 @@
         "unicode-confusable": 6
       },
       "byBrand": {
-        "DHL": 24,
+        "DHL": 22,
         "Revolut": 12,
         "Artea": 5,
         "MAXIMA": 4,
         "Tele2": 4,
         "Telia": 4,
+        "VMI": 4,
         "Smart-ID": 3,
         "Swedbank": 2,
-        "VMI": 2,
         "Vinted": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-24T10:20:25.567Z",
-      "to": "2026-08-31T10:20:25.567Z",
-      "events": 307,
-      "uniqueSignals": 152,
-      "firstPublications": 149,
+      "from": "2026-08-24T11:10:00.427Z",
+      "to": "2026-08-31T11:10:00.427Z",
+      "events": 309,
+      "uniqueSignals": 153,
+      "firstPublications": 150,
       "statusChanges": 0,
-      "observations": 158,
+      "observations": 159,
       "reobservations": 6,
       "bySource": {
-        "CertStream": 293,
+        "CertStream": 295,
         "URLScan": 12,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 307
+        "suspected": 309
       },
       "byReason": {
-        "suspicious-context": 283,
-        "different-tld": 259,
-        "brand-exact-token": 235,
-        "multiple-hyphens": 151,
-        "first-publication": 149,
+        "suspicious-context": 285,
+        "different-tld": 261,
+        "brand-exact-token": 237,
+        "multiple-hyphens": 153,
+        "first-publication": 150,
         "brand-joined-affix": 54,
         "punycode": 18,
         "unicode-confusable": 14,
@@ -81,7 +81,7 @@
         "Revolut": 43,
         "Vinted": 23,
         "Telia": 20,
-        "VMI": 14,
+        "VMI": 16,
         "SEB": 10,
         "Smart-ID": 9,
         "Bitė": 8,

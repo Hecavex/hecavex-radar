@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T08:39:26.759Z",
+  "generatedAt": "2026-08-31T11:10:00.427Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "7b076cd9ceccb92e1bbf",
+      "domain": "vmi-materiel-nettoyage-portal[.]ph",
+      "brand": "VMI",
+      "firstSeen": "2026-08-31T11:05:21.344Z",
+      "lastSeen": "2026-08-31T11:05:21.344Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "6073a35009ac27ee241dc4ca0680fce1",
+          "observedAt": "2026-08-31T11:05:21.344Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5be02e73dc65d61079be",
       "domain": "www3[.]revolutbank[.]info",
