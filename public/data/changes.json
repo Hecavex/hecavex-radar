@@ -1,37 +1,37 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-31T13:39:28.964Z",
+  "generatedAt": "2026-08-31T14:09:54.212Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T13:39:28.964Z",
-      "to": "2026-08-31T13:39:28.964Z",
-      "events": 60,
-      "uniqueSignals": 30,
-      "firstPublications": 28,
+      "from": "2026-08-30T14:09:54.212Z",
+      "to": "2026-08-31T14:09:54.212Z",
+      "events": 62,
+      "uniqueSignals": 31,
+      "firstPublications": 29,
       "statusChanges": 0,
-      "observations": 32,
+      "observations": 33,
       "reobservations": 2,
       "bySource": {
-        "CertStream": 60
+        "CertStream": 62
       },
       "byStatus": {
-        "suspected": 60
+        "suspected": 62
       },
       "byReason": {
-        "different-tld": 57,
-        "suspicious-context": 56,
-        "brand-exact-token": 40,
-        "first-publication": 28,
-        "multiple-hyphens": 22,
+        "different-tld": 59,
+        "suspicious-context": 58,
+        "brand-exact-token": 42,
+        "first-publication": 29,
+        "multiple-hyphens": 24,
         "brand-joined-affix": 20,
         "punycode": 6,
         "unicode-confusable": 6
       },
       "byBrand": {
-        "DHL": 20,
+        "DHL": 22,
         "Revolut": 10,
         "MAXIMA": 6,
         "Artea": 5,
@@ -46,28 +46,28 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-24T13:39:28.964Z",
-      "to": "2026-08-31T13:39:28.964Z",
-      "events": 313,
-      "uniqueSignals": 155,
-      "firstPublications": 152,
+      "from": "2026-08-24T14:09:54.212Z",
+      "to": "2026-08-31T14:09:54.212Z",
+      "events": 315,
+      "uniqueSignals": 156,
+      "firstPublications": 153,
       "statusChanges": 0,
-      "observations": 161,
+      "observations": 162,
       "reobservations": 6,
       "bySource": {
-        "CertStream": 299,
+        "CertStream": 301,
         "URLScan": 12,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 313
+        "suspected": 315
       },
       "byReason": {
-        "suspicious-context": 289,
-        "different-tld": 265,
-        "brand-exact-token": 237,
-        "multiple-hyphens": 155,
-        "first-publication": 152,
+        "suspicious-context": 291,
+        "different-tld": 267,
+        "brand-exact-token": 239,
+        "multiple-hyphens": 157,
+        "first-publication": 153,
         "brand-joined-affix": 58,
         "punycode": 18,
         "unicode-confusable": 14,
@@ -78,7 +78,7 @@
         "manual-review": 2
       },
       "byBrand": {
-        "DHL": 122,
+        "DHL": 124,
         "Revolut": 43,
         "Vinted": 23,
         "Telia": 20,

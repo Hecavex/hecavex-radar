@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T13:39:28.964Z",
+  "generatedAt": "2026-08-31T14:09:54.212Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "2caead7bbe946be4c107",
+      "domain": "dhl-delivery-package[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-08-31T14:06:09.645Z",
+      "lastSeen": "2026-08-31T14:06:09.645Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "5eb3ac9210f9bb3ebbdcdf880150b7c6",
+          "observedAt": "2026-08-31T14:06:09.645Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "4018cc82f5d90053005d",
       "domain": "pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
