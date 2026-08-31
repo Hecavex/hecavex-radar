@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T01:09:30.567Z",
+  "generatedAt": "2026-08-31T02:39:02.083Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e25d19d18389a9b3c0db",
+      "domain": "revolut-web-login[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-08-31T02:35:28.591Z",
+      "lastSeen": "2026-08-31T02:35:28.591Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9324a159e1420f4d27e5a8fa57e574e2",
+          "observedAt": "2026-08-31T02:35:28.591Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4e98461f2f34f21d8aea",
+      "domain": "www[.]deliveryhero-service-telia[.]ph",
+      "brand": "Telia",
+      "firstSeen": "2026-08-31T02:32:49.745Z",
+      "lastSeen": "2026-08-31T02:32:49.745Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d053d87dfdd1d3cefedd8d12c951f07c",
+          "observedAt": "2026-08-31T02:32:49.745Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c0e93b1e91128fe92c2b",
       "domain": "www[.]vmi-materiel-nettoyage-login[.]ph",

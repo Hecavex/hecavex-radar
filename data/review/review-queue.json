@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-31T01:44:55.567Z",
+  "generatedAt": "2026-08-31T02:39:02.083Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 139,
+  "availableUnreviewed": 141,
   "selected": 24,
   "candidates": [
     {
@@ -213,37 +213,6 @@
       "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
-      "signalId": "f168e7f8b118abe0feaf",
-      "recordPath": "/signals/f168e7f8b118abe0feaf/",
-      "brand": "Telia",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T02:31:22.724Z"
-    },
-    {
-      "signalId": "3d179a68c89e521dc72c",
-      "recordPath": "/signals/3d179a68c89e521dc72c/",
-      "brand": "MAXIMA",
-      "sources": [
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-domain-match"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-23T02:00:48.622Z"
-    },
-    {
       "signalId": "13d06a7efa04f6696a4e",
       "recordPath": "/signals/13d06a7efa04f6696a4e/",
       "brand": "DHL",
@@ -259,6 +228,21 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-29T18:46:20.904Z"
+    },
+    {
+      "signalId": "3d179a68c89e521dc72c",
+      "recordPath": "/signals/3d179a68c89e521dc72c/",
+      "brand": "MAXIMA",
+      "sources": [
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-domain-match"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-23T02:00:48.622Z"
     },
     {
       "signalId": "4178e3ccc2b50a49490e",
@@ -295,58 +279,6 @@
       "firstSeen": "2026-08-28T09:40:37.871Z"
     },
     {
-      "signalId": "74a34aa5a01e9ed77fb6",
-      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
-      "brand": "Revolut",
-      "sources": [
-        "CertStream",
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "corroborated",
-      "reasonCodes": [
-        "brand-domain-match",
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T07:33:48.367Z"
-    },
-    {
-      "signalId": "e42075ba699aa4354145",
-      "recordPath": "/signals/e42075ba699aa4354145/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-30T05:05:51.125Z"
-    },
-    {
-      "signalId": "8fa25c29ac4ef858580f",
-      "recordPath": "/signals/8fa25c29ac4ef858580f/",
-      "brand": "SEB",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T23:36:29.666Z"
-    },
-    {
       "signalId": "80d5f4133dadcaed6649",
       "recordPath": "/signals/80d5f4133dadcaed6649/",
       "brand": "Luminor",
@@ -380,6 +312,24 @@
       "firstSeen": "2026-08-28T15:50:23.946Z"
     },
     {
+      "signalId": "74a34aa5a01e9ed77fb6",
+      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "brand": "Revolut",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "corroborated",
+      "reasonCodes": [
+        "brand-domain-match",
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-21T07:33:48.367Z"
+    },
+    {
       "signalId": "987e64e94627cf65e044",
       "recordPath": "/signals/987e64e94627cf65e044/",
       "brand": "VMI",
@@ -397,6 +347,22 @@
       "firstSeen": "2026-08-29T10:33:58.741Z"
     },
     {
+      "signalId": "f168e7f8b118abe0feaf",
+      "recordPath": "/signals/f168e7f8b118abe0feaf/",
+      "brand": "Telia",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-29T02:31:22.724Z"
+    },
+    {
       "signalId": "c9dffdb5efa12358a21c",
       "recordPath": "/signals/c9dffdb5efa12358a21c/",
       "brand": "Smart-ID",
@@ -412,6 +378,40 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-29T13:51:59.392Z"
+    },
+    {
+      "signalId": "0d284af65210b0c1307e",
+      "recordPath": "/signals/0d284af65210b0c1307e/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "multiple-hyphens",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-28T08:25:31.949Z"
+    },
+    {
+      "signalId": "80c59f76ae51fa144141",
+      "recordPath": "/signals/80c59f76ae51fa144141/",
+      "brand": "Bigbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-29T19:17:13.908Z"
     }
   ]
 }

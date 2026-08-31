@@ -1,9 +1,73 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T01:09:30.567Z",
-  "lastSuccessfulSyncAt": "2026-08-31T02:20:32.781Z",
+  "generatedAt": "2026-08-31T02:39:02.083Z",
+  "lastSuccessfulSyncAt": "2026-08-31T02:39:02.083Z",
   "signals": [
+    {
+      "id": "e25d19d18389a9b3c0db",
+      "url": "hxxps://revolut-web-login[.]ph",
+      "domain": "revolut-web-login[.]ph",
+      "firstSeen": "2026-08-31T02:35:28.591Z",
+      "lastSeen": "2026-08-31T02:35:28.591Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "4e98461f2f34f21d8aea",
+      "url": "hxxps://www[.]deliveryhero-service-telia[.]ph",
+      "domain": "www[.]deliveryhero-service-telia[.]ph",
+      "firstSeen": "2026-08-31T02:32:49.745Z",
+      "lastSeen": "2026-08-31T02:32:49.745Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "c0e93b1e91128fe92c2b",
       "url": "hxxps://www[.]vmi-materiel-nettoyage-login[.]ph",
@@ -4388,8 +4452,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T02:20:32.781Z",
-      "records": 131,
+      "fetchedAt": "2026-08-31T02:39:02.083Z",
+      "records": 133,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4404,7 +4468,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T02:20:32.781Z",
+      "fetchedAt": "2026-08-31T02:39:02.083Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

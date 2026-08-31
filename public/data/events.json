@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-31T02:20:32.781Z",
+  "generatedAt": "2026-08-31T02:39:02.083Z",
   "window": {
     "days": 30,
-    "from": "2026-08-01T02:20:32.781Z",
-    "to": "2026-08-31T02:20:32.781Z"
+    "from": "2026-08-01T02:39:02.083Z",
+    "to": "2026-08-31T02:39:02.083Z"
   },
-  "totalAvailable": 158,
+  "totalAvailable": 160,
   "truncated": false,
   "events": [
+    {
+      "id": "f86cc1254170b70552ef3acf35eeff61",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T02:35:28.591Z",
+      "signalId": "e25d19d18389a9b3c0db",
+      "signalPath": "/signals/e25d19d18389a9b3c0db/",
+      "domain": "revolut-web-login[.]ph",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "d838bbc75f71a69a1c2581794026fdba",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T02:32:49.745Z",
+      "signalId": "4e98461f2f34f21d8aea",
+      "signalPath": "/signals/4e98461f2f34f21d8aea/",
+      "domain": "www[.]deliveryhero-service-telia[.]ph",
+      "brand": "Telia",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "93bfa5eec6a1afb8fe8dc70f40b39bb5",
       "type": "first-publication",
