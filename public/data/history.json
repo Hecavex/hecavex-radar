@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T05:24:37.249Z",
+  "generatedAt": "2026-08-31T06:09:35.455Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e1f8cca98d48da9ba816",
+      "domain": "www[.]xn--arta-dpa[.]com",
+      "brand": "Artea",
+      "firstSeen": "2026-08-31T06:06:03.636Z",
+      "lastSeen": "2026-08-31T06:06:03.636Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "49a11d401cb2ff3210a46c168bddcfd1",
+          "observedAt": "2026-08-31T06:06:03.636Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c4a4fc460206fa9fd548",
+      "domain": "xn--arta-dpa[.]com",
+      "brand": "Artea",
+      "firstSeen": "2026-08-31T06:06:03.636Z",
+      "lastSeen": "2026-08-31T06:06:03.636Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a0acc07dbf0373173080752ef204895f",
+          "observedAt": "2026-08-31T06:06:03.636Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e48279b0059fcc03bf34",
       "domain": "b2b[.]dhl-update[.]dev[.]steppenstrolch[.]de",
