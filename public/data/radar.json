@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T12:39:25.916Z",
-  "lastSuccessfulSyncAt": "2026-08-31T13:20:41.139Z",
+  "generatedAt": "2026-08-31T13:39:28.964Z",
+  "lastSuccessfulSyncAt": "2026-08-31T13:39:28.964Z",
   "signals": [
+    {
+      "id": "4018cc82f5d90053005d",
+      "url": "hxxps://pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
+      "domain": "pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
+      "firstSeen": "2026-08-31T13:32:04.880Z",
+      "lastSeen": "2026-08-31T13:32:04.880Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "MAXIMA",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "dfa947674ec7493deaad",
       "url": "hxxps://www[.]citadelebank[.]com[.]ph",
@@ -4828,8 +4860,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T13:20:41.139Z",
-      "records": 145,
+      "fetchedAt": "2026-08-31T13:39:28.964Z",
+      "records": 146,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4844,7 +4876,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T13:20:41.139Z",
+      "fetchedAt": "2026-08-31T13:39:28.964Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

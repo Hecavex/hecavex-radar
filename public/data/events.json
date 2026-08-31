@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-08-31T13:20:41.139Z",
+  "generatedAt": "2026-08-31T13:39:28.964Z",
   "window": {
     "days": 30,
-    "from": "2026-08-01T13:20:41.139Z",
-    "to": "2026-08-31T13:20:41.139Z"
+    "from": "2026-08-01T13:39:28.964Z",
+    "to": "2026-08-31T13:39:28.964Z"
   },
-  "totalAvailable": 172,
+  "totalAvailable": 173,
   "truncated": false,
   "events": [
+    {
+      "id": "7582af0afc57c205a21f008a173ce4a7",
+      "type": "first-publication",
+      "occurredAt": "2026-08-31T13:32:04.880Z",
+      "signalId": "4018cc82f5d90053005d",
+      "signalPath": "/signals/4018cc82f5d90053005d/",
+      "domain": "pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
+      "brand": "MAXIMA",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "8afac5c6541867bc66350f497c4ffb06",
       "type": "first-publication",

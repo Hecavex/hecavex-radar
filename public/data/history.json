@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T12:39:25.916Z",
+  "generatedAt": "2026-08-31T13:39:28.964Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "4018cc82f5d90053005d",
+      "domain": "pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
+      "brand": "MAXIMA",
+      "firstSeen": "2026-08-31T13:32:04.880Z",
+      "lastSeen": "2026-08-31T13:32:04.880Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "23005e43624a1df60b87a5df2d49a16d",
+          "observedAt": "2026-08-31T13:32:04.880Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "dfa947674ec7493deaad",
       "domain": "www[.]citadelebank[.]com[.]ph",
