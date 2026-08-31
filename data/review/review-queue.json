@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-31T16:54:41.014Z",
+  "generatedAt": "2026-08-31T17:24:36.702Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 156,
+  "availableUnreviewed": 158,
   "selected": 24,
   "candidates": [
     {
@@ -228,6 +228,22 @@
       "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
+      "signalId": "c6aa5e7478ddc6aa82f3",
+      "recordPath": "/signals/c6aa5e7478ddc6aa82f3/",
+      "brand": "Vinted",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T17:17:44.735Z"
+    },
+    {
       "signalId": "3d179a68c89e521dc72c",
       "recordPath": "/signals/3d179a68c89e521dc72c/",
       "brand": "MAXIMA",
@@ -276,23 +292,6 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-28T09:40:37.871Z"
-    },
-    {
-      "signalId": "4178e3ccc2b50a49490e",
-      "recordPath": "/signals/4178e3ccc2b50a49490e/",
-      "brand": "Bigbank",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T19:17:13.908Z"
     },
     {
       "signalId": "80d5f4133dadcaed6649",
@@ -347,6 +346,23 @@
       "firstSeen": "2026-08-31T06:06:03.636Z"
     },
     {
+      "signalId": "4178e3ccc2b50a49490e",
+      "recordPath": "/signals/4178e3ccc2b50a49490e/",
+      "brand": "Bigbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-29T19:17:13.908Z"
+    },
+    {
       "signalId": "0d284af65210b0c1307e",
       "recordPath": "/signals/0d284af65210b0c1307e/",
       "brand": "DHL",
@@ -364,9 +380,25 @@
       "firstSeen": "2026-08-28T08:25:31.949Z"
     },
     {
-      "signalId": "4d894f9bdf81af06b273",
-      "recordPath": "/signals/4d894f9bdf81af06b273/",
+      "signalId": "f168e7f8b118abe0feaf",
+      "recordPath": "/signals/f168e7f8b118abe0feaf/",
       "brand": "Telia",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-29T02:31:22.724Z"
+    },
+    {
+      "signalId": "dfa947674ec7493deaad",
+      "recordPath": "/signals/dfa947674ec7493deaad/",
+      "brand": "Citadele",
       "sources": [
         "CertStream"
       ],
@@ -378,40 +410,7 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-30T00:18:16.213Z"
-    },
-    {
-      "signalId": "8fa25c29ac4ef858580f",
-      "recordPath": "/signals/8fa25c29ac4ef858580f/",
-      "brand": "SEB",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T23:36:29.666Z"
-    },
-    {
-      "signalId": "cfb47fddc71fa6cd7cca",
-      "recordPath": "/signals/cfb47fddc71fa6cd7cca/",
-      "brand": "Luminor",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-30T02:05:16.483Z"
+      "firstSeen": "2026-08-31T12:37:03.308Z"
     }
   ]
 }
