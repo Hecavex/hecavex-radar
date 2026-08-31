@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-08-31T11:10:00.427Z",
+  "generatedAt": "2026-08-31T12:39:25.916Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "dfa947674ec7493deaad",
+      "domain": "www[.]citadelebank[.]com[.]ph",
+      "brand": "Citadele",
+      "firstSeen": "2026-08-31T12:37:03.308Z",
+      "lastSeen": "2026-08-31T12:37:03.308Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a5cbdf56dcdb1631139089d1d9c66d9f",
+          "observedAt": "2026-08-31T12:37:03.308Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "7b076cd9ceccb92e1bbf",
       "domain": "vmi-materiel-nettoyage-portal[.]ph",
