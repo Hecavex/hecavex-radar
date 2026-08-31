@@ -1,9 +1,39 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T03:39:14.986Z",
-  "lastSuccessfulSyncAt": "2026-08-31T03:39:14.986Z",
+  "generatedAt": "2026-08-31T03:54:42.678Z",
+  "lastSuccessfulSyncAt": "2026-08-31T03:54:42.678Z",
   "signals": [
+    {
+      "id": "43349e25703ae7344924",
+      "url": "hxxps://www[.]tracking-dhl[.]com",
+      "domain": "www[.]tracking-dhl[.]com",
+      "firstSeen": "2026-08-31T03:50:26.022Z",
+      "lastSeen": "2026-08-31T03:50:26.022Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 85,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 85,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "05e404acdaff12d84922",
       "url": "hxxps://dfhnwrjy[.]xn--tl2mobile-b4ab[.]fr",
@@ -4485,8 +4515,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T03:39:14.986Z",
-      "records": 134,
+      "fetchedAt": "2026-08-31T03:54:42.678Z",
+      "records": 135,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -4501,7 +4531,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T03:39:14.986Z",
+      "fetchedAt": "2026-08-31T03:54:42.678Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

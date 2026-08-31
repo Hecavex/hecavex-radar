@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-31T03:39:14.986Z",
+  "generatedAt": "2026-08-31T03:54:42.678Z",
   "retentionDays": 365,
   "from": "2025-09-01",
   "to": "2026-08-31",
@@ -578,29 +578,30 @@
       "date": "2026-08-31",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 13154,
-        "scheduledSlots": 14,
-        "recordedAttempts": 9,
-        "healthyAttempts": 9,
-        "recordedSchedulePercent": 64.3,
-        "listeningCoveragePercent": 32.83,
-        "scheduledListeningCeilingPercent": 51.09,
-        "listeningSeconds": 4318.985,
+        "windowSeconds": 14082,
+        "scheduledSlots": 15,
+        "recordedAttempts": 10,
+        "healthyAttempts": 10,
+        "recordedSchedulePercent": 66.7,
+        "listeningCoveragePercent": 34.07,
+        "scheduledListeningCeilingPercent": 51.13,
+        "listeningSeconds": 4797.981,
         "outcomes": {
           "healthy-empty": 5,
-          "healthy-matches": 4
+          "healthy-matches": 5
         }
       },
       "discovery": {
-        "events": 10,
-        "uniqueSignals": 5,
-        "observations": 5,
+        "events": 12,
+        "uniqueSignals": 6,
+        "observations": 6,
         "reobservations": 0,
-        "firstPublications": 5,
+        "firstPublications": 6,
         "statusChanges": 0,
-        "facetSampleSize": 5,
-        "evidenceClassifiedSignals": 5,
+        "facetSampleSize": 6,
+        "evidenceClassifiedSignals": 6,
         "byBrand": {
+          "DHL": 1,
           "Revolut": 1,
           "Swedbank": 1,
           "Tele2": 1,
@@ -608,16 +609,16 @@
           "VMI": 1
         },
         "bySource": {
-          "CertStream": 5
+          "CertStream": 6
         },
         "byEvidenceTier": {
-          "name-only": 5
+          "name-only": 6
         },
         "byReason": {
+          "first-publication": 6,
+          "suspicious-context": 6,
+          "brand-exact-token": 5,
           "different-tld": 5,
-          "first-publication": 5,
-          "suspicious-context": 5,
-          "brand-exact-token": 4,
           "multiple-hyphens": 3,
           "brand-joined-affix": 1,
           "punycode": 1,

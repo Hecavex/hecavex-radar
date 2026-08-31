@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-08-31T03:39:14.986Z",
+  "generatedAt": "2026-08-31T03:54:42.678Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-08-31T02:44:57.976Z",
+      "stateGeneratedAt": "2026-08-31T03:44:46.168Z",
       "queryCursor": 9,
       "configuredQueries": 46
     },
@@ -468,7 +468,7 @@
         "lastSuccessfulQueryAt": null
       },
       "certStream": {
-        "latestMatchAt": "2026-08-30T23:52:40.138Z"
+        "latestMatchAt": "2026-08-31T03:50:26.022Z"
       },
       "urlscanAssets": {
         "assetHashes": 13,
@@ -1081,11 +1081,37 @@
         "latestMatchAt": null
       },
       "urlscanAssets": {
-        "assetHashes": 0,
+        "assetHashes": 5,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": null,
-        "hashSupport": []
+        "lastValidatedAt": "2026-08-31T03:49:23.402Z",
+        "hashSupport": [
+          {
+            "sha256": "39a546ea9ad97f8bfaf5d3e0e8f8556adb415e470e59007ada9759dce472adaa",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "69d9ff5298052d37bb5a41cb62d7745d0829c5ed30582e7ca52f01122965370d",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "a2bfea1702e22782cfef01e33c780a8e4bc1d7350fcde2dc6ec658b88f6e0dee",
+            "resourceType": "favicon",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "d1fec2c2ab9e6a69ce09dcb1e3ee16b965c1ddc70b1813ed024390a2b4d7568c",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          },
+          {
+            "sha256": "ff128dc05c030929b152a98cf243220c5cbad9c6ba2a90550704ec504ccb76a0",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": false
+          }
+        ]
       },
       "reviewOutcomes": {},
       "collisionCorpus": {
@@ -1162,20 +1188,25 @@
         "assetHashes": 10,
         "supportedByTwoRecentOfficialScans": 10,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-31T03:49:23.402Z",
         "hashSupport": [
           {
-            "sha256": "11acc680498e64dd58ae89c8086977d66846346a95b7846bc76dfe4f9e003079",
+            "sha256": "0b7f4e1c6004ec113c6d619ea4e97167501f99811faf873c2e2db4c3658e0198",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "1e93ae10abf9027bfa73a2c608e3cd8a689306a586559bea997806992dcae2cc",
+            "sha256": "129e8759d225c7ad8f407dddb652c788308226e45647ec7cee30c138be59fdc2",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "2bfc48e702b57b27c9b5ad0aaa413bac29d34443b9648a9380cbc3855fe87bff",
+            "sha256": "22d7641dd1794ead0c1f8ade9f73cd0dacce5b69f8f4e6e973a063959cde1382",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "747d771fc4613350bc7bf8e91ee9f8a13c3548ed52a70963165b491d83ee0f47",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
@@ -1185,32 +1216,27 @@
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "92fca39ddce1d4d44cb5271e837be07432b59f18f352d82bfd12d081f156da5d",
+            "sha256": "82df8e3cbd0c5d0189164df2fb43306db2e9a99ecc1a7ce485242ab0fa1c33e3",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "978486c5941d3458bae43a1d6db5b450c026ee78479661f6591857a4277f8467",
+            "sha256": "a07059b0e1e564b2691ff052a32fc4159e9ec2b452473e698c23ac877f57ab1e",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "d501f617f422d1f05919fd89b33fbfc814839b1f11fca544e8c19c79051ebafa",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "d97c749de3238e102c4fc0fd0b40bbfe0d93391ac999c55aca31f5b820d5c72c",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "dd791fbc003abfd7b88cca147554c1c74aa8f12d052c758486329346cc7c8d1d",
+            "sha256": "c500b97cb252ece9810b90e01972dc93a1f3b02c102fbc34faf1a6bc641835c4",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
             "sha256": "e978b3327037f4f885e18dbebf7d2f86961b1d8f80080ddc523ca8b8ffdf0e97",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "f3f6a4592c835ae880f5a684f18088d3d57a7d69ec1b47d815174003202f3815",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           }
@@ -1252,7 +1278,7 @@
         "assetHashes": 2,
         "supportedByTwoRecentOfficialScans": 0,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-08-30T03:49:31.444Z",
+        "lastValidatedAt": "2026-08-31T03:49:23.402Z",
         "hashSupport": [
           {
             "sha256": "ceb958696b40f5f9d69b2404ec6c6fe6f4672e2821b64f02ccd3d6f79424597f",

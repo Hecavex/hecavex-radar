@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-31T03:39:14.986Z",
+  "generatedAt": "2026-08-31T03:54:42.678Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 142,
+  "availableUnreviewed": 143,
   "selected": 24,
   "candidates": [
     {
@@ -213,8 +213,8 @@
       "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
-      "signalId": "13d06a7efa04f6696a4e",
-      "recordPath": "/signals/13d06a7efa04f6696a4e/",
+      "signalId": "43349e25703ae7344924",
+      "recordPath": "/signals/43349e25703ae7344924/",
       "brand": "DHL",
       "sources": [
         "CertStream"
@@ -223,11 +223,10 @@
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
-        "multiple-hyphens",
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T18:46:20.904Z"
+      "firstSeen": "2026-08-31T03:50:26.022Z"
     },
     {
       "signalId": "3d179a68c89e521dc72c",
@@ -245,23 +244,6 @@
       "firstSeen": "2026-08-23T02:00:48.622Z"
     },
     {
-      "signalId": "4178e3ccc2b50a49490e",
-      "recordPath": "/signals/4178e3ccc2b50a49490e/",
-      "brand": "Bigbank",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-29T19:17:13.908Z"
-    },
-    {
       "signalId": "afc8d3a028031f2f28cc",
       "recordPath": "/signals/afc8d3a028031f2f28cc/",
       "brand": "DPD",
@@ -277,6 +259,23 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-28T09:40:37.871Z"
+    },
+    {
+      "signalId": "4178e3ccc2b50a49490e",
+      "recordPath": "/signals/4178e3ccc2b50a49490e/",
+      "brand": "Bigbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-29T19:17:13.908Z"
     },
     {
       "signalId": "80d5f4133dadcaed6649",
