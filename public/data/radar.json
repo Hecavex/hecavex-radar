@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-08-31T18:54:40.096Z",
-  "lastSuccessfulSyncAt": "2026-08-31T20:20:29.434Z",
+  "generatedAt": "2026-08-31T21:09:37.672Z",
+  "lastSuccessfulSyncAt": "2026-08-31T21:09:37.672Z",
   "signals": [
     {
       "id": "d542b4778aeeac180c73",
@@ -4705,37 +4705,6 @@
       "detailAvailable": true
     },
     {
-      "id": "6d1985055ef1c90ba8d8",
-      "url": "hxxps://bsconseils[.]eso-online[.]fr",
-      "domain": "bsconseils[.]eso-online[.]fr",
-      "firstSeen": "2026-08-25T16:22:17.726Z",
-      "lastSeen": "2026-08-25T16:22:17.726Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "ESO",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 90,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 90,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld"
-      ],
-      "detailAvailable": true
-    },
-    {
       "id": "5b0f8b137394c5f88ddf",
       "url": "hxxps://support-vinted[.]ph",
       "domain": "support-vinted[.]ph",
@@ -4761,37 +4730,6 @@
       ],
       "reasonCodes": [
         "manual-review",
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "a78cb24fc20a65f1ba1f",
-      "url": "hxxps://cpam93[.]eso-online[.]fr",
-      "domain": "cpam93[.]eso-online[.]fr",
-      "firstSeen": "2026-08-24T23:51:42.897Z",
-      "lastSeen": "2026-08-24T23:51:42.897Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "ESO",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 90,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 90,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
         "brand-exact-token",
         "suspicious-context",
         "different-tld"
@@ -5017,15 +4955,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-08-31T20:20:29.434Z",
-      "records": 151,
+      "fetchedAt": "2026-08-31T21:09:37.672Z",
+      "records": 149,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-08-31T18:41:27.884Z",
+      "fetchedAt": "2026-08-31T20:41:37.443Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 106 stable official asset hashes are pivot-eligible"
@@ -5033,7 +4971,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-08-31T20:20:29.434Z",
+      "fetchedAt": "2026-08-31T21:09:37.672Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

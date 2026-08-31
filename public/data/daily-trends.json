@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-31T20:20:29.434Z",
+  "generatedAt": "2026-08-31T21:09:37.672Z",
   "retentionDays": 365,
   "from": "2025-09-01",
   "to": "2026-08-31",
@@ -247,16 +247,14 @@
         "firstPublications": 1,
         "statusChanges": 0,
         "facetSampleSize": 1,
-        "evidenceClassifiedSignals": 1,
+        "evidenceClassifiedSignals": 0,
         "byBrand": {
           "ESO": 1
         },
         "bySource": {
           "CertStream": 1
         },
-        "byEvidenceTier": {
-          "name-only": 1
-        },
+        "byEvidenceTier": {},
         "byReason": {
           "brand-exact-token": 1,
           "different-tld": 1,
@@ -290,7 +288,7 @@
         "firstPublications": 7,
         "statusChanges": 0,
         "facetSampleSize": 8,
-        "evidenceClassifiedSignals": 3,
+        "evidenceClassifiedSignals": 2,
         "byBrand": {
           "Revolut": 4,
           "Vinted": 3,
@@ -302,8 +300,8 @@
           "HECAVEX": 1
         },
         "byEvidenceTier": {
-          "name-only": 2,
-          "corroborated": 1
+          "corroborated": 1,
+          "name-only": 1
         },
         "byReason": {
           "first-publication": 7,
@@ -578,16 +576,16 @@
       "date": "2026-08-31",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 73229,
-        "scheduledSlots": 81,
-        "recordedAttempts": 48,
-        "healthyAttempts": 48,
-        "recordedSchedulePercent": 59.3,
-        "listeningCoveragePercent": 31.46,
-        "scheduledListeningCeilingPercent": 53.09,
-        "listeningSeconds": 23034.912,
+        "windowSeconds": 76177,
+        "scheduledSlots": 84,
+        "recordedAttempts": 50,
+        "healthyAttempts": 50,
+        "recordedSchedulePercent": 59.5,
+        "listeningCoveragePercent": 31.5,
+        "scheduledListeningCeilingPercent": 52.93,
+        "listeningSeconds": 23994.909,
         "outcomes": {
-          "healthy-empty": 31,
+          "healthy-empty": 33,
           "healthy-matches": 17
         }
       },

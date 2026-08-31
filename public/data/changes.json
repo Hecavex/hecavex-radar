@@ -1,54 +1,54 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-31T20:20:29.434Z",
+  "generatedAt": "2026-08-31T21:09:37.672Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T20:20:29.434Z",
-      "to": "2026-08-31T20:20:29.434Z",
-      "events": 56,
-      "uniqueSignals": 28,
-      "firstPublications": 26,
+      "from": "2026-08-30T21:09:37.672Z",
+      "to": "2026-08-31T21:09:37.672Z",
+      "events": 50,
+      "uniqueSignals": 27,
+      "firstPublications": 23,
       "statusChanges": 0,
-      "observations": 30,
-      "reobservations": 2,
+      "observations": 27,
+      "reobservations": 0,
       "bySource": {
-        "CertStream": 56
+        "CertStream": 50
       },
       "byStatus": {
-        "suspected": 56
+        "suspected": 50
       },
       "byReason": {
-        "suspicious-context": 52,
-        "different-tld": 51,
-        "brand-exact-token": 38,
-        "first-publication": 26,
-        "multiple-hyphens": 22,
-        "brand-joined-affix": 16,
+        "suspicious-context": 46,
+        "different-tld": 45,
+        "brand-exact-token": 34,
+        "first-publication": 23,
+        "multiple-hyphens": 18,
+        "brand-joined-affix": 14,
         "punycode": 6,
         "unicode-confusable": 6,
         "brand-split-token": 2
       },
       "byBrand": {
-        "DHL": 22,
+        "DHL": 18,
         "Revolut": 8,
         "Artea": 5,
         "VMI": 4,
         "Vinted": 4,
-        "Smart-ID": 3,
         "Citadele": 2,
         "MAXIMA": 2,
         "Swedbank": 2,
         "Tele2": 2,
-        "Telia": 2
+        "Telia": 2,
+        "Smart-ID": 1
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-24T20:20:29.434Z",
-      "to": "2026-08-31T20:20:29.434Z",
+      "from": "2026-08-24T21:09:37.672Z",
+      "to": "2026-08-31T21:09:37.672Z",
       "events": 323,
       "uniqueSignals": 160,
       "firstPublications": 157,
