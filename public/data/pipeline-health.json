@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-09-01T14:09:50.743Z",
+  "generatedAt": "2026-09-01T14:27:43.265Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 162,
@@ -81,21 +81,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-31T14:09:50.743Z",
-      "to": "2026-09-01T14:09:50.743Z",
+      "from": "2026-08-31T14:27:43.265Z",
+      "to": "2026-09-01T14:27:43.265Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 56,
-        "healthyAttempts": 56,
-        "recordedSchedulePercent": 58.3,
-        "listeningCoveragePercent": 31.1,
+        "recordedAttempts": 55,
+        "healthyAttempts": 55,
+        "recordedSchedulePercent": 57.3,
+        "listeningCoveragePercent": 30.55,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 26880,
-        "listeningSeconds": 26871.905,
-        "messages": 8574984,
-        "dnsNames": 16214153,
+        "expectedListeningSeconds": 26400,
+        "listeningSeconds": 26391.906,
+        "messages": 8430222,
+        "dnsNames": 15976964,
         "outcomes": {
-          "healthy-empty": 48,
+          "healthy-empty": 47,
           "healthy-matches": 8
         }
       },
@@ -108,12 +108,12 @@
         }
       },
       "enrichment": {
-        "observations": 16,
-        "uniqueSignals": 11,
-        "page": 15,
-        "network": 15,
-        "assessment": 16,
-        "certificate": 15,
+        "observations": 14,
+        "uniqueSignals": 10,
+        "page": 13,
+        "network": 13,
+        "assessment": 14,
+        "certificate": 13,
         "dns": 0,
         "rdap": 0
       },
@@ -126,8 +126,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-25T14:09:50.743Z",
-      "to": "2026-09-01T14:09:50.743Z",
+      "from": "2026-08-25T14:27:43.265Z",
+      "to": "2026-09-01T14:27:43.265Z",
       "collection": {
         "scheduledSlots": 672,
         "recordedAttempts": 488,
