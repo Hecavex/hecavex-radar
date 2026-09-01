@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-01T16:53:56.556Z",
+  "generatedAt": "2026-09-01T17:45:21.540Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-01T16:53:56.556Z",
+    "endedAt": "2026-09-01T17:45:21.540Z",
     "failureCodes": [
-      "provider-timeout"
+      "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
     "outcome": "failed",
-    "queriesAttempted": 0,
+    "queriesAttempted": 1,
     "queriesBacklogged": 0,
     "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-01T16:53:56.550Z"
+    "startedAt": "2026-09-01T17:45:20.863Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 13,
+    "consecutiveFailures": 14,
     "degradedSince": "2026-08-30T14:47:30.977Z",
     "lastSuccessAt": null,
-    "nextAttemptAt": "2026-09-01T17:07:44.525Z"
+    "nextAttemptAt": "2026-09-01T23:05:21.540Z"
   },
   "queries": {
     "brand:artea": {
@@ -117,7 +117,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-09-01T11:46:58.885Z",
+      "lastRunAt": "2026-09-01T17:45:20.863Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
