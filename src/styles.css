@@ -194,6 +194,7 @@
   --header-offset: 7.25rem;
   --page-frame-start: clamp(3.25rem, 5vw, 4.75rem);
   --page-frame-end: clamp(4rem, 8vw, 8rem);
+  --frame-product-hero: clamp(21rem, 26.2vw, 23.5625rem);
   --page-title-size: clamp(2.4rem, 3.6vw, 3.25rem);
   --page-title-line-height: 1;
   --section-title-line-height: 1.1;
@@ -3688,13 +3689,21 @@ td time {
 }
 
 .radar-hero {
-  grid-template-columns: minmax(0, 1.2fr) minmax(17rem, .55fr);
+  grid-template-columns: minmax(0, 1.7fr) minmax(18rem, .6fr);
   gap: clamp(2rem, 4vw, 4rem);
-  padding-block: clamp(2.25rem, 3.5vw, 3.25rem) 2rem;
+  min-height: var(--frame-product-hero);
+  padding: clamp(1.75rem, 3vw, 2.15rem) clamp(1.75rem, 3vw, 3rem);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--ember);
+  background: var(--surface);
+}
+
+.radar-hero::after {
+  content: none;
 }
 
 .radar-hero h1 {
-  max-width: 17ch;
+  max-width: 18ch;
   font-size: clamp(2.375rem, 4.4vw, 3.65rem);
 }
 
@@ -4722,6 +4731,12 @@ td time {
 }
 
 @media (max-width: 680px) {
+  .radar-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+    padding: 1.5rem;
+  }
+
   .methodology-heading > p,
   .methodology-section-heading > p,
   .methodology-rule-list p,

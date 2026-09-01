@@ -85,6 +85,7 @@ function verifyLayoutSourceContract() {
   for (const declaration of [
     "--page-frame-start: clamp(3.25rem, 5vw, 4.75rem);",
     "--page-frame-end: clamp(4rem, 8vw, 8rem);",
+    "--frame-product-hero: clamp(21rem, 26.2vw, 23.5625rem);",
     "--page-title-size: clamp(2.4rem, 3.6vw, 3.25rem);",
     "--page-title-line-height: 1;",
     "--section-title-line-height: 1.1;",
@@ -112,6 +113,26 @@ function verifyLayoutSourceContract() {
     stylesheet.includes("font-size: var(--page-title-size);") &&
       stylesheet.includes("line-height: var(--page-title-line-height);"),
     "Radar top-level headings no longer consume the shared title tokens.",
+  );
+  const radarHeroBlocks = [...stylesheet.matchAll(/\.radar-hero\s*\{([^}]*)\}/gs)].map((match) => match[1]);
+  const desktopRadarHero = radarHeroBlocks[0] ?? "";
+  for (const declaration of [
+    "grid-template-columns: minmax(0, 1.7fr) minmax(18rem, .6fr);",
+    "gap: clamp(2rem, 4vw, 4rem);",
+    "min-height: var(--frame-product-hero);",
+    "padding: clamp(1.75rem, 3vw, 2.15rem) clamp(1.75rem, 3vw, 3rem);",
+    "border: 1px solid var(--line);",
+    "border-top: 3px solid var(--ember);",
+    "background: var(--surface);",
+  ]) {
+    assert(desktopRadarHero.includes(declaration), `Radar home hero omits shared declaration ${declaration}`);
+  }
+  assert(
+    radarHeroBlocks.some((block) =>
+      block.includes("grid-template-columns: minmax(0, 1fr);") &&
+      block.includes("min-height: auto;") &&
+      block.includes("padding: 1.5rem;")),
+    "Radar mobile home hero no longer uses the shared single-column inset contract.",
   );
   for (const breakpoint of [1160, 900, 680]) {
     assert(stylesheet.includes(`@media (max-width: ${breakpoint}px)`), `Radar layout omits the shared ${breakpoint}px breakpoint.`);
@@ -2229,7 +2250,9 @@ async function verifyInBrowser() {
           const sectionTitleStyle = sectionTitle ? getComputedStyle(sectionTitle) : null;
           const networkBar = document.querySelector(".network-bar")?.getBoundingClientRect();
           const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
-          const hero = document.querySelector(".hero")?.getBoundingClientRect();
+          const heroElement = document.querySelector(".hero");
+          const hero = heroElement?.getBoundingClientRect();
+          const heroStyle = heroElement ? getComputedStyle(heroElement) : null;
           const heroIntro = document.querySelector(".hero-intro");
           const heroIntroStyle = heroIntro ? getComputedStyle(heroIntro) : null;
           const radarHeroCopy = document.querySelector(".radar-hero .hero-copy")?.getBoundingClientRect();
@@ -2296,6 +2319,9 @@ async function verifyInBrowser() {
             networkHeight: networkBar?.height ?? 0,
             productHeight: productBar?.height ?? 0,
             heroHeight: hero?.height ?? 0,
+            heroContentWidth: heroElement && heroStyle
+              ? heroElement.clientWidth - parseFloat(heroStyle.paddingLeft) - parseFloat(heroStyle.paddingRight)
+              : 0,
             heroIntroFontSize: heroIntroStyle ? parseFloat(heroIntroStyle.fontSize) : 0,
             radarHeroCopyWidth: radarHeroCopy?.width ?? 0,
             radarHeroCopyBottom: radarHeroCopy?.bottom ?? 0,
@@ -2403,12 +2429,12 @@ async function verifyInBrowser() {
         }
         if (width <= 760 && overview) {
           assert(
-            layout.radarHeroCopyWidth >= layout.clientWidth * 0.8,
-            `Radar hero copy is squeezed to ${layout.radarHeroCopyWidth}px at ${width}px.`,
+            layout.radarHeroCopyWidth >= layout.heroContentWidth - 1,
+            `Radar hero copy is squeezed to ${layout.radarHeroCopyWidth}px inside a ${layout.heroContentWidth}px content box at ${width}px.`,
           );
           assert(
-            layout.radarFreshnessWidth >= layout.clientWidth * 0.8,
-            `Radar freshness card is squeezed to ${layout.radarFreshnessWidth}px at ${width}px.`,
+            layout.radarFreshnessWidth >= layout.heroContentWidth - 1,
+            `Radar freshness card is squeezed to ${layout.radarFreshnessWidth}px inside a ${layout.heroContentWidth}px content box at ${width}px.`,
           );
           assert(
             layout.radarFreshnessTop >= layout.radarHeroCopyBottom - 1,
