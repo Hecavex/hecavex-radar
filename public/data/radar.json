@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-01T19:41:07.348Z",
-  "lastSuccessfulSyncAt": "2026-09-01T20:25:44.208Z",
+  "generatedAt": "2026-09-01T20:59:50.758Z",
+  "lastSuccessfulSyncAt": "2026-09-01T20:59:50.758Z",
   "signals": [
+    {
+      "id": "34efb50a3b7b81af8333",
+      "url": "hxxps://www[.]parcel-shipment-dhl[.]com[.]ph",
+      "domain": "www[.]parcel-shipment-dhl[.]com[.]ph",
+      "firstSeen": "2026-09-01T20:38:38.130Z",
+      "lastSeen": "2026-09-01T20:38:38.130Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "c5ee446f5f0dae3cd2ac",
       "url": "hxxps://bankartea[.]lt",
@@ -5362,23 +5394,23 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-01T20:25:44.208Z",
-      "records": 162,
+      "fetchedAt": "2026-09-01T20:59:50.758Z",
+      "records": 163,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-01T18:46:16.251Z",
+      "fetchedAt": "2026-09-01T20:44:22.429Z",
       "records": 9,
       "state": "partial",
-      "note": "Validated passive archive from the last 30 days; the latest passive hunt failed; the latest official-asset pivot failed"
+      "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; the latest official-asset pivot failed"
     },
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-01T20:25:44.208Z",
+      "fetchedAt": "2026-09-01T20:59:50.758Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
