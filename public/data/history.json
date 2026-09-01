@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T01:23:51.265Z",
+  "generatedAt": "2026-09-01T08:09:38.757Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5e0a7c24050d74f8f492",
+      "domain": "revolut-auth-support[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T08:07:09.548Z",
+      "lastSeen": "2026-09-01T08:07:09.548Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "b567ccf5889ff115e35b870053a748e7",
+          "observedAt": "2026-09-01T08:07:09.548Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "df798f36db60c8edd9e1",
       "domain": "vintedpay[.]si",
