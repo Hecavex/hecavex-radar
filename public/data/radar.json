@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-01T08:09:38.757Z",
-  "lastSuccessfulSyncAt": "2026-09-01T11:25:44.854Z",
+  "generatedAt": "2026-09-01T12:25:04.912Z",
+  "lastSuccessfulSyncAt": "2026-09-01T12:25:04.912Z",
   "signals": [
+    {
+      "id": "89920bf1ff9f4bf64a88",
+      "url": "hxxps://dhl-billing-dashboard[.]pages[.]dev",
+      "domain": "dhl-billing-dashboard[.]pages[.]dev",
+      "firstSeen": "2026-09-01T12:22:50.767Z",
+      "lastSeen": "2026-09-01T12:22:50.767Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "5e0a7c24050d74f8f492",
       "url": "hxxps://revolut-auth-support[.]ph",
@@ -5082,8 +5114,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-01T11:25:44.854Z",
-      "records": 153,
+      "fetchedAt": "2026-09-01T12:25:04.912Z",
+      "records": 154,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -5098,7 +5130,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-01T11:25:44.854Z",
+      "fetchedAt": "2026-09-01T12:25:04.912Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

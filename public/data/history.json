@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T08:09:38.757Z",
+  "generatedAt": "2026-09-01T12:25:04.912Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "89920bf1ff9f4bf64a88",
+      "domain": "dhl-billing-dashboard[.]pages[.]dev",
+      "brand": "DHL",
+      "firstSeen": "2026-09-01T12:22:50.767Z",
+      "lastSeen": "2026-09-01T12:22:50.767Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "20b4bc05bed348e49c3c7089363ecb44",
+          "observedAt": "2026-09-01T12:22:50.767Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5e0a7c24050d74f8f492",
       "domain": "revolut-auth-support[.]ph",
