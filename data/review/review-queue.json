@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-01T21:45:41.449Z",
+  "generatedAt": "2026-09-01T23:09:18.562Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 171,
+  "availableUnreviewed": 173,
   "selected": 24,
   "candidates": [
     {
@@ -66,8 +66,8 @@
       "firstSeen": "2026-08-21T07:33:13.155Z"
     },
     {
-      "signalId": "2433e05eef18ae892030",
-      "recordPath": "/signals/2433e05eef18ae892030/",
+      "signalId": "002a5ea06feeb244cf59",
+      "recordPath": "/signals/002a5ea06feeb244cf59/",
       "brand": "Tele2",
       "sources": [
         "CertStream"
@@ -80,8 +80,8 @@
         "suspicious-context",
         "unicode-confusable"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-29T20:55:05.147Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-09-01T23:04:09.878Z"
     },
     {
       "signalId": "543fb6629ad729415188",
@@ -99,8 +99,8 @@
       "firstSeen": "2026-08-21T10:44:29.723Z"
     },
     {
-      "signalId": "43349e25703ae7344924",
-      "recordPath": "/signals/43349e25703ae7344924/",
+      "signalId": "0d284af65210b0c1307e",
+      "recordPath": "/signals/0d284af65210b0c1307e/",
       "brand": "DHL",
       "sources": [
         "CertStream"
@@ -109,10 +109,11 @@
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
+        "multiple-hyphens",
         "suspicious-context"
       ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T03:50:26.022Z"
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-28T08:25:31.949Z"
     },
     {
       "signalId": "54b7622ec9c57480f3dc",
@@ -259,9 +260,9 @@
       "firstSeen": "2026-08-31T17:17:44.735Z"
     },
     {
-      "signalId": "afc8d3a028031f2f28cc",
-      "recordPath": "/signals/afc8d3a028031f2f28cc/",
-      "brand": "DPD",
+      "signalId": "43349e25703ae7344924",
+      "recordPath": "/signals/43349e25703ae7344924/",
+      "brand": "DHL",
       "sources": [
         "CertStream"
       ],
@@ -269,11 +270,10 @@
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
-        "multiple-hyphens",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-28T09:40:37.871Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T03:50:26.022Z"
     },
     {
       "signalId": "c4a4fc460206fa9fd548",
@@ -328,26 +328,9 @@
       "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
-      "signalId": "9391b8744e8463392dca",
-      "recordPath": "/signals/9391b8744e8463392dca/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T16:49:35.296Z"
-    },
-    {
-      "signalId": "623c9be6ca68ccf196f0",
-      "recordPath": "/signals/623c9be6ca68ccf196f0/",
-      "brand": "Bitė",
+      "signalId": "afc8d3a028031f2f28cc",
+      "recordPath": "/signals/afc8d3a028031f2f28cc/",
+      "brand": "DPD",
       "sources": [
         "CertStream"
       ],
@@ -359,7 +342,24 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T14:18:23.959Z"
+      "firstSeen": "2026-08-28T09:40:37.871Z"
+    },
+    {
+      "signalId": "08f94854a3fe0e9324d1",
+      "recordPath": "/signals/08f94854a3fe0e9324d1/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-28T15:50:23.946Z"
     },
     {
       "signalId": "f168e7f8b118abe0feaf",
@@ -396,21 +396,21 @@
       "firstSeen": "2026-08-31T06:06:03.636Z"
     },
     {
-      "signalId": "08f94854a3fe0e9324d1",
-      "recordPath": "/signals/08f94854a3fe0e9324d1/",
-      "brand": "DHL",
+      "signalId": "623c9be6ca68ccf196f0",
+      "recordPath": "/signals/623c9be6ca68ccf196f0/",
+      "brand": "Bitė",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "95-100",
+      "scoreBand": "85-94",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
+        "brand-exact-token",
+        "multiple-hyphens",
         "suspicious-context"
       ],
       "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-28T15:50:23.946Z"
+      "firstSeen": "2026-08-27T14:18:23.959Z"
     }
   ]
 }

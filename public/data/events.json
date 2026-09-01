@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-01T22:24:13.200Z",
+  "generatedAt": "2026-09-01T23:09:18.562Z",
   "window": {
     "days": 30,
-    "from": "2026-08-02T22:24:13.200Z",
-    "to": "2026-09-01T22:24:13.200Z"
+    "from": "2026-08-02T23:09:18.562Z",
+    "to": "2026-09-01T23:09:18.562Z"
   },
-  "totalAvailable": 193,
+  "totalAvailable": 195,
   "truncated": false,
   "events": [
+    {
+      "id": "568747b0d24528940333ec6ac90cab84",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T23:04:09.878Z",
+      "signalId": "002a5ea06feeb244cf59",
+      "signalPath": "/signals/002a5ea06feeb244cf59/",
+      "domain": "jfkndscz[.]xn--tl2mobile-b4ab[.]com",
+      "brand": "Tele2",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "e1c3b393a7048a5e946fb76beb8c49f6",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T23:02:55.403Z",
+      "signalId": "a91e765311167bb5e2f6",
+      "signalPath": "/signals/a91e765311167bb5e2f6/",
+      "domain": "revolutbank[.]info",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "084bbff04cb60f3591b9306b0634a3f8",
       "type": "first-publication",

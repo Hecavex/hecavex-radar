@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T20:59:50.758Z",
+  "generatedAt": "2026-09-01T23:09:18.562Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "002a5ea06feeb244cf59",
+      "domain": "jfkndscz[.]xn--tl2mobile-b4ab[.]com",
+      "brand": "Tele2",
+      "firstSeen": "2026-09-01T23:04:09.878Z",
+      "lastSeen": "2026-09-01T23:04:09.878Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "punycode",
+        "unicode-confusable",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e3bf3e78dc79d2020e6a5bc796daad56",
+          "observedAt": "2026-09-01T23:04:09.878Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "punycode",
+            "unicode-confusable",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a91e765311167bb5e2f6",
+      "domain": "revolutbank[.]info",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T23:02:55.403Z",
+      "lastSeen": "2026-09-01T23:02:55.403Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "628f930abfb2c6091dff50e1ae38154b",
+          "observedAt": "2026-09-01T23:02:55.403Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "34efb50a3b7b81af8333",
       "domain": "www[.]parcel-shipment-dhl[.]com[.]ph",

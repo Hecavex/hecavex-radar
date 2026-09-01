@@ -1,9 +1,72 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-01T20:59:50.758Z",
-  "lastSuccessfulSyncAt": "2026-09-01T22:24:13.200Z",
+  "generatedAt": "2026-09-01T23:09:18.562Z",
+  "lastSuccessfulSyncAt": "2026-09-01T23:09:18.562Z",
   "signals": [
+    {
+      "id": "002a5ea06feeb244cf59",
+      "url": "hxxps://jfkndscz[.]xn--tl2mobile-b4ab[.]com",
+      "domain": "jfkndscz[.]xn--tl2mobile-b4ab[.]com",
+      "firstSeen": "2026-09-01T23:04:09.878Z",
+      "lastSeen": "2026-09-01T23:04:09.878Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Tele2",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "punycode",
+        "unicode-confusable"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "a91e765311167bb5e2f6",
+      "url": "hxxps://revolutbank[.]info",
+      "domain": "revolutbank[.]info",
+      "firstSeen": "2026-09-01T23:02:55.403Z",
+      "lastSeen": "2026-09-01T23:02:55.403Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 98,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 98,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "34efb50a3b7b81af8333",
       "url": "hxxps://www[.]parcel-shipment-dhl[.]com[.]ph",
@@ -5394,15 +5457,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-01T22:24:13.200Z",
-      "records": 163,
+      "fetchedAt": "2026-09-01T23:09:18.562Z",
+      "records": 165,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-01T20:44:22.429Z",
+      "fetchedAt": "2026-09-01T22:43:22.762Z",
       "records": 9,
       "state": "partial",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; the latest official-asset pivot failed"
@@ -5410,7 +5473,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-01T22:24:13.200Z",
+      "fetchedAt": "2026-09-01T23:09:18.562Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
