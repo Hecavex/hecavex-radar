@@ -23,13 +23,13 @@ jobs:
   collect:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       CERTSTREAM_DURATION_SECONDS: "480"
       CERTSTREAM_EXPECTED_INTERVAL_SECONDS: "900"
       CERTSTREAM_STALE_AFTER_SECONDS: "2700"
       CERTSTREAM_DELAY_THRESHOLD_SECONDS: "300"
-      CERTSTREAM_DUE_TOLERANCE_SECONDS: "0"
+      CERTSTREAM_DUE_TOLERANCE_SECONDS: "300"
       CERTSTREAM_SCHEDULE_MINUTES: "8,23,38,53"
       CERTSTREAM_TRIGGER: ${{ inputs.cadence_relay && 'cadence-relay' || github.event_name }}
       CERTSTREAM_HEALTH_PATH: public/data/collection-health.json
@@ -131,7 +131,7 @@ jobs:
             upstream_sha="$(git rev-parse origin/main)"
             if [[ "${upstream_sha}" != "${base_sha}" ]]; then
               unexpected_paths="$(git diff --name-only "${base_sha}..${upstream_sha}" | grep -Ev \
-                '^(data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/)' || true)"
+                '^(data/(certstream|ct-search|enrichment|urlscan|history)/|public/data/|data/coverage/brand-coverage\.json$|data/review/review-queue\.json$)' || true)"
               if [[ -n "${unexpected_paths}" ]]; then
                 echo "Code or configuration changed after checkout; refusing older-revision output:" >&2
                 echo "${unexpected_paths}" >&2

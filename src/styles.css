@@ -4588,8 +4588,15 @@ td time {
   background: var(--blue);
 }
 
-.trend-legend i.coverage {
+.trend-legend i.schedule {
   background: var(--green);
+}
+
+.trend-method-note {
+  max-width: 74rem;
+  margin: -.2rem 0 1rem;
+  color: var(--faint);
+  font-size: .82rem;
 }
 
 .trend-chart {
@@ -4598,7 +4605,7 @@ td time {
 
 .trend-row {
   display: grid;
-  grid-template-columns: 7rem minmax(10rem, 1fr) 3rem 7rem;
+  grid-template-columns: 7rem minmax(10rem, 1fr) 7.5rem minmax(17rem, auto);
   align-items: center;
   gap: .75rem;
   min-height: 2.7rem;
@@ -4607,18 +4614,47 @@ td time {
 }
 
 .trend-row:last-child { border-bottom: 0; }
+.trend-date {
+  display: grid;
+  gap: .2rem;
+}
 .trend-row time,
 .trend-row small { color: var(--faint); font: .59rem var(--mono); }
-.trend-row strong { color: var(--text); font: .72rem var(--mono); text-align: right; }
+.trend-date span {
+  width: max-content;
+  padding: .12rem .28rem;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font: .5rem var(--mono);
+  text-transform: uppercase;
+}
+.trend-row strong { color: var(--text); font: .66rem/1.35 var(--mono); text-align: right; }
+.trend-metrics {
+  display: grid;
+  gap: .12rem;
+  color: var(--text);
+  font: .59rem/1.4 var(--mono);
+}
+.trend-metrics > span {
+  font-size: .66rem;
+  font-weight: 600;
+}
+.trend-metrics em {
+  color: var(--amber);
+  font-style: normal;
+}
+.trend-metrics small {
+  line-height: 1.4;
+}
 .trend-bars { position: relative; height: 1rem; background: var(--surface); }
 .trend-bars progress { position: absolute; left: 0; width: 100%; height: .35rem; border: 0; appearance: none; background: transparent; }
 .trend-bars progress.discovery { top: .08rem; color: var(--blue); }
-.trend-bars progress.coverage { bottom: .08rem; color: var(--green); }
+.trend-bars progress.schedule { bottom: .08rem; color: var(--green); }
 .trend-bars progress::-webkit-progress-bar { background: transparent; }
 .trend-bars progress.discovery::-webkit-progress-value { background: var(--blue); }
-.trend-bars progress.coverage::-webkit-progress-value { background: var(--green); }
+.trend-bars progress.schedule::-webkit-progress-value { background: var(--green); }
 .trend-bars progress.discovery::-moz-progress-bar { background: var(--blue); }
-.trend-bars progress.coverage::-moz-progress-bar { background: var(--green); }
+.trend-bars progress.schedule::-moz-progress-bar { background: var(--green); }
 
 .quality-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4726,8 +4762,8 @@ td time {
 
 @media (max-width: 760px) {
   .compact-signal-list article { grid-template-columns: 1fr; }
-  .trend-row { grid-template-columns: 5.5rem minmax(7rem, 1fr) 2rem; }
-  .trend-row small { grid-column: 2 / -1; }
+  .trend-row { grid-template-columns: 6.5rem minmax(7rem, 1fr) 7.5rem; }
+  .trend-metrics { grid-column: 2 / -1; }
 }
 
 @media (max-width: 680px) {
@@ -4784,4 +4820,11 @@ td time {
   .related-route-card { align-items: flex-start; flex-direction: column; }
   .dataset-summary,
   .download-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .trend-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .trend-bars { grid-column: 1 / -1; }
+  .trend-signal-count { grid-column: 2; grid-row: 1; }
+  .trend-metrics { grid-column: 1 / -1; }
 }

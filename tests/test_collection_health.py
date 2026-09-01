@@ -8,6 +8,7 @@ import pytest
 
 from hecavex_radar.collection_health import (
     CollectionMetrics,
+    attempt_is_due,
     begin_attempt,
     begin_attempt_if_due,
     complete_attempt,
@@ -78,7 +79,54 @@ def test_automated_worker_start_guard_suppresses_cron_relay_duplicate(
     assert health["latestAttempt"]["delaySeconds"] is None
 
 
-def test_automated_guard_allows_next_window_and_manual_bypass(
+def test_automated_guard_waits_out_scheduler_jitter_without_starting_early(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    path = "public/data/collection-health.json"
+    started = datetime(2026, 8, 30, 12, 0, tzinfo=UTC)
+    begin_attempt(path, now=started, trigger_value="schedule")
+    waited: list[float] = []
+
+    due, _ = begin_attempt_if_due(
+        path,
+        now=started + timedelta(minutes=14, seconds=50),
+        trigger_value="cadence-relay",
+        sleeper=waited.append,
+    )
+    health = read_collection_health(path, allow_running=True)
+
+    assert waited == [10.0]
+    assert due is True
+    assert health is not None
+    assert health["latestAttempt"]["startedAt"] == "2026-08-30T12:15:00.000Z"
+    assert health["latestAttempt"]["trigger"] == "cadence-relay"
+
+
+def test_automated_guard_keeps_the_exact_interval_boundary_with_positive_tolerance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CERTSTREAM_DUE_TOLERANCE_SECONDS", "300")
+    path = "public/data/collection-health.json"
+    started = datetime(2026, 8, 30, 12, 0, tzinfo=UTC)
+    begin_attempt(path, now=started, trigger_value="schedule")
+
+    assert not attempt_is_due(
+        path,
+        now=started + timedelta(seconds=899.999),
+        trigger_value="cadence-relay",
+    )
+    assert attempt_is_due(
+        path,
+        now=started + timedelta(seconds=900),
+        trigger_value="cadence-relay",
+    )
+
+
+def test_automated_guard_rechecks_after_jitter_wait_and_preserves_newer_claim(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -87,17 +135,46 @@ def test_automated_guard_allows_next_window_and_manual_bypass(
     started = datetime(2026, 8, 30, 12, 0, tzinfo=UTC)
     begin_attempt(path, now=started, trigger_value="schedule")
 
-    early_due, _ = begin_attempt_if_due(path, now=started + timedelta(minutes=14), trigger_value="cadence-relay")
-    due, _ = begin_attempt_if_due(path, now=started + timedelta(minutes=15), trigger_value="cadence-relay")
+    def claim_during_wait(seconds: float) -> None:
+        assert seconds == 10.0
+        begin_attempt(path, now=started + timedelta(minutes=14, seconds=55), trigger_value="schedule")
+
+    due, _ = begin_attempt_if_due(
+        path,
+        now=started + timedelta(minutes=14, seconds=50),
+        trigger_value="cadence-relay",
+        sleeper=claim_during_wait,
+    )
     health = read_collection_health(path, allow_running=True)
+
+    assert due is False
+    assert health is not None
+    assert health["latestAttempt"]["startedAt"] == "2026-08-30T12:14:55.000Z"
+    assert health["latestAttempt"]["trigger"] == "schedule"
+
+
+def test_automated_guard_rejects_runs_outside_jitter_tolerance_and_allows_manual_bypass(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    path = "public/data/collection-health.json"
+    started = datetime(2026, 8, 30, 12, 0, tzinfo=UTC)
+    begin_attempt(path, now=started, trigger_value="schedule")
+    waited: list[float] = []
+
+    early_due, _ = begin_attempt_if_due(
+        path,
+        now=started + timedelta(minutes=9, seconds=59),
+        trigger_value="cadence-relay",
+        sleeper=waited.append,
+    )
     manual_path = "public/data/manual-collection-health.json"
     manual_due, _ = begin_attempt_if_due(manual_path, now=started + timedelta(minutes=1), trigger_value="manual")
     manual_health = read_collection_health(manual_path, allow_running=True)
 
     assert early_due is False
-    assert due is True
-    assert health is not None
-    assert health["latestAttempt"]["trigger"] == "cadence-relay"
+    assert waited == []
     assert manual_due is True
     assert manual_health is not None
     assert manual_health["latestAttempt"]["trigger"] == "manual"

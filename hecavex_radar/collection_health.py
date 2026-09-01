@@ -6,6 +6,8 @@ import argparse
 import json
 import os
 import sys
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -21,7 +23,7 @@ DEFAULT_HEALTH_PATH = "public/data/collection-health.json"
 DEFAULT_EXPECTED_INTERVAL_SECONDS = 15 * 60
 DEFAULT_STALE_AFTER_SECONDS = 45 * 60
 DEFAULT_DELAY_THRESHOLD_SECONDS = 5 * 60
-DEFAULT_DUE_TOLERANCE_SECONDS = 0
+DEFAULT_DUE_TOLERANCE_SECONDS = 5 * 60
 DEFAULT_SCHEDULE_MINUTES = (8, 23, 38, 53)
 OUTCOMES = frozenset({"healthy-empty", "healthy-matches", "no-input", "partial", "failed"})
 SCHEDULE_STATUSES = frozenset({"scheduled", "delayed", "relayed", "manual", "unknown"})
@@ -423,29 +425,28 @@ def begin_attempt(
     return _write_collection_health(artifact, path, allow_running=True)
 
 
-def attempt_is_due(
+def _due_wait_seconds(
     path: str | Path | None = None,
     *,
     now: datetime | None = None,
     trigger_value: str | None = None,
-) -> bool:
-    """Return whether an invocation may start a new bounded collection window.
+) -> float | None:
+    """Return seconds until an automated invocation is due, or ``None`` when it is too early.
 
-    Manual maintainer runs deliberately bypass cadence suppression. Automated
-    cron and completion-relay invocations share the persisted latest-attempt
-    clock, so a delayed native cron cannot duplicate a relay window (or vice
-    versa) after GitHub's concurrency queue releases it.
+    A small tolerance lets a queued worker wait out normal scheduler jitter. It
+    does not move the due boundary: automated attempts still require the full
+    declared interval between persisted starts.
     """
 
     trigger = _trigger(trigger_value if trigger_value is not None else os.environ.get("CERTSTREAM_TRIGGER"))
     if trigger == "manual":
-        return True
+        return 0.0
     existing = read_collection_health(path, allow_running=True)
     if existing is None or existing["latestAttempt"] is None:
-        return True
+        return 0.0
     latest_started = _parse_timestamp(existing["latestAttempt"]["startedAt"])
     if latest_started is None:
-        return True
+        return 0.0
     expected_interval = cast(int, existing["expectedIntervalSeconds"])
     tolerance = _enabled_integer(
         os.environ.get("CERTSTREAM_DUE_TOLERANCE_SECONDS"),
@@ -453,8 +454,21 @@ def attempt_is_due(
         0,
         min(300, expected_interval - 1),
     )
-    minimum_gap = max(1, expected_interval - tolerance)
-    return (_utc(now) - latest_started).total_seconds() >= minimum_gap
+    remaining = expected_interval - (_utc(now) - latest_started).total_seconds()
+    if remaining <= 0:
+        return 0.0
+    return remaining if remaining <= tolerance else None
+
+
+def attempt_is_due(
+    path: str | Path | None = None,
+    *,
+    now: datetime | None = None,
+    trigger_value: str | None = None,
+) -> bool:
+    """Return whether an invocation may start immediately without an early wait."""
+
+    return _due_wait_seconds(path, now=now, trigger_value=trigger_value) == 0.0
 
 
 def begin_attempt_if_due(
@@ -462,13 +476,23 @@ def begin_attempt_if_due(
     *,
     now: datetime | None = None,
     trigger_value: str | None = None,
+    sleeper: Callable[[float], None] | None = None,
 ) -> tuple[bool, Path]:
-    """Atomically decide against persisted timing, then initialize when due."""
+    """Wait through bounded jitter, re-check persisted timing, then initialize when due."""
 
     target = _bounded_path(path)
-    if not attempt_is_due(path, now=now, trigger_value=trigger_value):
+    checked_at = _utc(now)
+    wait_seconds = _due_wait_seconds(path, now=checked_at, trigger_value=trigger_value)
+    if wait_seconds is None:
         return False, target
-    begin_attempt(path, now=now, trigger_value=trigger_value)
+    if wait_seconds > 0:
+        (sleeper or time.sleep)(wait_seconds)
+        checked_at = checked_at + timedelta(seconds=wait_seconds) if now is not None else _utc()
+    # A native cron and a completion relay can both have been queued. Re-read
+    # after the wait so a newer persisted claim wins instead of being replaced.
+    if not attempt_is_due(path, now=checked_at, trigger_value=trigger_value):
+        return False, target
+    begin_attempt(path, now=checked_at, trigger_value=trigger_value)
     return True, target
 
 

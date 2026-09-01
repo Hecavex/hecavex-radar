@@ -318,7 +318,8 @@ function verifyDeploymentTopology() {
   );
   assert(
     collector.includes("cadence_relay:") &&
-      collector.includes('CERTSTREAM_DUE_TOLERANCE_SECONDS: "0"') &&
+      collector.includes('CERTSTREAM_DUE_TOLERANCE_SECONDS: "300"') &&
+      collector.includes("timeout-minutes: 20") &&
       collector.includes("inputs.cadence_relay && 'cadence-relay' || github.event_name") &&
       collector.includes("collection_health begin-if-due") &&
       collector.includes("event_type=certstream_writer_completed") &&
@@ -343,6 +344,11 @@ function verifyDeploymentTopology() {
     collectorGitAdds.length === 1 &&
       collectorGitAdds[0].trim() === "git add -- data/certstream public/data/collection-health.json",
     "CertStream collector stages files outside its archive and public-health boundaries.",
+  );
+  assert(
+    collector.includes("data/coverage/brand-coverage\\.json$") &&
+      collector.includes("data/review/review-queue\\.json$"),
+    "CertStream collector cannot preserve a completed attempt across concurrent snapshot-derived metadata.",
   );
   const hunterGitAdds = hunter.match(/^\s+git add -- .*$/gmu) ?? [];
   assert(
@@ -1115,6 +1121,38 @@ function verifyBuiltHtml() {
           Boolean(document.querySelector(`.event-list a[href^="${signalPrefix}"]`)) === (payload.events.events.length > 0),
           `${route} uses the wrong localized signal-route projection.`,
         );
+      }
+      if (route === "/trends/" || route === "/lt/tendencijos/") {
+        assert(payload?.trends?.dataset === "radar-daily-trends", `${route} does not embed the canonical daily trends artifact.`);
+        assert(document.querySelector(".trend-method-note"), `${route} omits the schedule and listening explanation.`);
+        const trendRows = [...document.querySelectorAll(".trend-row")];
+        assert(trendRows.length === payload.trends.series.length, `${route} does not render every daily trend row.`);
+        const isLithuanian = route.startsWith("/lt/");
+        for (const [index, row] of trendRows.entries()) {
+          const trend = payload.trends.series[index];
+          const bars = row.querySelector(".trend-bars");
+          const progressBars = [...row.querySelectorAll("progress")];
+          assert(bars?.getAttribute("aria-hidden") === "true", `${route} exposes duplicate visual trend bars to assistive technology.`);
+          assert(progressBars.length === 2 && progressBars.every((progress) => !progress.textContent), `${route} duplicates trend values inside progress fallback text.`);
+          const signalCopy = row.querySelector(".trend-signal-count")?.textContent ?? "";
+          assert(signalCopy.includes(isLithuanian ? "Unikalūs signalai" : "unique signals"), `${route} trend signal value is not self-describing.`);
+          const scheduleCopy = row.querySelector(".trend-metrics > span")?.textContent ?? "";
+          assert(scheduleCopy.includes(isLithuanian ? "interval" : "scheduled slots"), `${route} trend schedule value is not self-describing.`);
+          assert(scheduleCopy.includes("/"), `${route} trend schedule omits its recorded and expected attempt counts.`);
+          const listeningCopy = row.querySelector(".trend-metrics small")?.textContent ?? "";
+          assert(listeningCopy.includes(isLithuanian ? "Faktinis klausymosi laikas" : "Wall-clock listening"), `${route} trend row omits wall-clock listening.`);
+          assert(listeningCopy.includes(isLithuanian ? "planinė riba" : "planned ceiling"), `${route} trend row omits the planned listening ceiling.`);
+          assert(row.classList.contains("trend-row--partial") === trend.partialDay, `${route} trend row misstates partial UTC-day status.`);
+          assert(Boolean(row.querySelector(".trend-date span")) === trend.partialDay, `${route} trend row omits its visible partial UTC-day label.`);
+          const additionalAttempts = Math.max(0, trend.collectorCoverage.recordedAttempts - trend.collectorCoverage.scheduledSlots);
+          assert(Boolean(row.querySelector(".trend-metrics em")) === (additionalAttempts > 0), `${route} trend row misstates additional collection attempts.`);
+          if (trend.collectorCoverage.recordedSchedulePercent === null) {
+            assert(scheduleCopy.toLowerCase().includes(isLithuanian ? "nėra duomenų" : "unavailable"), `${route} turns unavailable schedule coverage into a numeric value.`);
+          }
+          if (trend.collectorCoverage.listeningCoveragePercent === null || trend.collectorCoverage.scheduledListeningCeilingPercent === null) {
+            assert(listeningCopy.toLowerCase().includes(isLithuanian ? "nėra duomenų" : "unavailable"), `${route} turns unavailable listening coverage into a numeric value.`);
+          }
+        }
       }
     } else if (route === "/docs/" || route === "/lt/dokumentacija/") {
       assert(pageLanguage === (route.startsWith("/lt/") ? "lt" : "en"), `${route} embeds the wrong documentation language.`);
