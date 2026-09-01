@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-08-31T23:44:56.560Z",
+  "generatedAt": "2026-09-01T01:23:51.265Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 159,
+  "availableUnreviewed": 160,
   "selected": 24,
   "candidates": [
     {
@@ -346,9 +346,9 @@
       "firstSeen": "2026-08-27T14:18:23.959Z"
     },
     {
-      "signalId": "4d894f9bdf81af06b273",
-      "recordPath": "/signals/4d894f9bdf81af06b273/",
-      "brand": "Telia",
+      "signalId": "dfa947674ec7493deaad",
+      "recordPath": "/signals/dfa947674ec7493deaad/",
+      "brand": "Citadele",
       "sources": [
         "CertStream"
       ],
@@ -360,7 +360,7 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-30T00:18:16.213Z"
+      "firstSeen": "2026-08-31T12:37:03.308Z"
     },
     {
       "signalId": "0d284af65210b0c1307e",
@@ -380,23 +380,6 @@
       "firstSeen": "2026-08-28T08:25:31.949Z"
     },
     {
-      "signalId": "dfa947674ec7493deaad",
-      "recordPath": "/signals/dfa947674ec7493deaad/",
-      "brand": "Citadele",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T12:37:03.308Z"
-    },
-    {
       "signalId": "cfb47fddc71fa6cd7cca",
       "recordPath": "/signals/cfb47fddc71fa6cd7cca/",
       "brand": "Luminor",
@@ -411,6 +394,23 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-30T02:05:16.483Z"
+    },
+    {
+      "signalId": "4178e3ccc2b50a49490e",
+      "recordPath": "/signals/4178e3ccc2b50a49490e/",
+      "brand": "Bigbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-29T19:17:13.908Z"
     }
   ]
 }
