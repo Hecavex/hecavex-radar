@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-01T12:25:04.912Z",
-  "lastSuccessfulSyncAt": "2026-09-01T14:27:43.265Z",
+  "generatedAt": "2026-09-01T14:50:20.141Z",
+  "lastSuccessfulSyncAt": "2026-09-01T14:50:20.141Z",
   "signals": [
+    {
+      "id": "bafe9de660ef77190c3f",
+      "url": "hxxps://www[.]vinted-account[.]ph",
+      "domain": "www[.]vinted-account[.]ph",
+      "firstSeen": "2026-09-01T14:49:29.346Z",
+      "lastSeen": "2026-09-01T14:49:29.346Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "89920bf1ff9f4bf64a88",
       "url": "hxxps://dhl-billing-dashboard[.]pages[.]dev",
@@ -5114,8 +5145,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-01T14:27:43.265Z",
-      "records": 154,
+      "fetchedAt": "2026-09-01T14:50:20.141Z",
+      "records": 155,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -5130,7 +5161,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-01T14:27:43.265Z",
+      "fetchedAt": "2026-09-01T14:50:20.141Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

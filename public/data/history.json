@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T12:25:04.912Z",
+  "generatedAt": "2026-09-01T14:50:20.141Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "bafe9de660ef77190c3f",
+      "domain": "www[.]vinted-account[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-09-01T14:49:29.346Z",
+      "lastSeen": "2026-09-01T14:49:29.346Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "12491da723d0d250ec4241d59b3617bd",
+          "observedAt": "2026-09-01T14:49:29.346Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "89920bf1ff9f4bf64a88",
       "domain": "dhl-billing-dashboard[.]pages[.]dev",
