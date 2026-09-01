@@ -1,10 +1,115 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T16:41:01.540Z",
+  "generatedAt": "2026-09-01T17:17:56.435Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "dddb4e0de30d9fc0aad5",
+      "domain": "revolutbank[.]online",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T17:16:44.636Z",
+      "lastSeen": "2026-09-01T17:16:44.636Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a0f7fbe137279c2c0cb618e99725f8f2",
+          "observedAt": "2026-09-01T17:16:44.636Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19b192c53afa4dab80f2",
+      "domain": "www[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T17:16:40.919Z",
+      "lastSeen": "2026-09-01T17:16:40.919Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8fc3c6d49e7a0a6c5567fa3781b81a27",
+          "observedAt": "2026-09-01T17:16:40.919Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6bb137b8bc0357e7d8b8",
+      "domain": "www[.]revolutbank[.]online",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T17:14:50.653Z",
+      "lastSeen": "2026-09-01T17:14:50.653Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c4ac625e05624efd81c6047160658542",
+          "observedAt": "2026-09-01T17:14:50.653Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "89a0feb1001f207e2d53",
       "domain": "swedbankpay[.]m3software[.]se",
