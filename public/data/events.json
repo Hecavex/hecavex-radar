@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-01T15:47:11.821Z",
+  "generatedAt": "2026-09-01T16:41:01.540Z",
   "window": {
     "days": 30,
-    "from": "2026-08-02T15:47:11.821Z",
-    "to": "2026-09-01T15:47:11.821Z"
+    "from": "2026-08-02T16:41:01.540Z",
+    "to": "2026-09-01T16:41:01.540Z"
   },
-  "totalAvailable": 185,
+  "totalAvailable": 186,
   "truncated": false,
   "events": [
+    {
+      "id": "f62ab4f0db91693e9ddbdb05495b39ed",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T16:35:17.663Z",
+      "signalId": "89a0feb1001f207e2d53",
+      "signalPath": "/signals/89a0feb1001f207e2d53/",
+      "domain": "swedbankpay[.]m3software[.]se",
+      "brand": "Swedbank",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "0013da3382ced9f496049ed8bdd95510",
       "type": "first-publication",

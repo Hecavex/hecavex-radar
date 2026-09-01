@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T15:09:33.270Z",
+  "generatedAt": "2026-09-01T16:41:01.540Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "89a0feb1001f207e2d53",
+      "domain": "swedbankpay[.]m3software[.]se",
+      "brand": "Swedbank",
+      "firstSeen": "2026-09-01T16:35:17.663Z",
+      "lastSeen": "2026-09-01T16:35:17.663Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "f5c9f1c5f5e68f915a92d8b89a53def4",
+          "observedAt": "2026-09-01T16:35:17.663Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "06c31663d2838fe73089",
       "domain": "www[.]swedbankpay-test[.]nyehandel[.]se",
