@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T17:17:56.435Z",
+  "generatedAt": "2026-09-01T18:34:59.994Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "33926e6778748540e207",
+      "domain": "my-seb-refund[.]com[.]ph",
+      "brand": "SEB",
+      "firstSeen": "2026-09-01T18:32:22.029Z",
+      "lastSeen": "2026-09-01T18:32:22.029Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "526b032e06d55364ef23a3aa55f5b6cc",
+          "observedAt": "2026-09-01T18:32:22.029Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f496e6d09775e529b229",
+      "domain": "seb-gcash-online[.]com[.]ph",
+      "brand": "SEB",
+      "firstSeen": "2026-09-01T18:32:21.949Z",
+      "lastSeen": "2026-09-01T18:32:21.949Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "5dad9ff301f802430182eacbeadc877f",
+          "observedAt": "2026-09-01T18:32:21.949Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "dddb4e0de30d9fc0aad5",
       "domain": "revolutbank[.]online",

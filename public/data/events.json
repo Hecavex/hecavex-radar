@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-01T18:29:53.889Z",
+  "generatedAt": "2026-09-01T18:34:59.994Z",
   "window": {
     "days": 30,
-    "from": "2026-08-02T18:29:53.889Z",
-    "to": "2026-09-01T18:29:53.889Z"
+    "from": "2026-08-02T18:34:59.994Z",
+    "to": "2026-09-01T18:34:59.994Z"
   },
-  "totalAvailable": 189,
+  "totalAvailable": 191,
   "truncated": false,
   "events": [
+    {
+      "id": "5582719e65ee425aed2e2c63daefc2a8",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T18:32:22.029Z",
+      "signalId": "33926e6778748540e207",
+      "signalPath": "/signals/33926e6778748540e207/",
+      "domain": "my-seb-refund[.]com[.]ph",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "e7f8ad888db08c9179318ce06d5f9ef0",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T18:32:21.949Z",
+      "signalId": "f496e6d09775e529b229",
+      "signalPath": "/signals/f496e6d09775e529b229/",
+      "domain": "seb-gcash-online[.]com[.]ph",
+      "brand": "SEB",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "196b3c6d9d97d3850a9595239301fc65",
       "type": "first-publication",
