@@ -1,40 +1,37 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-01T05:25:35.150Z",
+  "generatedAt": "2026-09-01T06:18:27.129Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-31T05:25:35.150Z",
-      "to": "2026-09-01T05:25:35.150Z",
-      "events": 28,
-      "uniqueSignals": 14,
-      "firstPublications": 14,
+      "from": "2026-08-31T06:18:27.129Z",
+      "to": "2026-09-01T06:18:27.129Z",
+      "events": 24,
+      "uniqueSignals": 12,
+      "firstPublications": 12,
       "statusChanges": 0,
-      "observations": 14,
+      "observations": 12,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 28
+        "CertStream": 24
       },
       "byStatus": {
-        "suspected": 28
+        "suspected": 24
       },
       "byReason": {
-        "different-tld": 26,
         "suspicious-context": 24,
-        "brand-exact-token": 16,
-        "first-publication": 14,
+        "different-tld": 22,
         "multiple-hyphens": 14,
+        "brand-exact-token": 12,
+        "first-publication": 12,
         "brand-joined-affix": 10,
-        "punycode": 4,
-        "unicode-confusable": 4,
         "brand-split-token": 2
       },
       "byBrand": {
         "DHL": 8,
         "Revolut": 6,
-        "Artea": 4,
         "Vinted": 4,
         "Citadele": 2,
         "MAXIMA": 2,
@@ -43,8 +40,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-25T05:25:35.150Z",
-      "to": "2026-09-01T05:25:35.150Z",
+      "from": "2026-08-25T06:18:27.129Z",
+      "to": "2026-09-01T06:18:27.129Z",
       "events": 324,
       "uniqueSignals": 161,
       "firstPublications": 158,
