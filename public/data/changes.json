@@ -1,39 +1,39 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-08-31T23:20:27.327Z",
+  "generatedAt": "2026-09-01T00:36:26.811Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-30T23:20:27.327Z",
-      "to": "2026-08-31T23:20:27.327Z",
-      "events": 52,
-      "uniqueSignals": 27,
-      "firstPublications": 25,
+      "from": "2026-08-31T00:36:26.811Z",
+      "to": "2026-09-01T00:36:26.811Z",
+      "events": 48,
+      "uniqueSignals": 24,
+      "firstPublications": 24,
       "statusChanges": 0,
-      "observations": 27,
+      "observations": 24,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 52
+        "CertStream": 48
       },
       "byStatus": {
-        "suspected": 52
+        "suspected": 48
       },
       "byReason": {
-        "different-tld": 48,
-        "suspicious-context": 48,
-        "brand-exact-token": 37,
-        "first-publication": 25,
-        "multiple-hyphens": 21,
-        "brand-joined-affix": 13,
+        "different-tld": 44,
+        "suspicious-context": 44,
+        "brand-exact-token": 36,
+        "first-publication": 24,
+        "multiple-hyphens": 20,
+        "brand-joined-affix": 10,
         "punycode": 6,
         "unicode-confusable": 6,
         "brand-split-token": 2
       },
       "byBrand": {
-        "DHL": 19,
-        "Revolut": 10,
+        "DHL": 18,
+        "Revolut": 8,
         "Artea": 4,
         "VMI": 4,
         "Vinted": 4,
@@ -41,34 +41,33 @@
         "MAXIMA": 2,
         "Swedbank": 2,
         "Tele2": 2,
-        "Telia": 2,
-        "Smart-ID": 1
+        "Telia": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-24T23:20:27.327Z",
-      "to": "2026-08-31T23:20:27.327Z",
-      "events": 327,
-      "uniqueSignals": 162,
-      "firstPublications": 159,
+      "from": "2026-08-25T00:36:26.811Z",
+      "to": "2026-09-01T00:36:26.811Z",
+      "events": 325,
+      "uniqueSignals": 161,
+      "firstPublications": 158,
       "statusChanges": 0,
-      "observations": 168,
+      "observations": 167,
       "reobservations": 6,
       "bySource": {
-        "CertStream": 313,
+        "CertStream": 311,
         "URLScan": 12,
         "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 327
+        "suspected": 325
       },
       "byReason": {
-        "suspicious-context": 303,
-        "different-tld": 277,
-        "brand-exact-token": 247,
+        "suspicious-context": 301,
+        "different-tld": 275,
+        "brand-exact-token": 245,
         "multiple-hyphens": 165,
-        "first-publication": 159,
+        "first-publication": 158,
         "brand-joined-affix": 60,
         "punycode": 18,
         "unicode-confusable": 14,
@@ -92,9 +91,9 @@
         "Artea": 7,
         "DPD": 7,
         "ERGO": 6,
-        "ESO": 6,
         "Swedbank": 6,
         "Bigbank": 4,
+        "ESO": 4,
         "Luminor": 4,
         "BTA": 2,
         "Citadele": 2

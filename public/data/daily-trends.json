@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-08-31T23:20:27.327Z",
+  "generatedAt": "2026-09-01T00:36:26.811Z",
   "retentionDays": 365,
-  "from": "2025-09-01",
-  "to": "2026-08-31",
+  "from": "2025-09-02",
+  "to": "2026-09-01",
   "semantics": "Counts describe Radar discovery and publication activity under the collector coverage shown beside them. They are not a measure of Lithuanian phishing prevalence or total incident volume.",
   "facetSemantics": "Brand, source, evidence and reason facets count unique signals within each UTC day.",
   "seriesSemantics": "The series is sparse. Missing UTC dates inside the stated range mean zero recorded attempts and zero discovery events; consumers can derive scheduled slots from collectorSchedule.",
-  "omittedZeroDays": 352,
+  "omittedZeroDays": 351,
   "collectorSchedule": {
     "expectedIntervalSeconds": 900,
     "expectedListeningSeconds": 480,
@@ -574,18 +574,18 @@
     },
     {
       "date": "2026-08-31",
-      "partialDay": true,
+      "partialDay": false,
       "collectorCoverage": {
-        "windowSeconds": 84027,
-        "scheduledSlots": 93,
-        "recordedAttempts": 56,
-        "healthyAttempts": 56,
-        "recordedSchedulePercent": 60.2,
-        "listeningCoveragePercent": 31.98,
-        "scheduledListeningCeilingPercent": 53.13,
-        "listeningSeconds": 26873.898,
+        "windowSeconds": 86400,
+        "scheduledSlots": 96,
+        "recordedAttempts": 58,
+        "healthyAttempts": 58,
+        "recordedSchedulePercent": 60.4,
+        "listeningCoveragePercent": 32.22,
+        "scheduledListeningCeilingPercent": 53.33,
+        "listeningSeconds": 27833.896,
         "outcomes": {
-          "healthy-empty": 38,
+          "healthy-empty": 40,
           "healthy-matches": 18
         }
       },
@@ -627,6 +627,35 @@
           "unicode-confusable": 3,
           "brand-split-token": 1
         }
+      }
+    },
+    {
+      "date": "2026-09-01",
+      "partialDay": true,
+      "collectorCoverage": {
+        "windowSeconds": 2186,
+        "scheduledSlots": 2,
+        "recordedAttempts": 0,
+        "healthyAttempts": 0,
+        "recordedSchedulePercent": 0.0,
+        "listeningCoveragePercent": 0.0,
+        "scheduledListeningCeilingPercent": 43.92,
+        "listeningSeconds": 0.0,
+        "outcomes": {}
+      },
+      "discovery": {
+        "events": 0,
+        "uniqueSignals": 0,
+        "observations": 0,
+        "reobservations": 0,
+        "firstPublications": 0,
+        "statusChanges": 0,
+        "facetSampleSize": 0,
+        "evidenceClassifiedSignals": 0,
+        "byBrand": {},
+        "bySource": {},
+        "byEvidenceTier": {},
+        "byReason": {}
       }
     }
   ],
