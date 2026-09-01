@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-01T14:50:20.141Z",
+  "generatedAt": "2026-09-01T15:09:33.270Z",
   "window": {
     "days": 30,
-    "from": "2026-08-02T14:50:20.141Z",
-    "to": "2026-09-01T14:50:20.141Z"
+    "from": "2026-08-02T15:09:33.270Z",
+    "to": "2026-09-01T15:09:33.270Z"
   },
-  "totalAvailable": 184,
+  "totalAvailable": 185,
   "truncated": false,
   "events": [
+    {
+      "id": "0013da3382ced9f496049ed8bdd95510",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T15:03:37.433Z",
+      "signalId": "06c31663d2838fe73089",
+      "signalPath": "/signals/06c31663d2838fe73089/",
+      "domain": "www[.]swedbankpay-test[.]nyehandel[.]se",
+      "brand": "Swedbank",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "cb92b413c81f0b17fb085334a0614a3c",
       "type": "first-publication",

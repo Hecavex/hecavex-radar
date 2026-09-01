@@ -1,9 +1,39 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-01T14:50:20.141Z",
-  "lastSuccessfulSyncAt": "2026-09-01T14:50:20.141Z",
+  "generatedAt": "2026-09-01T15:09:33.270Z",
+  "lastSuccessfulSyncAt": "2026-09-01T15:09:33.270Z",
   "signals": [
+    {
+      "id": "06c31663d2838fe73089",
+      "url": "hxxps://www[.]swedbankpay-test[.]nyehandel[.]se",
+      "domain": "www[.]swedbankpay-test[.]nyehandel[.]se",
+      "firstSeen": "2026-09-01T15:03:37.433Z",
+      "lastSeen": "2026-09-01T15:03:37.433Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Swedbank",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 93,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 93,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "bafe9de660ef77190c3f",
       "url": "hxxps://www[.]vinted-account[.]ph",
@@ -5145,15 +5175,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-01T14:50:20.141Z",
-      "records": 155,
+      "fetchedAt": "2026-09-01T15:09:33.270Z",
+      "records": 156,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-01T12:49:07.861Z",
+      "fetchedAt": "2026-09-01T14:50:43.760Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 111 stable official asset hashes are pivot-eligible"
@@ -5161,7 +5191,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-01T14:50:20.141Z",
+      "fetchedAt": "2026-09-01T15:09:33.270Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

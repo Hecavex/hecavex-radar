@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-01T14:50:20.141Z",
+  "generatedAt": "2026-09-01T15:09:33.270Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 163,
+  "availableUnreviewed": 164,
   "selected": 24,
   "candidates": [
     {
@@ -130,6 +130,55 @@
       "firstSeen": "2026-08-22T07:21:16.259Z"
     },
     {
+      "signalId": "06c31663d2838fe73089",
+      "recordPath": "/signals/06c31663d2838fe73089/",
+      "brand": "Swedbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-09-01T15:03:37.433Z"
+    },
+    {
+      "signalId": "5b0f8b137394c5f88ddf",
+      "recordPath": "/signals/5b0f8b137394c5f88ddf/",
+      "brand": "Vinted",
+      "sources": [
+        "HECAVEX"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "different-tld",
+        "manual-review",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-25T11:47:24.305Z"
+    },
+    {
+      "signalId": "b2a74041369ff0a25a50",
+      "recordPath": "/signals/b2a74041369ff0a25a50/",
+      "brand": "Revolut",
+      "sources": [
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-domain-match"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-21T09:45:07.660Z"
+    },
+    {
       "signalId": "c5ee446f5f0dae3cd2ac",
       "recordPath": "/signals/c5ee446f5f0dae3cd2ac/",
       "brand": "Artea",
@@ -159,55 +208,6 @@
       ],
       "candidateAgeBand": "8-30d",
       "firstSeen": "2026-08-22T10:09:17.586Z"
-    },
-    {
-      "signalId": "5b0f8b137394c5f88ddf",
-      "recordPath": "/signals/5b0f8b137394c5f88ddf/",
-      "brand": "Vinted",
-      "sources": [
-        "HECAVEX"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "different-tld",
-        "manual-review",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-25T11:47:24.305Z"
-    },
-    {
-      "signalId": "c6aa5e7478ddc6aa82f3",
-      "recordPath": "/signals/c6aa5e7478ddc6aa82f3/",
-      "brand": "Vinted",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T17:17:44.735Z"
-    },
-    {
-      "signalId": "b2a74041369ff0a25a50",
-      "recordPath": "/signals/b2a74041369ff0a25a50/",
-      "brand": "Revolut",
-      "sources": [
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-domain-match"
-      ],
-      "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
       "signalId": "7d3c57c7312ee0850e9e",
@@ -243,6 +243,22 @@
       "firstSeen": "2026-08-23T02:00:48.622Z"
     },
     {
+      "signalId": "c6aa5e7478ddc6aa82f3",
+      "recordPath": "/signals/c6aa5e7478ddc6aa82f3/",
+      "brand": "Vinted",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T17:17:44.735Z"
+    },
+    {
       "signalId": "afc8d3a028031f2f28cc",
       "recordPath": "/signals/afc8d3a028031f2f28cc/",
       "brand": "DPD",
@@ -258,23 +274,6 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-28T09:40:37.871Z"
-    },
-    {
-      "signalId": "9391b8744e8463392dca",
-      "recordPath": "/signals/9391b8744e8463392dca/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T16:49:35.296Z"
     },
     {
       "signalId": "c4a4fc460206fa9fd548",
@@ -293,6 +292,23 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-08-31T06:06:03.636Z"
+    },
+    {
+      "signalId": "9391b8744e8463392dca",
+      "recordPath": "/signals/9391b8744e8463392dca/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T16:49:35.296Z"
     },
     {
       "signalId": "74a34aa5a01e9ed77fb6",
@@ -363,21 +379,22 @@
       "firstSeen": "2026-08-29T02:31:22.724Z"
     },
     {
-      "signalId": "effa52ffca0c634fd6a6",
-      "recordPath": "/signals/effa52ffca0c634fd6a6/",
-      "brand": "Tele2",
+      "signalId": "e1f8cca98d48da9ba816",
+      "recordPath": "/signals/e1f8cca98d48da9ba816/",
+      "brand": "Artea",
       "sources": [
         "CertStream"
       ],
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-joined-affix",
+        "brand-exact-token",
         "different-tld",
-        "suspicious-context"
+        "punycode",
+        "unicode-confusable"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-30T17:06:49.776Z"
+      "firstSeen": "2026-08-31T06:06:03.636Z"
     },
     {
       "signalId": "0d284af65210b0c1307e",
@@ -395,24 +412,6 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-28T08:25:31.949Z"
-    },
-    {
-      "signalId": "e1f8cca98d48da9ba816",
-      "recordPath": "/signals/e1f8cca98d48da9ba816/",
-      "brand": "Artea",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "different-tld",
-        "punycode",
-        "unicode-confusable"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T06:06:03.636Z"
     }
   ]
 }

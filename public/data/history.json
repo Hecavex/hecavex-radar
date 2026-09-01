@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T14:50:20.141Z",
+  "generatedAt": "2026-09-01T15:09:33.270Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "06c31663d2838fe73089",
+      "domain": "www[.]swedbankpay-test[.]nyehandel[.]se",
+      "brand": "Swedbank",
+      "firstSeen": "2026-09-01T15:03:37.433Z",
+      "lastSeen": "2026-09-01T15:03:37.433Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e9ecde8b4c947bee70152bf0366fe33d",
+          "observedAt": "2026-09-01T15:03:37.433Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "bafe9de660ef77190c3f",
       "domain": "www[.]vinted-account[.]ph",
