@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T23:09:18.562Z",
+  "generatedAt": "2026-09-01T23:27:16.039Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ddc9b66db5435ebfbc80",
+      "domain": "uat[.]dhl-rpa-portal[.]infanion[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-01T23:25:37.047Z",
+      "lastSeen": "2026-09-01T23:25:37.047Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "fc47a0a2e15744c1bafd18747c0d542b",
+          "observedAt": "2026-09-01T23:25:37.047Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "002a5ea06feeb244cf59",
       "domain": "jfkndscz[.]xn--tl2mobile-b4ab[.]com",

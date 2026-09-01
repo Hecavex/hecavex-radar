@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-01T23:21:50.931Z",
+  "generatedAt": "2026-09-01T23:27:16.039Z",
   "window": {
     "days": 30,
-    "from": "2026-08-02T23:21:50.931Z",
-    "to": "2026-09-01T23:21:50.931Z"
+    "from": "2026-08-02T23:27:16.039Z",
+    "to": "2026-09-01T23:27:16.039Z"
   },
-  "totalAvailable": 195,
+  "totalAvailable": 196,
   "truncated": false,
   "events": [
+    {
+      "id": "425e33f23c1901fddb0f98b5eac98775",
+      "type": "first-publication",
+      "occurredAt": "2026-09-01T23:25:37.047Z",
+      "signalId": "ddc9b66db5435ebfbc80",
+      "signalPath": "/signals/ddc9b66db5435ebfbc80/",
+      "domain": "uat[.]dhl-rpa-portal[.]infanion[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "568747b0d24528940333ec6ac90cab84",
       "type": "first-publication",
