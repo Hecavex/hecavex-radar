@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  background: #05090c;
-  color: #e8f0f5;
+  background: #111416;
+  color: #ece9e1;
 }
 
 * {
@@ -12,7 +12,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #05090c;
+  background: #111416;
 }
 
 main {
@@ -47,14 +47,14 @@ button {
 }
 
 .eyebrow {
-  color: #35d8ee;
+  color: #55b9b1;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
 }
 
 .lede {
   max-width: 760px;
-  color: #a9bfd0;
+  color: #8d969a;
   font-size: 1.15rem;
   line-height: 1.7;
 }
@@ -64,17 +64,17 @@ form,
 section:last-child {
   margin-top: 36px;
   padding: 28px;
-  border: 1px solid #29414f;
-  background: #0a1218;
+  border: 1px solid #30383b;
+  background: #171b1d;
 }
 
 .boundary {
-  border-left: 3px solid #96df4f;
+  border-left: 3px solid #86b77e;
 }
 
 .boundary li {
   margin: 8px 0;
-  color: #bdd0dc;
+  color: #ece9e1;
   line-height: 1.5;
 }
 
@@ -88,7 +88,7 @@ label {
   display: grid;
   gap: 9px;
   margin-bottom: 20px;
-  color: #b8cedb;
+  color: #ece9e1;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
 }
@@ -96,11 +96,11 @@ label {
 input,
 textarea {
   width: 100%;
-  border: 1px solid #34515f;
+  border: 1px solid #30383b;
   border-radius: 0;
   padding: 13px 14px;
-  background: #071015;
-  color: #edf7fb;
+  background: #171b1d;
+  color: #ece9e1;
   font: inherit;
 }
 
@@ -108,7 +108,7 @@ input:focus,
 textarea:focus,
 button:focus-visible,
 pre:focus-visible {
-  outline: 2px solid #35d8ee;
+  outline: 2px solid #55b9b1;
   outline-offset: 2px;
 }
 
@@ -118,7 +118,7 @@ pre:focus-visible {
 
 .hint,
 #status {
-  color: #8ca8ba;
+  color: #8d969a;
   font-size: 0.8rem;
 }
 
@@ -131,10 +131,10 @@ pre:focus-visible {
 }
 
 button {
-  border: 1px solid #35d8ee;
+  border: 1px solid #55b9b1;
   padding: 12px 16px;
-  background: #35d8ee;
-  color: #031014;
+  background: #55b9b1;
+  color: #111416;
   font-weight: 700;
   cursor: pointer;
 }
@@ -142,8 +142,8 @@ button {
 button.secondary,
 button:disabled {
   background: transparent;
-  color: #9bb4c4;
-  border-color: #34515f;
+  color: #8d969a;
+  border-color: #30383b;
 }
 
 button:disabled {
@@ -157,9 +157,9 @@ pre {
   overflow: auto;
   margin: 18px 0 0;
   padding: 18px;
-  border: 1px solid #233b47;
-  background: #050b0f;
-  color: #b9d7e5;
+  border: 1px solid #30383b;
+  background: #111416;
+  color: #ece9e1;
   font: 0.8rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;

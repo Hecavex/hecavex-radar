@@ -15,6 +15,15 @@ const output = join(root, "dist");
 const publicOrigin = "https://radar.hecavex.com";
 const analyticsToken = process.env.HECAVEX_ANALYTICS_TOKEN?.trim() ?? "";
 const widths = [320, 360, 390, 768, 1024, 1280, 1440];
+// Canonical portfolio identity outputs. These fingerprints keep binary fallbacks
+// aligned with the reviewed graphite/mineral-teal SVG instead of allowing an old
+// cached favicon set to return unnoticed.
+const identityAssetDigests = new Map([
+  ["favicon.ico", "833ad6e58527cee2b60cced56349822615735f5133be19a8e4502c53b533082a"],
+  ["apple-touch-icon.png", "7494c7531ce9e205350cf4130b5f8e0103e1f10f74257d3437220c8a9e16da89"],
+  ["icon-192.png", "1d1bf844cd5705bd02248ea31853c06ca0279cf0c99db5a759169f34badacd47"],
+  ["icon-512.png", "fc6f38b8599104ba47aa86ddd12a295d9f2252f912ab1ed99057241632f9d47c"],
+]);
 const pages = [
   { path: "/", marker: "Sampled discovery, not continuous monitoring" },
   { path: "/lt/", marker: "Atrankinis aptikimas, o ne nuolatinė stebėsena" },
@@ -35,7 +44,7 @@ const pages = [
   { path: "/lt/dokumentacija/", marker: "HECAVEX Radaro techninis žinynas" },
   { path: "/404.html", marker: "This route has no signal." },
 ];
-const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs"];
+const portfolioNavigation = ["Research", "Radar", "APT Notes", "Labs", "Data"];
 const productNavigation = ["Overview", "Changes", "Brands", "Trends", "Associations", "Tools", "Methodology", "Docs"];
 const lithuanianProductNavigation = ["Apžvalga", "Pokyčiai", "Prekių ženklai", "Tendencijos", "Sąsajos", "Įrankiai", "Metodologija", "Dokumentacija"];
 
@@ -855,7 +864,10 @@ function verifyBuiltHtml() {
     assert(document.querySelector('header.site-header[data-portfolio-shell="v2"]'), `${route} has no shared portfolio shell marker.`);
     assert(document.querySelector(`.brand[href="https://hecavex.com/${lithuanian ? "lt" : "en"}/"]`), `${route} does not link the HECAVEX brand to the correct Research edition.`);
     assert(document.querySelector(`.product-identity[href="${lithuanian ? "/lt/" : "/"}"]`), `${route} does not link the Radar identity to its localized overview.`);
-    assert(document.querySelectorAll(".portfolio-navigation a").length === 4, `${route} does not expose four portfolio links.`);
+    assert(
+      document.querySelectorAll(".portfolio-navigation a").length === portfolioNavigation.length,
+      `${route} does not expose the complete portfolio navigation.`,
+    );
     assert(document.querySelectorAll(".product-navigation a").length === 8, `${route} exposes the wrong Radar navigation set.`);
     assert(document.querySelector(".header-utility .source-link"), `${route} has no fixed Source utility.`);
     const analyticsLoaders = [...document.querySelectorAll("script:not([src])")].filter((script) =>
@@ -1135,24 +1147,35 @@ function verifyBuiltHtml() {
     .filter((path) => path.endsWith(".css"))
     .map((path) => readFileSync(path, "utf8"))
     .join("\n");
-  assert(css.includes("IBM Plex Mono") && css.includes("inter-latin-ext-400-normal.woff2"), "Built CSS does not advertise the Cold Signal fonts.");
+  assert(css.includes("IBM Plex Mono") && css.includes("inter-latin-ext-400-normal.woff2"), "Built CSS does not advertise the shared HECAVEX interface fonts.");
+  for (const colour of ["#111416", "#171b1d", "#1d2326", "#30383b", "#ece9e1", "#8d969a", "#55b9b1", "#86b77e", "#d2aa62", "#d06c65"]) {
+    assert(css.includes(colour), `Built CSS is missing shared HECAVEX operational colour ${colour}.`);
+  }
   assert(!/fonts\.(googleapis|gstatic)\.com/u.test(css), "Built CSS must not depend on remote font services.");
   assert(
-    !/#(?:080c11|0d131a|17212d|24303d|344455|6db18a|dda94f)|rgb\((?:8 12 17|13 19 26|23 33 45|36 48 61|52 68 85|109 177 138|221 169 79)/iu.test(css),
-    "Built CSS still contains a retired pre-Cold-Signal palette value.",
+    !/#(?:05080b|0b1117|101923|1c2123|1e3440|f2f8fb|b6c6cf|c9c5bc|8397a3|44c7dc|a2da68|ffc857|ff6b6b|080c11|0d131a|17212d|24303d|344455|6db18a|dda94f)|rgb\((?:5 8 11|11 17 23|16 25 35|30 52 64|68 199 220|162 218 104|255 200 87|255 107 107|8 12 17|13 19 26|23 33 45|36 48 61|52 68 85|109 177 138|221 169 79)/iu.test(css),
+    "Built CSS still contains a retired HECAVEX palette value.",
   );
 }
 
 function verifyIdentityArtwork() {
   for (const path of [join(root, "public", "hecavex-mark.svg"), join(output, "hecavex-mark.svg"), join(root, "public", "favicon.svg"), join(output, "favicon.svg")]) {
     const mark = readFileSync(path, "utf8").toLowerCase();
-    assert(mark.includes("#44c7dc"), `${relative(root, path)} is missing shared cyan #44c7dc.`);
-    assert(mark.includes("#f2f8fb"), `${relative(root, path)} is missing shared white #f2f8fb.`);
-    assert(!mark.includes("#ff6b6b"), `${relative(root, path)} still contains retired danger red #ff6b6b.`);
+    assert(mark.includes("#55b9b1"), `${relative(root, path)} is missing shared mineral teal #55b9b1.`);
+    assert(mark.includes("#ece9e1"), `${relative(root, path)} is missing shared warm white #ece9e1.`);
+    assert(!mark.includes("#d06c65"), `${relative(root, path)} must reserve semantic danger red #d06c65 for status UI.`);
   }
   for (const name of ["favicon.ico", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "site.webmanifest"]) {
     assert(existsSync(join(root, "public", name)), `public/${name} is missing from the shared identity kit.`);
     assert(existsSync(join(output, name)), `dist/${name} is missing from the shared identity kit.`);
+  }
+  for (const [name, expectedDigest] of identityAssetDigests) {
+    for (const base of [join(root, "public"), output]) {
+      const assetPath = join(base, name);
+      if (!existsSync(assetPath)) continue;
+      const actualDigest = createHash("sha256").update(readFileSync(assetPath)).digest("hex");
+      assert(actualDigest === expectedDigest, `${relative(root, assetPath)} must match the canonical HECAVEX identity asset.`);
+    }
   }
   const manifest = JSON.parse(readFileSync(join(output, "site.webmanifest"), "utf8"));
   assert(manifest.name === "HECAVEX Radar" && manifest.id === "/" && manifest.scope === "/", "Radar manifest identity or scope is invalid.");
