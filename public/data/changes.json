@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-01T10:29:38.529Z",
+  "generatedAt": "2026-09-01T11:25:44.854Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-08-31T10:29:38.529Z",
-      "to": "2026-09-01T10:29:38.529Z",
-      "events": 24,
-      "uniqueSignals": 12,
-      "firstPublications": 12,
+      "from": "2026-08-31T11:25:44.854Z",
+      "to": "2026-09-01T11:25:44.854Z",
+      "events": 22,
+      "uniqueSignals": 11,
+      "firstPublications": 11,
       "statusChanges": 0,
-      "observations": 12,
+      "observations": 11,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 24
+        "CertStream": 22
       },
       "byStatus": {
-        "suspected": 24
+        "suspected": 22
       },
       "byReason": {
-        "suspicious-context": 24,
-        "different-tld": 22,
-        "multiple-hyphens": 16,
-        "brand-exact-token": 14,
-        "first-publication": 12,
+        "suspicious-context": 22,
+        "different-tld": 20,
+        "multiple-hyphens": 14,
+        "brand-exact-token": 12,
+        "first-publication": 11,
         "brand-joined-affix": 8,
         "brand-split-token": 2
       },
@@ -34,44 +34,41 @@
         "Revolut": 6,
         "Vinted": 4,
         "Citadele": 2,
-        "MAXIMA": 2,
-        "VMI": 2
+        "MAXIMA": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-25T10:29:38.529Z",
-      "to": "2026-09-01T10:29:38.529Z",
-      "events": 319,
-      "uniqueSignals": 159,
-      "firstPublications": 156,
+      "from": "2026-08-25T11:25:44.854Z",
+      "to": "2026-09-01T11:25:44.854Z",
+      "events": 317,
+      "uniqueSignals": 158,
+      "firstPublications": 155,
       "statusChanges": 0,
-      "observations": 163,
+      "observations": 162,
       "reobservations": 4,
       "bySource": {
         "CertStream": 315,
-        "HECAVEX": 2,
-        "URLScan": 2
+        "HECAVEX": 2
       },
       "byStatus": {
-        "suspected": 319
+        "suspected": 317
       },
       "byReason": {
         "suspicious-context": 305,
         "different-tld": 279,
         "brand-exact-token": 247,
         "multiple-hyphens": 167,
-        "first-publication": 156,
+        "first-publication": 155,
         "brand-joined-affix": 62,
         "punycode": 18,
         "unicode-confusable": 14,
         "brand-split-token": 8,
-        "brand-domain-match": 2,
         "manual-review": 2
       },
       "byBrand": {
         "DHL": 130,
-        "Revolut": 44,
+        "Revolut": 42,
         "Vinted": 22,
         "Telia": 20,
         "VMI": 16,
