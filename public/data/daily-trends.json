@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-01T19:23:44.162Z",
+  "generatedAt": "2026-09-01T19:41:07.348Z",
   "retentionDays": 365,
   "from": "2025-09-02",
   "to": "2026-09-01",
@@ -633,46 +633,47 @@
       "date": "2026-09-01",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 69824,
-        "scheduledSlots": 77,
-        "recordedAttempts": 42,
-        "healthyAttempts": 42,
-        "recordedSchedulePercent": 54.5,
-        "listeningCoveragePercent": 28.86,
-        "scheduledListeningCeilingPercent": 52.93,
-        "listeningSeconds": 20153.927,
+        "windowSeconds": 70867,
+        "scheduledSlots": 78,
+        "recordedAttempts": 43,
+        "healthyAttempts": 43,
+        "recordedSchedulePercent": 55.1,
+        "listeningCoveragePercent": 29.12,
+        "scheduledListeningCeilingPercent": 52.83,
+        "listeningSeconds": 20633.925,
         "outcomes": {
           "healthy-empty": 31,
-          "healthy-matches": 11
+          "healthy-matches": 12
         }
       },
       "discovery": {
-        "events": 22,
-        "uniqueSignals": 11,
-        "observations": 11,
+        "events": 23,
+        "uniqueSignals": 12,
+        "observations": 12,
         "reobservations": 0,
         "firstPublications": 11,
         "statusChanges": 0,
-        "facetSampleSize": 11,
-        "evidenceClassifiedSignals": 11,
+        "facetSampleSize": 12,
+        "evidenceClassifiedSignals": 12,
         "byBrand": {
           "Revolut": 4,
           "SEB": 2,
           "Swedbank": 2,
           "Vinted": 2,
+          "Artea": 1,
           "DHL": 1
         },
         "bySource": {
-          "CertStream": 11
+          "CertStream": 12
         },
         "byEvidenceTier": {
-          "name-only": 11
+          "name-only": 12
         },
         "byReason": {
+          "suspicious-context": 12,
           "first-publication": 11,
-          "suspicious-context": 11,
           "different-tld": 9,
-          "brand-joined-affix": 6,
+          "brand-joined-affix": 7,
           "brand-exact-token": 5,
           "multiple-hyphens": 4
         }

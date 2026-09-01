@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T18:34:59.994Z",
+  "generatedAt": "2026-09-01T19:41:07.348Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c5ee446f5f0dae3cd2ac",
+      "domain": "bankartea[.]lt",
+      "brand": "Artea",
+      "firstSeen": "2026-08-29T09:22:58.578Z",
+      "lastSeen": "2026-09-01T19:36:37.152Z",
+      "observationCount": 3,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a15cf4b3f4f856c5b4b896fbcdc1f462",
+          "observedAt": "2026-08-29T09:22:58.578Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "33926e6778748540e207",
       "domain": "my-seb-refund[.]com[.]ph",
@@ -1360,39 +1393,6 @@
             "brand-joined-affix",
             "suspicious-context",
             "different-tld",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "c5ee446f5f0dae3cd2ac",
-      "domain": "bankartea[.]lt",
-      "brand": "Artea",
-      "firstSeen": "2026-08-29T09:22:58.578Z",
-      "lastSeen": "2026-08-30T22:07:46.107Z",
-      "observationCount": 2,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "a15cf4b3f4f856c5b4b896fbcdc1f462",
-          "observedAt": "2026-08-29T09:22:58.578Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-joined-affix",
-            "suspicious-context",
             "first-publication"
           ]
         }
