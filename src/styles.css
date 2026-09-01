@@ -192,6 +192,11 @@
   --sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --content-width: 94rem;
   --header-offset: 7.25rem;
+  --page-frame-start: clamp(3.25rem, 5vw, 4.75rem);
+  --page-frame-end: clamp(4rem, 8vw, 8rem);
+  --page-title-size: clamp(2.4rem, 3.6vw, 3.25rem);
+  --page-title-line-height: 1;
+  --section-title-line-height: 1.1;
 }
 
 * {
@@ -217,6 +222,13 @@ body {
   color: var(--text-soft);
   font: 15.2px/1.66 var(--sans);
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: var(--section-title-line-height);
 }
 
 button,
@@ -585,7 +597,11 @@ main > section,
 main {
   width: min(100%, var(--content-width));
   margin: 0 auto;
-  padding: 0 clamp(1rem, 3.5vw, 3.5rem) clamp(4rem, 7vw, 6.5rem);
+  padding: 0 clamp(1rem, 3.5vw, 3.5rem) var(--page-frame-end);
+}
+
+main:not(.state-page) {
+  padding-top: var(--page-frame-start);
 }
 
 .hero {
@@ -647,7 +663,7 @@ main {
   max-width: 58ch;
   margin: 1rem 0 0;
   color: var(--muted);
-  font-size: clamp(.98rem, 1.25vw, 1.08rem);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
   line-height: 1.7;
 }
 
@@ -888,7 +904,7 @@ main {
   max-width: 22ch;
   font-size: clamp(1.35rem, 2.4vw, 1.85rem);
   font-weight: 560;
-  line-height: 1.15;
+  line-height: var(--section-title-line-height);
 }
 
 .collection-disclosure-heading > p {
@@ -1342,7 +1358,7 @@ main {
   color: var(--text);
   font-size: clamp(1.45rem, 3vw, 2.2rem);
   font-weight: 550;
-  line-height: 1.08;
+  line-height: var(--section-title-line-height);
   letter-spacing: -.03em;
 }
 
@@ -3202,7 +3218,7 @@ td time {
   50% { opacity: .35; transform: scale(.94); }
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1160px) {
   .metric-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -3240,18 +3256,23 @@ td time {
   }
 }
 
+@media (max-width: 900px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .history-metrics .metric-card:last-child,
+  .metric-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .metric-card {
+    min-height: 5.4rem;
+    padding: 1rem;
+  }
+}
+
 @media (max-width: 760px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 1.35rem;
-    min-height: auto;
-    padding: 2.75rem 0 2.5rem;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.5rem, 13vw, 4rem);
-  }
-
   .freshness-card {
     max-width: 28rem;
     padding: 1rem;
@@ -3271,23 +3292,6 @@ td time {
     padding-inline: .7rem;
   }
 
-  .metric-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .history-metrics .metric-card:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .metric-card:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .metric-card {
-    min-height: 5.4rem;
-    padding: 1rem;
-  }
-
   .section-heading,
   .collection-health-heading,
   .methodology-toc,
@@ -3297,8 +3301,7 @@ td time {
     flex-direction: column;
   }
 
-  .candidate-summary-heading,
-  .brand-scope-heading {
+  .candidate-summary-heading {
     align-items: flex-start;
     grid-template-columns: 1fr;
     flex-direction: column;
@@ -3346,18 +3349,9 @@ td time {
     justify-content: flex-start;
   }
 
-  .methodology-heading,
   .methodology-boundaries,
-  .methodology-section-heading,
-  .collection-disclosure-heading,
-  .docs-heading,
-  .docs-section-heading {
+  .collection-disclosure-heading {
     grid-template-columns: 1fr;
-  }
-
-  .methodology-heading,
-  .docs-heading {
-    align-items: start;
   }
 
   .methodology-toc > div,
@@ -3540,15 +3534,36 @@ td time {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 680px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.35rem;
+    min-height: auto;
+    padding: 2.75rem 0 2.5rem;
+  }
+
+  .brand-scope-heading,
+  .methodology-heading,
+  .methodology-section-heading,
+  .docs-heading,
+  .docs-section-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-scope-heading,
+  .methodology-heading,
+  .docs-heading {
+    align-items: start;
+  }
+
   .network-bar {
     min-height: 4rem;
     padding-inline: 1rem;
   }
 
   .brand img {
-    width: 2.125rem;
-    height: 2.125rem;
+    width: 2.25rem;
+    height: 2.25rem;
   }
 
   .brand-copy small {
@@ -4047,7 +4062,7 @@ td time {
 .intelligence-page {
   width: min(100%, var(--content-width));
   margin-inline: auto;
-  padding: 0 clamp(1rem, 3.5vw, 3.5rem) clamp(4rem, 7vw, 6.5rem);
+  padding: 0 clamp(1rem, 3.5vw, 3.5rem) var(--page-frame-end);
 }
 
 .breadcrumb {
@@ -4651,7 +4666,36 @@ td time {
 .dataset-explanation p:not(.eyebrow) { color: var(--muted); line-height: 1.7; }
 .dataset-explanation a { color: var(--blue); font: 600 .65rem var(--mono); }
 
-@media (max-width: 1120px) {
+/* Portfolio geometry contract: product pages keep their operational
+   compositions while sharing one title scale with the wider HECAVEX system. */
+:is(
+  .hero,
+  .methodology-heading,
+  .docs-heading,
+  .brand-scope-heading,
+  .profile-hero,
+  .artifact-hero,
+  .not-found-copy
+) h1 {
+  font-size: var(--page-title-size);
+  line-height: var(--page-title-line-height);
+}
+
+/* Standard product and utility-page titles share the portfolio heading voice.
+   Record/profile titles retain their denser display treatment above. */
+:is(
+  .hero,
+  .methodology-heading,
+  .docs-heading,
+  .brand-scope-heading,
+  .artifact-hero,
+  .not-found-copy
+) h1 {
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+
+@media (max-width: 1160px) {
   .activity-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .activity-strip > a { grid-column: span 2; }
   .radar-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -4665,7 +4709,34 @@ td time {
   .download-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (max-width: 900px) {
+  .activity-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .activity-strip > a { grid-column: 1 / -1; }
+  .activity-strip span { white-space: normal; }
+}
+
 @media (max-width: 760px) {
+  .compact-signal-list article { grid-template-columns: 1fr; }
+  .trend-row { grid-template-columns: 5.5rem minmax(7rem, 1fr) 2rem; }
+  .trend-row small { grid-column: 2 / -1; }
+}
+
+@media (max-width: 680px) {
+  .methodology-heading > p,
+  .methodology-section-heading > p,
+  .methodology-rule-list p,
+  .methodology-note p,
+  .methodology-report,
+  .docs-heading > p,
+  .docs-section-heading > p,
+  .docs-callout p,
+  .docs-copy,
+  .docs-contact {
+    text-align: left;
+    text-align-last: auto;
+    text-justify: auto;
+  }
+
   .radar-hero {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.35rem;
@@ -4677,9 +4748,6 @@ td time {
     max-width: none;
   }
 
-  .activity-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .activity-strip > a { grid-column: 1 / -1; }
-  .activity-strip span { white-space: normal; }
   .radar-route-grid { grid-template-columns: 1fr; }
   .not-found-hero { grid-template-columns: 1fr; gap: 1.5rem; min-height: 0; padding-block: 3rem; }
   .not-found-status { width: 100%; }
@@ -4695,13 +4763,10 @@ td time {
   .aside-panel { border-right: 0; border-bottom: 1px solid var(--line); }
   .brand-hub-grid > article,
   .dataset-explanation > article { padding-inline: 0 !important; border-right: 0 !important; }
-  .compact-signal-list article { grid-template-columns: 1fr; }
   .feed-strip { flex-wrap: wrap; }
   .feed-strip > div { flex-basis: 100%; }
   .event-list li { grid-template-columns: 1fr; gap: .45rem; }
   .related-route-card { align-items: flex-start; flex-direction: column; }
-  .trend-row { grid-template-columns: 5.5rem minmax(7rem, 1fr) 2rem; }
-  .trend-row small { grid-column: 2 / -1; }
   .dataset-summary,
   .download-grid { grid-template-columns: 1fr; }
 }

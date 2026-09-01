@@ -79,6 +79,52 @@ const performanceBudgets = {
   // Per-page and compressed asset budgets below remain the user-facing guardrails.
   totalOutputBytes: 32 * 1024 * 1024,
 };
+
+function verifyLayoutSourceContract() {
+  const stylesheet = readFileSync(join(root, "src", "styles.css"), "utf8");
+  for (const declaration of [
+    "--page-frame-start: clamp(3.25rem, 5vw, 4.75rem);",
+    "--page-frame-end: clamp(4rem, 8vw, 8rem);",
+    "--page-title-size: clamp(2.4rem, 3.6vw, 3.25rem);",
+    "--page-title-line-height: 1;",
+    "--section-title-line-height: 1.1;",
+  ]) {
+    assert(stylesheet.includes(declaration), `Radar layout source omits shared declaration ${declaration}`);
+  }
+  assert(
+    stylesheet.includes("main:not(.state-page)") &&
+      stylesheet.includes("padding-top: var(--page-frame-start);") &&
+      stylesheet.includes("padding: 0 clamp(1rem, 3.5vw, 3.5rem) var(--page-frame-end);"),
+    "Radar page frames no longer consume the shared block-spacing tokens.",
+  );
+  for (const selector of [
+    ".hero",
+    ".methodology-heading",
+    ".docs-heading",
+    ".brand-scope-heading",
+    ".profile-hero",
+    ".artifact-hero",
+    ".not-found-copy",
+  ]) {
+    assert(stylesheet.includes(selector), `Radar page-title contract omits ${selector}.`);
+  }
+  assert(
+    stylesheet.includes("font-size: var(--page-title-size);") &&
+      stylesheet.includes("line-height: var(--page-title-line-height);"),
+    "Radar top-level headings no longer consume the shared title tokens.",
+  );
+  for (const breakpoint of [1160, 900, 680]) {
+    assert(stylesheet.includes(`@media (max-width: ${breakpoint}px)`), `Radar layout omits the shared ${breakpoint}px breakpoint.`);
+  }
+  assert(
+    stylesheet.includes("@media (max-width: 760px)") && stylesheet.includes(".table-scroll table"),
+    "Radar lost its product-specific 760px table accessibility transformation.",
+  );
+  assert(
+    !stylesheet.includes("@media (max-width: 1120px)") && !stylesheet.includes("@media (max-width: 560px)"),
+    "Radar still contains retired broad presentation breakpoints.",
+  );
+}
 const fontFiles = [
   "inter/inter-latin-400-normal.woff2",
   "inter/inter-latin-ext-400-normal.woff2",
@@ -2172,11 +2218,20 @@ async function verifyInBrowser() {
         await page.goto(`${origin}${entry.path}`, { waitUntil: "networkidle" });
         assert(await page.locator("#root").getAttribute("data-hydrated") === "true", `${entry.path} did not hydrate under its production CSP at ${width}px.`);
         const layout = await page.evaluate(() => {
+          const main = document.querySelector("main");
+          const mainRect = main?.getBoundingClientRect();
+          const mainStyle = main ? getComputedStyle(main) : null;
+          const firstMainBlock = main?.firstElementChild?.getBoundingClientRect();
           const heading = document.querySelector("main h1")?.getBoundingClientRect();
           const headingStyle = document.querySelector("main h1") ? getComputedStyle(document.querySelector("main h1")) : null;
+          const brandMark = document.querySelector(".brand img")?.getBoundingClientRect();
+          const sectionTitle = document.querySelector("main h2");
+          const sectionTitleStyle = sectionTitle ? getComputedStyle(sectionTitle) : null;
           const networkBar = document.querySelector(".network-bar")?.getBoundingClientRect();
           const productBar = document.querySelector(".product-bar")?.getBoundingClientRect();
           const hero = document.querySelector(".hero")?.getBoundingClientRect();
+          const heroIntro = document.querySelector(".hero-intro");
+          const heroIntroStyle = heroIntro ? getComputedStyle(heroIntro) : null;
           const radarHeroCopy = document.querySelector(".radar-hero .hero-copy")?.getBoundingClientRect();
           const radarFreshness = document.querySelector(".radar-hero .freshness-card")?.getBoundingClientRect();
           const metricGrid = document.querySelector(".activity-strip")?.getBoundingClientRect();
@@ -2228,9 +2283,20 @@ async function verifyInBrowser() {
             headingHeight: heading?.height ?? 0,
             headingRight: heading?.right ?? 0,
             headingFontSize: headingStyle ? parseFloat(headingStyle.fontSize) : 0,
+            headingLineHeight: headingStyle ? parseFloat(headingStyle.lineHeight) : 0,
+            headingFontWeight: headingStyle?.fontWeight ?? "",
+            headingLetterSpacing: headingStyle ? parseFloat(headingStyle.letterSpacing) : 0,
+            brandMarkWidth: brandMark?.width ?? 0,
+            sectionTitleFontSize: sectionTitleStyle ? parseFloat(sectionTitleStyle.fontSize) : 0,
+            sectionTitleLineHeight: sectionTitleStyle ? parseFloat(sectionTitleStyle.lineHeight) : 0,
+            frameTop: mainRect?.top ?? 0,
+            framePaddingTop: mainStyle ? parseFloat(mainStyle.paddingTop) : 0,
+            framePaddingBottom: mainStyle ? parseFloat(mainStyle.paddingBottom) : 0,
+            firstMainBlockTop: firstMainBlock?.top ?? 0,
             networkHeight: networkBar?.height ?? 0,
             productHeight: productBar?.height ?? 0,
             heroHeight: hero?.height ?? 0,
+            heroIntroFontSize: heroIntroStyle ? parseFloat(heroIntroStyle.fontSize) : 0,
             radarHeroCopyWidth: radarHeroCopy?.width ?? 0,
             radarHeroCopyBottom: radarHeroCopy?.bottom ?? 0,
             radarFreshnessTop: radarFreshness?.top ?? 0,
@@ -2269,7 +2335,39 @@ async function verifyInBrowser() {
         assert(layout.headingHeight > 0 && layout.headingHeight < 540, `${entry.path} has an oversized h1 at ${width}px.`);
         assert(layout.headingFontSize <= 64.1, `${entry.path} exceeds the 64px display-heading ceiling at ${width}px.`);
         assert(layout.headingRight <= layout.clientWidth + 1, `${entry.path} h1 escapes the viewport at ${width}px.`);
+        const expectedPageTitle = Math.min(52, Math.max(38.4, width * .036));
+        const expectedFrameStart = Math.min(76, Math.max(52, width * .05));
+        const expectedFrameEnd = Math.min(128, Math.max(64, width * .08));
+        assert(
+          Math.abs(layout.headingFontSize - expectedPageTitle) <= .25 &&
+            Math.abs(layout.headingLineHeight - layout.headingFontSize) <= .25,
+          `${entry.path} page title is ${layout.headingFontSize}/${layout.headingLineHeight}px at ${width}px; ` +
+            `expected ${expectedPageTitle.toFixed(2)}px with unit line-height.`,
+        );
+        assert(
+          layout.headingFontWeight === "600" &&
+            Math.abs(layout.headingLetterSpacing - (layout.headingFontSize * -.035)) <= .08,
+          `${entry.path} standard title uses weight/tracking ${layout.headingFontWeight}/${layout.headingLetterSpacing}px at ${width}px; ` +
+            "expected 600/-0.035em.",
+        );
+        if (layout.sectionTitleFontSize > 0) {
+          assert(
+            Math.abs(layout.sectionTitleLineHeight - (layout.sectionTitleFontSize * 1.1)) <= .3,
+            `${entry.path} section title is ${layout.sectionTitleFontSize}/${layout.sectionTitleLineHeight}px at ${width}px; ` +
+              "expected a 1.1 line-height.",
+          );
+        }
+        assert(
+          Math.abs(layout.framePaddingTop - expectedFrameStart) <= .25 &&
+            Math.abs(layout.framePaddingBottom - expectedFrameEnd) <= .25 &&
+            Math.abs(layout.firstMainBlockTop - (layout.frameTop + layout.framePaddingTop)) <= 1,
+          `${entry.path} frame rhythm is ${layout.framePaddingTop}/${layout.framePaddingBottom}px at ${width}px; ` +
+            `expected ${expectedFrameStart.toFixed(2)}/${expectedFrameEnd.toFixed(2)}px.`,
+        );
         assert(Math.abs(layout.networkHeight - 64) <= 1, `${entry.path} network row is ${layout.networkHeight}px at ${width}px, expected 64px.`);
+        if (width <= 1160) {
+          assert(Math.abs(layout.brandMarkWidth - 36) <= .25, `${entry.path} mobile brand mark is ${layout.brandMarkWidth}px at ${width}px, expected 36px.`);
+        }
 
         if (width > 1160) {
           assert(Math.abs(layout.productHeight - 52) <= 1, `${entry.path} product row is ${layout.productHeight}px at ${width}px, expected 52px.`);
@@ -2290,6 +2388,7 @@ async function verifyInBrowser() {
         }
         if (width === 1440 && overview) {
           assert(layout.heroHeight > 0 && layout.heroHeight <= 430, `Radar hero is ${layout.heroHeight}px at 1440x900; budget is 430px.`);
+          assert(Math.abs(layout.heroIntroFontSize - 18.4) <= .1, `Radar home lead is ${layout.heroIntroFontSize}px at 1440px, expected 18.4px.`);
           assert(layout.metricTop > 0 && layout.metricTop < 760, `Radar summary starts below useful 1440x900 content at ${layout.metricTop}px.`);
           assert(
             layout.hostingColumnRatio >= 0.21 && layout.hostingColumnRatio <= 0.23,
@@ -2328,10 +2427,15 @@ async function verifyInBrowser() {
             `${entry.path} content navigation dividers are not a matching 1px pair at ${width}px ` +
               `(${layout.contentTocBorderTop || "none"}/${layout.contentTocBorderBottom || "none"}).`,
           );
+          const expectedLongFormAlign = width <= 680 ? "left" : "justify";
+          const expectedLongFormAlignLast = width <= 680 ? "auto" : "left";
           assert(
-            layout.longFormAlign === "justify" && layout.longFormAlignLast === "left" && layout.longFormHyphens === "auto",
+            layout.longFormAlign === expectedLongFormAlign &&
+              layout.longFormAlignLast === expectedLongFormAlignLast &&
+              layout.longFormHyphens === "auto",
             `${entry.path} long-form prose alignment drifted at ${width}px ` +
-              `(${layout.longFormAlign}/${layout.longFormAlignLast}/${layout.longFormHyphens}).`,
+              `(${layout.longFormAlign}/${layout.longFormAlignLast}/${layout.longFormHyphens}); ` +
+              `expected ${expectedLongFormAlign}/${expectedLongFormAlignLast}/auto.`,
           );
           if (entry.path === "/docs/" || entry.path === "/lt/dokumentacija/") {
             assert(layout.docsTableCellAlign !== "justify", `Documentation table cells inherited prose justification at ${width}px.`);
@@ -2519,6 +2623,7 @@ const verificationPhase = process.argv[2] ?? "all";
 assert(["all", "static", "browser"].includes(verificationPhase), `Unknown verification phase: ${verificationPhase}.`);
 
 if (verificationPhase !== "browser") {
+  verifyLayoutSourceContract();
   verifyDeploymentTopology();
   verifyPythonAutomationLocks();
   verifyBuiltHtml();
