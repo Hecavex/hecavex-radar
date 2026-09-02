@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-02T15:38:41.519Z",
+  "generatedAt": "2026-09-02T15:59:54.009Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-01T15:38:41.519Z",
-      "to": "2026-09-02T15:38:41.519Z",
-      "events": 44,
-      "uniqueSignals": 22,
-      "firstPublications": 21,
+      "from": "2026-09-01T15:59:54.009Z",
+      "to": "2026-09-02T15:59:54.009Z",
+      "events": 48,
+      "uniqueSignals": 24,
+      "firstPublications": 23,
       "statusChanges": 0,
-      "observations": 23,
+      "observations": 25,
       "reobservations": 1,
       "bySource": {
-        "CertStream": 44
+        "CertStream": 48
       },
       "byStatus": {
-        "suspected": 44
+        "suspected": 48
       },
       "byReason": {
-        "suspicious-context": 44,
-        "brand-exact-token": 30,
-        "different-tld": 29,
-        "multiple-hyphens": 24,
-        "first-publication": 21,
+        "suspicious-context": 48,
+        "brand-exact-token": 34,
+        "different-tld": 33,
+        "multiple-hyphens": 28,
+        "first-publication": 23,
         "brand-joined-affix": 14,
         "punycode": 2,
         "unicode-confusable": 2
@@ -34,6 +34,7 @@
         "DHL": 18,
         "Revolut": 17,
         "SEB": 4,
+        "VMI": 4,
         "Swedbank": 2,
         "Tele2": 2,
         "Artea": 1
@@ -41,26 +42,26 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-26T15:38:41.519Z",
-      "to": "2026-09-02T15:38:41.519Z",
-      "events": 363,
-      "uniqueSignals": 180,
-      "firstPublications": 177,
+      "from": "2026-08-26T15:59:54.009Z",
+      "to": "2026-09-02T15:59:54.009Z",
+      "events": 367,
+      "uniqueSignals": 182,
+      "firstPublications": 179,
       "statusChanges": 0,
-      "observations": 186,
+      "observations": 188,
       "reobservations": 6,
       "bySource": {
-        "CertStream": 363
+        "CertStream": 367
       },
       "byStatus": {
-        "suspected": 363
+        "suspected": 367
       },
       "byReason": {
-        "suspicious-context": 351,
-        "different-tld": 308,
-        "brand-exact-token": 277,
-        "multiple-hyphens": 193,
-        "first-publication": 177,
+        "suspicious-context": 355,
+        "different-tld": 312,
+        "brand-exact-token": 281,
+        "multiple-hyphens": 197,
+        "first-publication": 179,
         "brand-joined-affix": 78,
         "punycode": 20,
         "unicode-confusable": 16,
@@ -71,7 +72,7 @@
         "Revolut": 59,
         "Vinted": 22,
         "Telia": 20,
-        "VMI": 16,
+        "VMI": 20,
         "SEB": 14,
         "MAXIMA": 10,
         "Swedbank": 10,

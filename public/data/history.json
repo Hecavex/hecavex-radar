@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T15:38:41.519Z",
+  "generatedAt": "2026-09-02T15:59:54.009Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d011b57dfe48957858b2",
+      "domain": "secure-vmi[.]energy-report[.]ro",
+      "brand": "VMI",
+      "firstSeen": "2026-09-02T15:51:11.682Z",
+      "lastSeen": "2026-09-02T15:51:11.682Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e62f048bf406f1c402169bd684f79a85",
+          "observedAt": "2026-09-02T15:51:11.682Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a48b6d2c34ee3e28f807",
+      "domain": "www[.]secure-vmi[.]energy-report[.]ro",
+      "brand": "VMI",
+      "firstSeen": "2026-09-02T15:51:11.682Z",
+      "lastSeen": "2026-09-02T15:51:11.682Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "b7d0b633fb1b54012070e7f50c81cf47",
+          "observedAt": "2026-09-02T15:51:11.682Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e15912382129de00dfd9",
       "domain": "mail[.]revolut-support[.]finance",

@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T15:38:41.519Z",
+  "generatedAt": "2026-09-02T15:59:54.009Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T15:38:41.519Z",
-    "to": "2026-09-02T15:38:41.519Z"
+    "from": "2026-08-03T15:59:54.009Z",
+    "to": "2026-09-02T15:59:54.009Z"
   },
-  "totalAvailable": 208,
+  "totalAvailable": 210,
   "truncated": false,
   "events": [
+    {
+      "id": "c88faa3071d2e2698f1688a9fb04ac7d",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T15:51:11.682Z",
+      "signalId": "a48b6d2c34ee3e28f807",
+      "signalPath": "/signals/a48b6d2c34ee3e28f807/",
+      "domain": "www[.]secure-vmi[.]energy-report[.]ro",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "32ec81792c309e19b693b8d40f04d379",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T15:51:11.682Z",
+      "signalId": "d011b57dfe48957858b2",
+      "signalPath": "/signals/d011b57dfe48957858b2/",
+      "domain": "secure-vmi[.]energy-report[.]ro",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "cb2a626ac1523b19f4bf159a613b3e51",
       "type": "first-publication",
