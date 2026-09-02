@@ -1,27 +1,25 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T16:48:51.599Z",
+  "generatedAt": "2026-09-02T17:45:26.194Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-02T16:48:51.599Z",
-    "failureCodes": [
-      "provider-timeout"
-    ],
+    "endedAt": "2026-09-02T17:45:26.194Z",
+    "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 0,
+    "outcome": "completed",
+    "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 6,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-02T16:48:51.595Z"
+    "startedAt": "2026-09-02T17:45:11.682Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 17,
-    "degradedSince": "2026-08-30T14:47:30.977Z",
-    "lastSuccessAt": null,
-    "nextAttemptAt": "2026-09-02T17:07:21.324Z"
+    "consecutiveFailures": 0,
+    "degradedSince": null,
+    "lastSuccessAt": "2026-09-02T17:45:26.194Z",
+    "nextAttemptAt": null
   },
   "queries": {
     "brand:artea": {
@@ -132,48 +130,48 @@
       "brand": "E. sveikata",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-02T11:46:34.466Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
       "brand": "Gjensidige",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "gjensidige"
     },
     "brand:ignitis": {
       "brand": "Ignitis",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "ignitis"
     },
     "brand:ikilietuva": {
       "brand": "IKI",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "ikilietuva"
     },
     "brand:itella": {
       "brand": "SmartPosti",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "itella"
     },
     "brand:lddraudimas": {
       "brand": "Lietuvos draudimas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T17:45:11.682Z",
       "term": "lddraudimas"
     },
     "brand:lidllietuva": {
@@ -393,6 +391,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 13,
+  "queryCursor": 19,
   "schemaVersion": 1
 }
