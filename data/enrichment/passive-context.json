@@ -3973,7 +3973,7 @@
     {
       "components": {},
       "domain": "www[.]dhl-expresstracking[.]com[.]ph",
-      "observedAt": "2026-09-02T01:45:39.966Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "e42075ba699aa4354145"
     },
     {
@@ -4015,7 +4015,7 @@
         }
       },
       "domain": "www[.]dhl-invoice-payment[.]diamantinapersianas[.]com[.]br",
-      "observedAt": "2026-09-02T01:45:39.966Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "29be4a0869ba3602c6f4"
     },
     {
@@ -4029,20 +4029,24 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]dhl-parcel-de[.]com[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "80274c8f73980d3197e7"
     },
     {
@@ -4056,20 +4060,24 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-29T19:21:03.307Z",
+          "observedAt": "2026-08-31T19:21:09.594Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]dhl-portal[.]com[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "1e95c8d5f1d62af98520"
     },
     {
@@ -4083,26 +4091,127 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-02T07:26:46.447Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-secure-box[.]com[.]ph",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "cab53622beae8e77ccbb"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T07:27:24.782Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]dhl-secure-express[.]com[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "6b9da5027b0ed5b21c60"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T13:21:12.245Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-tracking-deliveries[.]com[.]ph",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "fa84088168732dc94112"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "202[.]61[.]241[.]54"
+          ],
+          "aaaa": [
+            "2a03[:]4000[:]52[:]a1a[:][:]42"
+          ],
+          "cname": [
+            "yak[.]steppenstrolch[.]de"
+          ],
+          "minimumTtl": 300,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T19:24:14.103Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            197540
+          ],
+          "holders": [
+            "netcup-AS netcup GmbH"
+          ],
+          "ipAddress": "202[.]61[.]241[.]54",
+          "prefix": "202[.]61[.]240[.]0/22",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-update[.]dev[.]steppenstrolch[.]de",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "989880a2f51d57bff1da"
     },
     {
       "components": {},
       "domain": "www[.]dhlexpress-auth[.]com[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "df770db3211e73351d44"
     },
     {
@@ -4116,21 +4225,58 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T19:21:15.917Z",
+          "observedAt": "2026-09-02T01:23:58.500Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]en-dhl-support[.]com[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "b0a528848023ad05d765"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "185[.]86[.]18[.]198"
+          ],
+          "aaaa": [
+            "2a00[:]1c98[:]1000[:]1234[:]0[:]3[:]19f3[:]c234"
+          ],
+          "cname": [],
+          "minimumTtl": 3600,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            34762
+          ],
+          "holders": [
+            "COMBELL-AS Combell NV"
+          ],
+          "ipAddress": "185[.]86[.]18[.]198",
+          "prefix": "185[.]86[.]16[.]0/22",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]ergo-support[.]be",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "2cc261b011c1d35aa68b"
     },
     {
       "components": {
@@ -4143,20 +4289,24 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T01:20:58.443Z",
+          "observedAt": "2026-09-01T01:24:15.598Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]home-dhl-delivery[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "448542b6a073a872fbcc"
     },
     {
@@ -4170,20 +4320,24 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T19:24:14.103Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]login-support-dhl[.]com[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "a052de282668c9e9d65d"
     },
     {
@@ -4201,16 +4355,20 @@
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]login-vinted[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "d5def02bcc56a41ffbd6"
     },
     {
@@ -4232,13 +4390,13 @@
             "ns77[.]domaincontrol[.]com",
             "ns78[.]domaincontrol[.]com"
           ],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "luminor-bank[.]com",
           "expiresAt": "2026-09-01T22:03:05.000Z",
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "registeredAt": "2025-09-01T22:03:05.000Z",
           "registrar": "GoDaddy[.]com, LLC",
           "statuses": [
@@ -4250,16 +4408,20 @@
           "updatedAt": "2025-09-01T22:03:05.000Z"
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            16509
+          ],
+          "holders": [
+            "AMAZON-02 - Amazon[.]com, Inc."
+          ],
           "ipAddress": "13[.]248[.]243[.]5",
-          "prefix": "13[.]248[.]243[.]5/32",
+          "prefix": "13[.]248[.]240[.]0/20",
           "rpki": null
         }
       },
       "domain": "www[.]luminor-bank[.]com",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "80d5f4133dadcaed6649"
     },
     {
@@ -4273,21 +4435,98 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T19:21:15.917Z",
+          "observedAt": "2026-09-02T01:23:58.500Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]phonepe-seb-bank[.]com[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "af8c5dfea9cd525ecab0"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "50[.]87[.]253[.]176"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 14400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "maximaonline[.]com",
+          "expiresAt": "2026-12-14T00:22:54.000Z",
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "registeredAt": "1999-12-14T00:22:54.000Z",
+          "registrar": "Network Solutions, LLC",
+          "statuses": [
+            "active"
+          ],
+          "updatedAt": "2025-11-23T01:38:05.000Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            46606
+          ],
+          "holders": [
+            "UNIFIEDLAYER-AS-1 - Unified Layer"
+          ],
+          "ipAddress": "50[.]87[.]253[.]176",
+          "prefix": "50[.]87[.]253[.]0/24",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]pondarosaranch[.]maximaonline[.]com",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "2f6fb9fe89633e3d6de0"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T01:24:15.598Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]revolut-ncun-online[.]com[.]ph",
+      "observedAt": "2026-09-02T07:40:48.422Z",
+      "signalId": "49f2f473d2537bda912f"
     },
     {
       "components": {
@@ -4308,13 +4547,13 @@
             "ns73[.]domaincontrol[.]com",
             "ns74[.]domaincontrol[.]com"
           ],
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "revolut-service[.]com",
           "expiresAt": "2027-08-28T05:18:21.000Z",
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
           "registeredAt": "2025-08-28T05:18:21.000Z",
           "registrar": "GoDaddy[.]com, LLC",
           "statuses": [
@@ -4339,13 +4578,13 @@
         }
       },
       "domain": "www[.]revolut-service[.]com",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "6718a48a9d6c4669e8f5"
     },
     {
       "components": {},
       "domain": "www[.]revolut-user-support[.]ph",
-      "observedAt": "2026-08-31T13:36:36.172Z",
+      "observedAt": "2026-09-02T07:40:48.422Z",
       "signalId": "d04043e1e8a45b43729b"
     },
     {
@@ -4643,19 +4882,19 @@
       "signalId": "7d3c57c7312ee0850e9e"
     }
   ],
-  "cursor": 122,
+  "cursor": 142,
   "dataset": "passive-context-state",
-  "generatedAt": "2026-09-02T01:45:48.232Z",
+  "generatedAt": "2026-09-02T07:40:48.494Z",
   "latestRun": {
-    "cacheHits": 10,
-    "endedAt": "2026-09-02T01:45:48.232Z",
-    "eventsWritten": 9,
+    "cacheHits": 17,
+    "endedAt": "2026-09-02T07:40:48.494Z",
+    "eventsWritten": 6,
     "failures": 0,
     "outcome": "completed",
-    "routeQueries": 8,
+    "routeQueries": 0,
     "rpkiEnabled": false,
     "signalsConsidered": 20,
-    "startedAt": "2026-09-02T01:45:39.966Z"
+    "startedAt": "2026-09-02T07:40:48.422Z"
   },
   "ripeCache": [
     {
