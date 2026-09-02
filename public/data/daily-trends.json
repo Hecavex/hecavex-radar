@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-02T08:28:28.074Z",
+  "generatedAt": "2026-09-02T08:47:44.449Z",
   "retentionDays": 365,
   "from": "2025-09-03",
   "to": "2026-09-02",
@@ -686,44 +686,44 @@
       "date": "2026-09-02",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 30508,
-        "scheduledSlots": 33,
-        "recordedAttempts": 17,
-        "healthyAttempts": 17,
-        "recordedSchedulePercent": 51.5,
-        "listeningCoveragePercent": 26.74,
-        "scheduledListeningCeilingPercent": 51.92,
-        "listeningSeconds": 8157.972,
+        "windowSeconds": 31664,
+        "scheduledSlots": 35,
+        "recordedAttempts": 18,
+        "healthyAttempts": 18,
+        "recordedSchedulePercent": 51.4,
+        "listeningCoveragePercent": 27.28,
+        "scheduledListeningCeilingPercent": 53.06,
+        "listeningSeconds": 8637.97,
         "outcomes": {
           "healthy-empty": 13,
-          "healthy-matches": 4
+          "healthy-matches": 5
         }
       },
       "discovery": {
-        "events": 15,
-        "uniqueSignals": 8,
-        "observations": 8,
+        "events": 17,
+        "uniqueSignals": 9,
+        "observations": 9,
         "reobservations": 0,
-        "firstPublications": 7,
+        "firstPublications": 8,
         "statusChanges": 0,
-        "facetSampleSize": 8,
-        "evidenceClassifiedSignals": 8,
+        "facetSampleSize": 9,
+        "evidenceClassifiedSignals": 9,
         "byBrand": {
-          "DHL": 6,
+          "DHL": 7,
           "Revolut": 2
         },
         "bySource": {
-          "CertStream": 8
+          "CertStream": 9
         },
         "byEvidenceTier": {
-          "name-only": 8
+          "name-only": 9
         },
         "byReason": {
-          "suspicious-context": 8,
-          "brand-exact-token": 7,
-          "first-publication": 7,
+          "suspicious-context": 9,
+          "brand-exact-token": 8,
+          "first-publication": 8,
+          "multiple-hyphens": 7,
           "different-tld": 6,
-          "multiple-hyphens": 6,
           "brand-joined-affix": 1
         }
       }

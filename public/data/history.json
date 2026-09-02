@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T07:16:50.841Z",
+  "generatedAt": "2026-09-02T08:47:44.449Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "2e70b51f5512acd675e9",
+      "domain": "mo8yzsrz4330t62a[.]dhl-support-del[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T08:41:52.602Z",
+      "lastSeen": "2026-09-02T08:41:52.602Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "542699fa42c351d036e0d286e0867852",
+          "observedAt": "2026-09-02T08:41:52.602Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "432ef282294525f8482a",
       "domain": "www[.]dhl-delivery-contact[.]com[.]ph",
