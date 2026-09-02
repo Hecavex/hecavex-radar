@@ -1,25 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T18:49:15.574Z",
+  "generatedAt": "2026-09-02T19:46:24.552Z",
   "latestRun": {
-    "dnsNames": 4,
-    "endedAt": "2026-09-02T18:49:15.574Z",
-    "failureCodes": [],
+    "dnsNames": 1,
+    "endedAt": "2026-09-02T19:46:24.552Z",
+    "failureCodes": [
+      "provider-http"
+    ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "completed",
-    "queriesAttempted": 6,
+    "outcome": "partial",
+    "queriesAttempted": 5,
     "queriesBacklogged": 0,
-    "queriesCompleted": 6,
-    "rowsProcessed": 2,
-    "startedAt": "2026-09-02T18:49:05.677Z"
+    "queriesCompleted": 4,
+    "rowsProcessed": 1,
+    "startedAt": "2026-09-02T19:45:01.876Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 0,
-    "degradedSince": null,
+    "consecutiveFailures": 1,
+    "degradedSince": "2026-09-02T19:45:01.876Z",
     "lastSuccessAt": "2026-09-02T18:49:15.574Z",
-    "nextAttemptAt": null
+    "nextAttemptAt": "2026-09-02T19:51:24.552Z"
   },
   "queries": {
     "brand:artea": {
@@ -225,33 +227,33 @@
     "brand:maxima": {
       "brand": "MAXIMA",
       "lastEntryAt": null,
-      "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastId": 28766239921,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T19:45:01.876Z",
       "term": "maxima"
     },
     "brand:migris": {
       "brand": "Migracijos departamentas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T19:45:01.876Z",
       "term": "migris"
     },
     "brand:omniva": {
       "brand": "Omniva",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T19:45:01.876Z",
       "term": "omniva"
     },
     "brand:paysera": {
       "brand": "Paysera",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T19:45:01.876Z",
       "term": "paysera"
     },
     "brand:policija": {
@@ -259,7 +261,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastRunAt": "2026-09-02T19:45:01.876Z",
       "term": "policija"
     },
     "brand:postlt": {
@@ -391,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 25,
+  "queryCursor": 29,
   "schemaVersion": 1
 }
