@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-02T01:23:28.121Z",
+  "generatedAt": "2026-09-02T02:10:16.153Z",
   "retentionDays": 365,
   "from": "2025-09-03",
   "to": "2026-09-02",
@@ -686,42 +686,44 @@
       "date": "2026-09-02",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 5008,
-        "scheduledSlots": 5,
-        "recordedAttempts": 2,
-        "healthyAttempts": 2,
-        "recordedSchedulePercent": 40.0,
-        "listeningCoveragePercent": 19.17,
-        "scheduledListeningCeilingPercent": 47.92,
-        "listeningSeconds": 959.997,
+        "windowSeconds": 7816,
+        "scheduledSlots": 8,
+        "recordedAttempts": 4,
+        "healthyAttempts": 4,
+        "recordedSchedulePercent": 50.0,
+        "listeningCoveragePercent": 24.55,
+        "scheduledListeningCeilingPercent": 49.13,
+        "listeningSeconds": 1918.992,
         "outcomes": {
-          "healthy-empty": 1,
-          "healthy-matches": 1
+          "healthy-empty": 2,
+          "healthy-matches": 2
         }
       },
       "discovery": {
-        "events": 4,
-        "uniqueSignals": 2,
-        "observations": 2,
+        "events": 5,
+        "uniqueSignals": 3,
+        "observations": 3,
         "reobservations": 0,
         "firstPublications": 2,
         "statusChanges": 0,
-        "facetSampleSize": 2,
-        "evidenceClassifiedSignals": 2,
+        "facetSampleSize": 3,
+        "evidenceClassifiedSignals": 3,
         "byBrand": {
-          "DHL": 1,
-          "Revolut": 1
+          "Revolut": 2,
+          "DHL": 1
         },
         "bySource": {
-          "CertStream": 2
+          "CertStream": 3
         },
         "byEvidenceTier": {
-          "name-only": 2
+          "name-only": 3
         },
         "byReason": {
+          "suspicious-context": 3,
           "brand-exact-token": 2,
           "first-publication": 2,
-          "suspicious-context": 2,
+          "brand-joined-affix": 1,
+          "different-tld": 1,
           "multiple-hyphens": 1
         }
       }
