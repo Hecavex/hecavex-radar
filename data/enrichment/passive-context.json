@@ -3311,7 +3311,7 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-31T01:22:06.122Z",
+          "observedAt": "2026-09-02T01:23:58.500Z",
           "queriesCompleted": 5
         },
         "routing": {
@@ -3328,7 +3328,7 @@
         }
       },
       "domain": "vintedportal[.]ph",
-      "observedAt": "2026-09-01T19:37:43.553Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "b46a47e396bd8530005b"
     },
     {
@@ -3350,16 +3350,20 @@
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            13335
+          ],
+          "holders": [
+            "CLOUDFLARENET - Cloudflare, Inc."
+          ],
           "ipAddress": "104[.]18[.]2[.]132",
-          "prefix": "104[.]18[.]2[.]132/32",
+          "prefix": "104[.]18[.]0[.]0/20",
           "rpki": null
         }
       },
       "domain": "vmi-gra-portal[.]aergs[.]eu",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "c389673bf929cb6b9bc8"
     },
     {
@@ -3373,21 +3377,56 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "vmi-materiel-nettoyage-account[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "6e3246d0d9b6e60d5c84"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T07:27:24.782Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "vmi-materiel-nettoyage-portal[.]ph",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "7b076cd9ceccb92e1bbf"
     },
     {
       "components": {
@@ -3400,13 +3439,13 @@
           "minimumTtl": 300,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T19:24:14.103Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "bmscloud[.]in[.]th",
           "expiresAt": "2027-07-03T04:06:22.000Z",
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T19:24:14.103Z",
           "registeredAt": "2024-07-03T04:06:22.000Z",
           "registrar": "T[.]H[.]NIC Co., Ltd.",
           "statuses": [
@@ -3428,8 +3467,39 @@
         }
       },
       "domain": "vmi-portal[.]bmscloud[.]in[.]th",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "987e64e94627cf65e044"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "wallet-telia[.]com[.]ph",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "1b247981cc25949779bd"
     },
     {
       "components": {
@@ -3442,13 +3512,13 @@
           "minimumTtl": 300,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T01:20:58.443Z",
+          "observedAt": "2026-09-01T01:24:15.598Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "secure-revolut[.]com",
           "expiresAt": "2027-02-09T23:16:59.000Z",
-          "observedAt": "2026-08-30T01:20:58.443Z",
+          "observedAt": "2026-09-01T01:24:15.598Z",
           "registeredAt": "2026-02-09T23:16:59.000Z",
           "registrar": "Name[.]com, Inc.",
           "statuses": [
@@ -3457,16 +3527,20 @@
           "updatedAt": "2026-02-14T11:12:24.000Z"
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            47846
+          ],
+          "holders": [
+            "SEDO-AS SEDO GmbH"
+          ],
           "ipAddress": "91[.]195[.]240[.]94",
-          "prefix": "91[.]195[.]240[.]94/32",
+          "prefix": "91[.]195[.]240[.]0/23",
           "rpki": null
         }
       },
       "domain": "webmail[.]secure-revolut[.]com",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "47c2a3b50e09d1a32f7d"
     },
     {
@@ -3482,13 +3556,13 @@
           "minimumTtl": 1440,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-29T13:21:10.039Z",
+          "observedAt": "2026-08-31T13:21:12.245Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "bite-service[.]com",
           "expiresAt": "2026-10-13T11:45:05.000Z",
-          "observedAt": "2026-08-29T13:21:10.039Z",
+          "observedAt": "2026-08-31T13:21:12.245Z",
           "registeredAt": "2017-10-13T11:45:05.000Z",
           "registrar": "Registrar of Domain Names REG[.]RU LLC",
           "statuses": [
@@ -3497,16 +3571,20 @@
           "updatedAt": "2025-10-12T10:47:19.000Z"
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            61400
+          ],
+          "holders": [
+            "NETRACK-AS Start2 LLC"
+          ],
           "ipAddress": "217[.]199[.]220[.]179",
-          "prefix": "217[.]199[.]220[.]179/32",
+          "prefix": "217[.]199[.]220[.]0/24",
           "rpki": null
         }
       },
       "domain": "wg[.]vrnplay[.]bite-service[.]com",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "fbacd65c239b07f30b11"
     },
     {
@@ -3518,13 +3596,13 @@
           "minimumTtl": null,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "dhl-de-track-ih[.]info",
           "expiresAt": "2026-06-29T01:29:20.294Z",
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "registeredAt": "2025-06-29T01:29:20.294Z",
           "registrar": "Sav[.]com, LLC",
           "statuses": [
@@ -3535,7 +3613,7 @@
         }
       },
       "domain": "wildcard[.]dhl-de-track-ih[.]info",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "88cf9aea0dd09952cff4"
     },
     {
@@ -3549,13 +3627,13 @@
           "minimumTtl": 300,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "revolut-account[.]com",
           "expiresAt": "2027-02-12T16:52:00.000Z",
-          "observedAt": "2026-08-30T07:21:00.972Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
           "registeredAt": "2026-02-12T16:52:00.000Z",
           "registrar": "Name[.]com, Inc.",
           "statuses": [
@@ -3564,17 +3642,146 @@
           "updatedAt": "2026-02-14T11:12:35.000Z"
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            47846
+          ],
+          "holders": [
+            "SEDO-AS SEDO GmbH"
+          ],
           "ipAddress": "91[.]195[.]240[.]94",
-          "prefix": "91[.]195[.]240[.]94/32",
+          "prefix": "91[.]195[.]240[.]0/23",
           "rpki": null
         }
       },
       "domain": "wildcard[.]revolut-account[.]com",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "74a34aa5a01e9ed77fb6"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "34[.]117[.]176[.]22"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 600,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T13:27:28.950Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "revolutbank[.]info",
+          "expiresAt": "2027-03-05T14:30:00.793Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
+          "registeredAt": "2026-03-05T14:30:00.793Z",
+          "registrar": "GoDaddy[.]com, LLC",
+          "statuses": [
+            "client-delete-prohibited",
+            "client-renew-prohibited",
+            "client-transfer-prohibited",
+            "client-update-prohibited"
+          ],
+          "updatedAt": "2026-08-11T22:30:13.246Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            396982
+          ],
+          "holders": [
+            "GOOGLE-CLOUD-PLATFORM - Google LLC"
+          ],
+          "ipAddress": "34[.]117[.]176[.]22",
+          "prefix": "34[.]116[.]0[.]0/14",
+          "rpki": null
+        }
+      },
+      "domain": "www1[.]revolutbank[.]info",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "7c4c83ffb6d7e56dc177"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "34[.]117[.]176[.]22"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 600,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T07:27:24.782Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "revolutbank[.]info",
+          "expiresAt": "2027-03-05T14:30:00.793Z",
+          "observedAt": "2026-09-01T07:27:24.782Z",
+          "registeredAt": "2026-03-05T14:30:00.793Z",
+          "registrar": "GoDaddy[.]com, LLC",
+          "statuses": [
+            "client-delete-prohibited",
+            "client-renew-prohibited",
+            "client-transfer-prohibited",
+            "client-update-prohibited"
+          ],
+          "updatedAt": "2026-08-11T22:30:13.246Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            396982
+          ],
+          "holders": [
+            "GOOGLE-CLOUD-PLATFORM - Google LLC"
+          ],
+          "ipAddress": "34[.]117[.]176[.]22",
+          "prefix": "34[.]116[.]0[.]0/14",
+          "rpki": null
+        }
+      },
+      "domain": "www3[.]revolutbank[.]info",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "5be02e73dc65d61079be"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "202[.]61[.]241[.]54"
+          ],
+          "aaaa": [
+            "2a03[:]4000[:]52[:]a1a[:][:]42"
+          ],
+          "cname": [
+            "yak[.]steppenstrolch[.]de"
+          ],
+          "minimumTtl": 300,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T07:27:24.782Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            197540
+          ],
+          "holders": [
+            "netcup-AS netcup GmbH"
+          ],
+          "ipAddress": "202[.]61[.]241[.]54",
+          "prefix": "202[.]61[.]240[.]0/22",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]b2b[.]dhl-update[.]dev[.]steppenstrolch[.]de",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "623bd0865dfde1536721"
     },
     {
       "components": {
@@ -3590,13 +3797,13 @@
           "minimumTtl": 3600,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "bigbankrefund[.]com",
           "expiresAt": "2027-01-13T04:24:17.000Z",
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T13:27:28.950Z",
           "registeredAt": "2026-01-13T04:24:17.000Z",
           "registrar": "Wix[.]com Ltd.",
           "statuses": [
@@ -3606,16 +3813,20 @@
           "updatedAt": "2026-01-13T04:24:19.000Z"
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            13335
+          ],
+          "holders": [
+            "CLOUDFLARENET - Cloudflare, Inc."
+          ],
           "ipAddress": "162[.]159[.]143[.]12",
-          "prefix": "162[.]159[.]143[.]12/32",
+          "prefix": "162[.]159[.]128[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]bigbankrefund[.]com",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "80c59f76ae51fa144141"
     },
     {
@@ -3629,27 +3840,183 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-29T13:21:10.039Z",
+          "observedAt": "2026-09-01T01:24:15.598Z",
           "queriesCompleted": 5
         },
         "routing": {
-          "announced": false,
-          "asns": [],
-          "holders": [],
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
           "ipAddress": "45[.]79[.]222[.]138",
-          "prefix": "45[.]79[.]222[.]138/32",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]deliveryhero-service-telia[.]ph",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "4e98461f2f34f21d8aea"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-01T01:24:15.598Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-delivery-home[.]ph",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "561e0ea11df2f486211d"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T13:21:12.245Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
           "rpki": null
         }
       },
       "domain": "www[.]dhl-delivery-package[.]com[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "f23dcf2314427f68d375"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "198[.]185[.]159[.]144",
+            "198[.]185[.]159[.]145",
+            "198[.]49[.]23[.]144",
+            "198[.]49[.]23[.]145"
+          ],
+          "aaaa": [],
+          "cname": [
+            "ext-sq[.]squarespace[.]com"
+          ],
+          "minimumTtl": 300,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "dhl-delivery-tracking[.]info",
+          "expiresAt": "2027-05-15T13:24:51.007Z",
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "registeredAt": "2024-05-15T13:24:51.007Z",
+          "registrar": "Squarespace Domains II LLC",
+          "statuses": [
+            "client-delete-prohibited",
+            "client-transfer-prohibited"
+          ],
+          "updatedAt": "2026-08-12T08:10:42.757Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            53831
+          ],
+          "holders": [
+            "SQUARESPACE - Squarespace, Inc."
+          ],
+          "ipAddress": "198[.]185[.]159[.]144",
+          "prefix": "198[.]185[.]159[.]0/24",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-delivery-tracking[.]info",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "2aff15c50b82bc726c2b"
     },
     {
       "components": {},
       "domain": "www[.]dhl-expresstracking[.]com[.]ph",
-      "observedAt": "2026-08-31T07:36:42.467Z",
+      "observedAt": "2026-09-02T01:45:39.966Z",
       "signalId": "e42075ba699aa4354145"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "109[.]106[.]250[.]216"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 14400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "diamantinapersianas[.]com[.]br",
+          "expiresAt": "2027-05-07T12:15:08.000Z",
+          "observedAt": "2026-08-31T19:21:09.594Z",
+          "registeredAt": "2009-05-07T12:15:08.000Z",
+          "registrar": null,
+          "statuses": [
+            "active"
+          ],
+          "updatedAt": "2026-05-20T12:36:11.000Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            47583
+          ],
+          "holders": [
+            "AS-HOSTINGER Hostinger International Limited"
+          ],
+          "ipAddress": "109[.]106[.]250[.]216",
+          "prefix": "109[.]106[.]248[.]0/22",
+          "rpki": null
+        }
+      },
+      "domain": "www[.]dhl-invoice-payment[.]diamantinapersianas[.]com[.]br",
+      "observedAt": "2026-09-02T01:45:39.966Z",
+      "signalId": "29be4a0869ba3602c6f4"
     },
     {
       "components": {
@@ -4276,21 +4643,157 @@
       "signalId": "7d3c57c7312ee0850e9e"
     }
   ],
-  "cursor": 102,
+  "cursor": 122,
   "dataset": "passive-context-state",
-  "generatedAt": "2026-09-01T19:37:46.153Z",
+  "generatedAt": "2026-09-02T01:45:48.232Z",
   "latestRun": {
-    "cacheHits": 11,
-    "endedAt": "2026-09-01T19:37:46.153Z",
-    "eventsWritten": 2,
+    "cacheHits": 10,
+    "endedAt": "2026-09-02T01:45:48.232Z",
+    "eventsWritten": 9,
     "failures": 0,
     "outcome": "completed",
-    "routeQueries": 6,
+    "routeQueries": 8,
     "rpkiEnabled": false,
     "signalsConsidered": 20,
-    "startedAt": "2026-09-01T19:37:43.553Z"
+    "startedAt": "2026-09-02T01:45:39.966Z"
   },
   "ripeCache": [
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          63949
+        ],
+        "holders": [
+          "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+        ],
+        "ipAddress": "45[.]79[.]222[.]138",
+        "prefix": "45[.]79[.]192[.]0/19",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "45[.]79[.]222[.]138"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          13335
+        ],
+        "holders": [
+          "CLOUDFLARENET - Cloudflare, Inc."
+        ],
+        "ipAddress": "104[.]18[.]2[.]132",
+        "prefix": "104[.]18[.]0[.]0/20",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "104[.]18[.]2[.]132"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          47846
+        ],
+        "holders": [
+          "SEDO-AS SEDO GmbH"
+        ],
+        "ipAddress": "91[.]195[.]240[.]94",
+        "prefix": "91[.]195[.]240[.]0/23",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "91[.]195[.]240[.]94"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          61400
+        ],
+        "holders": [
+          "NETRACK-AS Start2 LLC"
+        ],
+        "ipAddress": "217[.]199[.]220[.]179",
+        "prefix": "217[.]199[.]220[.]0/24",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "217[.]199[.]220[.]179"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          396982
+        ],
+        "holders": [
+          "GOOGLE-CLOUD-PLATFORM - Google LLC"
+        ],
+        "ipAddress": "34[.]117[.]176[.]22",
+        "prefix": "34[.]116[.]0[.]0/14",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "34[.]117[.]176[.]22"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          197540
+        ],
+        "holders": [
+          "netcup-AS netcup GmbH"
+        ],
+        "ipAddress": "202[.]61[.]241[.]54",
+        "prefix": "202[.]61[.]240[.]0/22",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "202[.]61[.]241[.]54"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          13335
+        ],
+        "holders": [
+          "CLOUDFLARENET - Cloudflare, Inc."
+        ],
+        "ipAddress": "162[.]159[.]143[.]12",
+        "prefix": "162[.]159[.]128[.]0/19",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "162[.]159[.]143[.]12"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          47583
+        ],
+        "holders": [
+          "AS-HOSTINGER Hostinger International Limited"
+        ],
+        "ipAddress": "109[.]106[.]250[.]216",
+        "prefix": "109[.]106[.]248[.]0/22",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-03T01:45:39.966Z",
+      "fetchedAt": "2026-09-02T01:45:39.966Z",
+      "ipAddress": "109[.]106[.]250[.]216"
+    },
     {
       "context": {
         "announced": true,
@@ -4664,91 +5167,6 @@
       "expiresAt": "2026-09-02T07:41:46.196Z",
       "fetchedAt": "2026-09-01T07:41:46.196Z",
       "ipAddress": "49[.]0[.]67[.]109"
-    },
-    {
-      "context": {
-        "announced": true,
-        "asns": [
-          63949
-        ],
-        "holders": [
-          "AKAMAI-LINODE-AP - Akamai Connected Cloud"
-        ],
-        "ipAddress": "45[.]79[.]222[.]138",
-        "prefix": "45[.]79[.]192[.]0/19",
-        "rpki": null
-      },
-      "expiresAt": "2026-09-02T01:40:21.435Z",
-      "fetchedAt": "2026-09-01T01:40:21.435Z",
-      "ipAddress": "45[.]79[.]222[.]138"
-    },
-    {
-      "context": {
-        "announced": true,
-        "asns": [
-          13335
-        ],
-        "holders": [
-          "CLOUDFLARENET - Cloudflare, Inc."
-        ],
-        "ipAddress": "104[.]21[.]14[.]249",
-        "prefix": "104[.]21[.]0[.]0/20",
-        "rpki": null
-      },
-      "expiresAt": "2026-09-02T01:40:21.435Z",
-      "fetchedAt": "2026-09-01T01:40:21.435Z",
-      "ipAddress": "104[.]21[.]14[.]249"
-    },
-    {
-      "context": {
-        "announced": true,
-        "asns": [
-          13335
-        ],
-        "holders": [
-          "CLOUDFLARENET - Cloudflare, Inc."
-        ],
-        "ipAddress": "104[.]18[.]34[.]81",
-        "prefix": "104[.]18[.]34[.]0/24",
-        "rpki": null
-      },
-      "expiresAt": "2026-09-02T01:40:21.435Z",
-      "fetchedAt": "2026-09-01T01:40:21.435Z",
-      "ipAddress": "104[.]18[.]34[.]81"
-    },
-    {
-      "context": {
-        "announced": true,
-        "asns": [
-          16509
-        ],
-        "holders": [
-          "AMAZON-02 - Amazon[.]com, Inc."
-        ],
-        "ipAddress": "13[.]248[.]213[.]45",
-        "prefix": "13[.]248[.]208[.]0/20",
-        "rpki": null
-      },
-      "expiresAt": "2026-09-02T01:40:21.435Z",
-      "fetchedAt": "2026-09-01T01:40:21.435Z",
-      "ipAddress": "13[.]248[.]213[.]45"
-    },
-    {
-      "context": {
-        "announced": true,
-        "asns": [
-          396982
-        ],
-        "holders": [
-          "GOOGLE-CLOUD-PLATFORM - Google LLC"
-        ],
-        "ipAddress": "136[.]110[.]251[.]159",
-        "prefix": "136[.]108[.]0[.]0/14",
-        "rpki": null
-      },
-      "expiresAt": "2026-09-02T01:40:21.435Z",
-      "fetchedAt": "2026-09-01T01:40:21.435Z",
-      "ipAddress": "136[.]110[.]251[.]159"
     }
   ],
   "schemaVersion": 1
