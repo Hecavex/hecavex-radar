@@ -1,49 +1,48 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-02T16:28:11.452Z",
+  "generatedAt": "2026-09-02T17:24:57.135Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-01T16:28:11.452Z",
-      "to": "2026-09-02T16:28:11.452Z",
-      "events": 48,
-      "uniqueSignals": 24,
-      "firstPublications": 23,
+      "from": "2026-09-01T17:24:57.135Z",
+      "to": "2026-09-02T17:24:57.135Z",
+      "events": 40,
+      "uniqueSignals": 21,
+      "firstPublications": 19,
       "statusChanges": 0,
-      "observations": 25,
-      "reobservations": 1,
+      "observations": 21,
+      "reobservations": 0,
       "bySource": {
-        "CertStream": 48
+        "CertStream": 40
       },
       "byStatus": {
-        "suspected": 48
+        "suspected": 40
       },
       "byReason": {
-        "suspicious-context": 48,
+        "suspicious-context": 40,
         "brand-exact-token": 34,
-        "different-tld": 33,
         "multiple-hyphens": 28,
-        "first-publication": 23,
-        "brand-joined-affix": 14,
+        "different-tld": 27,
+        "first-publication": 19,
+        "brand-joined-affix": 6,
         "punycode": 2,
         "unicode-confusable": 2
       },
       "byBrand": {
         "DHL": 18,
-        "Revolut": 17,
+        "Revolut": 11,
         "SEB": 4,
         "VMI": 4,
-        "Swedbank": 2,
         "Tele2": 2,
         "Artea": 1
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-26T16:28:11.452Z",
-      "to": "2026-09-02T16:28:11.452Z",
+      "from": "2026-08-26T17:24:57.135Z",
+      "to": "2026-09-02T17:24:57.135Z",
       "events": 367,
       "uniqueSignals": 182,
       "firstPublications": 179,
