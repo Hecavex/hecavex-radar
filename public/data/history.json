@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T17:44:11.670Z",
+  "generatedAt": "2026-09-02T20:13:30.404Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "6bb137b8bc0357e7d8b8",
+      "domain": "www[.]revolutbank[.]online",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-01T17:14:50.653Z",
+      "lastSeen": "2026-09-02T20:07:58.867Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c4ac625e05624efd81c6047160658542",
+          "observedAt": "2026-09-01T17:14:50.653Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "f76cbd5d84fef6b21f11",
       "domain": "audo-vmi-cliente-43-portal[.]tport[.]audolabs[.]com",
@@ -816,41 +851,6 @@
         {
           "eventId": "8fc3c6d49e7a0a6c5567fa3781b81a27",
           "observedAt": "2026-09-01T17:16:40.919Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-joined-affix",
-            "suspicious-context",
-            "different-tld",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "6bb137b8bc0357e7d8b8",
-      "domain": "www[.]revolutbank[.]online",
-      "brand": "Revolut",
-      "firstSeen": "2026-09-01T17:14:50.653Z",
-      "lastSeen": "2026-09-01T17:14:50.653Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context",
-        "different-tld",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "c4ac625e05624efd81c6047160658542",
-          "observedAt": "2026-09-01T17:14:50.653Z",
           "previousStatus": null,
           "status": "suspected",
           "sources": [

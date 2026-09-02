@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-02T19:28:28.325Z",
+  "generatedAt": "2026-09-02T20:13:30.404Z",
   "retentionDays": 365,
   "from": "2025-09-03",
   "to": "2026-09-02",
@@ -686,46 +686,46 @@
       "date": "2026-09-02",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 70108,
-        "scheduledSlots": 77,
-        "recordedAttempts": 41,
-        "healthyAttempts": 41,
-        "recordedSchedulePercent": 53.2,
-        "listeningCoveragePercent": 28.07,
-        "scheduledListeningCeilingPercent": 52.72,
-        "listeningSeconds": 19676.934,
+        "windowSeconds": 72810,
+        "scheduledSlots": 80,
+        "recordedAttempts": 44,
+        "healthyAttempts": 44,
+        "recordedSchedulePercent": 55.0,
+        "listeningCoveragePercent": 29.0,
+        "scheduledListeningCeilingPercent": 52.74,
+        "listeningSeconds": 21116.93,
         "outcomes": {
-          "healthy-empty": 31,
-          "healthy-matches": 10
+          "healthy-empty": 33,
+          "healthy-matches": 11
         }
       },
       "discovery": {
-        "events": 29,
-        "uniqueSignals": 15,
-        "observations": 15,
+        "events": 30,
+        "uniqueSignals": 16,
+        "observations": 16,
         "reobservations": 0,
         "firstPublications": 14,
         "statusChanges": 0,
-        "facetSampleSize": 15,
-        "evidenceClassifiedSignals": 15,
+        "facetSampleSize": 16,
+        "evidenceClassifiedSignals": 16,
         "byBrand": {
           "DHL": 7,
-          "Revolut": 5,
+          "Revolut": 6,
           "VMI": 3
         },
         "bySource": {
-          "CertStream": 15
+          "CertStream": 16
         },
         "byEvidenceTier": {
-          "name-only": 15
+          "name-only": 16
         },
         "byReason": {
-          "suspicious-context": 15,
+          "suspicious-context": 16,
           "brand-exact-token": 14,
           "first-publication": 14,
-          "different-tld": 11,
+          "different-tld": 12,
           "multiple-hyphens": 11,
-          "brand-joined-affix": 1
+          "brand-joined-affix": 2
         }
       }
     }

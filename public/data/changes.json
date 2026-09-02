@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-02T19:28:28.325Z",
+  "generatedAt": "2026-09-02T20:13:30.404Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-01T19:28:28.325Z",
-      "to": "2026-09-02T19:28:28.325Z",
+      "from": "2026-09-01T20:13:30.404Z",
+      "to": "2026-09-02T20:13:30.404Z",
       "events": 38,
       "uniqueSignals": 20,
       "firstPublications": 18,
@@ -23,8 +23,8 @@
       "byReason": {
         "suspicious-context": 38,
         "brand-exact-token": 32,
+        "different-tld": 26,
         "multiple-hyphens": 26,
-        "different-tld": 25,
         "first-publication": 18,
         "brand-joined-affix": 6,
         "punycode": 2,
@@ -32,42 +32,41 @@
       },
       "byBrand": {
         "DHL": 18,
-        "Revolut": 11,
+        "Revolut": 12,
         "VMI": 6,
-        "Tele2": 2,
-        "Artea": 1
+        "Tele2": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-26T19:28:28.325Z",
-      "to": "2026-09-02T19:28:28.325Z",
-      "events": 369,
+      "from": "2026-08-26T20:13:30.404Z",
+      "to": "2026-09-02T20:13:30.404Z",
+      "events": 370,
       "uniqueSignals": 183,
       "firstPublications": 180,
       "statusChanges": 0,
-      "observations": 189,
-      "reobservations": 6,
+      "observations": 190,
+      "reobservations": 7,
       "bySource": {
-        "CertStream": 369
+        "CertStream": 370
       },
       "byStatus": {
-        "suspected": 369
+        "suspected": 370
       },
       "byReason": {
-        "suspicious-context": 357,
-        "different-tld": 314,
+        "suspicious-context": 358,
+        "different-tld": 315,
         "brand-exact-token": 283,
         "multiple-hyphens": 199,
         "first-publication": 180,
-        "brand-joined-affix": 78,
+        "brand-joined-affix": 79,
         "punycode": 20,
         "unicode-confusable": 16,
         "brand-split-token": 8
       },
       "byBrand": {
         "DHL": 150,
-        "Revolut": 59,
+        "Revolut": 60,
         "VMI": 22,
         "Vinted": 22,
         "Telia": 20,
