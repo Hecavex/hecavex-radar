@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-02T21:24:53.194Z",
+  "generatedAt": "2026-09-02T21:29:08.761Z",
   "retentionDays": 365,
   "from": "2025-09-03",
   "to": "2026-09-02",
@@ -686,24 +686,24 @@
       "date": "2026-09-02",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 77093,
+        "windowSeconds": 77348,
         "scheduledSlots": 85,
-        "recordedAttempts": 47,
-        "healthyAttempts": 47,
-        "recordedSchedulePercent": 55.3,
-        "listeningCoveragePercent": 29.26,
-        "scheduledListeningCeilingPercent": 52.92,
-        "listeningSeconds": 22556.924,
+        "recordedAttempts": 48,
+        "healthyAttempts": 48,
+        "recordedSchedulePercent": 56.5,
+        "listeningCoveragePercent": 29.78,
+        "scheduledListeningCeilingPercent": 52.75,
+        "listeningSeconds": 23036.923,
         "outcomes": {
           "healthy-empty": 34,
-          "healthy-matches": 13
+          "healthy-matches": 14
         }
       },
       "discovery": {
-        "events": 33,
+        "events": 34,
         "uniqueSignals": 18,
-        "observations": 18,
-        "reobservations": 0,
+        "observations": 19,
+        "reobservations": 1,
         "firstPublications": 15,
         "statusChanges": 0,
         "facetSampleSize": 18,

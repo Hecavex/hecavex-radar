@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T21:24:53.194Z",
+  "generatedAt": "2026-09-02T21:29:08.761Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T21:24:53.194Z",
-    "to": "2026-09-02T21:24:53.194Z"
+    "from": "2026-08-03T21:29:08.761Z",
+    "to": "2026-09-02T21:29:08.761Z"
   },
-  "totalAvailable": 214,
+  "totalAvailable": 215,
   "truncated": false,
   "events": [
+    {
+      "id": "afba334295d223bade4ff4c7709bde10",
+      "type": "reobservation",
+      "occurredAt": "2026-09-02T21:22:19.614Z",
+      "signalId": "19b192c53afa4dab80f2",
+      "signalPath": "/signals/19b192c53afa4dab80f2/",
+      "domain": "www[.]revolutbank[.]info",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "1b2dfe9777731daab501a16379fa4c42",
       "type": "reobservation",
