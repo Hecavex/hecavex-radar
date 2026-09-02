@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-09-02T19:23:42.253Z",
+  "generatedAt": "2026-09-02T19:28:28.325Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -12,7 +12,7 @@
     {
       "signalId": "0d284af65210b0c1307e",
       "domain": "omada[.]delivery-dhl-uae[.]com",
-      "clusterId": "f290df619f324877"
+      "clusterId": "425a3e6e8126bed7"
     },
     {
       "signalId": "1584ae422d7176c672b3",
@@ -27,7 +27,7 @@
     {
       "signalId": "43349e25703ae7344924",
       "domain": "www[.]tracking-dhl[.]com",
-      "clusterId": "f290df619f324877"
+      "clusterId": "425a3e6e8126bed7"
     },
     {
       "signalId": "a91e765311167bb5e2f6",
@@ -37,12 +37,12 @@
     {
       "signalId": "b1158b011aa853ba4989",
       "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
-      "clusterId": "f290df619f324877"
+      "clusterId": "425a3e6e8126bed7"
     },
     {
       "signalId": "bdc9d729f1302718231a",
       "domain": "32[.]delivery-dhl-uae[.]com",
-      "clusterId": "f290df619f324877"
+      "clusterId": "425a3e6e8126bed7"
     },
     {
       "signalId": "dddb4e0de30d9fc0aad5",
@@ -50,9 +50,14 @@
       "clusterId": "b40df814c1f45eb0"
     },
     {
+      "signalId": "e86f606e9f0cc3c28a51",
+      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "clusterId": "425a3e6e8126bed7"
+    },
+    {
       "signalId": "f5c09205741ec279fde5",
       "domain": "confirm-revolut[.]es",
-      "clusterId": "f290df619f324877"
+      "clusterId": "425a3e6e8126bed7"
     }
   ],
   "edges": [
@@ -177,6 +182,30 @@
       ]
     },
     {
+      "id": "60c6e1e6f6ae25e7ead1",
+      "source": "43349e25703ae7344924",
+      "target": "e86f606e9f0cc3c28a51",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "185[.]53[.]179[.]136"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina1[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina2[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina3[.]registrar[.]eu"
+        }
+      ]
+    },
+    {
       "id": "c7425d36493d31c7671c",
       "source": "43349e25703ae7344924",
       "target": "f5c09205741ec279fde5",
@@ -225,6 +254,30 @@
       ]
     },
     {
+      "id": "b96ace7a2b7f91cb9101",
+      "source": "b1158b011aa853ba4989",
+      "target": "e86f606e9f0cc3c28a51",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "185[.]53[.]179[.]136"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina1[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina2[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina3[.]registrar[.]eu"
+        }
+      ]
+    },
+    {
       "id": "166d07122aed120e9ab2",
       "source": "b1158b011aa853ba4989",
       "target": "f5c09205741ec279fde5",
@@ -251,6 +304,30 @@
     {
       "id": "13ca68ed81e49204448a",
       "source": "bdc9d729f1302718231a",
+      "target": "f5c09205741ec279fde5",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "185[.]53[.]179[.]136"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina1[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina2[.]registrar[.]eu"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ina3[.]registrar[.]eu"
+        }
+      ]
+    },
+    {
+      "id": "b46a0bc670c5a1308c5d",
+      "source": "e86f606e9f0cc3c28a51",
       "target": "f5c09205741ec279fde5",
       "strength": "corroborated-supporting",
       "evidence": [
