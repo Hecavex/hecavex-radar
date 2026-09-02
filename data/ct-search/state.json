@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T10:47:35.235Z",
+  "generatedAt": "2026-09-02T11:47:21.324Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-02T10:47:35.235Z",
+    "endedAt": "2026-09-02T11:47:21.324Z",
     "failureCodes": [
-      "provider-http"
+      "provider-timeout"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 0,
+    "outcome": "partial",
+    "queriesAttempted": 3,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 2,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-02T10:47:35.228Z"
+    "startedAt": "2026-09-02T11:46:34.466Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 16,
+    "consecutiveFailures": 17,
     "degradedSince": "2026-08-30T14:47:30.977Z",
     "lastSuccessAt": null,
-    "nextAttemptAt": "2026-09-02T11:07:50.833Z"
+    "nextAttemptAt": "2026-09-02T17:07:21.324Z"
   },
   "queries": {
     "brand:artea": {
@@ -116,24 +116,24 @@
       "brand": "ePristatymas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-02T05:47:50.047Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T11:46:34.466Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
       "brand": "ERGO",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T11:46:34.466Z",
       "term": "ergodraudimas"
     },
     "brand:esveikata": {
       "brand": "E. sveikata",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-08-30T08:44:43.728Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-09-02T11:46:34.466Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
@@ -393,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 11,
+  "queryCursor": 13,
   "schemaVersion": 1
 }
