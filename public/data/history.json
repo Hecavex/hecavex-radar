@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T20:13:30.404Z",
+  "generatedAt": "2026-09-02T20:28:39.703Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e5d5289f6701671aab4c",
+      "domain": "www[.]revolut-bank[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T20:20:28.287Z",
+      "lastSeen": "2026-09-02T20:20:28.287Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d33f1f1fc4e0fb49cbd8f0bf2db46e08",
+          "observedAt": "2026-09-02T20:20:28.287Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "6bb137b8bc0357e7d8b8",
       "domain": "www[.]revolutbank[.]online",

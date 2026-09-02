@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-02T20:27:09.347Z",
+  "generatedAt": "2026-09-02T20:28:39.703Z",
   "retentionDays": 365,
   "from": "2025-09-03",
   "to": "2026-09-02",
@@ -686,43 +686,43 @@
       "date": "2026-09-02",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 73629,
+        "windowSeconds": 73719,
         "scheduledSlots": 81,
-        "recordedAttempts": 44,
-        "healthyAttempts": 44,
-        "recordedSchedulePercent": 54.3,
-        "listeningCoveragePercent": 28.68,
-        "scheduledListeningCeilingPercent": 52.81,
-        "listeningSeconds": 21116.93,
+        "recordedAttempts": 45,
+        "healthyAttempts": 45,
+        "recordedSchedulePercent": 55.6,
+        "listeningCoveragePercent": 29.3,
+        "scheduledListeningCeilingPercent": 52.74,
+        "listeningSeconds": 21596.928,
         "outcomes": {
           "healthy-empty": 33,
-          "healthy-matches": 11
+          "healthy-matches": 12
         }
       },
       "discovery": {
-        "events": 30,
-        "uniqueSignals": 16,
-        "observations": 16,
+        "events": 32,
+        "uniqueSignals": 17,
+        "observations": 17,
         "reobservations": 0,
-        "firstPublications": 14,
+        "firstPublications": 15,
         "statusChanges": 0,
-        "facetSampleSize": 16,
-        "evidenceClassifiedSignals": 16,
+        "facetSampleSize": 17,
+        "evidenceClassifiedSignals": 17,
         "byBrand": {
           "DHL": 7,
-          "Revolut": 6,
+          "Revolut": 7,
           "VMI": 3
         },
         "bySource": {
-          "CertStream": 16
+          "CertStream": 17
         },
         "byEvidenceTier": {
-          "name-only": 16
+          "name-only": 17
         },
         "byReason": {
-          "suspicious-context": 16,
-          "brand-exact-token": 14,
-          "first-publication": 14,
+          "suspicious-context": 17,
+          "brand-exact-token": 15,
+          "first-publication": 15,
           "different-tld": 12,
           "multiple-hyphens": 11,
           "brand-joined-affix": 2

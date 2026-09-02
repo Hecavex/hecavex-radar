@@ -1,9 +1,39 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-02T20:13:30.404Z",
-  "lastSuccessfulSyncAt": "2026-09-02T20:27:09.347Z",
+  "generatedAt": "2026-09-02T20:28:39.703Z",
+  "lastSuccessfulSyncAt": "2026-09-02T20:28:39.703Z",
   "signals": [
+    {
+      "id": "e5d5289f6701671aab4c",
+      "url": "hxxps://www[.]revolut-bank[.]com",
+      "domain": "www[.]revolut-bank[.]com",
+      "firstSeen": "2026-09-02T20:20:28.287Z",
+      "lastSeen": "2026-09-02T20:20:28.287Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "6bb137b8bc0357e7d8b8",
       "url": "hxxps://www[.]revolutbank[.]online",
@@ -5929,8 +5959,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-02T20:27:09.347Z",
-      "records": 180,
+      "fetchedAt": "2026-09-02T20:28:39.703Z",
+      "records": 181,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -5945,7 +5975,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-02T20:27:09.347Z",
+      "fetchedAt": "2026-09-02T20:28:39.703Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
