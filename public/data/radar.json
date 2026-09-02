@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-02T15:59:54.009Z",
-  "lastSuccessfulSyncAt": "2026-09-02T17:24:57.135Z",
+  "generatedAt": "2026-09-02T17:44:11.670Z",
+  "lastSuccessfulSyncAt": "2026-09-02T17:44:11.670Z",
   "signals": [
+    {
+      "id": "f76cbd5d84fef6b21f11",
+      "url": "hxxps://audo-vmi-cliente-43-portal[.]tport[.]audolabs[.]com",
+      "domain": "audo-vmi-cliente-43-portal[.]tport[.]audolabs[.]com",
+      "firstSeen": "2026-09-02T17:38:33.989Z",
+      "lastSeen": "2026-09-02T17:38:33.989Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "VMI",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "a48b6d2c34ee3e28f807",
       "url": "hxxps://www[.]secure-vmi[.]energy-report[.]ro",
@@ -5897,8 +5929,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-02T17:24:57.135Z",
-      "records": 179,
+      "fetchedAt": "2026-09-02T17:44:11.670Z",
+      "records": 180,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -5913,7 +5945,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-02T17:24:57.135Z",
+      "fetchedAt": "2026-09-02T17:44:11.670Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

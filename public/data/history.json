@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T15:59:54.009Z",
+  "generatedAt": "2026-09-02T17:44:11.670Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "f76cbd5d84fef6b21f11",
+      "domain": "audo-vmi-cliente-43-portal[.]tport[.]audolabs[.]com",
+      "brand": "VMI",
+      "firstSeen": "2026-09-02T17:38:33.989Z",
+      "lastSeen": "2026-09-02T17:38:33.989Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "427536f55491ec1ece48721b9b9d0dbe",
+          "observedAt": "2026-09-02T17:38:33.989Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d011b57dfe48957858b2",
       "domain": "secure-vmi[.]energy-report[.]ro",

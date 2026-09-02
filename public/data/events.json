@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T17:24:57.135Z",
+  "generatedAt": "2026-09-02T17:44:11.670Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T17:24:57.135Z",
-    "to": "2026-09-02T17:24:57.135Z"
+    "from": "2026-08-03T17:44:11.670Z",
+    "to": "2026-09-02T17:44:11.670Z"
   },
-  "totalAvailable": 210,
+  "totalAvailable": 211,
   "truncated": false,
   "events": [
+    {
+      "id": "42c25db79c9666df6f7d4b0f1f73db21",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T17:38:33.989Z",
+      "signalId": "f76cbd5d84fef6b21f11",
+      "signalPath": "/signals/f76cbd5d84fef6b21f11/",
+      "domain": "audo-vmi-cliente-43-portal[.]tport[.]audolabs[.]com",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "c88faa3071d2e2698f1688a9fb04ac7d",
       "type": "first-publication",
