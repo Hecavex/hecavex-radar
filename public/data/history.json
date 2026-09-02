@@ -1,10 +1,78 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-01T23:27:16.039Z",
+  "generatedAt": "2026-09-02T01:23:28.121Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "19a9d10bfdd5af52aa9c",
+      "domain": "revolut-bank[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T00:52:29.947Z",
+      "lastSeen": "2026-09-02T00:52:29.947Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d8da6fdbe0766cdb75eb123cef56e9c5",
+          "observedAt": "2026-09-02T00:52:29.947Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e86f606e9f0cc3c28a51",
+      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T00:50:24.684Z",
+      "lastSeen": "2026-09-02T00:50:24.684Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ac1d00b18532a099779a253e85651955",
+          "observedAt": "2026-09-02T00:50:24.684Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "ddc9b66db5435ebfbc80",
       "domain": "uat[.]dhl-rpa-portal[.]infanion[.]com",

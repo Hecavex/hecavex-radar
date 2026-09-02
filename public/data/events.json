@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T00:34:20.255Z",
+  "generatedAt": "2026-09-02T01:23:28.121Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T00:34:20.255Z",
-    "to": "2026-09-02T00:34:20.255Z"
+    "from": "2026-08-03T01:23:28.121Z",
+    "to": "2026-09-02T01:23:28.121Z"
   },
-  "totalAvailable": 196,
+  "totalAvailable": 198,
   "truncated": false,
   "events": [
+    {
+      "id": "46fccf4ab4fec8054839e213c071aadc",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T00:52:29.947Z",
+      "signalId": "19a9d10bfdd5af52aa9c",
+      "signalPath": "/signals/19a9d10bfdd5af52aa9c/",
+      "domain": "revolut-bank[.]com",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "ba3036af4135d595270ccee50f990ade",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T00:50:24.684Z",
+      "signalId": "e86f606e9f0cc3c28a51",
+      "signalPath": "/signals/e86f606e9f0cc3c28a51/",
+      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "425e33f23c1901fddb0f98b5eac98775",
       "type": "first-publication",
