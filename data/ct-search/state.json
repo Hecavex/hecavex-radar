@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T19:46:24.552Z",
+  "generatedAt": "2026-09-02T21:46:25.913Z",
   "latestRun": {
-    "dnsNames": 1,
-    "endedAt": "2026-09-02T19:46:24.552Z",
+    "dnsNames": 0,
+    "endedAt": "2026-09-02T21:46:25.913Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
     "outcome": "partial",
-    "queriesAttempted": 5,
+    "queriesAttempted": 2,
     "queriesBacklogged": 0,
-    "queriesCompleted": 4,
-    "rowsProcessed": 1,
-    "startedAt": "2026-09-02T19:45:01.876Z"
+    "queriesCompleted": 1,
+    "rowsProcessed": 0,
+    "startedAt": "2026-09-02T21:46:23.345Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 1,
+    "consecutiveFailures": 2,
     "degradedSince": "2026-09-02T19:45:01.876Z",
     "lastSuccessAt": "2026-09-02T18:49:15.574Z",
-    "nextAttemptAt": "2026-09-02T19:51:24.552Z"
+    "nextAttemptAt": "2026-09-02T21:56:25.913Z"
   },
   "queries": {
     "brand:artea": {
@@ -260,8 +260,8 @@
       "brand": "ePolicija",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-02T19:45:01.876Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T21:46:23.345Z",
       "term": "policija"
     },
     "brand:postlt": {
@@ -269,7 +269,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastRunAt": "2026-09-02T21:46:23.345Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
@@ -393,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 29,
+  "queryCursor": 30,
   "schemaVersion": 1
 }
