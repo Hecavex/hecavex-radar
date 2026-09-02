@@ -1,27 +1,25 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T21:46:25.913Z",
+  "generatedAt": "2026-09-02T22:46:30.822Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-02T21:46:25.913Z",
-    "failureCodes": [
-      "provider-http"
-    ],
+    "endedAt": "2026-09-02T22:46:30.822Z",
+    "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
-    "queriesAttempted": 2,
+    "outcome": "completed",
+    "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 1,
+    "queriesCompleted": 6,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-02T21:46:23.345Z"
+    "startedAt": "2026-09-02T22:46:12.270Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 2,
-    "degradedSince": "2026-09-02T19:45:01.876Z",
-    "lastSuccessAt": "2026-09-02T18:49:15.574Z",
-    "nextAttemptAt": "2026-09-02T21:56:25.913Z"
+    "consecutiveFailures": 0,
+    "degradedSince": null,
+    "lastSuccessAt": "2026-09-02T22:46:30.822Z",
+    "nextAttemptAt": null
   },
   "queries": {
     "brand:artea": {
@@ -268,32 +266,32 @@
       "brand": "Lietuvos paštas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-02T21:46:23.345Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "postlt"
     },
     "brand:registrucentras": {
       "brand": "Registrų centras",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "registrucentras"
     },
     "brand:regitra": {
       "brand": "REGITRA",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "regitra"
     },
     "brand:revolut": {
       "brand": "Revolut",
       "lastEntryAt": "2026-08-28T20:22:13.947Z",
       "lastId": 29118779167,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "revolut"
     },
     "brand:rimilietuva": {
@@ -301,7 +299,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "rimilietuva"
     },
     "brand:sebbankas": {
@@ -309,7 +307,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-08-30T11:47:58.858Z",
+      "lastRunAt": "2026-09-02T22:46:12.270Z",
       "term": "sebbankas"
     },
     "brand:skelbiu": {
@@ -393,6 +391,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 30,
+  "queryCursor": 36,
   "schemaVersion": 1
 }
