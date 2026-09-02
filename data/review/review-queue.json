@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-02T11:47:21.324Z",
+  "generatedAt": "2026-09-02T12:51:26.864Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -161,23 +161,8 @@
         "manual-review",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-25T11:47:24.305Z"
-    },
-    {
-      "signalId": "b2a74041369ff0a25a50",
-      "recordPath": "/signals/b2a74041369ff0a25a50/",
-      "brand": "Revolut",
-      "sources": [
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-domain-match"
-      ],
       "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T09:45:07.660Z"
+      "firstSeen": "2026-08-25T11:47:24.305Z"
     },
     {
       "signalId": "c5ee446f5f0dae3cd2ac",
@@ -196,9 +181,9 @@
       "firstSeen": "2026-08-29T09:22:58.578Z"
     },
     {
-      "signalId": "f1909ad7540e264b7fb4",
-      "recordPath": "/signals/f1909ad7540e264b7fb4/",
-      "brand": "Swedbank",
+      "signalId": "b2a74041369ff0a25a50",
+      "recordPath": "/signals/b2a74041369ff0a25a50/",
+      "brand": "Revolut",
       "sources": [
         "URLScan"
       ],
@@ -208,7 +193,7 @@
         "brand-domain-match"
       ],
       "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-22T10:09:17.586Z"
+      "firstSeen": "2026-08-21T09:45:07.660Z"
     },
     {
       "signalId": "7d3c57c7312ee0850e9e",
@@ -229,9 +214,9 @@
       "firstSeen": "2026-08-27T20:58:38.459Z"
     },
     {
-      "signalId": "3d179a68c89e521dc72c",
-      "recordPath": "/signals/3d179a68c89e521dc72c/",
-      "brand": "MAXIMA",
+      "signalId": "f1909ad7540e264b7fb4",
+      "recordPath": "/signals/f1909ad7540e264b7fb4/",
+      "brand": "Swedbank",
       "sources": [
         "URLScan"
       ],
@@ -241,7 +226,7 @@
         "brand-domain-match"
       ],
       "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-23T02:00:48.622Z"
+      "firstSeen": "2026-08-22T10:09:17.586Z"
     },
     {
       "signalId": "c6aa5e7478ddc6aa82f3",
@@ -260,21 +245,19 @@
       "firstSeen": "2026-08-31T17:17:44.735Z"
     },
     {
-      "signalId": "9391b8744e8463392dca",
-      "recordPath": "/signals/9391b8744e8463392dca/",
-      "brand": "DHL",
+      "signalId": "3d179a68c89e521dc72c",
+      "recordPath": "/signals/3d179a68c89e521dc72c/",
+      "brand": "MAXIMA",
       "sources": [
-        "CertStream"
+        "URLScan"
       ],
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
-        "suspicious-context"
+        "brand-domain-match"
       ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T16:49:35.296Z"
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-23T02:00:48.622Z"
     },
     {
       "signalId": "afc8d3a028031f2f28cc",
@@ -294,6 +277,23 @@
       "firstSeen": "2026-08-28T09:40:37.871Z"
     },
     {
+      "signalId": "9391b8744e8463392dca",
+      "recordPath": "/signals/9391b8744e8463392dca/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T16:49:35.296Z"
+    },
+    {
       "signalId": "89a0feb1001f207e2d53",
       "recordPath": "/signals/89a0feb1001f207e2d53/",
       "brand": "Swedbank",
@@ -308,24 +308,6 @@
       ],
       "candidateAgeBand": "0-1d",
       "firstSeen": "2026-09-01T16:35:17.663Z"
-    },
-    {
-      "signalId": "74a34aa5a01e9ed77fb6",
-      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
-      "brand": "Revolut",
-      "sources": [
-        "CertStream",
-        "URLScan"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "corroborated",
-      "reasonCodes": [
-        "brand-domain-match",
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "8-30d",
-      "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
       "signalId": "c4a4fc460206fa9fd548",
@@ -346,6 +328,24 @@
       "firstSeen": "2026-08-31T06:06:03.636Z"
     },
     {
+      "signalId": "74a34aa5a01e9ed77fb6",
+      "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
+      "brand": "Revolut",
+      "sources": [
+        "CertStream",
+        "URLScan"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "corroborated",
+      "reasonCodes": [
+        "brand-domain-match",
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "8-30d",
+      "firstSeen": "2026-08-21T07:33:48.367Z"
+    },
+    {
       "signalId": "f168e7f8b118abe0feaf",
       "recordPath": "/signals/f168e7f8b118abe0feaf/",
       "brand": "Telia",
@@ -360,23 +360,6 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-29T02:31:22.724Z"
-    },
-    {
-      "signalId": "dfa947674ec7493deaad",
-      "recordPath": "/signals/dfa947674ec7493deaad/",
-      "brand": "Citadele",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T12:37:03.308Z"
     },
     {
       "signalId": "623c9be6ca68ccf196f0",
@@ -396,9 +379,26 @@
       "firstSeen": "2026-08-27T14:18:23.959Z"
     },
     {
-      "signalId": "80d5f4133dadcaed6649",
-      "recordPath": "/signals/80d5f4133dadcaed6649/",
-      "brand": "Luminor",
+      "signalId": "08f94854a3fe0e9324d1",
+      "recordPath": "/signals/08f94854a3fe0e9324d1/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-28T15:50:23.946Z"
+    },
+    {
+      "signalId": "19a9d10bfdd5af52aa9c",
+      "recordPath": "/signals/19a9d10bfdd5af52aa9c/",
+      "brand": "Revolut",
       "sources": [
         "CertStream"
       ],
@@ -408,8 +408,8 @@
         "brand-exact-token",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-30T02:05:16.483Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-09-02T00:52:29.947Z"
     }
   ]
 }
