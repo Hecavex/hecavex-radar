@@ -1,9 +1,9 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-02T17:45:26.194Z",
+  "generatedAt": "2026-09-02T18:49:15.574Z",
   "latestRun": {
-    "dnsNames": 0,
-    "endedAt": "2026-09-02T17:45:26.194Z",
+    "dnsNames": 4,
+    "endedAt": "2026-09-02T18:49:15.574Z",
     "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
@@ -11,14 +11,14 @@
     "queriesAttempted": 6,
     "queriesBacklogged": 0,
     "queriesCompleted": 6,
-    "rowsProcessed": 0,
-    "startedAt": "2026-09-02T17:45:11.682Z"
+    "rowsProcessed": 2,
+    "startedAt": "2026-09-02T18:49:05.677Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
     "consecutiveFailures": 0,
     "degradedSince": null,
-    "lastSuccessAt": "2026-09-02T17:45:26.194Z",
+    "lastSuccessAt": "2026-09-02T18:49:15.574Z",
     "nextAttemptAt": null
   },
   "queries": {
@@ -178,48 +178,48 @@
       "brand": "Lidl Lietuva",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "lidllietuva"
     },
     "brand:lietuvosbankas": {
       "brand": "Lietuvos bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "lietuvosbankas"
     },
     "brand:lpexpress": {
       "brand": "LP EXPRESS",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "lpexpress"
     },
     "brand:luminor": {
       "brand": "Luminor",
-      "lastEntryAt": null,
-      "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastEntryAt": "2026-08-27T11:05:33.171Z",
+      "lastId": 29078837180,
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "luminor"
     },
     "brand:manobank": {
       "brand": "Mano Bankas",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T09:44:43.365Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "manobank"
     },
     "brand:manovmi": {
       "brand": "VMI",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-08-30T10:44:34.810Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-02T18:49:05.677Z",
       "term": "manovmi"
     },
     "brand:maxima": {
@@ -391,6 +391,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 19,
+  "queryCursor": 25,
   "schemaVersion": 1
 }
