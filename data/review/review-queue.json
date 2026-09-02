@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-02T03:26:04.786Z",
+  "generatedAt": "2026-09-02T04:27:56.988Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -260,22 +260,6 @@
       "firstSeen": "2026-08-31T17:17:44.735Z"
     },
     {
-      "signalId": "43349e25703ae7344924",
-      "recordPath": "/signals/43349e25703ae7344924/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-08-31T03:50:26.022Z"
-    },
-    {
       "signalId": "c4a4fc460206fa9fd548",
       "recordPath": "/signals/c4a4fc460206fa9fd548/",
       "brand": "Artea",
@@ -345,8 +329,8 @@
       "firstSeen": "2026-08-28T09:40:37.871Z"
     },
     {
-      "signalId": "08f94854a3fe0e9324d1",
-      "recordPath": "/signals/08f94854a3fe0e9324d1/",
+      "signalId": "9391b8744e8463392dca",
+      "recordPath": "/signals/9391b8744e8463392dca/",
       "brand": "DHL",
       "sources": [
         "CertStream"
@@ -358,8 +342,8 @@
         "different-tld",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-28T15:50:23.946Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-08-31T16:49:35.296Z"
     },
     {
       "signalId": "f168e7f8b118abe0feaf",
@@ -376,6 +360,23 @@
       ],
       "candidateAgeBand": "2-7d",
       "firstSeen": "2026-08-29T02:31:22.724Z"
+    },
+    {
+      "signalId": "623c9be6ca68ccf196f0",
+      "recordPath": "/signals/623c9be6ca68ccf196f0/",
+      "brand": "Bitė",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "multiple-hyphens",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-27T14:18:23.959Z"
     },
     {
       "signalId": "e1f8cca98d48da9ba816",
@@ -396,21 +397,21 @@
       "firstSeen": "2026-08-31T06:06:03.636Z"
     },
     {
-      "signalId": "623c9be6ca68ccf196f0",
-      "recordPath": "/signals/623c9be6ca68ccf196f0/",
-      "brand": "Bitė",
+      "signalId": "08f94854a3fe0e9324d1",
+      "recordPath": "/signals/08f94854a3fe0e9324d1/",
+      "brand": "DHL",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "85-94",
+      "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-exact-token",
-        "multiple-hyphens",
+        "brand-split-token",
+        "different-tld",
         "suspicious-context"
       ],
       "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-27T14:18:23.959Z"
+      "firstSeen": "2026-08-28T15:50:23.946Z"
     }
   ]
 }
