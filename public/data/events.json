@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T14:27:03.828Z",
+  "generatedAt": "2026-09-02T15:15:10.613Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T14:27:03.828Z",
-    "to": "2026-09-02T14:27:03.828Z"
+    "from": "2026-08-03T15:15:10.613Z",
+    "to": "2026-09-02T15:15:10.613Z"
   },
-  "totalAvailable": 205,
+  "totalAvailable": 206,
   "truncated": false,
   "events": [
+    {
+      "id": "49ebff8d47966a0ac1fe7d31a20ad007",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T15:09:05.537Z",
+      "signalId": "1de70845f0f9d377a830",
+      "signalPath": "/signals/1de70845f0f9d377a830/",
+      "domain": "revolut-pay-casinos[.]com",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "71ef935d86f2a51b68c8285e668d0cbf",
       "type": "first-publication",

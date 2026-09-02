@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T08:47:44.449Z",
+  "generatedAt": "2026-09-02T15:15:10.613Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "1de70845f0f9d377a830",
+      "domain": "revolut-pay-casinos[.]com",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T15:09:05.537Z",
+      "lastSeen": "2026-09-02T15:09:05.537Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "585b55f67bd160d017b5261ecec72815",
+          "observedAt": "2026-09-02T15:09:05.537Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "2e70b51f5512acd675e9",
       "domain": "mo8yzsrz4330t62a[.]dhl-support-del[.]com",
