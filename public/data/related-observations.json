@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-09-02T13:28:05.630Z",
+  "generatedAt": "2026-09-02T14:27:03.828Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
@@ -30,6 +30,11 @@
       "clusterId": "f290df619f324877"
     },
     {
+      "signalId": "a91e765311167bb5e2f6",
+      "domain": "revolutbank[.]info",
+      "clusterId": "b40df814c1f45eb0"
+    },
+    {
       "signalId": "b1158b011aa853ba4989",
       "domain": "elbldmo8yzsrz4330t62a[.]dhl-support-del[.]com",
       "clusterId": "f290df619f324877"
@@ -38,6 +43,11 @@
       "signalId": "bdc9d729f1302718231a",
       "domain": "32[.]delivery-dhl-uae[.]com",
       "clusterId": "f290df619f324877"
+    },
+    {
+      "signalId": "dddb4e0de30d9fc0aad5",
+      "domain": "revolutbank[.]online",
+      "clusterId": "b40df814c1f45eb0"
     },
     {
       "signalId": "f5c09205741ec279fde5",
@@ -263,6 +273,26 @@
       ]
     },
     {
+      "id": "036235547682e47476be",
+      "source": "a91e765311167bb5e2f6",
+      "target": "dddb4e0de30d9fc0aad5",
+      "strength": "corroborated-supporting",
+      "evidence": [
+        {
+          "type": "dns-a",
+          "value": "34[.]117[.]176[.]22"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ns1[.]gofruits[.]co"
+        },
+        {
+          "type": "dns-ns",
+          "value": "ns2[.]gofruits[.]co"
+        }
+      ]
+    },
+    {
       "id": "1e2de3545949a334d6b5",
       "source": "05e404acdaff12d84922",
       "target": "2433e05eef18ae892030",
@@ -297,7 +327,7 @@
   ],
   "suppressedEvidence": {
     "highFanoutValues": 1,
-    "temporalPairs": 12,
+    "temporalPairs": 13,
     "edgeLimit": 0
   }
 }
