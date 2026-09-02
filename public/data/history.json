@@ -1,10 +1,195 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T02:10:16.153Z",
+  "generatedAt": "2026-09-02T07:16:50.841Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "432ef282294525f8482a",
+      "domain": "www[.]dhl-delivery-contact[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T07:15:48.810Z",
+      "lastSeen": "2026-09-02T07:15:48.810Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "f69cc99b94b68e5f1efa8a0097157550",
+          "observedAt": "2026-09-02T07:15:48.810Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "01d3b68db94f9edd9a62",
+      "domain": "www[.]secure-box-dhl[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T07:12:02.496Z",
+      "lastSeen": "2026-09-02T07:12:02.496Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "de06694bcee90dc753378aa785d8a966",
+          "observedAt": "2026-09-02T07:12:02.496Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cab53622beae8e77ccbb",
+      "domain": "www[.]dhl-secure-box[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T07:08:31.311Z",
+      "lastSeen": "2026-09-02T07:08:31.311Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "4d2bebc53faaf23e6b0346c49a29aa47",
+          "observedAt": "2026-09-02T07:08:31.311Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0c6587bcfa602a91fea3",
+      "domain": "www[.]dhl-parcel-delivered[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T07:08:31.276Z",
+      "lastSeen": "2026-09-02T07:08:31.276Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ff7f9b1182c8be57485789a4d3ee752d",
+          "observedAt": "2026-09-02T07:08:31.276Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1bbae334d87b259fbdf4",
+      "domain": "dhl-club-online[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-02T06:52:52.210Z",
+      "lastSeen": "2026-09-02T06:52:52.210Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "77d75b179a599dd64c41897924b7c150",
+          "observedAt": "2026-09-02T06:52:52.210Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "dddb4e0de30d9fc0aad5",
       "domain": "revolutbank[.]online",
