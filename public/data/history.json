@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T21:44:07.774Z",
+  "generatedAt": "2026-09-02T23:01:21.281Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "32365a0a1b6c24e2fe37",
+      "domain": "dhl-order-tracking[.]pages[.]dev",
+      "brand": "DHL",
+      "firstSeen": "2026-08-31T17:16:17.953Z",
+      "lastSeen": "2026-09-02T22:55:49.806Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1933c4be961d8061e35b4a2db931ece7",
+          "observedAt": "2026-08-31T17:16:17.953Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "dddb4e0de30d9fc0aad5",
       "domain": "revolutbank[.]online",
@@ -1247,43 +1284,6 @@
           "reasonCodes": [
             "brand-joined-affix",
             "suspicious-context",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "32365a0a1b6c24e2fe37",
-      "domain": "dhl-order-tracking[.]pages[.]dev",
-      "brand": "DHL",
-      "firstSeen": "2026-08-31T17:16:17.953Z",
-      "lastSeen": "2026-08-31T17:16:17.953Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld",
-        "multiple-hyphens",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "1933c4be961d8061e35b4a2db931ece7",
-          "observedAt": "2026-08-31T17:16:17.953Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "suspicious-context",
-            "different-tld",
-            "multiple-hyphens",
             "first-publication"
           ]
         }
