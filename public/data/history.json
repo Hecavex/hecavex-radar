@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T15:15:10.613Z",
+  "generatedAt": "2026-09-02T15:38:41.519Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e15912382129de00dfd9",
+      "domain": "mail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-02T15:36:02.205Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "5b02c0d5d0e3e445df3c9ac664933725",
+          "observedAt": "2026-09-02T15:36:02.205Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5ed129cd7de279cd51b9",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-02T15:36:02.205Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9b15d169f8a15af909d49c9f7c5d4ebc",
+          "observedAt": "2026-09-02T15:36:02.205Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "1de70845f0f9d377a830",
       "domain": "revolut-pay-casinos[.]com",

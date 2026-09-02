@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-02T15:15:10.613Z",
-  "lastSuccessfulSyncAt": "2026-09-02T15:31:03.306Z",
+  "generatedAt": "2026-09-02T15:38:41.519Z",
+  "lastSuccessfulSyncAt": "2026-09-02T15:38:41.519Z",
   "signals": [
+    {
+      "id": "5ed129cd7de279cd51b9",
+      "url": "hxxps://webmail[.]revolut-support[.]finance",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-02T15:36:02.205Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "e15912382129de00dfd9",
+      "url": "hxxps://mail[.]revolut-support[.]finance",
+      "domain": "mail[.]revolut-support[.]finance",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-02T15:36:02.205Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "1de70845f0f9d377a830",
       "url": "hxxps://revolut-pay-casinos[.]com",
@@ -5771,8 +5833,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-02T15:31:03.306Z",
-      "records": 175,
+      "fetchedAt": "2026-09-02T15:38:41.519Z",
+      "records": 177,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
@@ -5787,7 +5849,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-02T15:31:03.306Z",
+      "fetchedAt": "2026-09-02T15:38:41.519Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

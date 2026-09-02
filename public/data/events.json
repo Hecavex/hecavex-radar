@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-02T15:31:03.306Z",
+  "generatedAt": "2026-09-02T15:38:41.519Z",
   "window": {
     "days": 30,
-    "from": "2026-08-03T15:31:03.306Z",
-    "to": "2026-09-02T15:31:03.306Z"
+    "from": "2026-08-03T15:38:41.519Z",
+    "to": "2026-09-02T15:38:41.519Z"
   },
-  "totalAvailable": 206,
+  "totalAvailable": 208,
   "truncated": false,
   "events": [
+    {
+      "id": "cb2a626ac1523b19f4bf159a613b3e51",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T15:36:02.205Z",
+      "signalId": "e15912382129de00dfd9",
+      "signalPath": "/signals/e15912382129de00dfd9/",
+      "domain": "mail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "3b7e1e762ed8902df3e481c3089eb7c3",
+      "type": "first-publication",
+      "occurredAt": "2026-09-02T15:36:02.205Z",
+      "signalId": "5ed129cd7de279cd51b9",
+      "signalPath": "/signals/5ed129cd7de279cd51b9/",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "49ebff8d47966a0ac1fe7d31a20ad007",
       "type": "first-publication",
