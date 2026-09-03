@@ -1,36 +1,36 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T22:24:50.462Z",
+  "generatedAt": "2026-09-03T23:22:35.855Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T22:24:50.462Z",
-      "to": "2026-09-03T22:24:50.462Z",
-      "events": 32,
-      "uniqueSignals": 18,
+      "from": "2026-09-02T23:22:35.855Z",
+      "to": "2026-09-03T23:22:35.855Z",
+      "events": 31,
+      "uniqueSignals": 17,
       "firstPublications": 14,
       "statusChanges": 0,
-      "observations": 18,
+      "observations": 17,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 32
+        "CertStream": 31
       },
       "byStatus": {
-        "suspected": 32
+        "suspected": 31
       },
       "byReason": {
-        "suspicious-context": 32,
-        "different-tld": 29,
-        "brand-exact-token": 22,
-        "multiple-hyphens": 16,
+        "suspicious-context": 31,
+        "different-tld": 28,
+        "brand-exact-token": 21,
+        "multiple-hyphens": 15,
         "first-publication": 14,
         "brand-joined-affix": 10
       },
       "byBrand": {
-        "DHL": 10,
         "Revolut": 10,
+        "DHL": 9,
         "Artea": 2,
         "DPD": 2,
         "IKI": 2,
@@ -41,8 +41,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-27T22:24:50.462Z",
-      "to": "2026-09-03T22:24:50.462Z",
+      "from": "2026-08-27T23:22:35.855Z",
+      "to": "2026-09-03T23:22:35.855Z",
       "events": 378,
       "uniqueSignals": 183,
       "firstPublications": 181,
