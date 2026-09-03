@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T02:29:16.329Z",
+  "generatedAt": "2026-09-03T03:59:31.879Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "5bde7339324a079e18e0",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]snowflake[.]app",
+      "brand": "DHL",
+      "firstSeen": "2026-09-03T03:54:37.637Z",
+      "lastSeen": "2026-09-03T03:54:37.637Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "20340692bdca67507ac127a53856c2fc",
+          "observedAt": "2026-09-03T03:54:37.637Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "07bdda1bb92c5f543e7b",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]privatelink[.]snowflake[.]app",
+      "brand": "DHL",
+      "firstSeen": "2026-09-03T03:54:37.637Z",
+      "lastSeen": "2026-09-03T03:54:37.637Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "496ee61a4beb624cefd708f0aec7d820",
+          "observedAt": "2026-09-03T03:54:37.637Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "ed34ea81a2403fd0e1be",
       "domain": "www[.]dpd-tracking-redelivery[.]ph",

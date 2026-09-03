@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T03:29:32.941Z",
+  "generatedAt": "2026-09-03T03:59:31.879Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T03:29:32.941Z",
-    "to": "2026-09-03T03:29:32.941Z"
+    "from": "2026-08-04T03:59:31.879Z",
+    "to": "2026-09-03T03:59:31.879Z"
   },
-  "totalAvailable": 220,
+  "totalAvailable": 222,
   "truncated": false,
   "events": [
+    {
+      "id": "c0e1dffcef6d48696df49f6a8657a075",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T03:54:37.637Z",
+      "signalId": "5bde7339324a079e18e0",
+      "signalPath": "/signals/5bde7339324a079e18e0/",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]snowflake[.]app",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "21ac1a0abfe33328a4a16dda684a7da4",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T03:54:37.637Z",
+      "signalId": "07bdda1bb92c5f543e7b",
+      "signalPath": "/signals/07bdda1bb92c5f543e7b/",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]privatelink[.]snowflake[.]app",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "94fa93843eac1bd6c4a15a6eb1a9d30c",
       "type": "first-publication",

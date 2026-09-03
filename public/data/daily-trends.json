@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-03T03:29:32.941Z",
+  "generatedAt": "2026-09-03T03:59:31.879Z",
   "retentionDays": 365,
   "from": "2025-09-04",
   "to": "2026-09-03",
@@ -733,44 +733,45 @@
       "date": "2026-09-03",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 12572,
-        "scheduledSlots": 13,
-        "recordedAttempts": 13,
-        "healthyAttempts": 13,
+        "windowSeconds": 14371,
+        "scheduledSlots": 15,
+        "recordedAttempts": 15,
+        "healthyAttempts": 15,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 49.63,
-        "scheduledListeningCeilingPercent": 49.63,
-        "listeningSeconds": 6239.98,
+        "listeningCoveragePercent": 50.1,
+        "scheduledListeningCeilingPercent": 50.1,
+        "listeningSeconds": 7199.977,
         "outcomes": {
-          "healthy-empty": 11,
-          "healthy-matches": 2
+          "healthy-empty": 12,
+          "healthy-matches": 3
         }
       },
       "discovery": {
-        "events": 4,
-        "uniqueSignals": 3,
-        "observations": 3,
+        "events": 8,
+        "uniqueSignals": 5,
+        "observations": 5,
         "reobservations": 0,
-        "firstPublications": 1,
+        "firstPublications": 3,
         "statusChanges": 0,
-        "facetSampleSize": 3,
-        "evidenceClassifiedSignals": 3,
+        "facetSampleSize": 5,
+        "evidenceClassifiedSignals": 5,
         "byBrand": {
+          "DHL": 2,
           "Revolut": 2,
           "DPD": 1
         },
         "bySource": {
-          "CertStream": 3
+          "CertStream": 5
         },
         "byEvidenceTier": {
-          "name-only": 3
+          "name-only": 5
         },
         "byReason": {
-          "brand-exact-token": 3,
-          "different-tld": 3,
-          "suspicious-context": 3,
-          "first-publication": 1,
-          "multiple-hyphens": 1
+          "brand-exact-token": 5,
+          "different-tld": 5,
+          "suspicious-context": 5,
+          "first-publication": 3,
+          "multiple-hyphens": 3
         }
       }
     }

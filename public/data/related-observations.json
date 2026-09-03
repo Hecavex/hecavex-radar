@@ -1,13 +1,18 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-09-03T03:29:32.941Z",
+  "generatedAt": "2026-09-03T03:59:31.879Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
     {
       "signalId": "05e404acdaff12d84922",
       "domain": "dfhnwrjy[.]xn--tl2mobile-b4ab[.]fr",
       "clusterId": "e43f9f541a402674"
+    },
+    {
+      "signalId": "07bdda1bb92c5f543e7b",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]privatelink[.]snowflake[.]app",
+      "clusterId": "1877e1f64305a92b"
     },
     {
       "signalId": "0d284af65210b0c1307e",
@@ -38,6 +43,11 @@
       "signalId": "43349e25703ae7344924",
       "domain": "www[.]tracking-dhl[.]com",
       "clusterId": "5bd677c09fa72949"
+    },
+    {
+      "signalId": "5bde7339324a079e18e0",
+      "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]snowflake[.]app",
+      "clusterId": "1877e1f64305a92b"
     },
     {
       "signalId": "a91e765311167bb5e2f6",
@@ -71,6 +81,18 @@
     }
   ],
   "edges": [
+    {
+      "id": "63603559ab6ec9e6d3ec",
+      "source": "07bdda1bb92c5f543e7b",
+      "target": "5bde7339324a079e18e0",
+      "strength": "strong",
+      "evidence": [
+        {
+          "type": "certificate-sha256",
+          "value": "806f6ab0aa2ecc3ba3932c4bd708d10e96cb07ed6c485d72ab2ed97559e90b33"
+        }
+      ]
+    },
     {
       "id": "93156d5efe878bce3dde",
       "source": "0d284af65210b0c1307e",
