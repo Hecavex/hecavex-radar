@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-03T12:29:14.329Z",
-  "lastSuccessfulSyncAt": "2026-09-03T13:27:45.347Z",
+  "generatedAt": "2026-09-03T13:35:45.808Z",
+  "lastSuccessfulSyncAt": "2026-09-03T13:35:45.808Z",
   "signals": [
+    {
+      "id": "e86f606e9f0cc3c28a51",
+      "url": "hxxps://5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "firstSeen": "2026-09-02T00:50:24.684Z",
+      "lastSeen": "2026-09-03T13:32:57.181Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "DHL",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "0e9349e3280947d74fd3",
       "url": "hxxps://secure[.]revolutwallet[.]net",
@@ -880,37 +911,6 @@
       "reasonCodes": [
         "brand-exact-token",
         "suspicious-context"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "e86f606e9f0cc3c28a51",
-      "url": "hxxps://5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
-      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
-      "firstSeen": "2026-09-02T00:50:24.684Z",
-      "lastSeen": "2026-09-02T00:50:24.684Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "DHL",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 90,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 90,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "multiple-hyphens"
       ],
       "detailAvailable": true
     },
@@ -5825,7 +5825,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-03T13:27:45.347Z",
+      "fetchedAt": "2026-09-03T13:35:45.808Z",
       "records": 176,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
@@ -5841,7 +5841,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-03T13:27:45.347Z",
+      "fetchedAt": "2026-09-03T13:35:45.808Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
