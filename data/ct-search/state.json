@@ -1,27 +1,25 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-03T19:45:57.988Z",
+  "generatedAt": "2026-09-03T20:45:57.430Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-03T19:45:57.988Z",
-    "failureCodes": [
-      "provider-http"
-    ],
+    "endedAt": "2026-09-03T20:45:57.430Z",
+    "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
-    "queriesAttempted": 3,
+    "outcome": "completed",
+    "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 2,
+    "queriesCompleted": 6,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-03T19:45:24.740Z"
+    "startedAt": "2026-09-03T20:45:54.080Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 1,
-    "degradedSince": "2026-09-03T19:45:24.740Z",
-    "lastSuccessAt": "2026-09-03T18:50:53.115Z",
-    "nextAttemptAt": "2026-09-03T19:50:57.988Z"
+    "consecutiveFailures": 0,
+    "degradedSince": null,
+    "lastSuccessAt": "2026-09-03T20:45:57.430Z",
+    "nextAttemptAt": null
   },
   "queries": {
     "brand:artea": {
@@ -92,8 +90,8 @@
       "brand": "Elektrum",
       "lastEntryAt": null,
       "lastId": 27835197032,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-03T19:45:24.740Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
@@ -101,7 +99,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T11:46:30.996Z",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "energijosskirstymooperatorius"
     },
     "brand:epaslaugos": {
@@ -109,7 +107,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T12:51:04.709Z",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "epaslaugos"
     },
     "brand:epristatymas": {
@@ -117,7 +115,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T12:51:04.709Z",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "epristatymas"
     },
     "brand:ergodraudimas": {
@@ -125,7 +123,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T12:51:04.709Z",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "ergodraudimas"
     },
     "brand:esveikata": {
@@ -133,7 +131,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T12:51:04.709Z",
+      "lastRunAt": "2026-09-03T20:45:54.080Z",
       "term": "esveikata"
     },
     "brand:gjensidige": {
@@ -393,6 +391,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 8,
+  "queryCursor": 14,
   "schemaVersion": 1
 }
