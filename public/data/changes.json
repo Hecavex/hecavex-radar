@@ -1,47 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T15:29:29.847Z",
+  "generatedAt": "2026-09-03T16:27:12.496Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T15:29:29.847Z",
-      "to": "2026-09-03T15:29:29.847Z",
-      "events": 40,
-      "uniqueSignals": 21,
-      "firstPublications": 16,
+      "from": "2026-09-02T16:27:12.496Z",
+      "to": "2026-09-03T16:27:12.496Z",
+      "events": 32,
+      "uniqueSignals": 19,
+      "firstPublications": 12,
       "statusChanges": 0,
-      "observations": 24,
-      "reobservations": 3,
+      "observations": 20,
+      "reobservations": 1,
       "bySource": {
-        "CertStream": 40
+        "CertStream": 32
       },
       "byStatus": {
-        "suspected": 40
+        "suspected": 32
       },
       "byReason": {
-        "suspicious-context": 40,
-        "different-tld": 37,
-        "brand-exact-token": 28,
-        "first-publication": 16,
-        "multiple-hyphens": 16,
-        "brand-joined-affix": 12
+        "suspicious-context": 32,
+        "different-tld": 29,
+        "brand-exact-token": 20,
+        "brand-joined-affix": 12,
+        "first-publication": 12,
+        "multiple-hyphens": 12
       },
       "byBrand": {
-        "Revolut": 20,
+        "Revolut": 16,
         "DHL": 6,
-        "VMI": 6,
         "Artea": 2,
         "DPD": 2,
         "UNIPARK": 2,
+        "VMI": 2,
         "Vinted": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-27T15:29:29.847Z",
-      "to": "2026-09-03T15:29:29.847Z",
+      "from": "2026-08-27T16:27:12.496Z",
+      "to": "2026-09-03T16:27:12.496Z",
       "events": 386,
       "uniqueSignals": 187,
       "firstPublications": 185,
