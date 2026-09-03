@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-feeds",
-  "generatedAt": "2026-09-03T09:12:34.442Z",
+  "generatedAt": "2026-09-03T09:27:43.149Z",
   "semantics": "Each per-brand feed is a filtered view of the same bounded 30-day global event stream. An empty feed means no publishable event in that sampled window, not no phishing activity.",
   "brands": [
     {
       "brand": "Artea",
       "slug": "artea",
-      "eventCount": 5,
+      "eventCount": 6,
       "atom": "/data/brands/artea/events.atom.xml",
       "rss": "/data/brands/artea/events.rss.xml",
       "jsonFeed": "/data/brands/artea/events.feed.json"

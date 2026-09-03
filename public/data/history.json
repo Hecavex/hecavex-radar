@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T07:17:41.226Z",
+  "generatedAt": "2026-09-03T09:27:43.149Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "fd34f99e483f1ea7fdcf",
+      "domain": "arteabank[.]ee",
+      "brand": "Artea",
+      "firstSeen": "2026-09-03T09:20:56.041Z",
+      "lastSeen": "2026-09-03T09:20:56.041Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "c06284ad05fb202f5bf980e6d9424ef9",
+          "observedAt": "2026-09-03T09:20:56.041Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "d0fe57aab70dcf8e8452",
       "domain": "fix-vinted-profile-no-account[.]vinlands[.]fr",

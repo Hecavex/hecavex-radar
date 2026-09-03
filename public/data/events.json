@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T09:12:34.442Z",
+  "generatedAt": "2026-09-03T09:27:43.149Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T09:12:34.442Z",
-    "to": "2026-09-03T09:12:34.442Z"
+    "from": "2026-08-04T09:27:43.149Z",
+    "to": "2026-09-03T09:27:43.149Z"
   },
-  "totalAvailable": 224,
+  "totalAvailable": 225,
   "truncated": false,
   "events": [
+    {
+      "id": "78b50061e963d497e585db420a5abd0d",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T09:20:56.041Z",
+      "signalId": "fd34f99e483f1ea7fdcf",
+      "signalPath": "/signals/fd34f99e483f1ea7fdcf/",
+      "domain": "arteabank[.]ee",
+      "brand": "Artea",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "c4cd986f8b7843de1a778f4dc3ed930d",
       "type": "first-publication",
