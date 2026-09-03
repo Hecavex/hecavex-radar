@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T18:01:46.781Z",
+  "generatedAt": "2026-09-03T19:54:52.994Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "b0a1f7e160c710308223",
+      "domain": "hlt-iki-confirm[.]pages[.]dev",
+      "brand": "IKI",
+      "firstSeen": "2026-09-03T19:53:57.026Z",
+      "lastSeen": "2026-09-03T19:53:57.026Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ccac228237070714ff07e49316731674",
+          "observedAt": "2026-09-03T19:53:57.026Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "3ae9ad0ba99eb74f24f5",
       "domain": "payserawallet[.]com",

@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T19:22:51.504Z",
+  "generatedAt": "2026-09-03T19:54:52.994Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T19:22:51.504Z",
-    "to": "2026-09-03T19:22:51.504Z"
+    "from": "2026-08-04T19:54:52.994Z",
+    "to": "2026-09-03T19:54:52.994Z"
   },
-  "totalAvailable": 231,
+  "totalAvailable": 232,
   "truncated": false,
   "events": [
+    {
+      "id": "921b33d8d64f8d53459355dcd5faa147",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T19:53:57.026Z",
+      "signalId": "b0a1f7e160c710308223",
+      "signalPath": "/signals/b0a1f7e160c710308223/",
+      "domain": "hlt-iki-confirm[.]pages[.]dev",
+      "brand": "IKI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "d7af60b317788a5613dce75aec0cbf6e",
       "type": "first-publication",
