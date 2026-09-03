@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T09:27:43.149Z",
+  "generatedAt": "2026-09-03T11:29:23.458Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "64f15e71aa29ddb7d63d",
+      "domain": "www[.]confirm-revolut[.]es",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-03T11:26:27.606Z",
+      "lastSeen": "2026-09-03T11:26:27.606Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e944a31765c738ce17b608171f650649",
+          "observedAt": "2026-09-03T11:26:27.606Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5dc8a0e042363fbfee59",
+      "domain": "unipark-pay[.]top",
+      "brand": "UNIPARK",
+      "firstSeen": "2026-09-03T11:21:42.774Z",
+      "lastSeen": "2026-09-03T11:21:42.774Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "60e397b5ea48b22707943a9209616829",
+          "observedAt": "2026-09-03T11:21:42.774Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "fd34f99e483f1ea7fdcf",
       "domain": "arteabank[.]ee",
