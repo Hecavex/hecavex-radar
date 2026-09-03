@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T19:54:52.994Z",
+  "generatedAt": "2026-09-03T21:01:34.174Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c777e8139244b664e000",
+      "domain": "dhl-parcell-track[.]livingwayfoundation[.]org",
+      "brand": "DHL",
+      "firstSeen": "2026-09-03T20:54:05.398Z",
+      "lastSeen": "2026-09-03T20:54:05.398Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3616e62c181965c3b4994c8649d81fa3",
+          "observedAt": "2026-09-03T20:54:05.398Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "33a471f6d2354854c6ed",
+      "domain": "www[.]dhl-parcell-track[.]livingwayfoundation[.]org",
+      "brand": "DHL",
+      "firstSeen": "2026-09-03T20:54:05.398Z",
+      "lastSeen": "2026-09-03T20:54:05.398Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1dc4c859ba061b0a4f6699b4b0a3daae",
+          "observedAt": "2026-09-03T20:54:05.398Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "b0a1f7e160c710308223",
       "domain": "hlt-iki-confirm[.]pages[.]dev",

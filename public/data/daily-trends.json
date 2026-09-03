@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-03T20:25:28.513Z",
+  "generatedAt": "2026-09-03T21:01:34.174Z",
   "retentionDays": 365,
   "from": "2025-09-04",
   "to": "2026-09-03",
@@ -152,7 +152,7 @@
         "firstPublications": 4,
         "statusChanges": 0,
         "facetSampleSize": 5,
-        "evidenceClassifiedSignals": 5,
+        "evidenceClassifiedSignals": 4,
         "byBrand": {
           "DPD": 1,
           "MAXIMA": 1,
@@ -165,7 +165,7 @@
           "CertStream": 1
         },
         "byEvidenceTier": {
-          "name-only": 4,
+          "name-only": 3,
           "corroborated": 1
         },
         "byReason": {
@@ -371,7 +371,7 @@
         "firstPublications": 16,
         "statusChanges": 0,
         "facetSampleSize": 17,
-        "evidenceClassifiedSignals": 3,
+        "evidenceClassifiedSignals": 1,
         "byBrand": {
           "Revolut": 6,
           "SEB": 3,
@@ -385,7 +385,6 @@
           "CertStream": 17
         },
         "byEvidenceTier": {
-          "name-only": 2,
           "corroborated": 1
         },
         "byReason": {
@@ -425,7 +424,7 @@
         "firstPublications": 30,
         "statusChanges": 0,
         "facetSampleSize": 31,
-        "evidenceClassifiedSignals": 29,
+        "evidenceClassifiedSignals": 7,
         "byBrand": {
           "DHL": 16,
           "DPD": 3,
@@ -442,7 +441,7 @@
           "CertStream": 31
         },
         "byEvidenceTier": {
-          "name-only": 29
+          "name-only": 7
         },
         "byReason": {
           "first-publication": 30,
@@ -733,31 +732,31 @@
       "date": "2026-09-03",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 73528,
-        "scheduledSlots": 81,
-        "recordedAttempts": 67,
-        "healthyAttempts": 67,
-        "recordedSchedulePercent": 82.7,
-        "listeningCoveragePercent": 43.74,
-        "scheduledListeningCeilingPercent": 52.88,
-        "listeningSeconds": 32159.903,
+        "windowSeconds": 75694,
+        "scheduledSlots": 84,
+        "recordedAttempts": 69,
+        "healthyAttempts": 69,
+        "recordedSchedulePercent": 82.1,
+        "listeningCoveragePercent": 43.75,
+        "scheduledListeningCeilingPercent": 53.27,
+        "listeningSeconds": 33119.901,
         "outcomes": {
-          "healthy-empty": 49,
-          "healthy-matches": 18
+          "healthy-empty": 50,
+          "healthy-matches": 19
         }
       },
       "discovery": {
-        "events": 27,
-        "uniqueSignals": 15,
-        "observations": 15,
+        "events": 31,
+        "uniqueSignals": 17,
+        "observations": 17,
         "reobservations": 0,
-        "firstPublications": 12,
+        "firstPublications": 14,
         "statusChanges": 0,
-        "facetSampleSize": 15,
-        "evidenceClassifiedSignals": 15,
+        "facetSampleSize": 17,
+        "evidenceClassifiedSignals": 17,
         "byBrand": {
           "Revolut": 6,
-          "DHL": 3,
+          "DHL": 5,
           "Artea": 1,
           "DPD": 1,
           "IKI": 1,
@@ -766,17 +765,17 @@
           "Vinted": 1
         },
         "bySource": {
-          "CertStream": 15
+          "CertStream": 17
         },
         "byEvidenceTier": {
-          "name-only": 15
+          "name-only": 17
         },
         "byReason": {
-          "suspicious-context": 15,
-          "different-tld": 13,
-          "first-publication": 12,
-          "brand-exact-token": 10,
-          "multiple-hyphens": 6,
+          "suspicious-context": 17,
+          "different-tld": 15,
+          "first-publication": 14,
+          "brand-exact-token": 12,
+          "multiple-hyphens": 8,
           "brand-joined-affix": 5
         }
       }

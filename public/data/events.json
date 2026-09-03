@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T20:25:28.513Z",
+  "generatedAt": "2026-09-03T21:01:34.174Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T20:25:28.513Z",
-    "to": "2026-09-03T20:25:28.513Z"
+    "from": "2026-08-04T21:01:34.174Z",
+    "to": "2026-09-03T21:01:34.174Z"
   },
-  "totalAvailable": 232,
+  "totalAvailable": 234,
   "truncated": false,
   "events": [
+    {
+      "id": "92ad14b79737079805b1052f4a5a1abb",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T20:54:05.398Z",
+      "signalId": "c777e8139244b664e000",
+      "signalPath": "/signals/c777e8139244b664e000/",
+      "domain": "dhl-parcell-track[.]livingwayfoundation[.]org",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "3a0563a6069144bb2e91f90c7d9b3024",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T20:54:05.398Z",
+      "signalId": "33a471f6d2354854c6ed",
+      "signalPath": "/signals/33a471f6d2354854c6ed/",
+      "domain": "www[.]dhl-parcell-track[.]livingwayfoundation[.]org",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "921b33d8d64f8d53459355dcd5faa147",
       "type": "first-publication",
