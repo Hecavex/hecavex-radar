@@ -1,9 +1,71 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-02T23:01:21.281Z",
-  "lastSuccessfulSyncAt": "2026-09-03T00:36:31.958Z",
+  "generatedAt": "2026-09-03T01:15:46.926Z",
+  "lastSuccessfulSyncAt": "2026-09-03T01:15:46.926Z",
   "signals": [
+    {
+      "id": "5ed129cd7de279cd51b9",
+      "url": "hxxps://webmail[.]revolut-support[.]finance",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-03T01:14:22.969Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "e15912382129de00dfd9",
+      "url": "hxxps://mail[.]revolut-support[.]finance",
+      "domain": "mail[.]revolut-support[.]finance",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-03T01:14:22.969Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "32365a0a1b6c24e2fe37",
       "url": "hxxps://dhl-order-tracking[.]pages[.]dev",
@@ -252,68 +314,6 @@
         "suspicious-context",
         "different-tld",
         "multiple-hyphens"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "5ed129cd7de279cd51b9",
-      "url": "hxxps://webmail[.]revolut-support[.]finance",
-      "domain": "webmail[.]revolut-support[.]finance",
-      "firstSeen": "2026-09-02T15:36:02.205Z",
-      "lastSeen": "2026-09-02T15:36:02.205Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "Revolut",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 100,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 100,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "e15912382129de00dfd9",
-      "url": "hxxps://mail[.]revolut-support[.]finance",
-      "domain": "mail[.]revolut-support[.]finance",
-      "firstSeen": "2026-09-02T15:36:02.205Z",
-      "lastSeen": "2026-09-02T15:36:02.205Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "Revolut",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 100,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 100,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld"
       ],
       "detailAvailable": true
     },
@@ -5511,7 +5511,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-03T00:36:31.958Z",
+      "fetchedAt": "2026-09-03T01:15:46.926Z",
       "records": 166,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
@@ -5519,15 +5519,15 @@
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-02T22:44:23.795Z",
+      "fetchedAt": "2026-09-03T00:49:16.607Z",
       "records": 9,
-      "state": "healthy",
-      "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 152 stable official asset hashes are pivot-eligible"
+      "state": "partial",
+      "note": "Validated passive archive from the last 30 days; the latest passive hunt failed; 152 stable official asset hashes are pivot-eligible"
     },
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-03T00:36:31.958Z",
+      "fetchedAt": "2026-09-03T01:15:46.926Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

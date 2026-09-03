@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-02T23:01:21.281Z",
+  "generatedAt": "2026-09-03T01:15:46.926Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e15912382129de00dfd9",
+      "domain": "mail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-03T01:14:22.969Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "5b02c0d5d0e3e445df3c9ac664933725",
+          "observedAt": "2026-09-02T15:36:02.205Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5ed129cd7de279cd51b9",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-02T15:36:02.205Z",
+      "lastSeen": "2026-09-03T01:14:22.969Z",
+      "observationCount": 2,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9b15d169f8a15af909d49c9f7c5d4ebc",
+          "observedAt": "2026-09-02T15:36:02.205Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "32365a0a1b6c24e2fe37",
       "domain": "dhl-order-tracking[.]pages[.]dev",
@@ -286,76 +356,6 @@
             "suspicious-context",
             "different-tld",
             "multiple-hyphens",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "e15912382129de00dfd9",
-      "domain": "mail[.]revolut-support[.]finance",
-      "brand": "Revolut",
-      "firstSeen": "2026-09-02T15:36:02.205Z",
-      "lastSeen": "2026-09-02T15:36:02.205Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "5b02c0d5d0e3e445df3c9ac664933725",
-          "observedAt": "2026-09-02T15:36:02.205Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "suspicious-context",
-            "different-tld",
-            "first-publication"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "5ed129cd7de279cd51b9",
-      "domain": "webmail[.]revolut-support[.]finance",
-      "brand": "Revolut",
-      "firstSeen": "2026-09-02T15:36:02.205Z",
-      "lastSeen": "2026-09-02T15:36:02.205Z",
-      "observationCount": 1,
-      "sources": [
-        "CertStream"
-      ],
-      "latestStatus": "suspected",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context",
-        "different-tld",
-        "first-publication"
-      ],
-      "statusTransitions": [
-        {
-          "eventId": "9b15d169f8a15af909d49c9f7c5d4ebc",
-          "observedAt": "2026-09-02T15:36:02.205Z",
-          "previousStatus": null,
-          "status": "suspected",
-          "sources": [
-            "CertStream"
-          ],
-          "reasonCodes": [
-            "brand-exact-token",
-            "suspicious-context",
-            "different-tld",
             "first-publication"
           ]
         }

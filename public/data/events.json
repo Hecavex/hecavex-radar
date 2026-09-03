@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T00:36:31.958Z",
+  "generatedAt": "2026-09-03T01:15:46.926Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T00:36:31.958Z",
-    "to": "2026-09-03T00:36:31.958Z"
+    "from": "2026-08-04T01:15:46.926Z",
+    "to": "2026-09-03T01:15:46.926Z"
   },
-  "totalAvailable": 217,
+  "totalAvailable": 219,
   "truncated": false,
   "events": [
+    {
+      "id": "6d9fbec12d2103a963a42a483507161f",
+      "type": "reobservation",
+      "occurredAt": "2026-09-03T01:14:22.969Z",
+      "signalId": "e15912382129de00dfd9",
+      "signalPath": "/signals/e15912382129de00dfd9/",
+      "domain": "mail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "00a09f9002fa3db91db8974ff3181b8a",
+      "type": "reobservation",
+      "occurredAt": "2026-09-03T01:14:22.969Z",
+      "signalId": "5ed129cd7de279cd51b9",
+      "signalPath": "/signals/5ed129cd7de279cd51b9/",
+      "domain": "webmail[.]revolut-support[.]finance",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "29bd5ff8b3f0771dcaaafe42a2f9b9d6",
       "type": "reobservation",
