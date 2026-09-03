@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T17:26:06.673Z",
+  "generatedAt": "2026-09-03T18:01:46.781Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T17:26:06.673Z",
-    "to": "2026-09-03T17:26:06.673Z"
+    "from": "2026-08-04T18:01:46.781Z",
+    "to": "2026-09-03T18:01:46.781Z"
   },
-  "totalAvailable": 230,
+  "totalAvailable": 231,
   "truncated": false,
   "events": [
+    {
+      "id": "d7af60b317788a5613dce75aec0cbf6e",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T17:56:25.373Z",
+      "signalId": "3ae9ad0ba99eb74f24f5",
+      "signalPath": "/signals/3ae9ad0ba99eb74f24f5/",
+      "domain": "payserawallet[.]com",
+      "brand": "Paysera",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "5ff46e284c4e3ca6ca0d637d29f4e133",
       "type": "reobservation",

@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T13:35:45.808Z",
+  "generatedAt": "2026-09-03T18:01:46.781Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "3ae9ad0ba99eb74f24f5",
+      "domain": "payserawallet[.]com",
+      "brand": "Paysera",
+      "firstSeen": "2026-09-03T17:56:25.373Z",
+      "lastSeen": "2026-09-03T17:56:25.373Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "585dc21b9d792daaf7c76c1fc6bd8cb2",
+          "observedAt": "2026-09-03T17:56:25.373Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e86f606e9f0cc3c28a51",
       "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",

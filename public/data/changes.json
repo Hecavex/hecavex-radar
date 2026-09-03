@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T17:26:06.673Z",
+  "generatedAt": "2026-09-03T18:01:46.781Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T17:26:06.673Z",
-      "to": "2026-09-03T17:26:06.673Z",
+      "from": "2026-09-02T18:01:46.781Z",
+      "to": "2026-09-03T18:01:46.781Z",
       "events": 32,
       "uniqueSignals": 19,
       "firstPublications": 12,
@@ -22,26 +22,26 @@
       },
       "byReason": {
         "suspicious-context": 32,
-        "different-tld": 29,
-        "brand-exact-token": 20,
-        "brand-joined-affix": 12,
+        "different-tld": 27,
+        "brand-exact-token": 18,
+        "brand-joined-affix": 14,
         "first-publication": 12,
-        "multiple-hyphens": 12
+        "multiple-hyphens": 10
       },
       "byBrand": {
         "Revolut": 16,
         "DHL": 6,
         "Artea": 2,
         "DPD": 2,
+        "Paysera": 2,
         "UNIPARK": 2,
-        "VMI": 2,
         "Vinted": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-27T17:26:06.673Z",
-      "to": "2026-09-03T17:26:06.673Z",
+      "from": "2026-08-27T18:01:46.781Z",
+      "to": "2026-09-03T18:01:46.781Z",
       "events": 384,
       "uniqueSignals": 186,
       "firstPublications": 184,
@@ -57,17 +57,17 @@
       "byReason": {
         "suspicious-context": 372,
         "different-tld": 328,
-        "brand-exact-token": 290,
+        "brand-exact-token": 288,
         "multiple-hyphens": 200,
         "first-publication": 184,
-        "brand-joined-affix": 86,
+        "brand-joined-affix": 88,
         "punycode": 20,
         "unicode-confusable": 16,
         "brand-split-token": 8
       },
       "byBrand": {
         "DHL": 156,
-        "Revolut": 68,
+        "Revolut": 66,
         "VMI": 22,
         "Vinted": 22,
         "Telia": 20,
@@ -85,6 +85,7 @@
         "BTA": 2,
         "Citadele": 2,
         "ESO": 2,
+        "Paysera": 2,
         "UNIPARK": 2
       }
     }
