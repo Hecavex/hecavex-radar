@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T03:59:31.879Z",
+  "generatedAt": "2026-09-03T04:59:23.096Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "4f8708b7e6aa3ab6d73b",
+      "domain": "www[.]revolutbank[.]org",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-03T04:52:43.940Z",
+      "lastSeen": "2026-09-03T04:52:43.940Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "44d83cea091af03abc5ef7e487f103d6",
+          "observedAt": "2026-09-03T04:52:43.940Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "5bde7339324a079e18e0",
       "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]snowflake[.]app",
