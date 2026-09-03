@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T11:59:19.256Z",
+  "generatedAt": "2026-09-03T12:29:14.329Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T11:59:19.256Z",
-    "to": "2026-09-03T11:59:19.256Z"
+    "from": "2026-08-04T12:29:14.329Z",
+    "to": "2026-09-03T12:29:14.329Z"
   },
-  "totalAvailable": 227,
+  "totalAvailable": 229,
   "truncated": false,
   "events": [
+    {
+      "id": "a5cde2c4ff9c030848490a00a10afe4d",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T12:21:38.783Z",
+      "signalId": "e7650e559dec7284afac",
+      "signalPath": "/signals/e7650e559dec7284afac/",
+      "domain": "revolutwallet[.]net",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "1ed6f000dd4143fd3a981e5269547cf4",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T12:21:38.783Z",
+      "signalId": "0e9349e3280947d74fd3",
+      "signalPath": "/signals/0e9349e3280947d74fd3/",
+      "domain": "secure[.]revolutwallet[.]net",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "871e371a2c9a5a7dd99f8494f828876f",
       "type": "first-publication",

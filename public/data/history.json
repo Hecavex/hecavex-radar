@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T11:29:23.458Z",
+  "generatedAt": "2026-09-03T12:29:14.329Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e7650e559dec7284afac",
+      "domain": "revolutwallet[.]net",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-03T12:21:38.783Z",
+      "lastSeen": "2026-09-03T12:21:38.783Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e0bddda84705a3f8f307bbc8e778ccaf",
+          "observedAt": "2026-09-03T12:21:38.783Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0e9349e3280947d74fd3",
+      "domain": "secure[.]revolutwallet[.]net",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-03T12:21:38.783Z",
+      "lastSeen": "2026-09-03T12:21:38.783Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2562af57ffe053de0294eda89fe15999",
+          "observedAt": "2026-09-03T12:21:38.783Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "64f15e71aa29ddb7d63d",
       "domain": "www[.]confirm-revolut[.]es",
