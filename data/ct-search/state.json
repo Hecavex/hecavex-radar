@@ -1,25 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-03T18:50:53.115Z",
+  "generatedAt": "2026-09-03T19:45:57.988Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-03T18:50:53.115Z",
-    "failureCodes": [],
+    "endedAt": "2026-09-03T19:45:57.988Z",
+    "failureCodes": [
+      "provider-http"
+    ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "completed",
-    "queriesAttempted": 6,
+    "outcome": "partial",
+    "queriesAttempted": 3,
     "queriesBacklogged": 0,
-    "queriesCompleted": 6,
+    "queriesCompleted": 2,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-03T18:50:05.545Z"
+    "startedAt": "2026-09-03T19:45:24.740Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 0,
-    "degradedSince": null,
+    "consecutiveFailures": 1,
+    "degradedSince": "2026-09-03T19:45:24.740Z",
     "lastSuccessAt": "2026-09-03T18:50:53.115Z",
-    "nextAttemptAt": null
+    "nextAttemptAt": "2026-09-03T19:50:57.988Z"
   },
   "queries": {
     "brand:artea": {
@@ -75,7 +77,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T11:46:30.996Z",
+      "lastRunAt": "2026-09-03T19:45:24.740Z",
       "term": "dhlexpress"
     },
     "brand:dpdlietuva": {
@@ -83,15 +85,15 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T11:46:30.996Z",
+      "lastRunAt": "2026-09-03T19:45:24.740Z",
       "term": "dpdlietuva"
     },
     "brand:elektrum": {
       "brand": "Elektrum",
       "lastEntryAt": null,
       "lastId": 27835197032,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T11:46:30.996Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-09-03T19:45:24.740Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
@@ -391,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 6,
+  "queryCursor": 8,
   "schemaVersion": 1
 }
