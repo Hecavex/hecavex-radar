@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T13:35:45.808Z",
+  "generatedAt": "2026-09-03T14:26:20.019Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T13:35:45.808Z",
-      "to": "2026-09-03T13:35:45.808Z",
+      "from": "2026-09-02T14:26:20.019Z",
+      "to": "2026-09-03T14:26:20.019Z",
       "events": 42,
       "uniqueSignals": 22,
       "firstPublications": 17,
@@ -40,26 +40,26 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-27T13:35:45.808Z",
-      "to": "2026-09-03T13:35:45.808Z",
-      "events": 390,
-      "uniqueSignals": 189,
-      "firstPublications": 187,
+      "from": "2026-08-27T14:26:20.019Z",
+      "to": "2026-09-03T14:26:20.019Z",
+      "events": 388,
+      "uniqueSignals": 188,
+      "firstPublications": 186,
       "statusChanges": 0,
-      "observations": 203,
+      "observations": 202,
       "reobservations": 14,
       "bySource": {
-        "CertStream": 390
+        "CertStream": 388
       },
       "byStatus": {
-        "suspected": 390
+        "suspected": 388
       },
       "byReason": {
-        "suspicious-context": 378,
+        "suspicious-context": 376,
         "different-tld": 332,
-        "brand-exact-token": 294,
-        "multiple-hyphens": 204,
-        "first-publication": 187,
+        "brand-exact-token": 292,
+        "multiple-hyphens": 202,
+        "first-publication": 186,
         "brand-joined-affix": 88,
         "punycode": 20,
         "unicode-confusable": 16,
@@ -78,9 +78,9 @@
         "DPD": 9,
         "Smart-ID": 9,
         "MAXIMA": 8,
-        "Bitė": 6,
         "ERGO": 6,
         "Bigbank": 4,
+        "Bitė": 4,
         "Luminor": 4,
         "BTA": 2,
         "Citadele": 2,
