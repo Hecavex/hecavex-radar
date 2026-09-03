@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T16:27:37.794Z",
+  "generatedAt": "2026-09-03T17:26:06.673Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T16:27:37.794Z",
-      "to": "2026-09-03T16:27:37.794Z",
+      "from": "2026-09-02T17:26:06.673Z",
+      "to": "2026-09-03T17:26:06.673Z",
       "events": 32,
       "uniqueSignals": 19,
       "firstPublications": 12,
@@ -40,26 +40,26 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-27T16:27:37.794Z",
-      "to": "2026-09-03T16:27:37.794Z",
-      "events": 386,
-      "uniqueSignals": 187,
-      "firstPublications": 185,
+      "from": "2026-08-27T17:26:06.673Z",
+      "to": "2026-09-03T17:26:06.673Z",
+      "events": 384,
+      "uniqueSignals": 186,
+      "firstPublications": 184,
       "statusChanges": 0,
-      "observations": 201,
+      "observations": 200,
       "reobservations": 14,
       "bySource": {
-        "CertStream": 386
+        "CertStream": 384
       },
       "byStatus": {
-        "suspected": 386
+        "suspected": 384
       },
       "byReason": {
-        "suspicious-context": 374,
-        "different-tld": 330,
-        "brand-exact-token": 292,
-        "multiple-hyphens": 202,
-        "first-publication": 185,
+        "suspicious-context": 372,
+        "different-tld": 328,
+        "brand-exact-token": 290,
+        "multiple-hyphens": 200,
+        "first-publication": 184,
         "brand-joined-affix": 86,
         "punycode": 20,
         "unicode-confusable": 16,
@@ -67,7 +67,7 @@
       },
       "byBrand": {
         "DHL": 156,
-        "Revolut": 70,
+        "Revolut": 68,
         "VMI": 22,
         "Vinted": 22,
         "Telia": 20,
