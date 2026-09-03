@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-03T01:29:24.397Z",
+  "generatedAt": "2026-09-03T02:29:16.329Z",
   "retentionDays": 365,
   "from": "2025-09-04",
   "to": "2026-09-03",
@@ -733,41 +733,44 @@
       "date": "2026-09-03",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 5364,
-        "scheduledSlots": 5,
-        "recordedAttempts": 5,
-        "healthyAttempts": 5,
+        "windowSeconds": 8956,
+        "scheduledSlots": 9,
+        "recordedAttempts": 9,
+        "healthyAttempts": 9,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 44.74,
-        "scheduledListeningCeilingPercent": 44.74,
-        "listeningSeconds": 2399.993,
+        "listeningCoveragePercent": 48.24,
+        "scheduledListeningCeilingPercent": 48.24,
+        "listeningSeconds": 4319.986,
         "outcomes": {
-          "healthy-empty": 4,
-          "healthy-matches": 1
+          "healthy-empty": 7,
+          "healthy-matches": 2
         }
       },
       "discovery": {
-        "events": 2,
-        "uniqueSignals": 2,
-        "observations": 2,
+        "events": 4,
+        "uniqueSignals": 3,
+        "observations": 3,
         "reobservations": 0,
-        "firstPublications": 0,
+        "firstPublications": 1,
         "statusChanges": 0,
-        "facetSampleSize": 2,
-        "evidenceClassifiedSignals": 2,
+        "facetSampleSize": 3,
+        "evidenceClassifiedSignals": 3,
         "byBrand": {
-          "Revolut": 2
+          "Revolut": 2,
+          "DPD": 1
         },
         "bySource": {
-          "CertStream": 2
+          "CertStream": 3
         },
         "byEvidenceTier": {
-          "name-only": 2
+          "name-only": 3
         },
         "byReason": {
-          "brand-exact-token": 2,
-          "different-tld": 2,
-          "suspicious-context": 2
+          "brand-exact-token": 3,
+          "different-tld": 3,
+          "suspicious-context": 3,
+          "first-publication": 1,
+          "multiple-hyphens": 1
         }
       }
     }

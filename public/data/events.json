@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-03T01:29:24.397Z",
+  "generatedAt": "2026-09-03T02:29:16.329Z",
   "window": {
     "days": 30,
-    "from": "2026-08-04T01:29:24.397Z",
-    "to": "2026-09-03T01:29:24.397Z"
+    "from": "2026-08-04T02:29:16.329Z",
+    "to": "2026-09-03T02:29:16.329Z"
   },
-  "totalAvailable": 219,
+  "totalAvailable": 220,
   "truncated": false,
   "events": [
+    {
+      "id": "94fa93843eac1bd6c4a15a6eb1a9d30c",
+      "type": "first-publication",
+      "occurredAt": "2026-09-03T02:22:36.813Z",
+      "signalId": "ed34ea81a2403fd0e1be",
+      "signalPath": "/signals/ed34ea81a2403fd0e1be/",
+      "domain": "www[.]dpd-tracking-redelivery[.]ph",
+      "brand": "DPD",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "6d9fbec12d2103a963a42a483507161f",
       "type": "reobservation",

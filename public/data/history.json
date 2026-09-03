@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T01:15:46.926Z",
+  "generatedAt": "2026-09-03T02:29:16.329Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ed34ea81a2403fd0e1be",
+      "domain": "www[.]dpd-tracking-redelivery[.]ph",
+      "brand": "DPD",
+      "firstSeen": "2026-09-03T02:22:36.813Z",
+      "lastSeen": "2026-09-03T02:22:36.813Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a384db430bd56de256871052d88aeee7",
+          "observedAt": "2026-09-03T02:22:36.813Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "e15912382129de00dfd9",
       "domain": "mail[.]revolut-support[.]finance",
