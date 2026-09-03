@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-03T04:59:23.096Z",
+  "generatedAt": "2026-09-03T07:17:41.226Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "d0fe57aab70dcf8e8452",
+      "domain": "fix-vinted-profile-no-account[.]vinlands[.]fr",
+      "brand": "Vinted",
+      "firstSeen": "2026-09-03T07:11:09.662Z",
+      "lastSeen": "2026-09-03T07:11:09.662Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "22b0c1b7f71ee67e9123455408236989",
+          "observedAt": "2026-09-03T07:11:09.662Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "4f8708b7e6aa3ab6d73b",
       "domain": "www[.]revolutbank[.]org",

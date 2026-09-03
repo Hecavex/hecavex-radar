@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-03T05:44:49.714Z",
-  "lastSuccessfulSyncAt": "2026-09-03T06:38:32.773Z",
+  "generatedAt": "2026-09-03T07:17:41.226Z",
+  "lastSuccessfulSyncAt": "2026-09-03T07:17:41.226Z",
   "signals": [
+    {
+      "id": "d0fe57aab70dcf8e8452",
+      "url": "hxxps://fix-vinted-profile-no-account[.]vinlands[.]fr",
+      "domain": "fix-vinted-profile-no-account[.]vinlands[.]fr",
+      "firstSeen": "2026-09-03T07:11:09.662Z",
+      "lastSeen": "2026-09-03T07:11:09.662Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Vinted",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "4f8708b7e6aa3ab6d73b",
       "url": "hxxps://www[.]revolutbank[.]org",
@@ -5638,15 +5670,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-03T06:38:32.773Z",
-      "records": 170,
+      "fetchedAt": "2026-09-03T07:17:41.226Z",
+      "records": 171,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 3 candidates no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-03T05:20:47.458Z",
+      "fetchedAt": "2026-09-03T06:49:36.255Z",
       "records": 9,
       "state": "healthy",
       "note": "Passive public results validated from the last 30 days; the latest scheduled hunt completed; 171 stable official asset hashes are pivot-eligible"
@@ -5654,7 +5686,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-03T06:38:32.773Z",
+      "fetchedAt": "2026-09-03T07:17:41.226Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
