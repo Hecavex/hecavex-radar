@@ -2135,6 +2135,49 @@
       "components": {
         "dns": {
           "a": [
+            "5[.]61[.]38[.]79"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 300,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-02T19:24:12.863Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "revolut-support[.]finance",
+          "expiresAt": "2027-09-02T14:54:12.633Z",
+          "observedAt": "2026-09-02T19:24:12.863Z",
+          "registeredAt": "2026-09-02T14:54:12.633Z",
+          "registrar": "GNAME[.]COM PTE. LTD.",
+          "statuses": [
+            "add-period",
+            "client-transfer-prohibited"
+          ],
+          "updatedAt": "2026-09-02T15:28:19.310Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            28753
+          ],
+          "holders": [
+            "LEASEWEB-DE-FRA-10 Leaseweb Deutschland GmbH"
+          ],
+          "ipAddress": "5[.]61[.]38[.]79",
+          "prefix": "5[.]61[.]32[.]0/20",
+          "rpki": null
+        }
+      },
+      "domain": "mail[.]revolut-support[.]finance",
+      "observedAt": "2026-09-03T13:41:31.986Z",
+      "signalId": "e15912382129de00dfd9"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
             "83[.]229[.]19[.]102"
           ],
           "aaaa": [],
@@ -2142,13 +2185,13 @@
           "minimumTtl": 21600,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T19:24:14.103Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "teliapay[.]net",
           "expiresAt": "2026-12-31T16:31:30.000Z",
-          "observedAt": "2026-08-30T13:20:56.143Z",
+          "observedAt": "2026-09-01T19:24:14.103Z",
           "registeredAt": "2023-12-31T16:31:30.000Z",
           "registrar": "Ligne Web Services SAS dba LWS",
           "statuses": [
@@ -2170,7 +2213,7 @@
         }
       },
       "domain": "mail[.]teliapay[.]net",
-      "observedAt": "2026-09-01T07:41:46.196Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "9ba43e9c15b26e21f915"
     },
     {
@@ -2188,7 +2231,7 @@
             "aldo[.]ns[.]cloudflare[.]com",
             "jocelyn[.]ns[.]cloudflare[.]com"
           ],
-          "observedAt": "2026-09-01T01:24:15.598Z",
+          "observedAt": "2026-09-03T13:28:10.417Z",
           "queriesCompleted": 5
         },
         "routing": {
@@ -2205,7 +2248,7 @@
         }
       },
       "domain": "maxima-bank[.]ru",
-      "observedAt": "2026-09-01T07:41:46.196Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "54b7622ec9c57480f3dc"
     },
     {
@@ -2245,8 +2288,85 @@
         }
       },
       "domain": "maximaservice[.]se",
-      "observedAt": "2026-09-01T07:41:46.196Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "0923afa966c0841e00f8"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "185[.]53[.]179[.]136"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 900,
+          "mx": [],
+          "ns": [
+            "ina1[.]registrar[.]eu",
+            "ina2[.]registrar[.]eu",
+            "ina3[.]registrar[.]eu"
+          ],
+          "observedAt": "2026-09-03T01:29:45.471Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "dhl-support-del[.]com",
+          "expiresAt": "2027-02-25T09:52:43.000Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
+          "registeredAt": "2026-02-25T09:52:43.000Z",
+          "registrar": "Hosting Concepts B.V. d/b/a Registrar[.]eu",
+          "statuses": [
+            "client-transfer-prohibited"
+          ],
+          "updatedAt": "2026-03-03T10:59:54.000Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            206834
+          ],
+          "holders": [
+            "TEAMINTERNET-CA-AS Team Internet AG"
+          ],
+          "ipAddress": "185[.]53[.]179[.]136",
+          "prefix": "185[.]53[.]179[.]0/24",
+          "rpki": null
+        }
+      },
+      "domain": "mo8yzsrz4330t62a[.]dhl-support-del[.]com",
+      "observedAt": "2026-09-03T13:41:31.986Z",
+      "signalId": "2e70b51f5512acd675e9"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-03T07:27:37.334Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "my-seb-refund[.]com[.]ph",
+      "observedAt": "2026-09-03T13:41:31.986Z",
+      "signalId": "33926e6778748540e207"
     },
     {
       "components": {
@@ -2291,7 +2411,7 @@
         }
       },
       "domain": "omada[.]delivery-dhl-uae[.]com",
-      "observedAt": "2026-09-01T07:41:46.196Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "0d284af65210b0c1307e"
     },
     {
@@ -2324,7 +2444,7 @@
         }
       },
       "domain": "online[.]dev[.]swedbankpay[.]tech",
-      "observedAt": "2026-09-01T07:41:46.196Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "00e3650db7666b86bde4"
     },
     {
@@ -2366,7 +2486,7 @@
         }
       },
       "domain": "opencode-vmi-portal[.]bmscloud[.]in[.]th",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "8b58c37d1de20670c382"
     },
     {
@@ -2380,7 +2500,7 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-09-01T07:27:24.782Z",
+          "observedAt": "2026-09-03T13:28:10.417Z",
           "queriesCompleted": 5
         },
         "routing": {
@@ -2397,7 +2517,7 @@
         }
       },
       "domain": "parcel-box-dhl[.]com[.]ph",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "614b3a8c1edccfa6785f"
     },
     {
@@ -2413,13 +2533,13 @@
           "minimumTtl": 30,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-09-01T01:24:15.598Z",
+          "observedAt": "2026-09-03T07:27:37.334Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "azure[.]com",
           "expiresAt": "2026-10-24T04:00:00.000Z",
-          "observedAt": "2026-09-01T01:24:15.598Z",
+          "observedAt": "2026-09-03T07:27:37.334Z",
           "registeredAt": "1994-10-25T04:00:00.000Z",
           "registrar": "MarkMonitor Inc.",
           "statuses": [
@@ -2446,7 +2566,7 @@
         }
       },
       "domain": "pg-maximaportal-prd[.]postgres[.]database[.]azure[.]com",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "4018cc82f5d90053005d"
     },
     {
@@ -2488,7 +2608,7 @@
         }
       },
       "domain": "pondarosaranch[.]maximaonline[.]com",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "83646aea1b84245d54eb"
     },
     {
@@ -2532,7 +2652,7 @@
         }
       },
       "domain": "pop[.]teliapay[.]net",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "6ec7fb1234b236de3270"
     },
     {
@@ -2574,7 +2694,7 @@
         }
       },
       "domain": "portal[.]smartidverify[.]com",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "71b7af4763ffa22c34dd"
     },
     {
@@ -2590,13 +2710,13 @@
           "minimumTtl": 30,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-31T19:21:09.594Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "azure[.]com",
           "expiresAt": "2026-10-24T04:00:00.000Z",
-          "observedAt": "2026-08-31T19:21:09.594Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
           "registeredAt": "1994-10-25T04:00:00.000Z",
           "registrar": "MarkMonitor Inc.",
           "statuses": [
@@ -2623,7 +2743,7 @@
         }
       },
       "domain": "prod-fml-dhl-softbank-service-db-server[.]postgres[.]database[.]azure[.]com",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "13d06a7efa04f6696a4e"
     },
     {
@@ -2639,13 +2759,13 @@
           "minimumTtl": 14400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-31T19:21:09.594Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "xn--tl2mobile-b4ab[.]com",
           "expiresAt": "2027-02-08T21:52:24.000Z",
-          "observedAt": "2026-08-31T19:21:09.594Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
           "registeredAt": "2009-02-08T21:52:24.000Z",
           "registrar": "InterNetX GmbH",
           "statuses": [
@@ -2667,8 +2787,87 @@
         }
       },
       "domain": "redbynih[.]xn--tl2mobile-b4ab[.]com",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "2433e05eef18ae892030"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "45[.]79[.]222[.]138"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 86400,
+          "mx": [],
+          "ns": [],
+          "observedAt": "2026-09-03T13:28:10.417Z",
+          "queriesCompleted": 5
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            63949
+          ],
+          "holders": [
+            "AKAMAI-LINODE-AP - Akamai Connected Cloud"
+          ],
+          "ipAddress": "45[.]79[.]222[.]138",
+          "prefix": "45[.]79[.]192[.]0/19",
+          "rpki": null
+        }
+      },
+      "domain": "revolut-auth-support[.]ph",
+      "observedAt": "2026-09-03T13:41:31.986Z",
+      "signalId": "5e0a7c24050d74f8f492"
+    },
+    {
+      "components": {
+        "dns": {
+          "a": [
+            "34[.]117[.]176[.]22"
+          ],
+          "aaaa": [],
+          "cname": [],
+          "minimumTtl": 600,
+          "mx": [],
+          "ns": [
+            "ns1[.]gofruits[.]co",
+            "ns2[.]gofruits[.]co"
+          ],
+          "observedAt": "2026-09-03T01:29:45.471Z",
+          "queriesCompleted": 5
+        },
+        "rdap": {
+          "domain": "revolut-bank[.]com",
+          "expiresAt": "2027-03-05T14:29:55.000Z",
+          "observedAt": "2026-09-03T01:29:45.471Z",
+          "registeredAt": "2026-03-05T14:29:55.000Z",
+          "registrar": "GoDaddy[.]com, LLC",
+          "statuses": [
+            "client-delete-prohibited",
+            "client-renew-prohibited",
+            "client-transfer-prohibited",
+            "client-update-prohibited"
+          ],
+          "updatedAt": "2026-03-05T14:30:49.000Z"
+        },
+        "routing": {
+          "announced": true,
+          "asns": [
+            396982
+          ],
+          "holders": [
+            "GOOGLE-CLOUD-PLATFORM - Google LLC"
+          ],
+          "ipAddress": "34[.]117[.]176[.]22",
+          "prefix": "34[.]116[.]0[.]0/14",
+          "rpki": null
+        }
+      },
+      "domain": "revolut-bank[.]com",
+      "observedAt": "2026-09-03T13:41:31.986Z",
+      "signalId": "19a9d10bfdd5af52aa9c"
     },
     {
       "components": {
@@ -2688,13 +2887,13 @@
             "cash[.]ns[.]cloudflare[.]com",
             "kristin[.]ns[.]cloudflare[.]com"
           ],
-          "observedAt": "2026-08-31T07:21:05.397Z",
+          "observedAt": "2026-09-02T13:28:31.574Z",
           "queriesCompleted": 5
         },
         "rdap": {
           "domain": "revolut-casino-online[.]cz",
           "expiresAt": "2027-08-20T22:00:00.000Z",
-          "observedAt": "2026-08-31T07:21:05.397Z",
+          "observedAt": "2026-09-02T13:28:31.574Z",
           "registeredAt": "2026-08-21T17:09:09.000Z",
           "registrar": null,
           "statuses": [
@@ -2716,7 +2915,7 @@
         }
       },
       "domain": "revolut-casino-online[.]cz",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "d6aee63d133c297e817c"
     },
     {
@@ -2730,7 +2929,7 @@
           "minimumTtl": 86400,
           "mx": [],
           "ns": [],
-          "observedAt": "2026-08-31T13:21:12.245Z",
+          "observedAt": "2026-09-02T19:24:12.863Z",
           "queriesCompleted": 5
         },
         "routing": {
@@ -2747,7 +2946,7 @@
         }
       },
       "domain": "revolut-ncun-online[.]com[.]ph",
-      "observedAt": "2026-09-01T13:41:51.551Z",
+      "observedAt": "2026-09-03T13:41:31.986Z",
       "signalId": "e84a95949a4014e42895"
     },
     {
@@ -5055,21 +5254,157 @@
       "signalId": "c4a4fc460206fa9fd548"
     }
   ],
-  "cursor": 62,
+  "cursor": 82,
   "dataset": "passive-context-state",
-  "generatedAt": "2026-09-03T07:41:26.510Z",
+  "generatedAt": "2026-09-03T13:41:36.922Z",
   "latestRun": {
-    "cacheHits": 9,
-    "endedAt": "2026-09-03T07:41:26.510Z",
-    "eventsWritten": 4,
+    "cacheHits": 11,
+    "endedAt": "2026-09-03T13:41:36.922Z",
+    "eventsWritten": 5,
     "failures": 0,
     "outcome": "completed",
-    "routeQueries": 9,
+    "routeQueries": 8,
     "rpkiEnabled": false,
     "signalsConsidered": 20,
-    "startedAt": "2026-09-03T07:41:22.820Z"
+    "startedAt": "2026-09-03T13:41:31.986Z"
   },
   "ripeCache": [
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          28753
+        ],
+        "holders": [
+          "LEASEWEB-DE-FRA-10 Leaseweb Deutschland GmbH"
+        ],
+        "ipAddress": "5[.]61[.]38[.]79",
+        "prefix": "5[.]61[.]32[.]0/20",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "5[.]61[.]38[.]79"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          13335
+        ],
+        "holders": [
+          "CLOUDFLARENET - Cloudflare, Inc."
+        ],
+        "ipAddress": "104[.]21[.]50[.]213",
+        "prefix": "104[.]21[.]48[.]0/20",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "104[.]21[.]50[.]213"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          51468
+        ],
+        "holders": [
+          "ONECOM One[.]com A/S"
+        ],
+        "ipAddress": "46[.]30[.]213[.]92",
+        "prefix": "46[.]30[.]208[.]0/21",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "46[.]30[.]213[.]92"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          133481
+        ],
+        "holders": [
+          "AIS-Fibre-AS-AP - AIS Fibre"
+        ],
+        "ipAddress": "49[.]0[.]67[.]109",
+        "prefix": "49[.]0[.]64[.]0/22",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "49[.]0[.]67[.]109"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          8075
+        ],
+        "holders": [
+          "MICROSOFT-CORP-MSN-AS-BLOCK - Microsoft Corporation"
+        ],
+        "ipAddress": "20[.]199[.]98[.]49",
+        "prefix": "20[.]192[.]0[.]0/10",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "20[.]199[.]98[.]49"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          8075
+        ],
+        "holders": [
+          "MICROSOFT-CORP-MSN-AS-BLOCK - Microsoft Corporation"
+        ],
+        "ipAddress": "20[.]16[.]115[.]41",
+        "prefix": "20[.]0[.]0[.]0/11",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "20[.]16[.]115[.]41"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          396982
+        ],
+        "holders": [
+          "GOOGLE-CLOUD-PLATFORM - Google LLC"
+        ],
+        "ipAddress": "34[.]117[.]176[.]22",
+        "prefix": "34[.]116[.]0[.]0/14",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "34[.]117[.]176[.]22"
+    },
+    {
+      "context": {
+        "announced": true,
+        "asns": [
+          13335
+        ],
+        "holders": [
+          "CLOUDFLARENET - Cloudflare, Inc."
+        ],
+        "ipAddress": "104[.]21[.]48[.]155",
+        "prefix": "104[.]21[.]48[.]0/20",
+        "rpki": null
+      },
+      "expiresAt": "2026-09-04T13:41:31.986Z",
+      "fetchedAt": "2026-09-03T13:41:31.986Z",
+      "ipAddress": "104[.]21[.]48[.]155"
+    },
     {
       "context": {
         "announced": true,
