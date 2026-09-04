@@ -1,38 +1,38 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T21:04:48.674Z",
+  "generatedAt": "2026-09-04T21:19:40.029Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T21:04:48.674Z",
-      "to": "2026-09-04T21:04:48.674Z",
-      "events": 33,
-      "uniqueSignals": 18,
-      "firstPublications": 15,
+      "from": "2026-09-03T21:19:40.029Z",
+      "to": "2026-09-04T21:19:40.029Z",
+      "events": 37,
+      "uniqueSignals": 20,
+      "firstPublications": 17,
       "statusChanges": 0,
-      "observations": 18,
+      "observations": 20,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 33
+        "CertStream": 37
       },
       "byStatus": {
-        "suspected": 33
+        "suspected": 37
       },
       "byReason": {
-        "suspicious-context": 31,
-        "brand-exact-token": 26,
+        "suspicious-context": 35,
+        "brand-exact-token": 30,
         "different-tld": 23,
-        "first-publication": 15,
-        "multiple-hyphens": 15,
+        "multiple-hyphens": 19,
+        "first-publication": 17,
         "brand-joined-affix": 5,
         "brand-split-token": 2,
         "punycode": 2,
         "unicode-confusable": 2
       },
       "byBrand": {
-        "DHL": 13,
+        "DHL": 17,
         "Revolut": 5,
         "Ignitis": 4,
         "Artea": 3,
@@ -44,8 +44,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T21:04:48.674Z",
-      "to": "2026-09-04T21:04:48.674Z",
+      "from": "2026-08-28T21:19:40.029Z",
+      "to": "2026-09-04T21:19:40.029Z",
       "events": 360,
       "uniqueSignals": 172,
       "firstPublications": 171,
@@ -60,9 +60,9 @@
       },
       "byReason": {
         "suspicious-context": 352,
-        "different-tld": 304,
+        "different-tld": 300,
         "brand-exact-token": 261,
-        "multiple-hyphens": 181,
+        "multiple-hyphens": 183,
         "first-publication": 171,
         "brand-joined-affix": 91,
         "punycode": 16,
@@ -70,15 +70,15 @@
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 147,
+        "DHL": 149,
         "Revolut": 65,
         "Vinted": 22,
         "VMI": 20,
         "Telia": 16,
         "Artea": 13,
         "Smart-ID": 11,
-        "Swedbank": 10,
         "Tele2": 10,
+        "Swedbank": 8,
         "DPD": 6,
         "ERGO": 6,
         "MAXIMA": 6,
