@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T03:49:50.563Z",
+  "generatedAt": "2026-09-04T07:31:26.346Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "2640ec276a694b7044e1",
+      "domain": "smart-id-support[.]pages[.]dev",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-09-04T07:30:29.657Z",
+      "lastSeen": "2026-09-04T07:30:29.657Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d826a71c28f5a4236361f2cf0ceff388",
+          "observedAt": "2026-09-04T07:30:29.657Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "aba8bce35825f45cb36a",
       "domain": "vinted-user90321-verify-au[.]pages[.]dev",
