@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T17:42:39.534Z",
+  "generatedAt": "2026-09-04T19:35:14.026Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T17:42:39.534Z",
-      "to": "2026-09-04T17:42:39.534Z",
-      "events": 37,
-      "uniqueSignals": 20,
-      "firstPublications": 17,
+      "from": "2026-09-03T19:35:14.026Z",
+      "to": "2026-09-04T19:35:14.026Z",
+      "events": 35,
+      "uniqueSignals": 19,
+      "firstPublications": 16,
       "statusChanges": 0,
-      "observations": 20,
+      "observations": 19,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 37
+        "CertStream": 35
       },
       "byStatus": {
-        "suspected": 37
+        "suspected": 35
       },
       "byReason": {
-        "suspicious-context": 35,
+        "suspicious-context": 33,
         "brand-exact-token": 30,
         "different-tld": 25,
         "multiple-hyphens": 19,
-        "first-publication": 17,
-        "brand-joined-affix": 5,
+        "first-publication": 16,
+        "brand-joined-affix": 3,
         "brand-split-token": 2,
         "punycode": 2,
         "unicode-confusable": 2
@@ -37,7 +37,6 @@
         "Revolut": 3,
         "DPD": 2,
         "IKI": 2,
-        "Paysera": 2,
         "Smart-ID": 2,
         "Telia": 2,
         "Vinted": 2,
@@ -46,8 +45,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T17:42:39.534Z",
-      "to": "2026-09-04T17:42:39.534Z",
+      "from": "2026-08-28T19:35:14.026Z",
+      "to": "2026-09-04T19:35:14.026Z",
       "events": 356,
       "uniqueSignals": 170,
       "firstPublications": 169,
