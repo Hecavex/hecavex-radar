@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T15:12:26.166Z",
+  "generatedAt": "2026-09-04T16:12:19.688Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T15:12:26.166Z",
-    "to": "2026-09-04T15:12:26.166Z"
+    "from": "2026-08-05T16:12:19.688Z",
+    "to": "2026-09-04T16:12:19.688Z"
   },
-  "totalAvailable": 249,
+  "totalAvailable": 250,
   "truncated": false,
   "events": [
+    {
+      "id": "f53ec4fb1f90f76b6a6007b4d26e09d8",
+      "type": "reobservation",
+      "occurredAt": "2026-09-04T16:04:06.953Z",
+      "signalId": "e86f606e9f0cc3c28a51",
+      "signalPath": "/signals/e86f606e9f0cc3c28a51/",
+      "domain": "5aedlradc0o0cowi[.]delivery-dhl-uae[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "d0ca55a5872252304d81b430731c3ce2",
       "type": "first-publication",
