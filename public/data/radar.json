@@ -1,9 +1,39 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-03T21:01:34.174Z",
-  "lastSuccessfulSyncAt": "2026-09-04T01:22:56.205Z",
+  "generatedAt": "2026-09-04T01:58:02.788Z",
+  "lastSuccessfulSyncAt": "2026-09-04T01:58:02.788Z",
   "signals": [
+    {
+      "id": "c5ee446f5f0dae3cd2ac",
+      "url": "hxxps://bankartea[.]lt",
+      "domain": "bankartea[.]lt",
+      "firstSeen": "2026-08-29T09:22:58.578Z",
+      "lastSeen": "2026-09-04T01:57:28.220Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Artea",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 93,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 93,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "33a471f6d2354854c6ed",
       "url": "hxxps://www[.]dhl-parcell-track[.]livingwayfoundation[.]org",
@@ -1163,36 +1193,6 @@
         "suspicious-context",
         "different-tld",
         "multiple-hyphens"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "c5ee446f5f0dae3cd2ac",
-      "url": "hxxps://bankartea[.]lt",
-      "domain": "bankartea[.]lt",
-      "firstSeen": "2026-08-29T09:22:58.578Z",
-      "lastSeen": "2026-09-01T19:36:37.152Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "Artea",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 93,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 93,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context"
       ],
       "detailAvailable": true
     },
@@ -5198,7 +5198,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-04T01:22:56.205Z",
+      "fetchedAt": "2026-09-04T01:58:02.788Z",
       "records": 156,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
@@ -5214,7 +5214,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-04T01:22:56.205Z",
+      "fetchedAt": "2026-09-04T01:58:02.788Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

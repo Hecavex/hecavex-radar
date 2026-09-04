@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-04T01:22:56.205Z",
+  "generatedAt": "2026-09-04T01:58:02.788Z",
   "retentionDays": 365,
   "from": "2025-09-05",
   "to": "2026-09-04",
@@ -784,31 +784,41 @@
       "date": "2026-09-04",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 4976,
-        "scheduledSlots": 5,
-        "recordedAttempts": 5,
-        "healthyAttempts": 5,
+        "windowSeconds": 7082,
+        "scheduledSlots": 7,
+        "recordedAttempts": 8,
+        "healthyAttempts": 8,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 48.23,
-        "scheduledListeningCeilingPercent": 48.23,
-        "listeningSeconds": 2399.994,
+        "listeningCoveragePercent": 54.22,
+        "scheduledListeningCeilingPercent": 47.44,
+        "listeningSeconds": 3839.988,
         "outcomes": {
-          "healthy-empty": 5
+          "healthy-empty": 7,
+          "healthy-matches": 1
         }
       },
       "discovery": {
-        "events": 0,
-        "uniqueSignals": 0,
-        "observations": 0,
+        "events": 1,
+        "uniqueSignals": 1,
+        "observations": 1,
         "reobservations": 0,
         "firstPublications": 0,
         "statusChanges": 0,
-        "facetSampleSize": 0,
-        "evidenceClassifiedSignals": 0,
-        "byBrand": {},
-        "bySource": {},
-        "byEvidenceTier": {},
-        "byReason": {}
+        "facetSampleSize": 1,
+        "evidenceClassifiedSignals": 1,
+        "byBrand": {
+          "Artea": 1
+        },
+        "bySource": {
+          "CertStream": 1
+        },
+        "byEvidenceTier": {
+          "name-only": 1
+        },
+        "byReason": {
+          "brand-joined-affix": 1,
+          "suspicious-context": 1
+        }
       }
     }
   ],
