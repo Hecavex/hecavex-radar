@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T16:52:22.632Z",
+  "generatedAt": "2026-09-04T17:42:39.534Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T16:52:22.632Z",
-      "to": "2026-09-04T16:52:22.632Z",
+      "from": "2026-09-03T17:42:39.534Z",
+      "to": "2026-09-04T17:42:39.534Z",
       "events": 37,
       "uniqueSignals": 20,
       "firstPublications": 17,
@@ -46,33 +46,33 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T16:52:22.632Z",
-      "to": "2026-09-04T16:52:22.632Z",
-      "events": 360,
-      "uniqueSignals": 172,
-      "firstPublications": 171,
+      "from": "2026-08-28T17:42:39.534Z",
+      "to": "2026-09-04T17:42:39.534Z",
+      "events": 356,
+      "uniqueSignals": 170,
+      "firstPublications": 169,
       "statusChanges": 0,
-      "observations": 189,
+      "observations": 187,
       "reobservations": 17,
       "bySource": {
-        "CertStream": 360
+        "CertStream": 356
       },
       "byStatus": {
-        "suspected": 360
+        "suspected": 356
       },
       "byReason": {
-        "suspicious-context": 352,
-        "different-tld": 302,
-        "brand-exact-token": 263,
-        "multiple-hyphens": 181,
-        "first-publication": 171,
+        "suspicious-context": 348,
+        "different-tld": 300,
+        "brand-exact-token": 259,
+        "multiple-hyphens": 179,
+        "first-publication": 169,
         "brand-joined-affix": 89,
         "punycode": 16,
         "unicode-confusable": 12,
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 149,
+        "DHL": 147,
         "Revolut": 63,
         "Vinted": 22,
         "VMI": 20,
@@ -85,10 +85,10 @@
         "ERGO": 6,
         "MAXIMA": 6,
         "Bigbank": 4,
-        "Bitė": 4,
         "Ignitis": 4,
         "Luminor": 4,
         "SEB": 4,
+        "Bitė": 2,
         "Citadele": 2,
         "ESO": 2,
         "IKI": 2,
