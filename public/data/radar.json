@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-04T09:28:36.551Z",
-  "lastSuccessfulSyncAt": "2026-09-04T09:28:36.551Z",
+  "generatedAt": "2026-09-04T10:26:51.408Z",
+  "lastSuccessfulSyncAt": "2026-09-04T10:26:51.408Z",
   "signals": [
+    {
+      "id": "64f15e71aa29ddb7d63d",
+      "url": "hxxps://www[.]confirm-revolut[.]es",
+      "domain": "www[.]confirm-revolut[.]es",
+      "firstSeen": "2026-09-03T11:26:27.606Z",
+      "lastSeen": "2026-09-04T09:43:14.513Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "e8c51b512066afdf798b",
       "url": "hxxps://tracking-dhlexpress[.]com",
@@ -498,37 +529,6 @@
       ],
       "reasonCodes": [
         "brand-joined-affix",
-        "suspicious-context",
-        "different-tld"
-      ],
-      "detailAvailable": true
-    },
-    {
-      "id": "64f15e71aa29ddb7d63d",
-      "url": "hxxps://www[.]confirm-revolut[.]es",
-      "domain": "www[.]confirm-revolut[.]es",
-      "firstSeen": "2026-09-03T11:26:27.606Z",
-      "lastSeen": "2026-09-03T11:26:27.606Z",
-      "sources": [
-        "CertStream"
-      ],
-      "status": "suspected",
-      "brand": "Revolut",
-      "country": null,
-      "host": null,
-      "screenshotUrl": null,
-      "referenceUrl": null,
-      "hashes": [],
-      "matchScore": 100,
-      "evidenceTier": "name-only",
-      "reviewState": "unreviewed",
-      "ltRelevance": "lithuanian-brand-relevance",
-      "confidence": 100,
-      "discoveredVia": [
-        "certstream-live"
-      ],
-      "reasonCodes": [
-        "brand-exact-token",
         "suspicious-context",
         "different-tld"
       ],
@@ -5448,7 +5448,7 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-04T09:28:36.551Z",
+      "fetchedAt": "2026-09-04T10:26:51.408Z",
       "records": 164,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
@@ -5464,7 +5464,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-04T09:28:36.551Z",
+      "fetchedAt": "2026-09-04T10:26:51.408Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
