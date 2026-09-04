@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T07:31:26.346Z",
+  "generatedAt": "2026-09-04T08:27:22.234Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a6a1f542302b3b1c8eb9",
+      "domain": "xn--tlia-bpa[.]com",
+      "brand": "Telia",
+      "firstSeen": "2026-09-04T08:20:31.184Z",
+      "lastSeen": "2026-09-04T08:20:31.184Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "580eaf3a55ad672f9cd836e3b0ef3651",
+          "observedAt": "2026-09-04T08:20:31.184Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "2640ec276a694b7044e1",
       "domain": "smart-id-support[.]pages[.]dev",

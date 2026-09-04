@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-04T07:31:26.346Z",
-  "lastSuccessfulSyncAt": "2026-09-04T07:31:26.346Z",
+  "generatedAt": "2026-09-04T08:27:22.234Z",
+  "lastSuccessfulSyncAt": "2026-09-04T08:27:22.234Z",
   "signals": [
+    {
+      "id": "a6a1f542302b3b1c8eb9",
+      "url": "hxxps://xn--tlia-bpa[.]com",
+      "domain": "xn--tlia-bpa[.]com",
+      "firstSeen": "2026-09-04T08:20:31.184Z",
+      "lastSeen": "2026-09-04T08:20:31.184Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Telia",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 90,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 90,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "2640ec276a694b7044e1",
       "url": "hxxps://smart-id-support[.]pages[.]dev",
@@ -5356,8 +5387,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-04T07:31:26.346Z",
-      "records": 161,
+      "fetchedAt": "2026-09-04T08:27:22.234Z",
+      "records": 162,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
@@ -5372,7 +5403,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-04T07:31:26.346Z",
+      "fetchedAt": "2026-09-04T08:27:22.234Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
