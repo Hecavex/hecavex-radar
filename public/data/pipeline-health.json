@@ -1,37 +1,37 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-09-04T19:35:14.026Z",
+  "generatedAt": "2026-09-04T20:34:47.443Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
-    "publishedSignals": 178,
+    "publishedSignals": 179,
     "sourceStates": {
       "CertStream": "healthy",
       "URLScan": "partial",
       "HECAVEX": "healthy"
     },
     "sourceRecords": {
-      "CertStream": 169,
+      "CertStream": 170,
       "URLScan": 9,
       "HECAVEX": 1
     },
     "certstream": {
-      "generatedAt": "2026-09-04T17:42:09.840Z",
-      "lastSuccessAt": "2026-09-04T17:42:09.840Z",
+      "generatedAt": "2026-09-04T20:34:14.690Z",
+      "lastSuccessAt": "2026-09-04T20:34:14.690Z",
       "freshness": {
         "status": "current",
-        "referenceAt": "2026-09-04T17:42:09.840Z",
+        "referenceAt": "2026-09-04T20:34:14.690Z",
         "ageSeconds": 0
       },
       "latestAttempt": {
-        "startedAt": "2026-09-04T17:33:39.925Z",
-        "endedAt": "2026-09-04T17:42:09.840Z",
-        "outcome": "healthy-empty",
+        "startedAt": "2026-09-04T20:26:06.644Z",
+        "endedAt": "2026-09-04T20:34:14.690Z",
+        "outcome": "healthy-matches",
         "listeningSeconds": 479.999,
-        "messages": 127484,
-        "dnsNames": 228661,
-        "matches": 0,
-        "newRecords": 0
+        "messages": 143536,
+        "dnsNames": 255814,
+        "matches": 2,
+        "newRecords": 1
       }
     },
     "urlscan": {
@@ -81,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T19:35:14.026Z",
-      "to": "2026-09-04T19:35:14.026Z",
+      "from": "2026-09-03T20:34:47.443Z",
+      "to": "2026-09-04T20:34:47.443Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 65,
@@ -91,9 +91,9 @@
         "listeningCoveragePercent": 36.11,
         "scheduledListeningCeilingPercent": 53.33,
         "expectedListeningSeconds": 31200,
-        "listeningSeconds": 31199.911,
-        "messages": 8911616,
-        "dnsNames": 16513781,
+        "listeningSeconds": 31199.91,
+        "messages": 8908957,
+        "dnsNames": 16492509,
         "outcomes": {
           "healthy-empty": 50,
           "healthy-matches": 15
@@ -126,30 +126,30 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T19:35:14.026Z",
-      "to": "2026-09-04T19:35:14.026Z",
+      "from": "2026-08-28T20:34:47.443Z",
+      "to": "2026-09-04T20:34:47.443Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 533,
-        "healthyAttempts": 533,
-        "recordedSchedulePercent": 79.3,
-        "listeningCoveragePercent": 42.3,
+        "recordedAttempts": 532,
+        "healthyAttempts": 532,
+        "recordedSchedulePercent": 79.2,
+        "listeningCoveragePercent": 42.22,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 255840,
-        "listeningSeconds": 255811.144,
-        "messages": 79320834,
-        "dnsNames": 145416609,
+        "expectedListeningSeconds": 255360,
+        "listeningSeconds": 255331.145,
+        "messages": 79112898,
+        "dnsNames": 144980891,
         "outcomes": {
-          "healthy-empty": 362,
-          "healthy-matches": 171
+          "healthy-empty": 360,
+          "healthy-matches": 172
         }
       },
       "screening": {
-        "matches": 335,
-        "newArchiveRecords": 187,
-        "firstPublications": 169,
+        "matches": 337,
+        "newArchiveRecords": 188,
+        "firstPublications": 170,
         "bySource": {
-          "CertStream": 356
+          "CertStream": 358
         }
       },
       "enrichment": {
@@ -163,10 +163,10 @@
         "rdap": 0
       },
       "publication": {
-        "events": 356,
-        "observations": 187,
-        "statusTransitions": 169,
-        "uniqueSignals": 170
+        "events": 358,
+        "observations": 188,
+        "statusTransitions": 170,
+        "uniqueSignals": 171
       }
     }
   ]

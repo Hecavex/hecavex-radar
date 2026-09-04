@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T19:35:14.026Z",
+  "generatedAt": "2026-09-04T20:34:47.443Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T19:35:14.026Z",
-    "to": "2026-09-04T19:35:14.026Z"
+    "from": "2026-08-05T20:34:47.443Z",
+    "to": "2026-09-04T20:34:47.443Z"
   },
-  "totalAvailable": 250,
+  "totalAvailable": 251,
   "truncated": false,
   "events": [
+    {
+      "id": "140347f10677786a8cbfb65408c81fc2",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T20:30:19.313Z",
+      "signalId": "057f4be4b219f9f65cc4",
+      "signalPath": "/signals/057f4be4b219f9f65cc4/",
+      "domain": "arteabank[.]pl",
+      "brand": "Artea",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f53ec4fb1f90f76b6a6007b4d26e09d8",
       "type": "reobservation",

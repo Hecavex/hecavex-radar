@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T19:35:14.026Z",
+  "generatedAt": "2026-09-04T20:34:47.443Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T19:35:14.026Z",
-      "to": "2026-09-04T19:35:14.026Z",
+      "from": "2026-09-03T20:34:47.443Z",
+      "to": "2026-09-04T20:34:47.443Z",
       "events": 35,
       "uniqueSignals": 19,
       "firstPublications": 16,
@@ -22,11 +22,11 @@
       },
       "byReason": {
         "suspicious-context": 33,
-        "brand-exact-token": 30,
+        "brand-exact-token": 28,
         "different-tld": 25,
-        "multiple-hyphens": 19,
+        "multiple-hyphens": 17,
         "first-publication": 16,
-        "brand-joined-affix": 3,
+        "brand-joined-affix": 5,
         "brand-split-token": 2,
         "punycode": 2,
         "unicode-confusable": 2
@@ -34,38 +34,37 @@
       "byBrand": {
         "DHL": 17,
         "Ignitis": 4,
+        "Artea": 3,
         "Revolut": 3,
         "DPD": 2,
-        "IKI": 2,
         "Smart-ID": 2,
         "Telia": 2,
-        "Vinted": 2,
-        "Artea": 1
+        "Vinted": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-28T19:35:14.026Z",
-      "to": "2026-09-04T19:35:14.026Z",
-      "events": 356,
-      "uniqueSignals": 170,
-      "firstPublications": 169,
+      "from": "2026-08-28T20:34:47.443Z",
+      "to": "2026-09-04T20:34:47.443Z",
+      "events": 358,
+      "uniqueSignals": 171,
+      "firstPublications": 170,
       "statusChanges": 0,
-      "observations": 187,
+      "observations": 188,
       "reobservations": 17,
       "bySource": {
-        "CertStream": 356
+        "CertStream": 358
       },
       "byStatus": {
-        "suspected": 356
+        "suspected": 358
       },
       "byReason": {
-        "suspicious-context": 348,
-        "different-tld": 300,
+        "suspicious-context": 350,
+        "different-tld": 302,
         "brand-exact-token": 259,
         "multiple-hyphens": 179,
-        "first-publication": 169,
-        "brand-joined-affix": 89,
+        "first-publication": 170,
+        "brand-joined-affix": 91,
         "punycode": 16,
         "unicode-confusable": 12,
         "brand-split-token": 8
@@ -76,7 +75,7 @@
         "Vinted": 22,
         "VMI": 20,
         "Telia": 16,
-        "Artea": 11,
+        "Artea": 13,
         "Smart-ID": 11,
         "Swedbank": 10,
         "Tele2": 10,
