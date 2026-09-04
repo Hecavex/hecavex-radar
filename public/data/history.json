@@ -1,10 +1,115 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T14:27:43.700Z",
+  "generatedAt": "2026-09-04T15:12:26.166Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "b112dd4169c4c549c052",
+      "domain": "alemjry-dhl-reader-account[.]ap-south-1[.]aws[.]snowflake[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T15:05:03.177Z",
+      "lastSeen": "2026-09-04T15:05:03.177Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9b490b70a61e0a6977401d98b2f07570",
+          "observedAt": "2026-09-04T15:05:03.177Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "667743b73f8b7090e53e",
+      "domain": "alemjry-dhl-reader-account[.]ap-south-1[.]aws[.]privatelink[.]snowflake[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T15:05:03.177Z",
+      "lastSeen": "2026-09-04T15:05:03.177Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1be08dd4cc98fe676a4ddcd7e056962f",
+          "observedAt": "2026-09-04T15:05:03.177Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4088764b4c44ca3b0bb7",
+      "domain": "revolutwallet[.]digital",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-04T15:04:37.158Z",
+      "lastSeen": "2026-09-04T15:04:37.158Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "e8ef038b358a16e8113086bd3bd87f1a",
+          "observedAt": "2026-09-04T15:04:37.158Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "57573afc8f6dce5769c9",
       "domain": "ignitis-auth-acc[.]offshare[.]cloud",

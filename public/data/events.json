@@ -1,15 +1,57 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T14:27:43.700Z",
+  "generatedAt": "2026-09-04T15:12:26.166Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T14:27:43.700Z",
-    "to": "2026-09-04T14:27:43.700Z"
+    "from": "2026-08-05T15:12:26.166Z",
+    "to": "2026-09-04T15:12:26.166Z"
   },
-  "totalAvailable": 246,
+  "totalAvailable": 249,
   "truncated": false,
   "events": [
+    {
+      "id": "d0ca55a5872252304d81b430731c3ce2",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T15:05:03.177Z",
+      "signalId": "667743b73f8b7090e53e",
+      "signalPath": "/signals/667743b73f8b7090e53e/",
+      "domain": "alemjry-dhl-reader-account[.]ap-south-1[.]aws[.]privatelink[.]snowflake[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "b8ca9dda09ccb4050baf59aa7961d291",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T15:05:03.177Z",
+      "signalId": "b112dd4169c4c549c052",
+      "signalPath": "/signals/b112dd4169c4c549c052/",
+      "domain": "alemjry-dhl-reader-account[.]ap-south-1[.]aws[.]snowflake[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "c2e5fbc0938ac859e13a32ec521feec4",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T15:04:37.158Z",
+      "signalId": "4088764b4c44ca3b0bb7",
+      "signalPath": "/signals/4088764b4c44ca3b0bb7/",
+      "domain": "revolutwallet[.]digital",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "f2780342efc01a77905798eae9cf6209",
       "type": "first-publication",
