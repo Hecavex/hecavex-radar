@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-04T09:13:24.991Z",
+  "generatedAt": "2026-09-04T09:28:36.551Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -15,7 +15,7 @@
     "excludes": "Signals already represented by a sanitized assessment.",
     "semantics": "A review worklist, not a random or prevalence-representative sample."
   },
-  "availableUnreviewed": 172,
+  "availableUnreviewed": 173,
   "selected": 24,
   "candidates": [
     {
@@ -164,6 +164,22 @@
       "firstSeen": "2026-08-25T11:47:24.305Z"
     },
     {
+      "signalId": "e8c51b512066afdf798b",
+      "recordPath": "/signals/e8c51b512066afdf798b/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-09-04T09:23:46.850Z"
+    },
+    {
       "signalId": "71b7af4763ffa22c34dd",
       "recordPath": "/signals/71b7af4763ffa22c34dd/",
       "brand": "Smart-ID",
@@ -177,22 +193,6 @@
       ],
       "candidateAgeBand": "8-30d",
       "firstSeen": "2026-08-21T07:33:13.155Z"
-    },
-    {
-      "signalId": "06c31663d2838fe73089",
-      "recordPath": "/signals/06c31663d2838fe73089/",
-      "brand": "Swedbank",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-joined-affix",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-09-01T15:03:37.433Z"
     },
     {
       "signalId": "f1909ad7540e264b7fb4",
@@ -226,6 +226,22 @@
       "firstSeen": "2026-08-30T02:05:16.483Z"
     },
     {
+      "signalId": "06c31663d2838fe73089",
+      "recordPath": "/signals/06c31663d2838fe73089/",
+      "brand": "Swedbank",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-09-01T15:03:37.433Z"
+    },
+    {
       "signalId": "3d179a68c89e521dc72c",
       "recordPath": "/signals/3d179a68c89e521dc72c/",
       "brand": "MAXIMA",
@@ -239,23 +255,6 @@
       ],
       "candidateAgeBand": "8-30d",
       "firstSeen": "2026-08-23T02:00:48.622Z"
-    },
-    {
-      "signalId": "13d06a7efa04f6696a4e",
-      "recordPath": "/signals/13d06a7efa04f6696a4e/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "multiple-hyphens",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-29T18:46:20.904Z"
     },
     {
       "signalId": "c4a4fc460206fa9fd548",
@@ -323,8 +322,8 @@
       "firstSeen": "2026-09-01T16:35:17.663Z"
     },
     {
-      "signalId": "e5d5289f6701671aab4c",
-      "recordPath": "/signals/e5d5289f6701671aab4c/",
+      "signalId": "1de70845f0f9d377a830",
+      "recordPath": "/signals/1de70845f0f9d377a830/",
       "brand": "Revolut",
       "sources": [
         "CertStream"
@@ -333,31 +332,15 @@
       "evidenceTier": "name-only",
       "reasonCodes": [
         "brand-exact-token",
+        "multiple-hyphens",
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-09-02T20:20:28.287Z"
+      "firstSeen": "2026-09-02T15:09:05.537Z"
     },
     {
-      "signalId": "e42075ba699aa4354145",
-      "recordPath": "/signals/e42075ba699aa4354145/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-30T05:05:51.125Z"
-    },
-    {
-      "signalId": "fd34f99e483f1ea7fdcf",
-      "recordPath": "/signals/fd34f99e483f1ea7fdcf/",
+      "signalId": "e1f8cca98d48da9ba816",
+      "recordPath": "/signals/e1f8cca98d48da9ba816/",
       "brand": "Artea",
       "sources": [
         "CertStream"
@@ -365,12 +348,29 @@
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-joined-affix",
+        "brand-exact-token",
         "different-tld",
+        "punycode",
+        "unicode-confusable"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-31T06:06:03.636Z"
+    },
+    {
+      "signalId": "43349e25703ae7344924",
+      "recordPath": "/signals/43349e25703ae7344924/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "85-94",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
         "suspicious-context"
       ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-09-03T09:20:56.041Z"
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-31T03:50:26.022Z"
     },
     {
       "signalId": "74a34aa5a01e9ed77fb6",
@@ -391,20 +391,21 @@
       "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
-      "signalId": "43349e25703ae7344924",
-      "recordPath": "/signals/43349e25703ae7344924/",
-      "brand": "DHL",
+      "signalId": "fd34f99e483f1ea7fdcf",
+      "recordPath": "/signals/fd34f99e483f1ea7fdcf/",
+      "brand": "Artea",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "85-94",
+      "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-exact-token",
+        "brand-joined-affix",
+        "different-tld",
         "suspicious-context"
       ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-31T03:50:26.022Z"
+      "candidateAgeBand": "0-1d",
+      "firstSeen": "2026-09-03T09:20:56.041Z"
     }
   ]
 }

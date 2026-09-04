@@ -1,10 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T09:13:24.991Z",
+  "generatedAt": "2026-09-04T09:28:36.551Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "e8c51b512066afdf798b",
+      "domain": "tracking-dhlexpress[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T09:23:46.850Z",
+      "lastSeen": "2026-09-04T09:23:46.850Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-split-token",
+        "suspicious-context",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3ea6d6dc52d3407407c7dd1c55e9ba72",
+          "observedAt": "2026-09-04T09:23:46.850Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-split-token",
+            "suspicious-context",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a15fc9d8921e09854dbf",
       "domain": "ignitis-auth[.]offshare[.]cloud",

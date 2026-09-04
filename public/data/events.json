@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T09:26:52.933Z",
+  "generatedAt": "2026-09-04T09:28:36.551Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T09:26:52.933Z",
-    "to": "2026-09-04T09:26:52.933Z"
+    "from": "2026-08-05T09:28:36.551Z",
+    "to": "2026-09-04T09:28:36.551Z"
   },
-  "totalAvailable": 242,
+  "totalAvailable": 243,
   "truncated": false,
   "events": [
+    {
+      "id": "3951268ec14e6350a9fabe185adc597e",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T09:23:46.850Z",
+      "signalId": "e8c51b512066afdf798b",
+      "signalPath": "/signals/e8c51b512066afdf798b/",
+      "domain": "tracking-dhlexpress[.]com",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "cf2eb572350cbf7e037047b03ae44186",
       "type": "first-publication",
