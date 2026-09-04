@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T03:26:01.657Z",
+  "generatedAt": "2026-09-04T03:49:50.563Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T03:26:01.657Z",
-    "to": "2026-09-04T03:26:01.657Z"
+    "from": "2026-08-05T03:49:50.563Z",
+    "to": "2026-09-04T03:49:50.563Z"
   },
-  "totalAvailable": 238,
+  "totalAvailable": 239,
   "truncated": false,
   "events": [
+    {
+      "id": "d0eef748e15ccfb09ebe6da347188862",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T03:47:29.126Z",
+      "signalId": "aba8bce35825f45cb36a",
+      "signalPath": "/signals/aba8bce35825f45cb36a/",
+      "domain": "vinted-user90321-verify-au[.]pages[.]dev",
+      "brand": "Vinted",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "c4e14ca731295dc0693d52ecc86bb04b",
       "type": "first-publication",

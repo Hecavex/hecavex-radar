@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T03:16:27.392Z",
+  "generatedAt": "2026-09-04T03:49:50.563Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "aba8bce35825f45cb36a",
+      "domain": "vinted-user90321-verify-au[.]pages[.]dev",
+      "brand": "Vinted",
+      "firstSeen": "2026-09-04T03:47:29.126Z",
+      "lastSeen": "2026-09-04T03:47:29.126Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "00f15d03964a0b58bb5177ade7071c86",
+          "observedAt": "2026-09-04T03:47:29.126Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "1d048a9d63f6bc617d79",
       "domain": "dhl-delivery[.]site",
