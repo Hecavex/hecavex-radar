@@ -1,72 +1,72 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T06:31:23.810Z",
+  "generatedAt": "2026-09-04T07:26:25.222Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T06:31:23.810Z",
-      "to": "2026-09-04T06:31:23.810Z",
-      "events": 30,
-      "uniqueSignals": 16,
-      "firstPublications": 14,
+      "from": "2026-09-03T07:26:25.222Z",
+      "to": "2026-09-04T07:26:25.222Z",
+      "events": 28,
+      "uniqueSignals": 15,
+      "firstPublications": 13,
       "statusChanges": 0,
-      "observations": 16,
+      "observations": 15,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 30
+        "CertStream": 28
       },
       "byStatus": {
-        "suspected": 30
+        "suspected": 28
       },
       "byReason": {
-        "suspicious-context": 30,
-        "different-tld": 26,
-        "brand-exact-token": 21,
-        "first-publication": 14,
-        "multiple-hyphens": 13,
+        "suspicious-context": 28,
+        "different-tld": 24,
+        "brand-exact-token": 19,
+        "first-publication": 13,
+        "multiple-hyphens": 11,
         "brand-joined-affix": 9
       },
       "byBrand": {
         "DHL": 11,
         "Revolut": 6,
-        "Vinted": 4,
         "Artea": 3,
         "IKI": 2,
         "Paysera": 2,
-        "UNIPARK": 2
+        "UNIPARK": 2,
+        "Vinted": 2
       }
     },
     {
       "hours": 168,
-      "from": "2026-08-28T06:31:23.810Z",
-      "to": "2026-09-04T06:31:23.810Z",
-      "events": 368,
-      "uniqueSignals": 177,
-      "firstPublications": 176,
+      "from": "2026-08-28T07:26:25.222Z",
+      "to": "2026-09-04T07:26:25.222Z",
+      "events": 364,
+      "uniqueSignals": 175,
+      "firstPublications": 174,
       "statusChanges": 0,
-      "observations": 192,
+      "observations": 190,
       "reobservations": 15,
       "bySource": {
-        "CertStream": 368
+        "CertStream": 364
       },
       "byStatus": {
-        "suspected": 368
+        "suspected": 364
       },
       "byReason": {
-        "suspicious-context": 358,
-        "different-tld": 315,
-        "brand-exact-token": 273,
-        "multiple-hyphens": 194,
-        "first-publication": 176,
+        "suspicious-context": 354,
+        "different-tld": 311,
+        "brand-exact-token": 269,
+        "multiple-hyphens": 190,
+        "first-publication": 174,
         "brand-joined-affix": 87,
         "punycode": 18,
         "unicode-confusable": 14,
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 158,
+        "DHL": 156,
         "Revolut": 60,
         "Vinted": 22,
         "VMI": 20,
@@ -75,8 +75,8 @@
         "Swedbank": 10,
         "Tele2": 10,
         "Smart-ID": 9,
-        "DPD": 8,
         "SEB": 8,
+        "DPD": 6,
         "ERGO": 6,
         "MAXIMA": 6,
         "Bigbank": 4,
