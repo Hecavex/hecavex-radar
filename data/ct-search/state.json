@@ -1,27 +1,25 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-04T02:46:51.575Z",
+  "generatedAt": "2026-09-04T04:47:10.675Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-04T02:46:51.575Z",
-    "failureCodes": [
-      "provider-http"
-    ],
+    "endedAt": "2026-09-04T04:47:10.675Z",
+    "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 1,
+    "outcome": "completed",
+    "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 6,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-04T02:46:50.616Z"
+    "startedAt": "2026-09-04T04:47:03.659Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 1,
-    "degradedSince": "2026-09-04T02:46:50.616Z",
-    "lastSuccessAt": "2026-09-04T01:47:25.470Z",
-    "nextAttemptAt": "2026-09-04T02:51:51.575Z"
+    "consecutiveFailures": 0,
+    "degradedSince": null,
+    "lastSuccessAt": "2026-09-04T04:47:10.675Z",
+    "nextAttemptAt": null
   },
   "queries": {
     "brand:artea": {
@@ -29,7 +27,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T18:50:05.545Z",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "artea"
     },
     "brand:bigbank": {
@@ -37,7 +35,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T18:50:05.545Z",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "bigbank"
     },
     "brand:bitelietuva": {
@@ -45,7 +43,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T18:50:05.545Z",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "bitelietuva"
     },
     "brand:btadraudimas": {
@@ -53,7 +51,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T18:50:05.545Z",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "btadraudimas"
     },
     "brand:cgates": {
@@ -380,8 +378,8 @@
       "brand": "Venipak",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-04T02:46:50.616Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "venipak"
     },
     "brand:vinted": {
@@ -389,10 +387,10 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-03T17:48:07.108Z",
+      "lastRunAt": "2026-09-04T04:47:03.659Z",
       "term": "vinted"
     }
   },
-  "queryCursor": 44,
+  "queryCursor": 4,
   "schemaVersion": 1
 }
