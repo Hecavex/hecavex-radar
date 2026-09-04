@@ -1,13 +1,13 @@
 {
-  "cursor": 132,
+  "cursor": 152,
   "dataset": "domain-context",
-  "generatedAt": "2026-09-04T07:27:14.790Z",
+  "generatedAt": "2026-09-04T13:27:41.671Z",
   "latestRun": {
     "attempted": 20,
     "completed": 20,
-    "endedAt": "2026-09-04T07:27:14.790Z",
-    "outcome": "completed",
-    "startedAt": "2026-09-04T07:27:00.380Z"
+    "endedAt": "2026-09-04T13:27:41.671Z",
+    "outcome": "partial",
+    "startedAt": "2026-09-04T13:27:28.071Z"
   },
   "records": [
     {
@@ -278,7 +278,7 @@
         "queriesCompleted": 5
       },
       "domain": "box-secure-dhl[.]com[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "d910c07973fdd4162ed5"
     },
@@ -607,7 +607,7 @@
         "queriesCompleted": 5
       },
       "domain": "dhl-maya-auth[.]com[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "e1119b1f441fcf1f6c61"
     },
@@ -763,18 +763,16 @@
     },
     {
       "dns": {
-        "a": [
-          "45[.]79[.]222[.]138"
-        ],
+        "a": [],
         "aaaa": [],
         "cname": [],
-        "minimumTtl": 86400,
+        "minimumTtl": null,
         "mx": [],
         "ns": [],
-        "queriesCompleted": 5
+        "queriesCompleted": 4
       },
       "domain": "dhl-redelivery-service[.]com[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "d30dfb25d4a3d1168771"
     },
@@ -1041,6 +1039,41 @@
     {
       "dns": {
         "a": [
+          "66[.]33[.]60[.]66",
+          "76[.]76[.]21[.]142"
+        ],
+        "aaaa": [],
+        "cname": [
+          "cname[.]vercel-dns[.]com"
+        ],
+        "minimumTtl": 300,
+        "mx": [],
+        "ns": [
+          "ns1[.]vercel-dns-3[.]com",
+          "ns2[.]vercel-dns-3[.]com",
+          "ns3[.]vercel-dns-3[.]com",
+          "ns4[.]vercel-dns-3[.]com"
+        ],
+        "queriesCompleted": 5
+      },
+      "domain": "fix-vinted-profile-no-account[.]vinlands[.]fr",
+      "observedAt": "2026-09-04T13:27:28.071Z",
+      "registration": {
+        "domain": "vinlands[.]fr",
+        "expiresAt": "2029-06-26T18:00:41.902Z",
+        "registeredAt": "2026-06-26T18:00:41.917Z",
+        "registrar": "OVH",
+        "statuses": [
+          "client-delete-prohibited",
+          "client-transfer-prohibited"
+        ],
+        "updatedAt": "2026-07-01T18:02:55.109Z"
+      },
+      "signalId": "d0fe57aab70dcf8e8452"
+    },
+    {
+      "dns": {
+        "a": [
           "45[.]79[.]222[.]138"
         ],
         "aaaa": [],
@@ -1113,7 +1146,7 @@
         "queriesCompleted": 5
       },
       "domain": "login[.]smartidverify[.]net",
-      "observedAt": "2026-09-04T07:27:00.380Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "smartidverify[.]net",
         "expiresAt": "2027-06-03T17:10:38.000Z",
@@ -1145,7 +1178,7 @@
         "queriesCompleted": 5
       },
       "domain": "luminor-bank[.]com",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "luminor-bank[.]com",
         "expiresAt": "2027-09-01T22:03:05.000Z",
@@ -1174,7 +1207,7 @@
         "queriesCompleted": 5
       },
       "domain": "mail[.]revolut-support[.]finance",
-      "observedAt": "2026-09-02T19:24:12.863Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "revolut-support[.]finance",
         "expiresAt": "2027-09-02T14:54:12.633Z",
@@ -1597,7 +1630,7 @@
         "queriesCompleted": 5
       },
       "domain": "revolut-casino-online[.]cz",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "revolut-casino-online[.]cz",
         "expiresAt": "2027-08-20T22:00:00.000Z",
@@ -1673,7 +1706,7 @@
         "queriesCompleted": 5
       },
       "domain": "revolut-pl-support[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "d2d14e7ca052465d6f58"
     },
@@ -1724,7 +1757,7 @@
         "queriesCompleted": 5
       },
       "domain": "revolut-update-security[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "d542b4778aeeac180c73"
     },
@@ -1810,7 +1843,7 @@
         "queriesCompleted": 5
       },
       "domain": "revolutbank[.]online",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "revolutbank[.]online",
         "expiresAt": "2027-03-05T23:59:59.000Z",
@@ -1863,6 +1896,23 @@
     {
       "dns": {
         "a": [
+          "46[.]151[.]182[.]230"
+        ],
+        "aaaa": [],
+        "cname": [],
+        "minimumTtl": 14400,
+        "mx": [],
+        "ns": [],
+        "queriesCompleted": 5
+      },
+      "domain": "secure-vmi[.]energy-report[.]ro",
+      "observedAt": "2026-09-04T13:27:28.071Z",
+      "registration": null,
+      "signalId": "d011b57dfe48957858b2"
+    },
+    {
+      "dns": {
+        "a": [
           "45[.]79[.]222[.]138"
         ],
         "aaaa": [],
@@ -1895,7 +1945,7 @@
         "queriesCompleted": 5
       },
       "domain": "smartidcard[.]de",
-      "observedAt": "2026-09-04T07:27:00.380Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "cf763895e63322a10e1a"
     },
@@ -2155,7 +2205,7 @@
         "queriesCompleted": 5
       },
       "domain": "uat[.]dhl-rpa-portal[.]infanion[.]com",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "infanion[.]com",
         "expiresAt": "2027-07-15T10:45:15.000Z",
@@ -2253,7 +2303,7 @@
     {
       "dns": {
         "a": [
-          "63[.]176[.]22[.]185",
+          "35[.]157[.]119[.]168",
           "63[.]183[.]36[.]118"
         ],
         "aaaa": [],
@@ -2271,7 +2321,7 @@
         "queriesCompleted": 5
       },
       "domain": "vintedpay[.]si",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "vintedpay[.]si",
         "expiresAt": "2027-07-22T17:46:56.000Z",
@@ -2638,7 +2688,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]citadelebank[.]com[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "dfa947674ec7493deaad"
     },
@@ -2819,7 +2869,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]dhl-secure-box[.]com[.]ph",
-      "observedAt": "2026-09-04T07:27:00.380Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "cab53622beae8e77ccbb"
     },
@@ -2891,7 +2941,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]dhlexpress-auth[.]com[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "df770db3211e73351d44"
     },
@@ -3041,7 +3091,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]revolut-user-support[.]ph",
-      "observedAt": "2026-09-02T13:28:31.574Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": null,
       "signalId": "d04043e1e8a45b43729b"
     },
@@ -3300,7 +3350,7 @@
         "queriesCompleted": 5
       },
       "domain": "www[.]xn--arta-dpa[.]com",
-      "observedAt": "2026-09-02T19:24:12.863Z",
+      "observedAt": "2026-09-04T13:27:28.071Z",
       "registration": {
         "domain": "xn--arta-dpa[.]com",
         "expiresAt": "2026-10-31T05:18:13.000Z",
