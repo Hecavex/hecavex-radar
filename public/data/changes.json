@@ -1,40 +1,41 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T12:32:15.146Z",
+  "generatedAt": "2026-09-04T14:27:43.700Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T12:32:15.146Z",
-      "to": "2026-09-04T12:32:15.146Z",
-      "events": 27,
-      "uniqueSignals": 15,
-      "firstPublications": 12,
+      "from": "2026-09-03T14:27:43.700Z",
+      "to": "2026-09-04T14:27:43.700Z",
+      "events": 30,
+      "uniqueSignals": 16,
+      "firstPublications": 14,
       "statusChanges": 0,
-      "observations": 15,
+      "observations": 16,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 27
+        "CertStream": 30
       },
       "byStatus": {
-        "suspected": 27
+        "suspected": 30
       },
       "byReason": {
-        "suspicious-context": 25,
-        "brand-exact-token": 22,
-        "different-tld": 19,
-        "multiple-hyphens": 13,
-        "first-publication": 12,
+        "suspicious-context": 28,
+        "brand-exact-token": 25,
+        "different-tld": 23,
+        "first-publication": 14,
+        "multiple-hyphens": 14,
         "brand-joined-affix": 3,
         "brand-split-token": 2,
         "punycode": 2,
         "unicode-confusable": 2
       },
       "byBrand": {
-        "DHL": 13,
+        "DHL": 12,
+        "Ignitis": 4,
+        "DPD": 2,
         "IKI": 2,
-        "Ignitis": 2,
         "Paysera": 2,
         "Smart-ID": 2,
         "Telia": 2,
@@ -45,8 +46,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T12:32:15.146Z",
-      "to": "2026-09-04T12:32:15.146Z",
+      "from": "2026-08-28T14:27:43.700Z",
+      "to": "2026-09-04T14:27:43.700Z",
       "events": 355,
       "uniqueSignals": 170,
       "firstPublications": 169,
@@ -60,14 +61,14 @@
         "suspected": 355
       },
       "byReason": {
-        "suspicious-context": 343,
+        "suspicious-context": 347,
         "different-tld": 302,
         "brand-exact-token": 258,
-        "multiple-hyphens": 178,
+        "multiple-hyphens": 176,
         "first-publication": 169,
         "brand-joined-affix": 87,
-        "punycode": 20,
-        "unicode-confusable": 16,
+        "punycode": 16,
+        "unicode-confusable": 12,
         "brand-split-token": 10
       },
       "byBrand": {
@@ -80,17 +81,17 @@
         "Smart-ID": 11,
         "Swedbank": 10,
         "Tele2": 10,
-        "SEB": 8,
+        "DPD": 6,
         "ERGO": 6,
         "MAXIMA": 6,
         "Bigbank": 4,
         "Bitė": 4,
-        "DPD": 4,
+        "Ignitis": 4,
         "Luminor": 4,
+        "SEB": 4,
         "Citadele": 2,
         "ESO": 2,
         "IKI": 2,
-        "Ignitis": 2,
         "Paysera": 2,
         "UNIPARK": 2
       }

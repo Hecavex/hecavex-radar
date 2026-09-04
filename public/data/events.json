@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T12:32:15.146Z",
+  "generatedAt": "2026-09-04T14:27:43.700Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T12:32:15.146Z",
-    "to": "2026-09-04T12:32:15.146Z"
+    "from": "2026-08-05T14:27:43.700Z",
+    "to": "2026-09-04T14:27:43.700Z"
   },
-  "totalAvailable": 244,
+  "totalAvailable": 246,
   "truncated": false,
   "events": [
+    {
+      "id": "f2780342efc01a77905798eae9cf6209",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T14:26:57.013Z",
+      "signalId": "57573afc8f6dce5769c9",
+      "signalPath": "/signals/57573afc8f6dce5769c9/",
+      "domain": "ignitis-auth-acc[.]offshare[.]cloud",
+      "brand": "Ignitis",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "b77f2e9960737152722d53eb04fa42be",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T14:20:33.882Z",
+      "signalId": "03695559b9daf05d0e7e",
+      "signalPath": "/signals/03695559b9daf05d0e7e/",
+      "domain": "dpd-online[.]site",
+      "brand": "DPD",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "5e18f4ccc55dfd0bf380abea9a09401e",
       "type": "reobservation",

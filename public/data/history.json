@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T10:26:51.408Z",
+  "generatedAt": "2026-09-04T14:27:43.700Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "57573afc8f6dce5769c9",
+      "domain": "ignitis-auth-acc[.]offshare[.]cloud",
+      "brand": "Ignitis",
+      "firstSeen": "2026-09-04T14:26:57.013Z",
+      "lastSeen": "2026-09-04T14:26:57.013Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "4e3e2ff953971d34dd7f2468feb4c333",
+          "observedAt": "2026-09-04T14:26:57.013Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "03695559b9daf05d0e7e",
+      "domain": "dpd-online[.]site",
+      "brand": "DPD",
+      "firstSeen": "2026-09-04T14:20:33.882Z",
+      "lastSeen": "2026-09-04T14:20:33.882Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "2fbfac17b0ae44f4fd413c59d4622398",
+          "observedAt": "2026-09-04T14:20:33.882Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "64f15e71aa29ddb7d63d",
       "domain": "www[.]confirm-revolut[.]es",
