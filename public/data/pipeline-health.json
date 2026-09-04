@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-09-04T16:12:19.688Z",
+  "generatedAt": "2026-09-04T16:52:22.632Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 178,
@@ -16,22 +16,22 @@
       "HECAVEX": 1
     },
     "certstream": {
-      "generatedAt": "2026-09-04T16:11:47.907Z",
-      "lastSuccessAt": "2026-09-04T16:11:47.907Z",
+      "generatedAt": "2026-09-04T16:41:50.465Z",
+      "lastSuccessAt": "2026-09-04T16:41:50.465Z",
       "freshness": {
         "status": "current",
-        "referenceAt": "2026-09-04T16:11:47.907Z",
+        "referenceAt": "2026-09-04T16:41:50.465Z",
         "ageSeconds": 0
       },
       "latestAttempt": {
-        "startedAt": "2026-09-04T16:03:39.925Z",
-        "endedAt": "2026-09-04T16:11:47.907Z",
-        "outcome": "healthy-matches",
+        "startedAt": "2026-09-04T16:33:39.925Z",
+        "endedAt": "2026-09-04T16:41:50.465Z",
+        "outcome": "healthy-empty",
         "listeningSeconds": 479.999,
-        "messages": 146952,
-        "dnsNames": 264297,
-        "matches": 1,
-        "newRecords": 1
+        "messages": 134344,
+        "dnsNames": 242697,
+        "matches": 0,
+        "newRecords": 0
       }
     },
     "urlscan": {
@@ -48,19 +48,21 @@
       }
     },
     "ctSearch": {
-      "generatedAt": "2026-09-04T11:46:33.726Z",
+      "generatedAt": "2026-09-04T16:42:55.588Z",
       "latestRun": {
-        "startedAt": "2026-09-04T11:46:26.514Z",
-        "endedAt": "2026-09-04T11:46:33.726Z",
-        "outcome": "completed",
-        "queriesAttempted": 6,
-        "queriesCompleted": 6,
+        "startedAt": "2026-09-04T16:42:13.130Z",
+        "endedAt": "2026-09-04T16:42:55.588Z",
+        "outcome": "partial",
+        "queriesAttempted": 4,
+        "queriesCompleted": 3,
         "queriesBacklogged": 0,
         "rowsProcessed": 0,
         "dnsNames": 0,
         "matches": 0,
         "newRecords": 0,
-        "failureCodes": []
+        "failureCodes": [
+          "provider-http"
+        ]
       },
       "provider": "crt.sh"
     },
@@ -79,8 +81,8 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T16:12:19.688Z",
-      "to": "2026-09-04T16:12:19.688Z",
+      "from": "2026-09-03T16:52:22.632Z",
+      "to": "2026-09-04T16:52:22.632Z",
       "collection": {
         "scheduledSlots": 96,
         "recordedAttempts": 70,
@@ -90,15 +92,15 @@
         "scheduledListeningCeilingPercent": 53.33,
         "expectedListeningSeconds": 33600,
         "listeningSeconds": 33599.903,
-        "messages": 9665828,
-        "dnsNames": 17870284,
+        "messages": 9644882,
+        "dnsNames": 17835436,
         "outcomes": {
-          "healthy-empty": 53,
-          "healthy-matches": 17
+          "healthy-empty": 54,
+          "healthy-matches": 16
         }
       },
       "screening": {
-        "matches": 41,
+        "matches": 39,
         "newArchiveRecords": 20,
         "firstPublications": 17,
         "bySource": {
@@ -124,21 +126,21 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T16:12:19.688Z",
-      "to": "2026-09-04T16:12:19.688Z",
+      "from": "2026-08-28T16:52:22.632Z",
+      "to": "2026-09-04T16:52:22.632Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 541,
-        "healthyAttempts": 541,
-        "recordedSchedulePercent": 80.5,
-        "listeningCoveragePercent": 42.93,
+        "recordedAttempts": 540,
+        "healthyAttempts": 540,
+        "recordedSchedulePercent": 80.4,
+        "listeningCoveragePercent": 42.85,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 259680,
-        "listeningSeconds": 259651.127,
-        "messages": 80698762,
-        "dnsNames": 148100653,
+        "expectedListeningSeconds": 259200,
+        "listeningSeconds": 259171.13,
+        "messages": 80488473,
+        "dnsNames": 147699184,
         "outcomes": {
-          "healthy-empty": 368,
+          "healthy-empty": 367,
           "healthy-matches": 173
         }
       },
