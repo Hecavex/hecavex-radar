@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-03T23:22:35.855Z",
+  "generatedAt": "2026-09-04T00:13:22.249Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-02T23:22:35.855Z",
-      "to": "2026-09-03T23:22:35.855Z",
+      "from": "2026-09-03T00:13:22.249Z",
+      "to": "2026-09-04T00:13:22.249Z",
       "events": 31,
       "uniqueSignals": 17,
       "firstPublications": 14,
@@ -41,44 +41,44 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-27T23:22:35.855Z",
-      "to": "2026-09-03T23:22:35.855Z",
-      "events": 378,
-      "uniqueSignals": 183,
-      "firstPublications": 181,
+      "from": "2026-08-28T00:13:22.249Z",
+      "to": "2026-09-04T00:13:22.249Z",
+      "events": 374,
+      "uniqueSignals": 181,
+      "firstPublications": 179,
       "statusChanges": 0,
-      "observations": 197,
+      "observations": 195,
       "reobservations": 14,
       "bySource": {
-        "CertStream": 378
+        "CertStream": 374
       },
       "byStatus": {
-        "suspected": 378
+        "suspected": 374
       },
       "byReason": {
-        "suspicious-context": 368,
-        "different-tld": 322,
-        "brand-exact-token": 282,
+        "suspicious-context": 364,
+        "different-tld": 318,
+        "brand-exact-token": 278,
         "multiple-hyphens": 198,
-        "first-publication": 181,
+        "first-publication": 179,
         "brand-joined-affix": 88,
         "punycode": 18,
         "unicode-confusable": 14,
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 158,
+        "DHL": 156,
         "Revolut": 64,
         "Telia": 20,
         "VMI": 20,
         "Vinted": 20,
         "Artea": 10,
-        "SEB": 10,
         "Swedbank": 10,
         "Tele2": 10,
         "DPD": 9,
         "Smart-ID": 9,
         "MAXIMA": 8,
+        "SEB": 8,
         "ERGO": 6,
         "Bigbank": 4,
         "Bitė": 4,

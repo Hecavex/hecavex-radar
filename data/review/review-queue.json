@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-stratified-review-queue",
-  "generatedAt": "2026-09-03T22:46:19.871Z",
+  "generatedAt": "2026-09-03T23:44:59.177Z",
   "samplingPolicy": {
     "method": "deterministic-greedy-facet-balancing",
     "dimensions": [
@@ -162,8 +162,8 @@
       "firstSeen": "2026-08-22T07:21:16.259Z"
     },
     {
-      "signalId": "ddc9b66db5435ebfbc80",
-      "recordPath": "/signals/ddc9b66db5435ebfbc80/",
+      "signalId": "e86f606e9f0cc3c28a51",
+      "recordPath": "/signals/e86f606e9f0cc3c28a51/",
       "brand": "DHL",
       "sources": [
         "CertStream"
@@ -176,7 +176,7 @@
         "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-09-01T23:25:37.047Z"
+      "firstSeen": "2026-09-02T00:50:24.684Z"
     },
     {
       "signalId": "5b0f8b137394c5f88ddf",
@@ -259,22 +259,20 @@
       "firstSeen": "2026-08-31T17:17:44.735Z"
     },
     {
-      "signalId": "002a5ea06feeb244cf59",
-      "recordPath": "/signals/002a5ea06feeb244cf59/",
-      "brand": "Tele2",
+      "signalId": "19a9d10bfdd5af52aa9c",
+      "recordPath": "/signals/19a9d10bfdd5af52aa9c/",
+      "brand": "Revolut",
       "sources": [
         "CertStream"
       ],
       "scoreBand": "95-100",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-joined-affix",
-        "punycode",
-        "suspicious-context",
-        "unicode-confusable"
+        "brand-exact-token",
+        "suspicious-context"
       ],
       "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-09-01T23:04:09.878Z"
+      "firstSeen": "2026-09-02T00:52:29.947Z"
     },
     {
       "signalId": "b2a74041369ff0a25a50",
@@ -290,39 +288,6 @@
       ],
       "candidateAgeBand": "8-30d",
       "firstSeen": "2026-08-21T09:45:07.660Z"
-    },
-    {
-      "signalId": "e86f606e9f0cc3c28a51",
-      "recordPath": "/signals/e86f606e9f0cc3c28a51/",
-      "brand": "DHL",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "85-94",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "multiple-hyphens",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "0-1d",
-      "firstSeen": "2026-09-02T00:50:24.684Z"
-    },
-    {
-      "signalId": "f168e7f8b118abe0feaf",
-      "recordPath": "/signals/f168e7f8b118abe0feaf/",
-      "brand": "Telia",
-      "sources": [
-        "CertStream"
-      ],
-      "scoreBand": "95-100",
-      "evidenceTier": "name-only",
-      "reasonCodes": [
-        "brand-exact-token",
-        "suspicious-context"
-      ],
-      "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-29T02:31:22.724Z"
     },
     {
       "signalId": "89a0feb1001f207e2d53",
@@ -376,6 +341,39 @@
       "firstSeen": "2026-09-02T08:41:52.602Z"
     },
     {
+      "signalId": "f168e7f8b118abe0feaf",
+      "recordPath": "/signals/f168e7f8b118abe0feaf/",
+      "brand": "Telia",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-29T02:31:22.724Z"
+    },
+    {
+      "signalId": "e42075ba699aa4354145",
+      "recordPath": "/signals/e42075ba699aa4354145/",
+      "brand": "DHL",
+      "sources": [
+        "CertStream"
+      ],
+      "scoreBand": "95-100",
+      "evidenceTier": "name-only",
+      "reasonCodes": [
+        "brand-split-token",
+        "different-tld",
+        "suspicious-context"
+      ],
+      "candidateAgeBand": "2-7d",
+      "firstSeen": "2026-08-30T05:05:51.125Z"
+    },
+    {
       "signalId": "74a34aa5a01e9ed77fb6",
       "recordPath": "/signals/74a34aa5a01e9ed77fb6/",
       "brand": "Revolut",
@@ -394,21 +392,20 @@
       "firstSeen": "2026-08-21T07:33:48.367Z"
     },
     {
-      "signalId": "e42075ba699aa4354145",
-      "recordPath": "/signals/e42075ba699aa4354145/",
+      "signalId": "43349e25703ae7344924",
+      "recordPath": "/signals/43349e25703ae7344924/",
       "brand": "DHL",
       "sources": [
         "CertStream"
       ],
-      "scoreBand": "95-100",
+      "scoreBand": "85-94",
       "evidenceTier": "name-only",
       "reasonCodes": [
-        "brand-split-token",
-        "different-tld",
+        "brand-exact-token",
         "suspicious-context"
       ],
       "candidateAgeBand": "2-7d",
-      "firstSeen": "2026-08-30T05:05:51.125Z"
+      "firstSeen": "2026-08-31T03:50:26.022Z"
     }
   ]
 }
