@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T08:27:22.234Z",
+  "generatedAt": "2026-09-04T09:13:24.991Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a15fc9d8921e09854dbf",
+      "domain": "ignitis-auth[.]offshare[.]cloud",
+      "brand": "Ignitis",
+      "firstSeen": "2026-09-04T09:06:55.927Z",
+      "lastSeen": "2026-09-04T09:06:55.927Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9413b7d85ed00fa5e92777693b320bf6",
+          "observedAt": "2026-09-04T09:06:55.927Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a6a1f542302b3b1c8eb9",
       "domain": "xn--tlia-bpa[.]com",

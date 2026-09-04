@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-feeds",
-  "generatedAt": "2026-09-04T08:28:31.937Z",
+  "generatedAt": "2026-09-04T09:13:24.991Z",
   "semantics": "Each per-brand feed is a filtered view of the same bounded 30-day global event stream. An empty feed means no publishable event in that sampled window, not no phishing activity.",
   "brands": [
     {
@@ -135,7 +135,7 @@
     {
       "brand": "Ignitis",
       "slug": "ignitis",
-      "eventCount": 0,
+      "eventCount": 1,
       "atom": "/data/brands/ignitis/events.atom.xml",
       "rss": "/data/brands/ignitis/events.rss.xml",
       "jsonFeed": "/data/brands/ignitis/events.feed.json"

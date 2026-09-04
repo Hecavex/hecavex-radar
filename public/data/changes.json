@@ -1,30 +1,30 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-04T08:28:31.937Z",
+  "generatedAt": "2026-09-04T09:13:24.991Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T08:28:31.937Z",
-      "to": "2026-09-04T08:28:31.937Z",
-      "events": 32,
-      "uniqueSignals": 17,
-      "firstPublications": 15,
+      "from": "2026-09-03T09:13:24.991Z",
+      "to": "2026-09-04T09:13:24.991Z",
+      "events": 34,
+      "uniqueSignals": 18,
+      "firstPublications": 16,
       "statusChanges": 0,
-      "observations": 17,
+      "observations": 18,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 32
+        "CertStream": 34
       },
       "byStatus": {
-        "suspected": 32
+        "suspected": 34
       },
       "byReason": {
-        "suspicious-context": 30,
-        "different-tld": 26,
-        "brand-exact-token": 23,
-        "first-publication": 15,
+        "suspicious-context": 32,
+        "different-tld": 28,
+        "brand-exact-token": 25,
+        "first-publication": 16,
         "multiple-hyphens": 13,
         "brand-joined-affix": 9,
         "punycode": 2,
@@ -35,6 +35,7 @@
         "Revolut": 6,
         "Artea": 3,
         "IKI": 2,
+        "Ignitis": 2,
         "Paysera": 2,
         "Smart-ID": 2,
         "Telia": 2,
@@ -44,8 +45,8 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T08:28:31.937Z",
-      "to": "2026-09-04T08:28:31.937Z",
+      "from": "2026-08-28T09:13:24.991Z",
+      "to": "2026-09-04T09:13:24.991Z",
       "events": 362,
       "uniqueSignals": 174,
       "firstPublications": 173,
@@ -62,7 +63,7 @@
         "suspicious-context": 350,
         "different-tld": 309,
         "brand-exact-token": 267,
-        "multiple-hyphens": 186,
+        "multiple-hyphens": 184,
         "first-publication": 173,
         "brand-joined-affix": 87,
         "punycode": 20,
@@ -70,7 +71,7 @@
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 150,
+        "DHL": 148,
         "Revolut": 60,
         "Vinted": 22,
         "Telia": 20,
@@ -89,6 +90,7 @@
         "Citadele": 2,
         "ESO": 2,
         "IKI": 2,
+        "Ignitis": 2,
         "Paysera": 2,
         "UNIPARK": 2
       }

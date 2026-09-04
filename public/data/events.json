@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T08:28:31.937Z",
+  "generatedAt": "2026-09-04T09:13:24.991Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T08:28:31.937Z",
-    "to": "2026-09-04T08:28:31.937Z"
+    "from": "2026-08-05T09:13:24.991Z",
+    "to": "2026-09-04T09:13:24.991Z"
   },
-  "totalAvailable": 241,
+  "totalAvailable": 242,
   "truncated": false,
   "events": [
+    {
+      "id": "cf2eb572350cbf7e037047b03ae44186",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T09:06:55.927Z",
+      "signalId": "a15fc9d8921e09854dbf",
+      "signalPath": "/signals/a15fc9d8921e09854dbf/",
+      "domain": "ignitis-auth[.]offshare[.]cloud",
+      "brand": "Ignitis",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "4d542fc9ea685cf3dc1dd2091f7728d2",
       "type": "first-publication",
