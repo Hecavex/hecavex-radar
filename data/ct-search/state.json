@@ -1,25 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-04T11:46:33.726Z",
+  "generatedAt": "2026-09-04T16:42:55.588Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-04T11:46:33.726Z",
-    "failureCodes": [],
+    "endedAt": "2026-09-04T16:42:55.588Z",
+    "failureCodes": [
+      "provider-http"
+    ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "completed",
-    "queriesAttempted": 6,
+    "outcome": "partial",
+    "queriesAttempted": 4,
     "queriesBacklogged": 0,
-    "queriesCompleted": 6,
+    "queriesCompleted": 3,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-04T11:46:26.514Z"
+    "startedAt": "2026-09-04T16:42:13.130Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 0,
-    "degradedSince": null,
+    "consecutiveFailures": 1,
+    "degradedSince": "2026-09-04T16:42:13.130Z",
     "lastSuccessAt": "2026-09-04T11:46:33.726Z",
-    "nextAttemptAt": null
+    "nextAttemptAt": "2026-09-04T16:47:55.588Z"
   },
   "queries": {
     "brand:artea": {
@@ -27,7 +29,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T04:47:03.659Z",
+      "lastRunAt": "2026-09-04T16:42:13.130Z",
       "term": "artea"
     },
     "brand:bigbank": {
@@ -35,7 +37,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T04:47:03.659Z",
+      "lastRunAt": "2026-09-04T16:42:13.130Z",
       "term": "bigbank"
     },
     "brand:bitelietuva": {
@@ -43,15 +45,15 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T04:47:03.659Z",
+      "lastRunAt": "2026-09-04T16:42:13.130Z",
       "term": "bitelietuva"
     },
     "brand:btadraudimas": {
       "brand": "BTA",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T04:47:03.659Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-09-04T16:42:13.130Z",
       "term": "btadraudimas"
     },
     "brand:cgates": {
@@ -391,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 0,
+  "queryCursor": 3,
   "schemaVersion": 1
 }
