@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-04T20:34:47.443Z",
+  "generatedAt": "2026-09-04T21:04:48.674Z",
   "retentionDays": 365,
   "from": "2025-09-05",
   "to": "2026-09-04",
@@ -82,7 +82,7 @@
           "URLScan": 1
         },
         "byEvidenceTier": {
-          "corroborated": 1
+          "name-only": 1
         },
         "byReason": {
           "brand-domain-match": 1
@@ -121,8 +121,7 @@
           "URLScan": 5
         },
         "byEvidenceTier": {
-          "name-only": 4,
-          "corroborated": 1
+          "name-only": 5
         },
         "byReason": {
           "brand-domain-match": 5,
@@ -213,8 +212,7 @@
           "URLScan": 6
         },
         "byEvidenceTier": {
-          "name-only": 3,
-          "corroborated": 1
+          "name-only": 4
         },
         "byReason": {
           "brand-domain-match": 6,
@@ -424,7 +422,7 @@
         "firstPublications": 30,
         "statusChanges": 0,
         "facetSampleSize": 31,
-        "evidenceClassifiedSignals": 7,
+        "evidenceClassifiedSignals": 0,
         "byBrand": {
           "DHL": 16,
           "DPD": 3,
@@ -440,9 +438,7 @@
         "bySource": {
           "CertStream": 31
         },
-        "byEvidenceTier": {
-          "name-only": 7
-        },
+        "byEvidenceTier": {},
         "byReason": {
           "first-publication": 30,
           "brand-exact-token": 29,
@@ -481,7 +477,7 @@
         "firstPublications": 40,
         "statusChanges": 0,
         "facetSampleSize": 41,
-        "evidenceClassifiedSignals": 41,
+        "evidenceClassifiedSignals": 10,
         "byBrand": {
           "DHL": 20,
           "Vinted": 5,
@@ -499,8 +495,7 @@
           "CertStream": 41
         },
         "byEvidenceTier": {
-          "name-only": 40,
-          "corroborated": 1
+          "name-only": 10
         },
         "byReason": {
           "suspicious-context": 41,
@@ -784,50 +779,50 @@
       "date": "2026-09-04",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 74087,
-        "scheduledSlots": 82,
-        "recordedAttempts": 52,
-        "healthyAttempts": 52,
-        "recordedSchedulePercent": 63.4,
-        "listeningCoveragePercent": 33.69,
+        "windowSeconds": 75888,
+        "scheduledSlots": 84,
+        "recordedAttempts": 54,
+        "healthyAttempts": 54,
+        "recordedSchedulePercent": 64.3,
+        "listeningCoveragePercent": 34.16,
         "scheduledListeningCeilingPercent": 53.13,
-        "listeningSeconds": 24959.928,
+        "listeningSeconds": 25919.926,
         "outcomes": {
-          "healthy-empty": 38,
-          "healthy-matches": 14
+          "healthy-empty": 39,
+          "healthy-matches": 15
         }
       },
       "discovery": {
-        "events": 31,
-        "uniqueSignals": 17,
-        "observations": 17,
+        "events": 33,
+        "uniqueSignals": 18,
+        "observations": 18,
         "reobservations": 0,
-        "firstPublications": 14,
+        "firstPublications": 15,
         "statusChanges": 0,
-        "facetSampleSize": 17,
-        "evidenceClassifiedSignals": 17,
+        "facetSampleSize": 18,
+        "evidenceClassifiedSignals": 18,
         "byBrand": {
           "DHL": 7,
+          "Revolut": 3,
           "Artea": 2,
           "Ignitis": 2,
-          "Revolut": 2,
           "DPD": 1,
           "Smart-ID": 1,
           "Telia": 1,
           "Vinted": 1
         },
         "bySource": {
-          "CertStream": 17
+          "CertStream": 18
         },
         "byEvidenceTier": {
-          "name-only": 17
+          "name-only": 18
         },
         "byReason": {
-          "suspicious-context": 16,
-          "first-publication": 14,
-          "brand-exact-token": 13,
-          "different-tld": 11,
-          "multiple-hyphens": 7,
+          "suspicious-context": 17,
+          "first-publication": 15,
+          "brand-exact-token": 14,
+          "different-tld": 12,
+          "multiple-hyphens": 8,
           "brand-joined-affix": 3,
           "brand-split-token": 1,
           "punycode": 1,

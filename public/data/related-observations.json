@@ -1,33 +1,18 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-related-observations",
-  "generatedAt": "2026-09-04T20:34:47.443Z",
+  "generatedAt": "2026-09-04T21:04:48.674Z",
   "semantics": "Shared evidence is a bounded association between public observations. It is not campaign, operator, malware, infrastructure ownership, or threat-actor attribution.",
   "nodes": [
-    {
-      "signalId": "05e404acdaff12d84922",
-      "domain": "dfhnwrjy[.]xn--tl2mobile-b4ab[.]fr",
-      "clusterId": "e43f9f541a402674"
-    },
     {
       "signalId": "07bdda1bb92c5f543e7b",
       "domain": "dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]privatelink[.]snowflake[.]app",
       "clusterId": "1877e1f64305a92b"
     },
     {
-      "signalId": "1584ae422d7176c672b3",
-      "domain": "czlpihmr[.]xn--tl2mobile-b4ab[.]fr",
-      "clusterId": "e43f9f541a402674"
-    },
-    {
       "signalId": "19a9d10bfdd5af52aa9c",
       "domain": "revolut-bank[.]com",
       "clusterId": "187f4b6b5a39ee33"
-    },
-    {
-      "signalId": "2433e05eef18ae892030",
-      "domain": "redbynih[.]xn--tl2mobile-b4ab[.]com",
-      "clusterId": "e43f9f541a402674"
     },
     {
       "signalId": "2e70b51f5512acd675e9",
@@ -459,43 +444,11 @@
           "value": "ns2[.]gofruits[.]co"
         }
       ]
-    },
-    {
-      "id": "1e2de3545949a334d6b5",
-      "source": "05e404acdaff12d84922",
-      "target": "2433e05eef18ae892030",
-      "strength": "corroborated-supporting",
-      "evidence": [
-        {
-          "type": "dns-a",
-          "value": "185[.]53[.]179[.]200"
-        },
-        {
-          "type": "dns-cname",
-          "value": "845192[.]parkingcrew[.]net"
-        }
-      ]
-    },
-    {
-      "id": "76494f6dea6e54748122",
-      "source": "1584ae422d7176c672b3",
-      "target": "2433e05eef18ae892030",
-      "strength": "corroborated-supporting",
-      "evidence": [
-        {
-          "type": "dns-a",
-          "value": "185[.]53[.]179[.]200"
-        },
-        {
-          "type": "dns-cname",
-          "value": "845192[.]parkingcrew[.]net"
-        }
-      ]
     }
   ],
   "suppressedEvidence": {
     "highFanoutValues": 1,
-    "temporalPairs": 13,
+    "temporalPairs": 10,
     "edgeLimit": 0
   }
 }
