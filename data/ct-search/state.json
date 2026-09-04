@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-04T16:42:55.588Z",
+  "generatedAt": "2026-09-04T19:07:12.110Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-04T16:42:55.588Z",
+    "endedAt": "2026-09-04T19:07:12.110Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "partial",
-    "queriesAttempted": 4,
+    "outcome": "failed",
+    "queriesAttempted": 1,
     "queriesBacklogged": 0,
-    "queriesCompleted": 3,
+    "queriesCompleted": 0,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-04T16:42:13.130Z"
+    "startedAt": "2026-09-04T19:07:11.566Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 1,
+    "consecutiveFailures": 2,
     "degradedSince": "2026-09-04T16:42:13.130Z",
     "lastSuccessAt": "2026-09-04T11:46:33.726Z",
-    "nextAttemptAt": "2026-09-04T16:47:55.588Z"
+    "nextAttemptAt": "2026-09-04T19:17:12.110Z"
   },
   "queries": {
     "brand:artea": {
@@ -53,7 +53,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "failed",
-      "lastRunAt": "2026-09-04T16:42:13.130Z",
+      "lastRunAt": "2026-09-04T19:07:11.566Z",
       "term": "btadraudimas"
     },
     "brand:cgates": {
