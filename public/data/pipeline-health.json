@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-09-04T04:04:44.989Z",
+  "generatedAt": "2026-09-04T04:27:06.565Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 169,
@@ -81,21 +81,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-03T04:04:44.989Z",
-      "to": "2026-09-04T04:04:44.989Z",
+      "from": "2026-09-03T04:27:06.565Z",
+      "to": "2026-09-04T04:27:06.565Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 81,
-        "healthyAttempts": 81,
-        "recordedSchedulePercent": 84.4,
-        "listeningCoveragePercent": 45.0,
+        "recordedAttempts": 80,
+        "healthyAttempts": 80,
+        "recordedSchedulePercent": 83.3,
+        "listeningCoveragePercent": 44.44,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 38880,
-        "listeningSeconds": 38879.886,
-        "messages": 11478927,
-        "dnsNames": 21281730,
+        "expectedListeningSeconds": 38400,
+        "listeningSeconds": 38399.888,
+        "messages": 11324803,
+        "dnsNames": 21000845,
         "outcomes": {
-          "healthy-empty": 60,
+          "healthy-empty": 59,
           "healthy-matches": 21
         }
       },
@@ -126,27 +126,27 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-28T04:04:44.989Z",
-      "to": "2026-09-04T04:04:44.989Z",
+      "from": "2026-08-28T04:27:06.565Z",
+      "to": "2026-09-04T04:27:06.565Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 564,
-        "healthyAttempts": 564,
-        "recordedSchedulePercent": 83.9,
-        "listeningCoveragePercent": 44.76,
+        "recordedAttempts": 562,
+        "healthyAttempts": 562,
+        "recordedSchedulePercent": 83.6,
+        "listeningCoveragePercent": 44.6,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 270720,
-        "listeningSeconds": 270685.069,
-        "messages": 85193817,
-        "dnsNames": 156538652,
+        "expectedListeningSeconds": 269760,
+        "listeningSeconds": 269726.074,
+        "messages": 84843508,
+        "dnsNames": 155857894,
         "outcomes": {
-          "healthy-empty": 381,
-          "healthy-matches": 183
+          "healthy-empty": 380,
+          "healthy-matches": 182
         }
       },
       "screening": {
-        "matches": 350,
-        "newArchiveRecords": 200,
+        "matches": 346,
+        "newArchiveRecords": 199,
         "firstPublications": 182,
         "bySource": {
           "CertStream": 381
