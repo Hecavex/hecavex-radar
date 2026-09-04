@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-09-04T02:13:21.604Z",
+  "generatedAt": "2026-09-04T03:16:27.392Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-09-04T01:47:25.470Z",
+      "stateGeneratedAt": "2026-09-04T02:46:51.575Z",
       "queryCursor": 44,
       "configuredQueries": 46
     },
     "urlscanHunt": {
-      "stateGeneratedAt": "2026-09-04T00:48:37.644Z",
-      "lastRunAt": "2026-09-04T00:48:37.644Z",
-      "lastOutcome": "completed",
+      "stateGeneratedAt": "2026-09-04T02:44:35.521Z",
+      "lastRunAt": "2026-09-04T02:44:35.521Z",
+      "lastOutcome": "failed",
       "candidateCursor": 118,
       "candidateCount": 160
     }
@@ -545,7 +545,7 @@
         "lastSuccessfulQueryAt": "2026-09-03T19:45:24.740Z"
       },
       "certStream": {
-        "latestMatchAt": "2026-09-04T02:10:28.834Z"
+        "latestMatchAt": "2026-09-04T03:11:49.539Z"
       },
       "urlscanAssets": {
         "assetHashes": 13,
@@ -3026,14 +3026,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "completed",
-        "completedQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
+        "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-03T17:48:07.108Z",
-        "lastSuccessfulQueryAt": "2026-09-03T17:48:07.108Z"
+        "lastAttemptAt": "2026-09-04T02:46:50.616Z",
+        "lastSuccessfulQueryAt": null
       },
       "certStream": {
         "latestMatchAt": null

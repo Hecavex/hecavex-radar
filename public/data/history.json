@@ -1,10 +1,80 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T02:13:21.604Z",
+  "generatedAt": "2026-09-04T03:16:27.392Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "1d048a9d63f6bc617d79",
+      "domain": "dhl-delivery[.]site",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T03:11:49.539Z",
+      "lastSeen": "2026-09-04T03:11:49.539Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a3703296e3d4f2401f29da3b285e3534",
+          "observedAt": "2026-09-04T03:11:49.539Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3908a03d2cedd941d017",
+      "domain": "www[.]dhl-delivery[.]site",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T03:11:46.925Z",
+      "lastSeen": "2026-09-04T03:11:46.925Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "062b71fb653d450eaefcf6a97844b2cf",
+          "observedAt": "2026-09-04T03:11:46.925Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a88a730353b213a4a20f",
       "domain": "www[.]dhl-help-parcel[.]com[.]ph",
