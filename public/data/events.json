@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-04T01:58:02.788Z",
+  "generatedAt": "2026-09-04T02:13:21.604Z",
   "window": {
     "days": 30,
-    "from": "2026-08-05T01:58:02.788Z",
-    "to": "2026-09-04T01:58:02.788Z"
+    "from": "2026-08-05T02:13:21.604Z",
+    "to": "2026-09-04T02:13:21.604Z"
   },
-  "totalAvailable": 235,
+  "totalAvailable": 236,
   "truncated": false,
   "events": [
+    {
+      "id": "d785117eae60f17dde010d1f6859402b",
+      "type": "first-publication",
+      "occurredAt": "2026-09-04T02:10:28.834Z",
+      "signalId": "a88a730353b213a4a20f",
+      "signalPath": "/signals/a88a730353b213a4a20f/",
+      "domain": "www[.]dhl-help-parcel[.]com[.]ph",
+      "brand": "DHL",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "0d6537c7ca64ae6f5680bb3170522c03",
       "type": "reobservation",

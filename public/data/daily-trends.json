@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-04T01:58:02.788Z",
+  "generatedAt": "2026-09-04T02:13:21.604Z",
   "retentionDays": 365,
   "from": "2025-09-05",
   "to": "2026-09-04",
@@ -784,40 +784,45 @@
       "date": "2026-09-04",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 7082,
-        "scheduledSlots": 7,
-        "recordedAttempts": 8,
-        "healthyAttempts": 8,
+        "windowSeconds": 8001,
+        "scheduledSlots": 8,
+        "recordedAttempts": 9,
+        "healthyAttempts": 9,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 54.22,
-        "scheduledListeningCeilingPercent": 47.44,
-        "listeningSeconds": 3839.988,
+        "listeningCoveragePercent": 53.99,
+        "scheduledListeningCeilingPercent": 47.99,
+        "listeningSeconds": 4319.987,
         "outcomes": {
           "healthy-empty": 7,
-          "healthy-matches": 1
+          "healthy-matches": 2
         }
       },
       "discovery": {
-        "events": 1,
-        "uniqueSignals": 1,
-        "observations": 1,
+        "events": 3,
+        "uniqueSignals": 2,
+        "observations": 2,
         "reobservations": 0,
-        "firstPublications": 0,
+        "firstPublications": 1,
         "statusChanges": 0,
-        "facetSampleSize": 1,
-        "evidenceClassifiedSignals": 1,
+        "facetSampleSize": 2,
+        "evidenceClassifiedSignals": 2,
         "byBrand": {
-          "Artea": 1
+          "Artea": 1,
+          "DHL": 1
         },
         "bySource": {
-          "CertStream": 1
+          "CertStream": 2
         },
         "byEvidenceTier": {
-          "name-only": 1
+          "name-only": 2
         },
         "byReason": {
+          "suspicious-context": 2,
+          "brand-exact-token": 1,
           "brand-joined-affix": 1,
-          "suspicious-context": 1
+          "different-tld": 1,
+          "first-publication": 1,
+          "multiple-hyphens": 1
         }
       }
     }

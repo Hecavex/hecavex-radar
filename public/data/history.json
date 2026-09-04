@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-04T01:58:02.788Z",
+  "generatedAt": "2026-09-04T02:13:21.604Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a88a730353b213a4a20f",
+      "domain": "www[.]dhl-help-parcel[.]com[.]ph",
+      "brand": "DHL",
+      "firstSeen": "2026-09-04T02:10:28.834Z",
+      "lastSeen": "2026-09-04T02:10:28.834Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "277fbb97c90491a78f67bbe154331192",
+          "observedAt": "2026-09-04T02:10:28.834Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c5ee446f5f0dae3cd2ac",
       "domain": "bankartea[.]lt",
