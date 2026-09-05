@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T09:07:14.073Z",
+  "generatedAt": "2026-09-05T10:07:12.604Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T09:07:14.073Z",
-    "to": "2026-09-05T09:07:14.073Z"
+    "from": "2026-08-06T10:07:12.604Z",
+    "to": "2026-09-05T10:07:12.604Z"
   },
-  "totalAvailable": 264,
+  "totalAvailable": 265,
   "truncated": false,
   "events": [
+    {
+      "id": "a3a1222630f386fef0d245cfebf13df5",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T09:17:03.044Z",
+      "signalId": "9d83b92359ef325b9351",
+      "signalPath": "/signals/9d83b92359ef325b9351/",
+      "domain": "mobile-revolut[.]info",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "a320062a2cca1a29c139d5e317a02cd5",
       "type": "first-publication",

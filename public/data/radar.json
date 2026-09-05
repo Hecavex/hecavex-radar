@@ -1,9 +1,40 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-05T09:07:14.073Z",
-  "lastSuccessfulSyncAt": "2026-09-05T09:07:14.073Z",
+  "generatedAt": "2026-09-05T10:07:12.604Z",
+  "lastSuccessfulSyncAt": "2026-09-05T10:07:12.604Z",
   "signals": [
+    {
+      "id": "9d83b92359ef325b9351",
+      "url": "hxxps://mobile-revolut[.]info",
+      "domain": "mobile-revolut[.]info",
+      "firstSeen": "2026-09-05T09:17:03.044Z",
+      "lastSeen": "2026-09-05T09:17:03.044Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "8a33e886d54f4668e5a6",
       "url": "hxxps://ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
@@ -4840,8 +4871,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-05T09:07:14.073Z",
-      "records": 144,
+      "fetchedAt": "2026-09-05T10:07:12.604Z",
+      "records": 145,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
@@ -4856,7 +4887,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-05T09:07:14.073Z",
+      "fetchedAt": "2026-09-05T10:07:12.604Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

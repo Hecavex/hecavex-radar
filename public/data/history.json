@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T09:07:14.073Z",
+  "generatedAt": "2026-09-05T10:07:12.604Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "9d83b92359ef325b9351",
+      "domain": "mobile-revolut[.]info",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-05T09:17:03.044Z",
+      "lastSeen": "2026-09-05T09:17:03.044Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8dba76b07a6200352cd7bd88c5f2c8ba",
+          "observedAt": "2026-09-05T09:17:03.044Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "8a33e886d54f4668e5a6",
       "domain": "ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
