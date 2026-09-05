@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T08:06:52.709Z",
+  "generatedAt": "2026-09-05T09:07:14.073Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T08:06:52.709Z",
-    "to": "2026-09-05T08:06:52.709Z"
+    "from": "2026-08-06T09:07:14.073Z",
+    "to": "2026-09-05T09:07:14.073Z"
   },
-  "totalAvailable": 263,
+  "totalAvailable": 264,
   "truncated": false,
   "events": [
+    {
+      "id": "a320062a2cca1a29c139d5e317a02cd5",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T08:59:36.433Z",
+      "signalId": "8a33e886d54f4668e5a6",
+      "signalPath": "/signals/8a33e886d54f4668e5a6/",
+      "domain": "ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
+      "brand": "Tele2",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "606c81752842cb995e14ab8b7656a4a0",
       "type": "first-publication",

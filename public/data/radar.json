@@ -1,9 +1,42 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-05T08:06:52.709Z",
-  "lastSuccessfulSyncAt": "2026-09-05T08:06:52.709Z",
+  "generatedAt": "2026-09-05T09:07:14.073Z",
+  "lastSuccessfulSyncAt": "2026-09-05T09:07:14.073Z",
   "signals": [
+    {
+      "id": "8a33e886d54f4668e5a6",
+      "url": "hxxps://ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
+      "domain": "ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
+      "firstSeen": "2026-09-05T08:59:36.433Z",
+      "lastSeen": "2026-09-05T08:59:36.433Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Tele2",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 100,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 100,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "punycode",
+        "unicode-confusable",
+        "different-tld"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "7f6285511b13b06bf178",
       "url": "hxxps://vinted-online[.]co",
@@ -4807,8 +4840,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-05T08:06:52.709Z",
-      "records": 143,
+      "fetchedAt": "2026-09-05T09:07:14.073Z",
+      "records": 144,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
@@ -4823,7 +4856,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-05T08:06:52.709Z",
+      "fetchedAt": "2026-09-05T09:07:14.073Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"

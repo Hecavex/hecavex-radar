@@ -1,10 +1,49 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T07:07:03.801Z",
+  "generatedAt": "2026-09-05T09:07:14.073Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "8a33e886d54f4668e5a6",
+      "domain": "ohlbctpn[.]xn--tl2mobile-b4ab[.]fr",
+      "brand": "Tele2",
+      "firstSeen": "2026-09-05T08:59:36.433Z",
+      "lastSeen": "2026-09-05T08:59:36.433Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "punycode",
+        "unicode-confusable",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "87d92063f1f15c185897743ebbf49672",
+          "observedAt": "2026-09-05T08:59:36.433Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "punycode",
+            "unicode-confusable",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "7f6285511b13b06bf178",
       "domain": "vinted-online[.]co",
