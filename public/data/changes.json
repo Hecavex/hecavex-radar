@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-05T22:49:30.125Z",
+  "generatedAt": "2026-09-05T22:56:00.225Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-04T22:49:30.125Z",
-      "to": "2026-09-05T22:49:30.125Z",
+      "from": "2026-09-04T22:56:00.225Z",
+      "to": "2026-09-05T22:56:00.225Z",
       "events": 40,
       "uniqueSignals": 20,
       "firstPublications": 20,
@@ -44,27 +44,27 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-29T22:49:30.125Z",
-      "to": "2026-09-05T22:49:30.125Z",
-      "events": 317,
-      "uniqueSignals": 152,
-      "firstPublications": 150,
+      "from": "2026-08-29T22:56:00.225Z",
+      "to": "2026-09-05T22:56:00.225Z",
+      "events": 315,
+      "uniqueSignals": 151,
+      "firstPublications": 149,
       "statusChanges": 0,
-      "observations": 167,
+      "observations": 166,
       "reobservations": 15,
       "bySource": {
-        "CertStream": 317
+        "CertStream": 315
       },
       "byStatus": {
-        "suspected": 317
+        "suspected": 315
       },
       "byReason": {
-        "suspicious-context": 303,
-        "different-tld": 258,
+        "suspicious-context": 301,
+        "different-tld": 256,
         "brand-exact-token": 228,
         "multiple-hyphens": 151,
-        "first-publication": 150,
-        "brand-joined-affix": 81,
+        "first-publication": 149,
+        "brand-joined-affix": 79,
         "punycode": 22,
         "unicode-confusable": 20,
         "brand-split-token": 8
@@ -80,9 +80,9 @@
         "Lidl Lietuva": 10,
         "Tele2": 10,
         "ERGO": 8,
-        "Swedbank": 8,
         "DPD": 6,
         "MAXIMA": 6,
+        "Swedbank": 6,
         "Bitė": 4,
         "Ignitis": 4,
         "Luminor": 4,
