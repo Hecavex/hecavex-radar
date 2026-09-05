@@ -1,27 +1,27 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-05T20:41:59.276Z",
+  "generatedAt": "2026-09-05T22:19:32.400Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-05T20:41:59.276Z",
+    "endedAt": "2026-09-05T22:19:32.400Z",
     "failureCodes": [
       "provider-http"
     ],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 1,
+    "outcome": "partial",
+    "queriesAttempted": 2,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 1,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-05T20:41:58.612Z"
+    "startedAt": "2026-09-05T22:19:29.022Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 1,
+    "consecutiveFailures": 2,
     "degradedSince": "2026-09-05T20:41:58.612Z",
     "lastSuccessAt": "2026-09-05T18:35:24.033Z",
-    "nextAttemptAt": "2026-09-05T20:46:59.276Z"
+    "nextAttemptAt": "2026-09-05T22:29:32.400Z"
   },
   "queries": {
     "brand:artea": {
@@ -292,16 +292,16 @@
       "brand": "Revolut",
       "lastEntryAt": "2026-08-28T20:22:13.947Z",
       "lastId": 29118779167,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-05T20:41:58.612Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-05T22:19:29.022Z",
       "term": "revolut"
     },
     "brand:rimilietuva": {
       "brand": "Rimi",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T10:47:28.792Z",
+      "lastOutcome": "failed",
+      "lastRunAt": "2026-09-05T22:19:29.022Z",
       "term": "rimilietuva"
     },
     "brand:sebbankas": {
@@ -393,6 +393,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 33,
+  "queryCursor": 34,
   "schemaVersion": 1
 }
