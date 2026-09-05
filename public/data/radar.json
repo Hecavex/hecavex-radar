@@ -1,9 +1,39 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-04T21:19:40.029Z",
-  "lastSuccessfulSyncAt": "2026-09-04T22:21:03.454Z",
+  "generatedAt": "2026-09-05T00:37:00.286Z",
+  "lastSuccessfulSyncAt": "2026-09-05T00:37:00.286Z",
   "signals": [
+    {
+      "id": "1c50e65633e80d8fc140",
+      "url": "hxxps://revolut-invoice[.]com",
+      "domain": "revolut-invoice[.]com",
+      "firstSeen": "2026-09-05T00:20:43.758Z",
+      "lastSeen": "2026-09-05T00:20:43.758Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Revolut",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "6ebf83ed151acdd4aad6",
       "url": "hxxps://dhl-dhl-express-open-catalog-account[.]westeurope[.]azure[.]snowflake[.]com",
@@ -4526,15 +4556,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-04T22:21:03.454Z",
-      "records": 134,
+      "fetchedAt": "2026-09-05T00:37:00.286Z",
+      "records": 135,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-04T20:59:59.266Z",
+      "fetchedAt": "2026-09-05T00:20:00.264Z",
       "records": 9,
       "state": "partial",
       "note": "Validated passive archive from the last 30 days; the latest passive hunt failed; 171 stable official asset hashes are pivot-eligible"
@@ -4542,7 +4572,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-04T22:21:03.454Z",
+      "fetchedAt": "2026-09-05T00:37:00.286Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
