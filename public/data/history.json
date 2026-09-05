@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T06:07:20.924Z",
+  "generatedAt": "2026-09-05T07:07:03.801Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "7f6285511b13b06bf178",
+      "domain": "vinted-online[.]co",
+      "brand": "Vinted",
+      "firstSeen": "2026-09-05T07:05:57.841Z",
+      "lastSeen": "2026-09-05T07:05:57.841Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "1d22c1b5c890f9e79caa73a2952c451b",
+          "observedAt": "2026-09-05T07:05:57.841Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "25fce245fb8bc71887de",
       "domain": "www[.]revolut-pl-support[.]ph",
