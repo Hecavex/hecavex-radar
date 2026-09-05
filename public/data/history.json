@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T03:51:55.505Z",
+  "generatedAt": "2026-09-05T05:52:01.149Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "3149c5cfc9948119f801",
+      "domain": "www[.]vinted-login[.]ph",
+      "brand": "Vinted",
+      "firstSeen": "2026-09-05T05:44:49.477Z",
+      "lastSeen": "2026-09-05T05:44:49.477Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "64f0d6a7fed3ac5c6a5c8e86f913fc66",
+          "observedAt": "2026-09-05T05:44:49.477Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c8bfec2ac5f11389958b",
       "domain": "secure-ergo[.]net",
