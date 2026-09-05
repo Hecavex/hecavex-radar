@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T18:50:22.000Z",
+  "generatedAt": "2026-09-05T21:49:43.936Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "a5450da1bfa504f7a87d",
+      "domain": "revolutbank[.]biz",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-05T21:43:32.693Z",
+      "lastSeen": "2026-09-05T21:43:32.693Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "01692db8ed47a8e25d90f7d4c76241b2",
+          "observedAt": "2026-09-05T21:43:32.693Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "40502954e17d158d3028",
       "domain": "pp-videos-worker-lidl-pp-portal-peopleplus-co-uk[.]staffline-group[.]workers[.]dev",
