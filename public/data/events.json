@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T10:34:54.710Z",
+  "generatedAt": "2026-09-05T10:37:01.212Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T10:34:54.710Z",
-    "to": "2026-09-05T10:34:54.710Z"
+    "from": "2026-08-06T10:37:01.212Z",
+    "to": "2026-09-05T10:37:01.212Z"
   },
-  "totalAvailable": 265,
+  "totalAvailable": 266,
   "truncated": false,
   "events": [
+    {
+      "id": "ec6688d2da86779be61f764813a20144",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T10:35:54.891Z",
+      "signalId": "4b2aa30d891a99db88ec",
+      "signalPath": "/signals/4b2aa30d891a99db88ec/",
+      "domain": "www[.]vmi-materiel-account[.]ph",
+      "brand": "VMI",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "a3a1222630f386fef0d245cfebf13df5",
       "type": "first-publication",

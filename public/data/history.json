@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T10:07:12.604Z",
+  "generatedAt": "2026-09-05T10:37:01.212Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "4b2aa30d891a99db88ec",
+      "domain": "www[.]vmi-materiel-account[.]ph",
+      "brand": "VMI",
+      "firstSeen": "2026-09-05T10:35:54.891Z",
+      "lastSeen": "2026-09-05T10:35:54.891Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "bd5491ded3965d6d4baac5efceee56b1",
+          "observedAt": "2026-09-05T10:35:54.891Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "9d83b92359ef325b9351",
       "domain": "mobile-revolut[.]info",
