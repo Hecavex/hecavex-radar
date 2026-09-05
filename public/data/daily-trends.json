@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-05T01:51:52.879Z",
+  "generatedAt": "2026-09-05T02:36:49.264Z",
   "retentionDays": 365,
   "from": "2025-09-06",
   "to": "2026-09-05",
@@ -834,41 +834,43 @@
       "date": "2026-09-05",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 6712,
-        "scheduledSlots": 7,
-        "recordedAttempts": 7,
-        "healthyAttempts": 7,
+        "windowSeconds": 9409,
+        "scheduledSlots": 10,
+        "recordedAttempts": 10,
+        "healthyAttempts": 10,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 50.06,
-        "scheduledListeningCeilingPercent": 50.06,
-        "listeningSeconds": 3359.993,
+        "listeningCoveragePercent": 51.01,
+        "scheduledListeningCeilingPercent": 51.01,
+        "listeningSeconds": 4799.99,
         "outcomes": {
-          "healthy-empty": 6,
-          "healthy-matches": 1
+          "healthy-empty": 8,
+          "healthy-matches": 2
         }
       },
       "discovery": {
-        "events": 2,
-        "uniqueSignals": 1,
-        "observations": 1,
+        "events": 4,
+        "uniqueSignals": 2,
+        "observations": 2,
         "reobservations": 0,
-        "firstPublications": 1,
+        "firstPublications": 2,
         "statusChanges": 0,
-        "facetSampleSize": 1,
-        "evidenceClassifiedSignals": 1,
+        "facetSampleSize": 2,
+        "evidenceClassifiedSignals": 2,
         "byBrand": {
+          "DHL": 1,
           "Revolut": 1
         },
         "bySource": {
-          "CertStream": 1
+          "CertStream": 2
         },
         "byEvidenceTier": {
-          "name-only": 1
+          "name-only": 2
         },
         "byReason": {
-          "brand-exact-token": 1,
-          "first-publication": 1,
-          "suspicious-context": 1
+          "brand-exact-token": 2,
+          "first-publication": 2,
+          "suspicious-context": 2,
+          "multiple-hyphens": 1
         }
       }
     }

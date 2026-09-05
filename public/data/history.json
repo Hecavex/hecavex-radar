@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T00:37:00.286Z",
+  "generatedAt": "2026-09-05T02:36:49.264Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ce47da1a0348d5500d94",
+      "domain": "go[.]dhl-support-del[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-05T02:34:46.539Z",
+      "lastSeen": "2026-09-05T02:34:46.539Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "fc2b0dce06d091adc9d4d2dec1a95bbd",
+          "observedAt": "2026-09-05T02:34:46.539Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "1c50e65633e80d8fc140",
       "domain": "revolut-invoice[.]com",
