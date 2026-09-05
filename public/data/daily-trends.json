@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-05T13:37:06.959Z",
+  "generatedAt": "2026-09-05T13:52:10.838Z",
   "retentionDays": 365,
   "from": "2025-09-06",
   "to": "2026-09-05",
@@ -834,32 +834,32 @@
       "date": "2026-09-05",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 49026,
-        "scheduledSlots": 54,
-        "recordedAttempts": 54,
-        "healthyAttempts": 54,
+        "windowSeconds": 49930,
+        "scheduledSlots": 55,
+        "recordedAttempts": 55,
+        "healthyAttempts": 55,
         "recordedSchedulePercent": 100.0,
         "listeningCoveragePercent": 52.87,
         "scheduledListeningCeilingPercent": 52.87,
-        "listeningSeconds": 25919.934,
+        "listeningSeconds": 26399.933,
         "outcomes": {
           "healthy-empty": 44,
-          "healthy-matches": 10
+          "healthy-matches": 11
         }
       },
       "discovery": {
-        "events": 24,
-        "uniqueSignals": 12,
-        "observations": 12,
+        "events": 26,
+        "uniqueSignals": 13,
+        "observations": 13,
         "reobservations": 0,
-        "firstPublications": 12,
+        "firstPublications": 13,
         "statusChanges": 0,
-        "facetSampleSize": 12,
-        "evidenceClassifiedSignals": 12,
+        "facetSampleSize": 13,
+        "evidenceClassifiedSignals": 13,
         "byBrand": {
           "Revolut": 3,
+          "Vinted": 3,
           "Bitė": 2,
-          "Vinted": 2,
           "DHL": 1,
           "ERGO": 1,
           "Smart-ID": 1,
@@ -867,16 +867,16 @@
           "VMI": 1
         },
         "bySource": {
-          "CertStream": 12
+          "CertStream": 13
         },
         "byEvidenceTier": {
-          "name-only": 12
+          "name-only": 13
         },
         "byReason": {
-          "first-publication": 12,
-          "suspicious-context": 12,
-          "brand-exact-token": 10,
-          "different-tld": 10,
+          "first-publication": 13,
+          "suspicious-context": 13,
+          "brand-exact-token": 11,
+          "different-tld": 11,
           "multiple-hyphens": 5,
           "brand-joined-affix": 2,
           "punycode": 1,
