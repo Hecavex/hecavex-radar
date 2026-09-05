@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-pipeline-health",
-  "generatedAt": "2026-09-05T11:37:07.103Z",
+  "generatedAt": "2026-09-05T12:37:10.149Z",
   "privacy": "Aggregate counters only; no candidate names or detector payloads.",
   "current": {
     "publishedSignals": 156,
@@ -16,20 +16,20 @@
       "HECAVEX": 1
     },
     "certstream": {
-      "generatedAt": "2026-09-05T11:36:34.958Z",
-      "lastSuccessAt": "2026-09-05T11:36:34.958Z",
+      "generatedAt": "2026-09-05T12:36:42.347Z",
+      "lastSuccessAt": "2026-09-05T12:36:42.347Z",
       "freshness": {
         "status": "current",
-        "referenceAt": "2026-09-05T11:36:34.958Z",
+        "referenceAt": "2026-09-05T12:36:42.347Z",
         "ageSeconds": 0
       },
       "latestAttempt": {
-        "startedAt": "2026-09-05T11:28:21.638Z",
-        "endedAt": "2026-09-05T11:36:34.958Z",
+        "startedAt": "2026-09-05T12:28:21.638Z",
+        "endedAt": "2026-09-05T12:36:42.347Z",
         "outcome": "healthy-empty",
-        "listeningSeconds": 479.998,
-        "messages": 137176,
-        "dnsNames": 244961,
+        "listeningSeconds": 479.999,
+        "messages": 132931,
+        "dnsNames": 234263,
         "matches": 0,
         "newRecords": 0
       }
@@ -79,21 +79,21 @@
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-04T11:37:07.103Z",
-      "to": "2026-09-05T11:37:07.103Z",
+      "from": "2026-09-04T12:37:10.149Z",
+      "to": "2026-09-05T12:37:10.149Z",
       "collection": {
         "scheduledSlots": 96,
-        "recordedAttempts": 70,
-        "healthyAttempts": 70,
-        "recordedSchedulePercent": 72.9,
-        "listeningCoveragePercent": 38.89,
+        "recordedAttempts": 74,
+        "healthyAttempts": 74,
+        "recordedSchedulePercent": 77.1,
+        "listeningCoveragePercent": 41.11,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 33600,
-        "listeningSeconds": 33599.912,
-        "messages": 9313735,
-        "dnsNames": 17149326,
+        "expectedListeningSeconds": 35520,
+        "listeningSeconds": 35519.908,
+        "messages": 9831389,
+        "dnsNames": 18064874,
         "outcomes": {
-          "healthy-empty": 54,
+          "healthy-empty": 58,
           "healthy-matches": 16
         }
       },
@@ -124,30 +124,30 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-29T11:37:07.103Z",
-      "to": "2026-09-05T11:37:07.103Z",
+      "from": "2026-08-29T12:37:10.149Z",
+      "to": "2026-09-05T12:37:10.149Z",
       "collection": {
         "scheduledSlots": 672,
-        "recordedAttempts": 513,
-        "healthyAttempts": 513,
-        "recordedSchedulePercent": 76.3,
-        "listeningCoveragePercent": 40.71,
+        "recordedAttempts": 511,
+        "healthyAttempts": 511,
+        "recordedSchedulePercent": 76.0,
+        "listeningCoveragePercent": 40.55,
         "scheduledListeningCeilingPercent": 53.33,
-        "expectedListeningSeconds": 246240,
-        "listeningSeconds": 246220.213,
-        "messages": 75023569,
-        "dnsNames": 137598322,
+        "expectedListeningSeconds": 245280,
+        "listeningSeconds": 245260.22,
+        "messages": 74642273,
+        "dnsNames": 136924190,
         "outcomes": {
-          "healthy-empty": 357,
-          "healthy-matches": 156
+          "healthy-empty": 356,
+          "healthy-matches": 155
         }
       },
       "screening": {
-        "matches": 312,
-        "newArchiveRecords": 177,
-        "firstPublications": 159,
+        "matches": 310,
+        "newArchiveRecords": 176,
+        "firstPublications": 158,
         "bySource": {
-          "CertStream": 335
+          "CertStream": 333
         }
       },
       "enrichment": {
@@ -161,10 +161,10 @@
         "rdap": 0
       },
       "publication": {
-        "events": 335,
-        "observations": 176,
-        "statusTransitions": 159,
-        "uniqueSignals": 161
+        "events": 333,
+        "observations": 175,
+        "statusTransitions": 158,
+        "uniqueSignals": 160
       }
     }
   ]
