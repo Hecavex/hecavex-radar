@@ -1,10 +1,115 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T13:52:10.838Z",
+  "generatedAt": "2026-09-05T15:22:06.167Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c3d2e566e7c13469cea2",
+      "domain": "xn--ldl-nma[.]com",
+      "brand": "Lidl Lietuva",
+      "firstSeen": "2026-09-05T15:20:04.484Z",
+      "lastSeen": "2026-09-05T15:20:04.484Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "254b104f464c2f63d2904ff94aa85f4b",
+          "observedAt": "2026-09-05T15:20:04.484Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "928289d5a5f709befe8f",
+      "domain": "app[.]xn--ldl-nma[.]com",
+      "brand": "Lidl Lietuva",
+      "firstSeen": "2026-09-05T15:20:04.484Z",
+      "lastSeen": "2026-09-05T15:20:04.484Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "8147a0fe866aaabd3a49e549d6dc7e69",
+          "observedAt": "2026-09-05T15:20:04.484Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2693418e400c86a4e122",
+      "domain": "wildcard[.]xn--ldl-nma[.]com",
+      "brand": "Lidl Lietuva",
+      "firstSeen": "2026-09-05T15:20:04.484Z",
+      "lastSeen": "2026-09-05T15:20:04.484Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "punycode",
+        "unicode-confusable",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "d371bbad300df54d208ff5c90a026cc9",
+          "observedAt": "2026-09-05T15:20:04.484Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "punycode",
+            "unicode-confusable",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "6c2f384b80f13cee7de3",
       "domain": "www[.]account-vinted[.]ph",

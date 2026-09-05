@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-05T14:52:01.045Z",
+  "generatedAt": "2026-09-05T15:22:06.167Z",
   "retentionDays": 365,
   "from": "2025-09-06",
   "to": "2026-09-05",
@@ -834,29 +834,30 @@
       "date": "2026-09-05",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 53521,
-        "scheduledSlots": 59,
-        "recordedAttempts": 59,
-        "healthyAttempts": 59,
+        "windowSeconds": 55326,
+        "scheduledSlots": 61,
+        "recordedAttempts": 61,
+        "healthyAttempts": 61,
         "recordedSchedulePercent": 100.0,
-        "listeningCoveragePercent": 52.91,
-        "scheduledListeningCeilingPercent": 52.91,
-        "listeningSeconds": 28319.927,
+        "listeningCoveragePercent": 52.92,
+        "scheduledListeningCeilingPercent": 52.92,
+        "listeningSeconds": 29279.925,
         "outcomes": {
-          "healthy-empty": 48,
-          "healthy-matches": 11
+          "healthy-empty": 49,
+          "healthy-matches": 12
         }
       },
       "discovery": {
-        "events": 26,
-        "uniqueSignals": 13,
-        "observations": 13,
+        "events": 32,
+        "uniqueSignals": 16,
+        "observations": 16,
         "reobservations": 0,
-        "firstPublications": 13,
+        "firstPublications": 16,
         "statusChanges": 0,
-        "facetSampleSize": 13,
-        "evidenceClassifiedSignals": 13,
+        "facetSampleSize": 16,
+        "evidenceClassifiedSignals": 16,
         "byBrand": {
+          "Lidl Lietuva": 3,
           "Revolut": 3,
           "Vinted": 3,
           "Bitė": 2,
@@ -867,20 +868,20 @@
           "VMI": 1
         },
         "bySource": {
-          "CertStream": 13
+          "CertStream": 16
         },
         "byEvidenceTier": {
-          "name-only": 13
+          "name-only": 16
         },
         "byReason": {
-          "first-publication": 13,
+          "first-publication": 16,
+          "brand-exact-token": 14,
           "suspicious-context": 13,
-          "brand-exact-token": 11,
           "different-tld": 11,
           "multiple-hyphens": 5,
-          "brand-joined-affix": 2,
-          "punycode": 1,
-          "unicode-confusable": 1
+          "punycode": 4,
+          "unicode-confusable": 4,
+          "brand-joined-affix": 2
         }
       }
     }
