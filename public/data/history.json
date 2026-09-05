@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T21:49:43.936Z",
+  "generatedAt": "2026-09-05T22:49:30.125Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "338e91714991364bf340",
+      "domain": "lidl-pp-portal-peopleplus-co-uk-1le[.]pages[.]dev",
+      "brand": "Lidl Lietuva",
+      "firstSeen": "2026-09-05T22:43:13.691Z",
+      "lastSeen": "2026-09-05T22:43:13.691Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "0c2055b0f6cda40da09647841724e388",
+          "observedAt": "2026-09-05T22:43:13.691Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "a5450da1bfa504f7a87d",
       "domain": "revolutbank[.]biz",

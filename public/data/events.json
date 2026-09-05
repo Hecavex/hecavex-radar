@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T21:49:43.936Z",
+  "generatedAt": "2026-09-05T22:49:30.125Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T21:49:43.936Z",
-    "to": "2026-09-05T21:49:43.936Z"
+    "from": "2026-08-06T22:49:30.125Z",
+    "to": "2026-09-05T22:49:30.125Z"
   },
-  "totalAvailable": 273,
+  "totalAvailable": 274,
   "truncated": false,
   "events": [
+    {
+      "id": "6beec81aaaaa0701b028017e22e50361",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T22:43:13.691Z",
+      "signalId": "338e91714991364bf340",
+      "signalPath": "/signals/338e91714991364bf340/",
+      "domain": "lidl-pp-portal-peopleplus-co-uk-1le[.]pages[.]dev",
+      "brand": "Lidl Lietuva",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "935c496209b4e24f9f8dda6ce36ce4cf",
       "type": "first-publication",

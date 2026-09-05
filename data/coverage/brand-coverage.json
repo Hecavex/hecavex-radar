@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-09-05T21:49:43.936Z",
+  "generatedAt": "2026-09-05T22:49:30.125Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-09-05T20:41:59.276Z",
-      "queryCursor": 33,
+      "stateGeneratedAt": "2026-09-05T22:19:32.400Z",
+      "queryCursor": 34,
       "configuredQueries": 46
     },
     "urlscanHunt": {
@@ -1993,14 +1993,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "failed",
-        "completedQueries": 0,
+        "latestBoundedPollState": "completed",
+        "completedQueries": 1,
         "backloggedQueries": 0,
-        "failedQueries": 1,
+        "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 1,
-        "lastAttemptAt": "2026-09-05T20:41:58.612Z",
-        "lastSuccessfulQueryAt": null
+        "lastAttemptAt": "2026-09-05T22:19:29.022Z",
+        "lastSuccessfulQueryAt": "2026-09-05T22:19:29.022Z"
       },
       "certStream": {
         "latestMatchAt": "2026-09-05T09:17:03.044Z"
@@ -2093,14 +2093,14 @@
       },
       "ctSearch": {
         "configuredQueries": 1,
-        "latestBoundedPollState": "completed",
-        "completedQueries": 1,
+        "latestBoundedPollState": "failed",
+        "completedQueries": 0,
         "backloggedQueries": 0,
-        "failedQueries": 0,
+        "failedQueries": 1,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T10:47:28.792Z",
-        "lastSuccessfulQueryAt": "2026-09-04T10:47:28.792Z"
+        "lastAttemptAt": "2026-09-05T22:19:29.022Z",
+        "lastSuccessfulQueryAt": null
       },
       "certStream": {
         "latestMatchAt": null
