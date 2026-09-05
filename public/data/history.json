@@ -1,10 +1,47 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T17:35:20.110Z",
+  "generatedAt": "2026-09-05T18:50:22.000Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "40502954e17d158d3028",
+      "domain": "pp-videos-worker-lidl-pp-portal-peopleplus-co-uk[.]staffline-group[.]workers[.]dev",
+      "brand": "Lidl Lietuva",
+      "firstSeen": "2026-09-05T18:31:49.127Z",
+      "lastSeen": "2026-09-05T18:31:49.127Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9cf4c7ecb6a27a5c66d989a2d7e6ecea",
+          "observedAt": "2026-09-05T18:31:49.127Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "cd51e21c14a3b7c5239f",
       "domain": "spedizione[.]dhl-tracking-italia[.]com",

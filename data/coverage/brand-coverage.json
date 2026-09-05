@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-brand-coverage-ledger",
-  "generatedAt": "2026-09-05T17:35:20.110Z",
+  "generatedAt": "2026-09-05T18:50:22.000Z",
   "registryReviewedAt": "2026-08-23",
   "semantics": "Coverage describes bounded collector and review activity. Zero observed candidates is not evidence that no phishing exists.",
   "globalCollectorState": {
     "semantics": "Scheduler-wide state below is not attributed to any individual brand.",
     "ctSearch": {
-      "stateGeneratedAt": "2026-09-05T16:14:13.855Z",
-      "queryCursor": 27,
+      "stateGeneratedAt": "2026-09-05T18:35:24.033Z",
+      "queryCursor": 33,
       "configuredQueries": 46
     },
     "urlscanHunt": {
-      "stateGeneratedAt": "2026-09-05T15:29:31.045Z",
-      "lastRunAt": "2026-09-05T15:29:31.045Z",
+      "stateGeneratedAt": "2026-09-05T18:32:48.171Z",
+      "lastRunAt": "2026-09-05T18:32:48.171Z",
       "lastOutcome": "failed",
       "candidateCursor": 118,
       "candidateCount": 160
@@ -746,8 +746,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T09:48:48.192Z",
-        "lastSuccessfulQueryAt": "2026-09-04T09:48:48.192Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -1269,7 +1269,7 @@
         "lastSuccessfulQueryAt": "2026-09-05T13:07:02.969Z"
       },
       "certStream": {
-        "latestMatchAt": "2026-09-05T15:20:04.484Z"
+        "latestMatchAt": "2026-09-05T18:31:49.127Z"
       },
       "urlscanAssets": {
         "assetHashes": 10,
@@ -1444,8 +1444,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T09:48:48.192Z",
-        "lastSuccessfulQueryAt": "2026-09-04T09:48:48.192Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -1766,8 +1766,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T08:49:02.537Z",
-        "lastSuccessfulQueryAt": "2026-09-04T08:49:02.537Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -1816,8 +1816,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T09:48:48.192Z",
-        "lastSuccessfulQueryAt": "2026-09-04T09:48:48.192Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": "2026-09-03T17:56:25.373Z"
@@ -1921,8 +1921,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T09:48:48.192Z",
-        "lastSuccessfulQueryAt": "2026-09-04T09:48:48.192Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -1960,8 +1960,8 @@
         "failedQueries": 0,
         "neverAttemptedQueries": 0,
         "cursorAdvancedQueries": 0,
-        "lastAttemptAt": "2026-09-04T09:48:48.192Z",
-        "lastSuccessfulQueryAt": "2026-09-04T09:48:48.192Z"
+        "lastAttemptAt": "2026-09-05T18:35:19.448Z",
+        "lastSuccessfulQueryAt": "2026-09-05T18:35:19.448Z"
       },
       "certStream": {
         "latestMatchAt": null
@@ -2628,8 +2628,13 @@
         "assetHashes": 13,
         "supportedByTwoRecentOfficialScans": 12,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-09-05T07:51:44.136Z",
+        "lastValidatedAt": "2026-09-05T17:39:21.941Z",
         "hashSupport": [
+          {
+            "sha256": "31c6ca064a46f2252cfe935205eaa2a0c126b7f09c40a4eb5ba55aacffad53c8",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
           {
             "sha256": "3202ba1cb0ab2ebf8eeb0caebf6fa6ba681b5575c48b2f314f345d82eedaaac2",
             "resourceType": "javascript",
@@ -2681,11 +2686,6 @@
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "e5d05de159450dabadeb4336f45250863bbac3790cfad2c73ad40b30c3903d85",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
             "sha256": "f460f65d56c574f8a8b2daf21bcef066fcef102b77d881caf059fbe6d1d950b4",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
@@ -2733,7 +2733,7 @@
         "assetHashes": 13,
         "supportedByTwoRecentOfficialScans": 11,
         "allHashesHaveTwoRecentOfficialScans": false,
-        "lastValidatedAt": "2026-09-02T03:50:36.964Z",
+        "lastValidatedAt": "2026-09-05T17:39:21.941Z",
         "hashSupport": [
           {
             "sha256": "062bcf12b2f33c638a29cf5481bb1099d00fc3dc6ae1cbbe556ba8522891c743",
@@ -2838,7 +2838,7 @@
         "assetHashes": 13,
         "supportedByTwoRecentOfficialScans": 13,
         "allHashesHaveTwoRecentOfficialScans": true,
-        "lastValidatedAt": "2026-09-02T15:54:28.803Z",
+        "lastValidatedAt": "2026-09-05T17:39:21.941Z",
         "hashSupport": [
           {
             "sha256": "2c4bd028f943e20fbbed928c46af1b2b9310c60818d9eea70b5859796f63c300",
@@ -2853,6 +2853,16 @@
           {
             "sha256": "45cf5b923d89bcbd918d14987748cdbbc85a8fa5324c1b682cc6e3a208cdc9a5",
             "resourceType": "favicon",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "5bb25f48575ac740ebb97104e8c67886c08be5d480671affdc916956b2242583",
+            "resourceType": "javascript",
+            "twoRecentOfficialScans": true
+          },
+          {
+            "sha256": "61b07722972c45984c957066eb17d8fe2f3388132a94790678e1a3151060c7bd",
+            "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
@@ -2871,17 +2881,12 @@
             "twoRecentOfficialScans": true
           },
           {
-            "sha256": "bfaa21f3152b503514d1889e9cfb8c7204ae00a822825bece5de358109d04d6b",
+            "sha256": "b754ecacae4d229620cd0fa247c682cdfe825e7e8b1582b1114a13ec0749b6e6",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
           {
             "sha256": "c75ca85fa6cc7e8bc3afff983327f43144d01524ad8fde262358e51610b3ccb6",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "d572014ef4b28aaa9dd5d4d377aa2a979a66176d823a7e286fd8879ee36606ee",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },
@@ -2892,11 +2897,6 @@
           },
           {
             "sha256": "f50bf8e1fd253009f1fab7e12c183d65883d9d681a0a62b62b689236b25cf182",
-            "resourceType": "javascript",
-            "twoRecentOfficialScans": true
-          },
-          {
-            "sha256": "fbde218e642f3f2a713cf7aca02697f8a108209b4ecf062d6bcc8948c77912ee",
             "resourceType": "javascript",
             "twoRecentOfficialScans": true
           },

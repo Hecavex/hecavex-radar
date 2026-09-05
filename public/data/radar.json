@@ -1,9 +1,41 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-05T17:35:20.110Z",
-  "lastSuccessfulSyncAt": "2026-09-05T17:35:20.110Z",
+  "generatedAt": "2026-09-05T18:50:22.000Z",
+  "lastSuccessfulSyncAt": "2026-09-05T18:50:22.000Z",
   "signals": [
+    {
+      "id": "40502954e17d158d3028",
+      "url": "hxxps://pp-videos-worker-lidl-pp-portal-peopleplus-co-uk[.]staffline-group[.]workers[.]dev",
+      "domain": "pp-videos-worker-lidl-pp-portal-peopleplus-co-uk[.]staffline-group[.]workers[.]dev",
+      "firstSeen": "2026-09-05T18:31:49.127Z",
+      "lastSeen": "2026-09-05T18:31:49.127Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Lidl Lietuva",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "cd51e21c14a3b7c5239f",
       "url": "hxxps://spedizione[.]dhl-tracking-italia[.]com",
@@ -5058,15 +5090,15 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-05T17:35:20.110Z",
-      "records": 151,
+      "fetchedAt": "2026-09-05T18:50:22.000Z",
+      "records": 152,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
     {
       "name": "URLScan",
       "homepage": "https://urlscan.io/",
-      "fetchedAt": "2026-09-05T15:29:31.045Z",
+      "fetchedAt": "2026-09-05T18:32:48.171Z",
       "records": 9,
       "state": "partial",
       "note": "Validated passive archive from the last 30 days; the latest passive hunt failed; 180 stable official asset hashes are pivot-eligible"
@@ -5074,7 +5106,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-05T17:35:20.110Z",
+      "fetchedAt": "2026-09-05T18:50:22.000Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
