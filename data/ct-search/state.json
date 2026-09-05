@@ -1,27 +1,25 @@
 {
   "dataset": "ct-search-state",
-  "generatedAt": "2026-09-05T00:21:57.966Z",
+  "generatedAt": "2026-09-05T04:55:06.017Z",
   "latestRun": {
     "dnsNames": 0,
-    "endedAt": "2026-09-05T00:21:57.966Z",
-    "failureCodes": [
-      "provider-http"
-    ],
+    "endedAt": "2026-09-05T04:55:06.017Z",
+    "failureCodes": [],
     "matches": 0,
     "newRecords": 0,
-    "outcome": "failed",
-    "queriesAttempted": 1,
+    "outcome": "completed",
+    "queriesAttempted": 6,
     "queriesBacklogged": 0,
-    "queriesCompleted": 0,
+    "queriesCompleted": 6,
     "rowsProcessed": 0,
-    "startedAt": "2026-09-05T00:21:54.050Z"
+    "startedAt": "2026-09-05T04:55:00.051Z"
   },
   "provider": "crt.sh",
   "providerHealth": {
-    "consecutiveFailures": 4,
-    "degradedSince": "2026-09-04T16:42:13.130Z",
-    "lastSuccessAt": "2026-09-04T11:46:33.726Z",
-    "nextAttemptAt": "2026-09-05T01:01:57.966Z"
+    "consecutiveFailures": 0,
+    "degradedSince": null,
+    "lastSuccessAt": "2026-09-05T04:55:06.017Z",
+    "nextAttemptAt": null
   },
   "queries": {
     "brand:artea": {
@@ -52,8 +50,8 @@
       "brand": "BTA",
       "lastEntryAt": null,
       "lastId": 0,
-      "lastOutcome": "failed",
-      "lastRunAt": "2026-09-05T00:21:54.050Z",
+      "lastOutcome": "completed",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "btadraudimas"
     },
     "brand:cgates": {
@@ -61,7 +59,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T05:46:30.728Z",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "cgates"
     },
     "brand:citadele": {
@@ -69,7 +67,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T05:46:30.728Z",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "citadele"
     },
     "brand:dhlexpress": {
@@ -77,7 +75,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T05:46:30.728Z",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "dhlexpress"
     },
     "brand:dpdlietuva": {
@@ -85,7 +83,7 @@
       "lastEntryAt": null,
       "lastId": 0,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T05:46:30.728Z",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "dpdlietuva"
     },
     "brand:elektrum": {
@@ -93,7 +91,7 @@
       "lastEntryAt": null,
       "lastId": 27835197032,
       "lastOutcome": "completed",
-      "lastRunAt": "2026-09-04T05:46:30.728Z",
+      "lastRunAt": "2026-09-05T04:55:00.051Z",
       "term": "elektrum"
     },
     "brand:energijosskirstymooperatorius": {
@@ -393,6 +391,6 @@
       "term": "vinted"
     }
   },
-  "queryCursor": 3,
+  "queryCursor": 9,
   "schemaVersion": 1
 }
