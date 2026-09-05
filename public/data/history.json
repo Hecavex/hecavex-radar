@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T15:22:06.167Z",
+  "generatedAt": "2026-09-05T17:35:20.110Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "cd51e21c14a3b7c5239f",
+      "domain": "spedizione[.]dhl-tracking-italia[.]com",
+      "brand": "DHL",
+      "firstSeen": "2026-09-05T17:27:12.401Z",
+      "lastSeen": "2026-09-05T17:27:12.401Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "ba28d404c0380664a088740ee753707b",
+          "observedAt": "2026-09-05T17:27:12.401Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "c3d2e566e7c13469cea2",
       "domain": "xn--ldl-nma[.]com",

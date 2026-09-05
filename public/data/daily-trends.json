@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-05T16:49:30.431Z",
+  "generatedAt": "2026-09-05T17:35:20.110Z",
   "retentionDays": 365,
   "from": "2025-09-06",
   "to": "2026-09-05",
@@ -834,51 +834,51 @@
       "date": "2026-09-05",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 60570,
-        "scheduledSlots": 67,
-        "recordedAttempts": 61,
-        "healthyAttempts": 61,
-        "recordedSchedulePercent": 91.0,
-        "listeningCoveragePercent": 48.34,
-        "scheduledListeningCeilingPercent": 53.1,
-        "listeningSeconds": 29279.925,
+        "windowSeconds": 63320,
+        "scheduledSlots": 70,
+        "recordedAttempts": 62,
+        "healthyAttempts": 62,
+        "recordedSchedulePercent": 88.6,
+        "listeningCoveragePercent": 47.0,
+        "scheduledListeningCeilingPercent": 53.06,
+        "listeningSeconds": 29759.924,
         "outcomes": {
           "healthy-empty": 49,
-          "healthy-matches": 12
+          "healthy-matches": 13
         }
       },
       "discovery": {
-        "events": 32,
-        "uniqueSignals": 16,
-        "observations": 16,
+        "events": 34,
+        "uniqueSignals": 17,
+        "observations": 17,
         "reobservations": 0,
-        "firstPublications": 16,
+        "firstPublications": 17,
         "statusChanges": 0,
-        "facetSampleSize": 16,
-        "evidenceClassifiedSignals": 16,
+        "facetSampleSize": 17,
+        "evidenceClassifiedSignals": 17,
         "byBrand": {
           "Lidl Lietuva": 3,
           "Revolut": 3,
           "Vinted": 3,
           "Bitė": 2,
-          "DHL": 1,
+          "DHL": 2,
           "ERGO": 1,
           "Smart-ID": 1,
           "Tele2": 1,
           "VMI": 1
         },
         "bySource": {
-          "CertStream": 16
+          "CertStream": 17
         },
         "byEvidenceTier": {
-          "name-only": 16
+          "name-only": 17
         },
         "byReason": {
-          "first-publication": 16,
-          "brand-exact-token": 14,
-          "suspicious-context": 13,
+          "first-publication": 17,
+          "brand-exact-token": 15,
+          "suspicious-context": 14,
           "different-tld": 11,
-          "multiple-hyphens": 5,
+          "multiple-hyphens": 6,
           "punycode": 4,
           "unicode-confusable": 4,
           "brand-joined-affix": 2

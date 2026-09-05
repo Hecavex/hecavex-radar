@@ -1,38 +1,38 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-change-aggregate",
-  "generatedAt": "2026-09-05T16:49:30.431Z",
+  "generatedAt": "2026-09-05T17:35:20.110Z",
   "privacy": "Aggregate counters only; signal-level history remains in history.json.",
   "windows": [
     {
       "hours": 24,
-      "from": "2026-09-04T16:49:30.431Z",
-      "to": "2026-09-05T16:49:30.431Z",
-      "events": 40,
-      "uniqueSignals": 20,
-      "firstPublications": 20,
+      "from": "2026-09-04T17:35:20.110Z",
+      "to": "2026-09-05T17:35:20.110Z",
+      "events": 42,
+      "uniqueSignals": 21,
+      "firstPublications": 21,
       "statusChanges": 0,
-      "observations": 20,
+      "observations": 21,
       "reobservations": 0,
       "bySource": {
-        "CertStream": 40
+        "CertStream": 42
       },
       "byStatus": {
-        "suspected": 40
+        "suspected": 42
       },
       "byReason": {
-        "brand-exact-token": 34,
-        "suspicious-context": 34,
+        "brand-exact-token": 36,
+        "suspicious-context": 36,
         "different-tld": 26,
-        "first-publication": 20,
-        "multiple-hyphens": 16,
+        "first-publication": 21,
+        "multiple-hyphens": 18,
         "punycode": 8,
         "unicode-confusable": 8,
         "brand-joined-affix": 6
       },
       "byBrand": {
+        "DHL": 8,
         "Revolut": 8,
-        "DHL": 6,
         "Lidl Lietuva": 6,
         "Vinted": 6,
         "Bitė": 4,
@@ -45,33 +45,33 @@
     },
     {
       "hours": 168,
-      "from": "2026-08-29T16:49:30.431Z",
-      "to": "2026-09-05T16:49:30.431Z",
-      "events": 327,
-      "uniqueSignals": 157,
-      "firstPublications": 155,
+      "from": "2026-08-29T17:35:20.110Z",
+      "to": "2026-09-05T17:35:20.110Z",
+      "events": 329,
+      "uniqueSignals": 158,
+      "firstPublications": 156,
       "statusChanges": 0,
-      "observations": 172,
+      "observations": 173,
       "reobservations": 15,
       "bySource": {
-        "CertStream": 327
+        "CertStream": 329
       },
       "byStatus": {
-        "suspected": 327
+        "suspected": 329
       },
       "byReason": {
-        "suspicious-context": 313,
+        "suspicious-context": 315,
         "different-tld": 266,
-        "brand-exact-token": 234,
-        "multiple-hyphens": 157,
-        "first-publication": 155,
+        "brand-exact-token": 236,
+        "multiple-hyphens": 159,
+        "first-publication": 156,
         "brand-joined-affix": 85,
         "punycode": 24,
         "unicode-confusable": 20,
         "brand-split-token": 8
       },
       "byBrand": {
-        "DHL": 117,
+        "DHL": 119,
         "Revolut": 64,
         "VMI": 18,
         "Vinted": 18,
