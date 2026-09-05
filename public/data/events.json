@@ -1,15 +1,29 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T02:51:45.584Z",
+  "generatedAt": "2026-09-05T03:51:55.505Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T02:51:45.584Z",
-    "to": "2026-09-05T02:51:45.584Z"
+    "from": "2026-08-06T03:51:55.505Z",
+    "to": "2026-09-05T03:51:55.505Z"
   },
-  "totalAvailable": 258,
+  "totalAvailable": 259,
   "truncated": false,
   "events": [
+    {
+      "id": "29e9d17b33fec4f34ba71f104498a81e",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T03:44:46.467Z",
+      "signalId": "c8bfec2ac5f11389958b",
+      "signalPath": "/signals/c8bfec2ac5f11389958b/",
+      "domain": "secure-ergo[.]net",
+      "brand": "ERGO",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "05ca8d8f837ac2b933b8323e7952e263",
       "type": "first-publication",

@@ -1,10 +1,45 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T02:51:45.584Z",
+  "generatedAt": "2026-09-05T03:51:55.505Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "c8bfec2ac5f11389958b",
+      "domain": "secure-ergo[.]net",
+      "brand": "ERGO",
+      "firstSeen": "2026-09-05T03:44:46.467Z",
+      "lastSeen": "2026-09-05T03:44:46.467Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "b8b70e3ffb1f93e38c68723c26a24523",
+          "observedAt": "2026-09-05T03:44:46.467Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "ca0207e426e2780da246",
       "domain": "www[.]nord-bite-pay[.]top",
