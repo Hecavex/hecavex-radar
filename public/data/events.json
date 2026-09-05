@@ -1,15 +1,43 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-events",
-  "generatedAt": "2026-09-05T05:52:01.149Z",
+  "generatedAt": "2026-09-05T06:07:20.924Z",
   "window": {
     "days": 30,
-    "from": "2026-08-06T05:52:01.149Z",
-    "to": "2026-09-05T05:52:01.149Z"
+    "from": "2026-08-06T06:07:20.924Z",
+    "to": "2026-09-05T06:07:20.924Z"
   },
-  "totalAvailable": 260,
+  "totalAvailable": 262,
   "truncated": false,
   "events": [
+    {
+      "id": "844283bdc0b3059f5d15abc78addb105",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T06:02:37.405Z",
+      "signalId": "25fce245fb8bc71887de",
+      "signalPath": "/signals/25fce245fb8bc71887de/",
+      "domain": "www[.]revolut-pl-support[.]ph",
+      "brand": "Revolut",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
+    {
+      "id": "fd17004b71a5eded62d064599d733990",
+      "type": "first-publication",
+      "occurredAt": "2026-09-05T06:02:18.837Z",
+      "signalId": "c69defaf06f39727d85a",
+      "signalPath": "/signals/c69defaf06f39727d85a/",
+      "domain": "smartidcard[.]in",
+      "brand": "Smart-ID",
+      "status": "suspected",
+      "previousStatus": null,
+      "sources": [
+        "CertStream"
+      ]
+    },
     {
       "id": "16c72dee512f1aa86b3cb8c99430a660",
       "type": "first-publication",

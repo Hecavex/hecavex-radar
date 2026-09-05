@@ -1,10 +1,82 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T05:52:01.149Z",
+  "generatedAt": "2026-09-05T06:07:20.924Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "25fce245fb8bc71887de",
+      "domain": "www[.]revolut-pl-support[.]ph",
+      "brand": "Revolut",
+      "firstSeen": "2026-09-05T06:02:37.405Z",
+      "lastSeen": "2026-09-05T06:02:37.405Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "a8d208a228c90b7092f0ce3d34aac5f6",
+          "observedAt": "2026-09-05T06:02:37.405Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c69defaf06f39727d85a",
+      "domain": "smartidcard[.]in",
+      "brand": "Smart-ID",
+      "firstSeen": "2026-09-05T06:02:18.837Z",
+      "lastSeen": "2026-09-05T06:02:18.837Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-joined-affix",
+        "suspicious-context",
+        "different-tld",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "3c31bc766ee34e912afda99a49fb49a6",
+          "observedAt": "2026-09-05T06:02:18.837Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-joined-affix",
+            "suspicious-context",
+            "different-tld",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "3149c5cfc9948119f801",
       "domain": "www[.]vinted-login[.]ph",

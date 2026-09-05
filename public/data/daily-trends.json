@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "dataset": "radar-daily-trends",
-  "generatedAt": "2026-09-05T05:52:01.149Z",
+  "generatedAt": "2026-09-05T06:07:20.924Z",
   "retentionDays": 365,
   "from": "2025-09-06",
   "to": "2026-09-05",
@@ -834,47 +834,49 @@
       "date": "2026-09-05",
       "partialDay": true,
       "collectorCoverage": {
-        "windowSeconds": 21121,
-        "scheduledSlots": 23,
-        "recordedAttempts": 23,
-        "healthyAttempts": 23,
+        "windowSeconds": 22040,
+        "scheduledSlots": 24,
+        "recordedAttempts": 24,
+        "healthyAttempts": 24,
         "recordedSchedulePercent": 100.0,
         "listeningCoveragePercent": 52.27,
         "scheduledListeningCeilingPercent": 52.27,
-        "listeningSeconds": 11039.974,
+        "listeningSeconds": 11519.972,
         "outcomes": {
           "healthy-empty": 18,
-          "healthy-matches": 5
+          "healthy-matches": 6
         }
       },
       "discovery": {
-        "events": 12,
-        "uniqueSignals": 6,
-        "observations": 6,
+        "events": 16,
+        "uniqueSignals": 8,
+        "observations": 8,
         "reobservations": 0,
-        "firstPublications": 6,
+        "firstPublications": 8,
         "statusChanges": 0,
-        "facetSampleSize": 6,
-        "evidenceClassifiedSignals": 6,
+        "facetSampleSize": 8,
+        "evidenceClassifiedSignals": 8,
         "byBrand": {
           "Bitė": 2,
+          "Revolut": 2,
           "DHL": 1,
           "ERGO": 1,
-          "Revolut": 1,
+          "Smart-ID": 1,
           "Vinted": 1
         },
         "bySource": {
-          "CertStream": 6
+          "CertStream": 8
         },
         "byEvidenceTier": {
-          "name-only": 6
+          "name-only": 8
         },
         "byReason": {
-          "brand-exact-token": 6,
-          "first-publication": 6,
-          "suspicious-context": 6,
-          "different-tld": 4,
-          "multiple-hyphens": 3
+          "first-publication": 8,
+          "suspicious-context": 8,
+          "brand-exact-token": 7,
+          "different-tld": 6,
+          "multiple-hyphens": 4,
+          "brand-joined-affix": 1
         }
       }
     }
