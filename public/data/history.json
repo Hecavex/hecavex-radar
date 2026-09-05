@@ -1,10 +1,84 @@
 {
   "schemaVersion": 1,
   "dataset": "history",
-  "generatedAt": "2026-09-05T02:36:49.264Z",
+  "generatedAt": "2026-09-05T02:51:45.584Z",
   "detailRetentionDays": 30,
   "summaryRetentionDays": 730,
   "signals": [
+    {
+      "id": "ca0207e426e2780da246",
+      "domain": "www[.]nord-bite-pay[.]top",
+      "brand": "Bitė",
+      "firstSeen": "2026-09-05T02:45:22.153Z",
+      "lastSeen": "2026-09-05T02:45:22.153Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "9f1794ff7ed2e749718cb363e7bcff52",
+          "observedAt": "2026-09-05T02:45:22.153Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "62f61359b040c2b3a977",
+      "domain": "nord-bite-pay[.]top",
+      "brand": "Bitė",
+      "firstSeen": "2026-09-05T02:45:22.153Z",
+      "lastSeen": "2026-09-05T02:45:22.153Z",
+      "observationCount": 1,
+      "sources": [
+        "CertStream"
+      ],
+      "latestStatus": "suspected",
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens",
+        "first-publication"
+      ],
+      "statusTransitions": [
+        {
+          "eventId": "130848c19a37bd5dfebd25f809f54987",
+          "observedAt": "2026-09-05T02:45:22.153Z",
+          "previousStatus": null,
+          "status": "suspected",
+          "sources": [
+            "CertStream"
+          ],
+          "reasonCodes": [
+            "brand-exact-token",
+            "suspicious-context",
+            "different-tld",
+            "multiple-hyphens",
+            "first-publication"
+          ]
+        }
+      ]
+    },
     {
       "id": "ce47da1a0348d5500d94",
       "domain": "go[.]dhl-support-del[.]com",

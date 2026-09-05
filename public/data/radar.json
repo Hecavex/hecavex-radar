@@ -1,9 +1,73 @@
 {
   "schemaVersion": 2,
   "dataset": "live",
-  "generatedAt": "2026-09-05T02:36:49.264Z",
-  "lastSuccessfulSyncAt": "2026-09-05T02:36:49.264Z",
+  "generatedAt": "2026-09-05T02:51:45.584Z",
+  "lastSuccessfulSyncAt": "2026-09-05T02:51:45.584Z",
   "signals": [
+    {
+      "id": "62f61359b040c2b3a977",
+      "url": "hxxps://nord-bite-pay[.]top",
+      "domain": "nord-bite-pay[.]top",
+      "firstSeen": "2026-09-05T02:45:22.153Z",
+      "lastSeen": "2026-09-05T02:45:22.153Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Bitė",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
+    {
+      "id": "ca0207e426e2780da246",
+      "url": "hxxps://www[.]nord-bite-pay[.]top",
+      "domain": "www[.]nord-bite-pay[.]top",
+      "firstSeen": "2026-09-05T02:45:22.153Z",
+      "lastSeen": "2026-09-05T02:45:22.153Z",
+      "sources": [
+        "CertStream"
+      ],
+      "status": "suspected",
+      "brand": "Bitė",
+      "country": null,
+      "host": null,
+      "screenshotUrl": null,
+      "referenceUrl": null,
+      "hashes": [],
+      "matchScore": 95,
+      "evidenceTier": "name-only",
+      "reviewState": "unreviewed",
+      "ltRelevance": "lithuanian-brand-relevance",
+      "confidence": 95,
+      "discoveredVia": [
+        "certstream-live"
+      ],
+      "reasonCodes": [
+        "brand-exact-token",
+        "suspicious-context",
+        "different-tld",
+        "multiple-hyphens"
+      ],
+      "detailAvailable": true
+    },
     {
       "id": "ce47da1a0348d5500d94",
       "url": "hxxps://go[.]dhl-support-del[.]com",
@@ -4587,8 +4651,8 @@
     {
       "name": "CertStream",
       "homepage": "https://certstream.dev/",
-      "fetchedAt": "2026-09-05T02:36:49.264Z",
-      "records": 136,
+      "fetchedAt": "2026-09-05T02:51:45.584Z",
+      "records": 138,
       "state": "healthy",
       "note": "Open heuristic candidates from the last 7 days; 1 candidate no longer passed current registry rules"
     },
@@ -4603,7 +4667,7 @@
     {
       "name": "HECAVEX",
       "homepage": "https://hecavex.com/",
-      "fetchedAt": "2026-09-05T02:36:49.264Z",
+      "fetchedAt": "2026-09-05T02:51:45.584Z",
       "records": 1,
       "state": "healthy",
       "note": "Sanitized local review export"
